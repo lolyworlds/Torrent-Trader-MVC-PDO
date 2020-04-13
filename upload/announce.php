@@ -3,7 +3,7 @@
              
 error_reporting(E_ALL ^ E_NOTICE);
 
-require_once("backend/config.php");
+require_once("config/config.php");
 require_once("backend/dbclass.php");
 
 $MEMBERSONLY = $site_config["MEMBERSONLY"];

@@ -114,11 +114,11 @@ This system check is designed for unix based servers, windows based servers may 
 </tr>
 
 <tr>
-	<td>backend/config.php</td>
+	<td>config/config.php</td>
 	<td>
 	<?php
-	if (@file_exists('backend/config.php') && @is_writable( 'backend/config.php' )){
-		echo '<b><font color="red">Writeable</font></b><br />Warning: leaving backend/config.php writeable is a security risk';
+	if (@file_exists('config/config.php') && @is_writable( 'config/config.php' )){
+		echo '<b><font color="red">Writeable</font></b><br />Warning: leaving config/config.php writeable is a security risk';
 	} else {
 		echo '<b><font color="green">Unwriteable</font></b>';
 	}
@@ -199,7 +199,7 @@ writableCell( 'censor.txt', 1 );
 </table>
 <br />
 <?php
-require_once("backend/config.php");
+require_once("config/config.php");
 echo "<b>Table Status Check:</b><br /><br />";
     try {
         $link = new PDO('mysql:host='.$site_config['mysql_host'].';dbname='.$site_config['mysql_db'], $site_config['mysql_user'], $site_config['mysql_pass']);       
@@ -258,7 +258,7 @@ echo "<b>Table Status Check:</b><br /><br />";
                     echo "<tr><td>$t</td><td align='right'><font color='green'><b>OK</b></font></td></tr>";
             echo "</table>";
 
-            require("backend/config.php");
+            require("config/config.php");
             echo "<br /><br /><b>Default Theme:</b> ";
             if (!is_numeric($site_config["default_theme"]))
                 echo "<font color='#ff0000'><b>Invalid.</b></font> (Not a number)";

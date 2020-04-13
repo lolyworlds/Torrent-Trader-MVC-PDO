@@ -11,7 +11,7 @@ set_exception_handler("handleUncaughtException");
 if (function_exists("date_default_timezone_set"))
 	date_default_timezone_set("Europe/London"); // Do NOT change this. All times are converted to user's chosen timezone.
 
-require_once (TTCORE."/config.php");  //Get Site Settings and Vars ($site_config)
+require_once (TTROOT."/config/config.php");  //Get Site Settings and Vars ($site_config)
 require_once (TTCORE."/dbclass.php"); //Get MYSQL Connection Info
 require_once (TTCORE."/cache.php"); // Caching
 require_once (TTCORE."/mail.php"); // Mail functions
@@ -20,3 +20,8 @@ require_once (TTCORE."/languages.php");
 require_once (TTCORE."/functions.php");
 require_once (TTCORE."/bootstraphelper.php");
 $GLOBALS['tstart'] = array_sum(explode(" ", microtime()));
+
+// Autoload Core
+spl_autoload_register(function($className) {
+	include_once TTROOT . '/core/' . $className . '.php';
+});

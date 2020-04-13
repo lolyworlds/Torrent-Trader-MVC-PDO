@@ -13,7 +13,7 @@ if (stristr($_SERVER["HTTP_ACCEPT_ENCODING"],"gzip") && extension_loaded('zlib')
 }
 // end gzip controll
 
-require_once("backend/config.php");
+require_once("config/config.php");
 
 function dbconn() {
     global $conn, $site_config;
