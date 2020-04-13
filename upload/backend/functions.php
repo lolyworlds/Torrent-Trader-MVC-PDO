@@ -193,13 +193,13 @@ function stdhead($title = "") {
     else
         $title = $site_config['SITENAME']. " : ". htmlspecialchars($title);
 
-	require_once("themes/" . $THEME . "/block.php");
-	require_once("themes/" . $THEME . "/header.php");
+	require_once(TTROOT."/themes/" . $THEME . "/block.php");
+	require_once(TTROOT."/themes/" . $THEME . "/header.php");
 }
 
 function stdfoot() {
 	global $site_config, $CURUSER, $THEME, $LANGUAGE;
-	require_once("themes/" . $THEME . "/footer.php");
+	require_once(TTROOT."/themes/" . $THEME . "/footer.php");
 }
 
 function leftblocks() {
@@ -215,7 +215,7 @@ function leftblocks() {
     }
 
     foreach ($blocks as $blockfilename){
-        include("blocks/".$blockfilename."_block.php");
+        include(TTROOT."/blocks/".$blockfilename."_block.php");
     }
 }
 
@@ -232,7 +232,7 @@ function rightblocks() {
     }
 
     foreach ($blocks as $blockfilename){
-        include("blocks/".$blockfilename."_block.php");
+        include(TTROOT."/blocks/".$blockfilename."_block.php");
     }
 }
 
@@ -249,7 +249,7 @@ function middleblocks() {
     }
 
     foreach ($blocks as $blockfilename){
-        include("blocks/".$blockfilename."_block.php");
+        include(TTROOT."/blocks/".$blockfilename."_block.php");
     }
 }
 
