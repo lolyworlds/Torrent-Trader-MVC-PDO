@@ -1,0 +1,70 @@
+<?php
+if ($action=="messagespy"){                                    
+	if ($do == "del") {
+		if ($_POST["delall"])
+			SQL_Query_exec("DELETE FROM `messages`");
+		else {
+			if (!@count($_POST["del"])) show_error_msg(T_("ERROR"), T_("NOTHING_SELECTED"), 1);
+			$ids = array_map("intval", $_POST["del"]);
+			$ids = implode(", ", $ids);
+			SQL_Query_exec("DELETE FROM `messages` WHERE `id` IN ($ids)");
+		}
+		autolink("admincp.php?action=messagespy", T_("CP_DELETED_ENTRIES")); 
+		stdhead();
+		show_error_msg(T_("SUCCESS"), T_("CP_DELETED_ENTRIES"), 0);
+		stdfoot();
+		die;
+	}
+
+
+	stdhead("Message Spy");
+	navmenu();
+
+	$res2 = SQL_Query_exec("SELECT COUNT(*) FROM messages WHERE location in ('in', 'both')");
+	$row = mysqli_fetch_array($res2);
+	$count = $row[0];
+
+	$perpage = 50;
+
+	list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, "admincp.php?action=messagespy&amp;");
+
+	begin_frame("Message Spy");
+
+	echo $pagertop;
+
+	$res = SQL_Query_exec("SELECT * FROM messages WHERE location in ('in', 'both') ORDER BY id DESC $limit");
+
+	print("<form id='messagespy' method='post' action='?action=messagespy&amp;do=del'><table border='0' cellspacing='0' cellpadding='3' align='center' class='table_table'>\n");
+
+	print("<tr><th class='table_head' align='left'><input type='checkbox' name='checkall' onclick='checkAll(this.form.id);' /></th><th class='table_head' align='left'>Sender</th><th class='table_head' align='left'>Receiver</th><th class='table_head' align='left'>Text</th><th class='table_head' align='left'>Date</th></tr>\n");
+
+	while ($arr = mysqli_fetch_assoc($res)){
+		$res2 = SQL_Query_exec("SELECT username FROM users WHERE id=" . $arr["receiver"]);
+
+		if ($arr2 = mysqli_fetch_assoc($res2))
+			$receiver = "<a href='account-details.php?id=" . $arr["receiver"] . "'><b>" . $arr2["username"] . "</b></a>";
+		else
+			$receiver = "<i>Deleted</i>";
+
+		$res3 = SQL_Query_exec("SELECT username FROM users WHERE id=" . $arr["sender"]);
+		$arr3 = mysqli_fetch_assoc($res3);
+
+		$sender = "<a href='account-details.php?id=" . $arr["sender"] . "'><b>" . $arr3["username"] . "</b></a>";
+		if( $arr["sender"] == 0 )
+			$sender = "<font class='error'><b>System</b></font>";
+		$msg = format_comment($arr["msg"]);
+
+		$added = utc_to_tz($arr["added"]);
+
+		print("<tr><td class='table_col2'><input type='checkbox' name='del[]' value='$arr[id]' /></td><td align='left' class='table_col1'>$sender</td><td align='left' class='table_col2'>$receiver</td><td align='left' class='table_col1'>$msg</td><td align='left' class='table_col2'>$added</td></tr>");
+	}
+
+	print("</table><br />");
+	echo "<input type='submit' value='Delete Checked' /> <input type='submit' value='Delete All' name='delall' /></form>";
+
+
+	print($pagerbottom);
+
+	end_frame();
+	stdfoot();
+}
