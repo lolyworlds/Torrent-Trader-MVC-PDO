@@ -38,25 +38,21 @@
       
   stdhead(T_("STAFF"));
   begin_frame(T_("STAFF"));
-  ?>
-  
-  <table cellpadding="0" width="100%" align="center">
+
+ ?> 
+  <div class="table-responsive"><table class="table">
   <?php while ($row = $res->fetch(PDO::FETCH_ASSOC)): if ( !isset($table[$row["group_id"]]) ) continue; ?>
+
   <tr>
-      <td colspan="14"><b><?php echo T_($row["level"]); ?></b> <?php if ($row["staff_public"] == "no") echo("<font color='#ff0000'>[".T_("HIDDEN FROM PUBLIC")."]</font>"); ?></td>
-  </tr>
-  <tr>
-      <td colspan="14"><hr /></td>
+      <td colspan="14" class="newtd"><center><b><?php echo T_($row["level"]); ?></b> <?php if ($row["staff_public"] == "no") echo("<font color='#ff0000'>[".T_("HIDDEN FROM PUBLIC")."]</font>"); ?><center></td>
   </tr>
   <tr>
       <?php echo $table[$row["group_id"]]; ?>
   </tr>
-  <tr>
-      <td colspan="14"></td>
-  </tr>
+
   <?php endwhile; ?>
-  </table>
-  
+  </table></div>
   <?php
+
   end_frame();
   stdfoot();

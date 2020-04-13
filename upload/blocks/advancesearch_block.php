@@ -38,7 +38,7 @@ if (!$site_config["MEMBERSONLY"] || $CURUSER) {
 		</select>
 		<?php } ?>
 	<br /><br />
-	<input type="submit" value="<?php echo T_("SEARCH"); ?>" />
+	<button type="submit" class="btn btn-primary btn-sm"><?php echo T_("SEARCH"); ?></button>
 	</form>
 	</center>
 	<?php

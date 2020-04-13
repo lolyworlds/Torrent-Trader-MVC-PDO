@@ -172,7 +172,7 @@ echo("<tr><td>".T_("TEAM").": </td><td align='left'><input type='text' size='50'
 echo("<tr><td>".T_("TEAM_OWNER_NAME").": </td><td align='left'><input type='text' size='50' name='team_owner' /></td></tr>");
 echo("<tr><td valign='top'>".T_("DESCRIPTION").": </td><td align='left'><textarea name='team_description' cols='35' rows='5'></textarea><br />(BBCode is allowed)</td></tr>");
 echo("<tr><td>".T_("TEAM_LOGO_URL").": </td><td align='left'><input type='text' size='50' name='team_image' /><input type='hidden' name='add' value='true' /></td></tr>");
-echo("<tr><td></td><td><div align='left'><input value='".T_("TEAM_CREATE")."' type='submit' /></div></td></tr>");
+echo("<tr><td></td><td><div align='left'><button type='submit' class='btn btn-primary btn-sm'>".T_("TEAM_CREATE")."</button></div></td></tr>");
 echo("</table></center>");
 if($success == TRUE) {
 	print("<b>team successfully added!</b>");
@@ -184,8 +184,9 @@ echo("</form>");
 print("<b>Current ".T_("TEAMS").":</b>");
 print("<br />");
 print("<br />");
-echo("<center><table class='table_table' cellspacing='0' cellpadding='3' width='98%'><tr>");
-echo("<td class='table_head'>ID</td><td class='table_head'>".T_("TEAM_LOGO")."</td><td class='table_head'>".T_("TEAM_NAME")."</td><td class='table_head'>".T_("TEAM_OWNER_NAME")."</td><td class='table_head'>".T_("DESCRIPTION")."</td><td class='table_head'>".T_("OTHER")."</td></tr>");
+echo("<center><div class='table-responsive'><table class='table table-striped'>
+<thead><tr>");
+echo("<th>ID</th><th>".T_("TEAM_LOGO")."</th><th>".T_("TEAM_NAME")."</th><th>".T_("TEAM_OWNER_NAME")."</th><th>".T_("DESCRIPTION")."</th><th>".T_("OTHER")."</th></tr></thead>");
 $sql = DB::run( "SELECT * FROM teams");
 while ($row = $sql->fetch(PDO::FETCH_LAZY)) {
 	$id = (int)$row['id'];
@@ -196,7 +197,7 @@ while ($row = $sql->fetch(PDO::FETCH_LAZY)) {
 	$OWNERNAME2 = DB::run("SELECT username, class FROM users WHERE id=$owner")->fetch();
 	$OWNERNAME = class_user($OWNERNAME2['username']);
 
-	echo("<tr><td class='table_col1'><b>$id</b> </td> <td class='table_col2' align='center'><img src='$image' alt='' /></td> <td class='table_col1'><b>$name</b></td><td class='table_col2'><a href='account-details.php?id=$owner'>$OWNERNAME</a></td><td class='table_col1'>$info</td><td class='table_col2'><a href='teams-create.php?editmembers=$id'>[Members]</a>&nbsp;<a href='teams-create.php?editid=$id&amp;name=$name&amp;image=$image&amp;info=$info&amp;owner=$OWNERNAME'>[".T_("EDIT")."]</a>&nbsp;<a href='teams-create.php?del=$id&amp;team=$name'>[Delete]</a></td></tr>");
+	echo("<tbody><tr><td><b>$id</b> </td> <td><img src='$image' alt='' /></td> <td><b>$name</b></td><td><a href='account-details.php?id=$owner'>$OWNERNAME</a></td><td>$info</td><td><a href='teams-create.php?editmembers=$id'>[Members]</a>&nbsp;<a href='teams-create.php?editid=$id&amp;name=$name&amp;image=$image&amp;info=$info&amp;owner=$OWNERNAME'>[".T_("EDIT")."]</a>&nbsp;<a href='teams-create.php?del=$id&amp;team=$name'>[Delete]</a></td></tr></tbody>");
 }
 echo "</table></center>";
 

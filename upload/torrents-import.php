@@ -176,7 +176,7 @@ if ($site_config['ANONYMOUSUPLOAD']){ ?>
 	</td></tr>
 
 <?php } ?>
-<tr><td align="center" colspan="2"><input type="submit" value="<?php echo T_("UPLOAD")?>" /><br />
+<tr><td align="center" colspan="2"><<button type="submit" class="btn btn-primary btn-sm"><?php echo T_("UPLOAD"); ?></button><br />
 <i><?php echo T_("CLICK_ONCE_IMAGE");?></i></td></tr></table></form>
 <?php
 end_frame();

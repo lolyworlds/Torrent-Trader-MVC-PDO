@@ -196,12 +196,13 @@ if ($_POST["takeupload"] == "yes") {
 		$anon = "no";
 	}
 	
-	$ret = DB::run("INSERT INTO torrents (filename, owner, name, descr, image1, image2, category, added, info_hash, size, numfiles, save_as, announce, external, nfo, torrentlang, anon, last_action) VALUES (".sqlesc($fname).", '".$CURUSER['id']."', ".sqlesc($name).", ".sqlesc($descr).", '".$inames[0]."', '".$inames[1]."', '".$catid."', '" . get_date_time() . "', '".$infohash."', '".$torrentsize."', '".$filecount."', ".sqlesc($fname).", '".$announce."', '".$external."', '".$nfo."', '".$langid."','$anon', '".get_date_time()."')");
-	/*
+$filecounts = (int)$filecount;
+$inames = '';
+
     $ret = DB::run("INSERT INTO torrents (filename, owner, name, descr, image1, image2, category, added, info_hash, size, numfiles, save_as, announce, external, nfo, torrentlang, anon, last_action) 
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-	[$fname, $CURUSER['id'], $name, $descr, $inames[0], $inames[1], $catid, get_date_time(), $infohash, $torrentsize, $filecount, $fname, $announce, $external, $nfo, $langid, $anon, get_date_time()]);
-	*/
+	[$fname, $CURUSER['id'], $name, $descr, $inames[0], $inames[1], $catid, get_date_time(), $infohash, $torrentsize, $filecounts, $fname, $announce, $external, $nfo, $langid, $anon, get_date_time()]);
+	
 	$id = DB::lastInsertId();
 	
 	if ($ret->errorCode() == 1062)
@@ -334,7 +335,7 @@ require_once("backend/bbcode.php");
 print textbbcode("upload","descr","$descr");
 ?>
 
-<br /><br /><center><input type="submit" value="<?php echo T_("UPLOAD_TORRENT"); ?>" /><br />
+<br /><br /><center><button type="input" class="btn btn-primary btn-sm"><?php echo T_("UPLOAD_TORRENT") ?></button><br />
 <i><?php echo T_("CLICK_ONCE_IMAGE");?></i>
 </center>
 </form>

@@ -61,26 +61,26 @@ if ($action == "privacylevel")
     
     <?php if ($count > 0): ?>
     <br />
-    <table border="0" cellpadding="3" cellspacing="0" width="100%" align="center" class="table_table">
-    <tr>
-        <th class="table_head">Username</th>
-        <th class="table_head"><?php echo T_("CLASS");?></th>
-        <th class="table_head">E-mail</th>
-        <th class="table_head">IP</th>
-        <th class="table_head">Added</th>
-        <th class="table_head">Last Visited</th>  
-    </tr>
+    <div class='table-responsive'><table class='table table-striped'>
+    <thead><tr>
+        <th>Username</th>
+        <th><?php echo T_("CLASS");?></th>
+        <th>E-mail</th>
+        <th>IP</th>
+        <th>Added</th>
+        <th>Last Visited</th>  
+    </tr></thead>
     <?php while ($row = $res->fetch(PDO::FETCH_ASSOC)): ?>
-    <tr>
-        <td class="table_col1" align="center"><a href="account-details.php?id=<?php echo $row["id"]; ?>"><?php echo class_user($row["username"]); ?></a></td>
-        <td class="table_col2" align="center"><?php echo get_user_class_name($row["class"]); ?></td>
-        <td class="table_col1" align="center"><?php echo $row["email"]; ?></td>
-        <td class="table_col2" align="center"><?php echo $row["ip"]; ?></td>
-        <td class="table_col1" align="center"><?php echo utc_to_tz($row["added"]); ?></td>
-        <td class="table_col2" align="center"><?php echo utc_to_tz($row["last_access"]); ?></td> 
+    <tbody><tr>
+        <td><a href="account-details.php?id=<?php echo $row["id"]; ?>"><?php echo class_user($row["username"]); ?></a></td>
+        <td><?php echo get_user_class_name($row["class"]); ?></td>
+        <td><?php echo $row["email"]; ?></td>
+        <td><?php echo $row["ip"]; ?></td>
+        <td><?php echo utc_to_tz($row["added"]); ?></td>
+        <td><?php echo utc_to_tz($row["last_access"]); ?></td> 
     </tr>
     <?php endwhile; ?>
-    </table>         
+    <tbody></table></div>         
     <?php else: ?>
     <center><b>Nothing Found...</b></center>
     <?php  

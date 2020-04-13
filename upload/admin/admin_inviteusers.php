@@ -42,35 +42,37 @@ if ($action == "invited")
 
     <?php  if ($count > 0): ?>
     <br />
-    <form id="invited" method="post" action="admincp.php?action=invited">
+     <form id="invited" method="post" action="admincp.php?action=invited">
     <input type="hidden" name="do" value="del" />
-    <table border="0" cellpadding="3" cellspacing="0" width="100%" align="center" class="table_table">
+    <div class='table-responsive'><table class='table table-striped'>
+    <thead>
     <tr>
-        <th class="table_head">Username</th>
-        <th class="table_head">E-mail</th>
-        <th class="table_head"><?php echo T_("CLASS");?></th>
-        <th class="table_head">Invited</th>
-        <th class="table_head">Last Access</th> 
-        <th class="table_head">Invited By</th>
-        <th class="table_head"><input type="checkbox" name="checkall" onclick="checkAll(this.form.id);" /></th>
-    </tr>
+        <th>Username</th>
+        <th>E-mail</th>
+        <th><?php echo T_("CLASS");?></th>
+        <th>Invited</th>
+        <th>Last Access</th> 
+        <th>Invited By</th>
+        <th><input type="checkbox" name="checkall" onclick="checkAll(this.form.id);" /></th>
+    </tr></thead>
     <?php while ($row = $res->fetch(PDO::FETCH_ASSOC)): ?>
-    <tr>
-        <td class="table_col1" align="center"><a href="account-details.php?id=<?php echo $row["id"]; ?>"><?php echo class_user($row["username"]); ?></a></td>
-        <td class="table_col2" align="center"><?php echo $row["email"]; ?></td>
-        <td class="table_col1" align="center"><?php echo get_user_class_name($row["class"]); ?></td>     
-        <td class="table_col2" align="center"><?php echo utc_to_tz($row["added"]); ?></td>
-        <td class="table_col1" align="center"><?php echo utc_to_tz($row["last_access"]); ?></td>  
-        <td class="table_col2" align="center"><?php echo ( $row['inviter'] ) ? '<a href="account-details.php?id='.$row["invited_by"].'">'.$row["inviter"].'</a>' : 'Unknown User'; ?></td>
-        <td class="table_col1" align="center"><input type="checkbox" name="users[]" value="<?php echo $row["id"]; ?>" /></td>
+    <tbody><tr>
+        <td><a href="account-details.php?id=<?php echo $row["id"]; ?>"><?php echo class_user($row["username"]); ?></a></td>
+        <td><?php echo $row["email"]; ?></td>
+        <td><?php echo get_user_class_name($row["class"]); ?></td>     
+        <td><?php echo utc_to_tz($row["added"]); ?></td>
+        <td><?php echo utc_to_tz($row["last_access"]); ?></td>  
+        <td><?php echo ( $row['inviter'] ) ? '<a href="account-details.php?id='.$row["invited_by"].'">'.$row["inviter"].'</a>' : 'Unknown User'; ?></td>
+        <td><input type="checkbox" name="users[]" value="<?php echo $row["id"]; ?>" /></td>
     </tr>
     <?php endwhile; ?>
     <tr>
-        <td colspan="7" align="right">
-        <input type="submit" value="Delete Checked" />
+        <td>
+        <center><input type="submit" value="Delete Checked" /></center>
         </td>
     </tr>
-    </table>         
+     
+    <tbody></table></div>
     </form>
     <?php 
     endif;

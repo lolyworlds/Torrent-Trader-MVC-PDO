@@ -50,7 +50,7 @@ $languages = '';
 <select name="language"><?php echo $languages; ?></select></td>
   </tr>
   <tr>
-<td align="center" valign="middle"><input type="submit" value="<?php echo T_("APPLY"); ?>" /></td>
+<td align="center" valign="middle"><button type="submit" class="btn btn-primary btn-sm"><?php echo T_("APPLY"); ?></button></td>
   </tr>
 </table>
   </form>  

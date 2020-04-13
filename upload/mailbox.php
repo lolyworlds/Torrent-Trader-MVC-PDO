@@ -158,6 +158,7 @@ function navmenu(){
 if (isset($_REQUEST['compose']))
 {
     begin_frame("Compose");
+    navmenu ();
     $userid = @$_REQUEST['id'];
     $subject = ''; $msg = ''; $to = ''; $hidden = ''; $output = ''; $reply = false;
 	$sreplay = T_("REPLY");//bugfix
@@ -232,16 +233,27 @@ if (isset($_REQUEST['compose']))
 
         begin_form(rem_get('compose'),'name="compose"');
 ?>
-<br /><br />
-<div class="menu5">
-	<a href="mailbox.php"><?php echo T_("OVERVIEW"); ?></a>
-	<a href="mailbox.php?inbox"><?php echo T_("INBOX"); ?></a>
-	<a href="mailbox.php?outbox"><?php echo T_("OUTBOX"); ?></a>
-	<a href="mailbox.php?draft"><?php echo T_("DRAFT"); ?></a>
-	<a href="mailbox.php?templates"><?php echo T_("TEMPLATES"); ?></a>
-	<a href="mailbox.php?compose"><?php echo T_("COMPOSE"); ?></a>
-</div>	
-<?php
+<style>
+.table thead th a {
+    text-shadow: 0px 1px 1px #000;
+    color: #FFF;
+    text-decoration: none;
+}
+</style>
+	<br />
+<div class='table-responsive'><table class='table table-striped'>
+<thead><tr><th><center>
+	<a href="mailbox.php"><b><?php echo T_("OVERVIEW"); ?></b></a>&nbsp;|&nbsp;
+	<a href="mailbox.php?inbox"><b><?php echo T_("INBOX"); ?></b></a>&nbsp;|&nbsp;
+	<a href="mailbox.php?outbox"><b><?php echo T_("OUTBOX"); ?></b></a>&nbsp;|&nbsp;
+	<a href="mailbox.php?draft"><b><?php echo T_("DRAFT"); ?></b></a>&nbsp;|&nbsp;
+	<a href="mailbox.php?templates"><b><?php echo T_("TEMPLATES"); ?></b></a>&nbsp;|&nbsp;
+	<a href="mailbox.php?compose"><b><?php echo T_("COMPOSE"); ?></b></a>
+</center></th></tr></thead>
+</table></div>
+	<?php
+	
+
 	echo "<br /><br />";
         if ($subject) $hidden .= "<input type=\"hidden\" name=\"oldsubject\" value=\"$subject\" />";
         if ($hidden) print($hidden);
@@ -279,18 +291,27 @@ if (isset($_REQUEST['compose']))
 }
 
 begin_frame($pagename);
-
+navmenu ();
 echo "<center>";
 ?>
-<br /><br />
-<div class="menu5">
-	<a href="mailbox.php"><?php echo T_("OVERVIEW"); ?></a>
-	<a href="mailbox.php?inbox"><?php echo T_("INBOX"); ?></a>
-	<a href="mailbox.php?outbox"><?php echo T_("OUTBOX"); ?></a>
-	<a href="mailbox.php?draft"><?php echo T_("DRAFT"); ?></a>
-	<a href="mailbox.php?templates"><?php echo T_("TEMPLATES"); ?></a>
-	<a href="mailbox.php?compose"><?php echo T_("COMPOSE"); ?></a>
-</div>	
+<style>
+.table thead th a {
+    text-shadow: 0px 1px 1px #000;
+    color: #FFF;
+    text-decoration: none;
+}
+</style>
+	<br />
+<div class='table-responsive'><table class='table table-striped'>
+<thead><tr><th><center>
+	<a href="mailbox.php"><b><?php echo T_("OVERVIEW"); ?></b></a>&nbsp;|&nbsp;
+	<a href="mailbox.php?inbox"><b><?php echo T_("INBOX"); ?></b></a>&nbsp;|&nbsp;
+	<a href="mailbox.php?outbox"><b><?php echo T_("OUTBOX"); ?></b></a>&nbsp;|&nbsp;
+	<a href="mailbox.php?draft"><b><?php echo T_("DRAFT"); ?></b></a>&nbsp;|&nbsp;
+	<a href="mailbox.php?templates"><b><?php echo T_("TEMPLATES"); ?></b></a>&nbsp;|&nbsp;
+	<a href="mailbox.php?compose"><b><?php echo T_("COMPOSE"); ?></b></a>
+</center></th></tr></thead>
+</table></div>	
 <?php
 echo "<br />";
 

@@ -22,17 +22,17 @@
      
      ?>
 
-     <table cellpadding="5" cellspacing="3" class="table_table" align="center" width="98%">
-     <tr>
-         <th class="table_head"><?php echo T_("TORRENT_NAME"); ?></th>
-         <th class="table_head"><?php echo T_("UPLOADER"); ?></th>
-         <th class="table_head"><?php echo T_("LOCAL_EXTERNAL"); ?></th>
-         <th class="table_head"><?php echo T_("SIZE"); ?></th>
-         <th class="table_head"><?php echo T_("SEEDS"); ?></th>
-         <th class="table_head"><?php echo T_("LEECHERS"); ?></th>
-         <th class="table_head"><?php echo T_("COMPLETE"); ?></th>
-         <th class="table_head"><?php echo T_("ADDED"); ?></th>
-     </tr>
+     <div class='table-responsive'><table class='table table-striped'>
+     <thead><tr>
+         <th><?php echo T_("TORRENT_NAME"); ?></th>
+         <th><?php echo T_("UPLOADER"); ?></th>
+         <th><?php echo T_("LOCAL_EXTERNAL"); ?></th>
+         <th><?php echo T_("SIZE"); ?></th>
+         <th><?php echo T_("SEEDS"); ?></th>
+         <th><?php echo T_("LEECHERS"); ?></th>
+         <th><?php echo T_("COMPLETE"); ?></th>
+         <th><?php echo T_("ADDED"); ?></th>
+     </tr></thead>
      
      <?php 
      
@@ -49,16 +49,16 @@
 
         ?>
         
-        <tr>
-           <td class="table_col1" align="center"><a href="torrents-details.php?id=<?php echo $row["id"]; ?>"><?php echo CutName(htmlspecialchars($row["name"]), 40) ?></a></td>
-           <td class="table_col2" align="center"><?php echo $owner; ?></td>
-           <td class="table_col1" align="center"><?php echo $type; ?></td>
-           <td class="table_col2" align="center"><?php echo mksize($row["size"]); ?></td>
-           <td class="table_col1" align="center"><?php echo number_format($row["seeders"]); ?></td>
-           <td class="table_col2" align="center"><?php echo number_format($row["leechers"]); ?></td>
-           <td class="table_col1" align="center"><?php echo number_format($row["times_completed"]); ?></td>
-           <td class="table_col2" align="center"><?php echo utc_to_tz($row["added"]); ?></td>
-        </tr>
+        <tbody><tr>
+           <td><a href="torrents-details.php?id=<?php echo $row["id"]; ?>"><?php echo CutName(htmlspecialchars($row["name"]), 40) ?></a></td>
+           <td><?php echo $owner; ?></td>
+           <td><?php echo $type; ?></td>
+           <td><?php echo mksize($row["size"]); ?></td>
+           <td><?php echo number_format($row["seeders"]); ?></td>
+           <td><?php echo number_format($row["leechers"]); ?></td>
+           <td><?php echo number_format($row["times_completed"]); ?></td>
+           <td><?php echo utc_to_tz($row["added"]); ?></td>
+        </tr></tbody>
         
      <?php
      
@@ -66,7 +66,7 @@
      
      ?>
      
-     </table>
+     </table></div>
      
      <?php
      

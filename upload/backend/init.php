@@ -18,5 +18,5 @@ require_once (TTCORE."/mail.php"); // Mail functions
 require_once (TTCORE."/tzs.php"); // Get Timezones
 require_once (TTCORE."/languages.php");
 require_once (TTCORE."/functions.php");
-
+require_once (TTCORE."/bootstraphelper.php");
 $GLOBALS['tstart'] = array_sum(explode(" ", microtime()));

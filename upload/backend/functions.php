@@ -784,7 +784,7 @@ $wait = '';
         $expandrows = array_map("trim", $expandrows);
     }
     // End
-  echo '<table align="center" class="ttable_headinner" width="100%"><thead><tr class="ttable_head">';
+  echo '<div class="table-responsive"><table class="table table-striped"><thead><tr>';
 
     foreach ($cols as $col) {
         switch ($col) {
@@ -1027,7 +1027,7 @@ $wait = '';
 
     }
 
-    print("</table><br />\n");
+    print("</table></div><br />\n");
 
 }
 

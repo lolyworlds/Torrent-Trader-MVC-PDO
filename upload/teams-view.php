@@ -20,14 +20,14 @@
  while ($row = $res->fetch(PDO::FETCH_ASSOC)):
  ?>
   
- <table border="0" cellspacing="0" cellpadding="3" width="100%" class="table_table">
- <tr>
-     <th class="table_head" width="10%"></th>
-     <th class="table_head" width="90%">Owner: <?php echo ( $row["username"] ) ? '<a href="account-details.php?id='.$row["owner"].'">' . class_user($row["username"]) . '</a>' : "Unknown User"; ?> - Added: <?php echo utc_to_tz($row["added"]); ?></th>
- </tr>
- <tr>
-     <td class="table_col1" width="10%"><img src="<?php echo htmlspecialchars($row["image"]); ?>" border="0" alt="<?php echo htmlspecialchars($row["name"]); ?>" title="<?php echo htmlspecialchars($row["name"]); ?>" /></td>
-     <td class="table_col2" width="90%" valign="top" align="left"><b>Name:</b><?php echo htmlspecialchars($row["name"]); ?><br /><b>Info:</b> <?php echo format_comment($row["info"]); ?></td>
+ <div class='table-responsive'><table class='table table-striped'>
+<thead><tr>
+     <th></th>
+     <th>Owner: <?php echo ( $row["username"] ) ? '<a href="account-details.php?id='.$row["owner"].'">' . class_user($row["username"]) . '</a>' : "Unknown User"; ?> - Added: <?php echo utc_to_tz($row["added"]); ?></th>
+ </tr></thead>
+ <tbody><tr>
+     <td><img src="<?php echo htmlspecialchars($row["image"]); ?>" border="0" alt="<?php echo htmlspecialchars($row["name"]); ?>" title="<?php echo htmlspecialchars($row["name"]); ?>" /></td>
+     <td><b>Name:</b><?php echo htmlspecialchars($row["name"]); ?><br /><b>Info:</b> <?php echo format_comment($row["info"]); ?></td>
  </tr>
  <tr>
     <td class="table_col1" colspan="2">
@@ -36,8 +36,8 @@
     <a href="account-details.php?id=<?php echo $member[0]; ?>"><?php echo htmlspecialchars($member[1]); ?></a>,
     <?php endforeach; ?>
     </td>
- </tr>
- </table>
+ </tr><tbody>
+ </table></div>
  <br />
  
  <?php

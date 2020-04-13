@@ -1,3 +1,22 @@
+.newtd {
+    color: #fff;
+    background-image: -webkit-linear-gradient(top, #072F5F, #3895D3);
+    background-image: linear-gradient(to bottom, #072F5F, #3895D3);
+    background-repeat: repeat-x;
+}
+
+/* -- Bootstrap Table --*/
+.table thead th {
+        color: #fff;
+        background-color: #072F5F;
+        background-image: -webkit-linear-gradient(top, #072F5F, #3895D3);
+        background-image: linear-gradient(to bottom, #072F5F, #3895D3);
+        background-repeat: repeat-x;
+}
+.tbody td {
+    background-color: #EEEEEE;
+} 
+
 /* -- Bootstrap Frame --*/
     .navbar {
         margin-bottom: 0;

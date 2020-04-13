@@ -6,7 +6,7 @@ begin_block(T_("SEARCH"));
 	<form method="get" action="torrents-search.php"><br />
 	<input type="text" name="search" size="15" value="<?php echo htmlspecialchars($_GET['search']); ?>" />
 	<br /><br />
-	<input type="submit" value="<?php echo T_("SEARCH"); ?>" />
+	<button type="submit" class="btn btn-primary btn-sm"><?php echo T_("SEARCH"); ?></button>
 	</form>
 	</center><br />
 	<?php

@@ -48,40 +48,42 @@ return ($ver[0] . " " . $ver[1]);
 	echo "<center><b>".T_("USERS_AWAITING_VALIDATION").":</b> <a href='admincp.php?action=confirmreg'>($pending)</a></center><br />";
 	echo "<center>".T_("VERSION_MYSQL").": <b>" . $mysqlver . "</b>&nbsp;-&nbsp;".T_("VERSION_PHP").": <b>" . phpversion() . "</b>&nbsp;-&nbsp;".T_("Apache Version").": <b>" . apache_version() . "</b></center>";
 ?>
-    <button type="button"><a href="admincp.php?action=usersearch"><?php echo T_("ADVANCED_USER_SEARCH"); ?></a></button>
-    <button type="button"><a href="admincp.php?action=avatars"><?php echo T_("AVATAR_LOG"); ?></a></button>
-    <button type="button"><a href="admincp.php?action=backups"><?php echo T_("BACKUPS"); ?></a></button>
-    <button type="button"><a href="admincp.php?action=ipbans"><?php echo T_("BANNED_IPS"); ?></a></button>
-    <button type="button"><a href="admincp.php?action=bannedtorrents"><?php echo T_("BANNED_TORRENTS"); ?></a></button>
-    <button type="button"><a href="admincp.php?action=blocks&amp;do=view"><?php echo T_("BLOCKS"); ?></a></button>
-    <button type="button"><a href="admincp.php?action=cheats"><?php echo T_("Detect Cheats"); ?></a></button>
-    <button type="button"><a href="admincp.php?action=emailbans"><?php echo T_("EMAIL_BANS"); ?></a></button>
-    <button type="button"><a href="faq-manage.php"><?php echo T_("FAQ"); ?></a></button></td>  
-    <button type="button"><a href="admincp.php?action=freetorrents"><?php echo T_("Freeleech Torrents"); ?></a></button>
-    <button type="button"><a href="admincp.php?action=lastcomm"><?php echo T_("LATEST_COMMENTS"); ?></a></button>
-    <button type="button"><a href="admincp.php?action=masspm"><?php echo T_("MASS_PM"); ?></a></button>
-    <button type="button"><a href="admincp.php?action=messagespy"><?php echo T_("MESSAGE_SPY"); ?></a></button>
-    <button type="button"><a href="admincp.php?action=news&amp;do=view"><?php echo T_("NEWS"); ?></a></button>
-    <button type="button"><a href="admincp.php?action=peers"><?php echo T_("PEERS_LIST"); ?></a></button>
-    <button type="button"><a href="admincp.php?action=polls&amp;do=view"><?php echo T_("POLLS"); ?></a></button>
-    <button type="button"><a href="admincp.php?action=reports&amp;do=view"><?php echo T_("REPORTS"); ?></a></button>
-    <button type="button"><a href="admincp.php?action=rules&amp;do=view"><?php echo T_("RULES"); ?></a></button>
-    <button type="button"><a href="admincp.php?action=sitelog"><?php echo T_("SITELOG"); ?></a></button>
-    <button type="button"><a href="teams-create.php"><?php echo T_("TEAMS"); ?></a></button>
-    <button type="button"><a href="admincp.php?action=style"><?php echo T_("THEME_MANAGEMENT"); ?></a></button>
-    <button type="button"><a href="admincp.php?action=categories&amp;do=view"><?php echo T_("TORRENT_CAT_VIEW"); ?></a></button>
-    <button type="button"><a href="admincp.php?action=torrentlangs&amp;do=view"><?php echo T_("TORRENT_LANG"); ?></a></button>
-    <button type="button"><a href="admincp.php?action=torrentmanage"><?php echo T_("TORRENTS"); ?></a></button></td>  
-    <button type="button"><a href="admincp.php?action=groups&amp;do=view"><?php echo T_("USER_GROUPS_VIEW"); ?></a></button>
-    <button type="button"><a href="admincp.php?action=warned"><?php echo T_("WARNED_USERS"); ?></a></button>
-    <button type="button"><a href="admincp.php?action=whoswhere"><?php echo T_("WHOS_WHERE"); ?></a></button>
-    <button type="button"><a href="admincp.php?action=censor"><?php echo T_("WORD_CENSOR"); ?></a></button>
-    <button type="button"><a href="admincp.php?action=forum"><?php echo T_("FORUM_MANAGEMENT"); ?></a></button>
-    <button type="button"><a href="admincp.php?action=users">Simple User Search</a></button>
-    <button type="button"><a href="admincp.php?action=privacylevel">Privacy Level</a></button> 
-    <button type="button"><a href="admincp.php?action=pendinginvite">Pending Invited Users</a></button> 
-    <button type="button"><a href="admincp.php?action=invited">Invited Users</a></button> 
-    <button type="button"><a href="exception-view.php">SQL Error</a></button>
+</br><div class="row">
+    <div class="col"><td><a href="admincp.php?action=usersearch"><img src="images/admin/user_search.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("ADVANCED_USER_SEARCH"); ?></a><br /><td></div>
+    <div class="col"><td><a href="admincp.php?action=avatars"><img src="images/admin/avatar_log.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("AVATAR_LOG"); ?></a><br /><td></div>
+    <div class="col"><td><a href="admincp.php?action=backups"><img src="images/admin/db_backup.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("BACKUPS"); ?></a><br /><td></div>
+    <div class="col"><td><a href="admincp.php?action=ipbans"><img src="images/admin/ip_block.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("BANNED_IPS"); ?></a><br /><td></div>
+    <div class="col"><td><a href="admincp.php?action=bannedtorrents"><img src="images/admin/banned_torrents.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("BANNED_TORRENTS"); ?></a><br /><td></div>
+    <div class="col"><td><a href="admincp.php?action=blocks&amp;do=view"><img src="images/admin/blocks.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("BLOCKS"); ?></a><br /><td></div>
+    <div class="col"><td><a href="admincp.php?action=cheats"><img src="images/admin/cheats.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("DETECT_POSS_CHEATS"); ?></a><br /><td></div>
+    <div class="col"><td><a href="admincp.php?action=emailbans"><img src="images/admin/mail_bans.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("EMAIL_BANS"); ?></a><br /><td></div>
+    <div class="col"><td><a href="faq-manage.php"><img src="images/admin/faq.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("FAQ"); ?></a><br /><td></div>
+    <div class="col"><td><a href="admincp.php?action=freetorrents"><img src="images/admin/free_leech.png" border="0" width="32" height="32" alt="" /><br />Freeleech Torrents<?php /*echo T_("TORRENTS_FREE_LEECH");*/ ?></a><br /><td></div>
+    <div class="col"><td><a href="admincp.php?action=lastcomm"><img src="images/admin/comments.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("LATEST_COMMENTS"); ?></a><br /><td></div>
+    <div class="col"><td><a href="admincp.php?action=masspm"><img src="images/admin/mass_pm.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("MASS_PM"); ?></a><br /><td></div>
+    <div class="col"><td><a href="admincp.php?action=messagespy"><img src="images/admin/message_spy.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("MESSAGE_SPY"); ?></a><br /><td></div>
+    <div class="col"><td><a href="admincp.php?action=news&amp;do=view"><img src="images/admin/news.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("NEWS"); ?></a><br /><td></div>
+    <div class="col"><td><a href="admincp.php?action=peers"><img src="images/admin/peer_list.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("PEERS_LIST"); ?></a><br /><td></div>
+    <div class="col"><td><a href="admincp.php?action=polls&amp;do=view"><img src="images/admin/polls.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("POLLS"); ?></a><br /><td></div>
+    <div class="col"><td><a href="admincp.php?action=reports&amp;do=view"><img src="images/admin/report_system.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("REPORTS"); ?></a><br /><td></div>
+    <div class="col"><td><a href="admincp.php?action=rules&amp;do=view"><img src="images/admin/rules.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("RULES"); ?></a><br /><td></div>
+    <div class="col"><td><a href="admincp.php?action=sitelog"><img src="images/admin/site_log.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("SITELOG"); ?></a><br /><td></div>
+    <div class="col"><td><a href="teams-create.php"><img src="images/admin/teams.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("TEAMS"); ?></a><br /><td></div>
+    <div class="col"><td><a href="admincp.php?action=style"><img src="images/admin/themes.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("THEME_MANAGEMENT"); ?></a><br /><td></div>
+    <div class="col"><td><a href="admincp.php?action=categories&amp;do=view"><img src="images/admin/torrent_cats.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("TORRENT_CAT_VIEW"); ?></a><br /><td></div>
+    <div class="col"><td><a href="admincp.php?action=torrentlangs&amp;do=view"><img src="images/admin/torrent_lang.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("TORRENT_LANG"); ?></a><br /><td></div>
+    <div class="col"><td><a href="admincp.php?action=torrentmanage"><img src="images/admin/torrents.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("TORRENTS"); ?></a><br /><td></div>
+    <div class="col"><td><a href="admincp.php?action=groups&amp;do=view"><img src="images/admin/user_groups.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("USER_GROUPS_VIEW"); ?></a><br /><td></div>
+    <div class="col"><td><a href="admincp.php?action=warned"><img src="images/admin/warned_user.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("WARNED_USERS"); ?></a><br /><td></div>
+    <div class="col"><td><a href="admincp.php?action=whoswhere"><img src="images/admin/whos_where.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("WHOS_WHERE"); ?></a><br /><td></div>
+    <div class="col"><td><a href="admincp.php?action=censor"><img src="images/admin/word_censor.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("WORD_CENSOR"); ?></a><br /><td></div>
+    <div class="col"><td><a href="admincp.php?action=forum"><img src="images/admin/forums.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("FORUM_MANAGEMENT"); ?><br /></a><td></div>
+    <div class="col"><td><a href="admincp.php?action=users"><img src="images/admin/simple_user_search.png" border="0" width="32" height="32" alt="" /><br />Simple User Search<br /></a><td></div>  
+    <div class="col"><td><a href="admincp.php?action=privacylevel"><img src="images/admin/privacy_level.png" border="0" width="32" height="32" alt="" /><br />Privacy Level<br /></a><td></div>     
+    <div class="col"><td><a href="admincp.php?action=pendinginvite"><img src="images/admin/pending_invited_user.png" border="0" width="32" height="32" alt="" /><br />Pending Invited Users<br /></a><td></div>    
+    <div class="col"><td><a href="admincp.php?action=invited"><img src="images/admin/invited_user.png" border="0" width="32" height="32" alt="" /><br />Invited Users<br /></a><td></div>    
+    <div class="col"><td><a href="exception-view.php"><img src="images/admin/sql_error.png" border="0" width="32" height="32" alt="" /><br />SQL Error<br /></a><td></div>  
+</div>
 <?php
 	end_frame();
 }
