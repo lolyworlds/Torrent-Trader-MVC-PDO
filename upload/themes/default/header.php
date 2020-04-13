@@ -23,7 +23,7 @@
     <link rel="stylesheet" type="text/css" href="<?php echo $site_config["SITEURL"]; ?>/themes/default/theme.css" />
     <!-- JS -->
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.js" type="text/javascript"></script>
-    <script type="text/javascript" src="<?php echo $site_config["SITEURL"]; ?>/backend/java_klappe.js"></script>
+    <script type="text/javascript" src="<?php echo $site_config["SITEURL"]; ?>/helpers/java_klappe.js"></script>
     <!-- Style  -->
 </head>
 
@@ -37,21 +37,21 @@
         <div class='infobar'>
             <?php
                 if (!$CURUSER){
-                    echo "[<a href=\"account-login.php\"><font color='#fff'>".T_("LOGIN")."</font></a>]<b> ";
+                    echo "[<a href=\"/accountlogin\"><font color='#fff'>".T_("LOGIN")."</font></a>]<b> ";
                 }else{
                     print (T_("LOGGED_IN_AS").": ".class_user($CURUSER["username"]).""); 
-                    echo " [<a href=\"account-logout.php\"><font color='#fff'>".T_("LOGOUT")."</font></a>] ";
+                    echo " [<a href=\"/accountlogout\"><font color='#fff'>".T_("LOGOUT")."</font></a>] ";
                     if ($CURUSER["control_panel"]=="yes") {
-                        print("[<a href='admincp.php'><font color='#fff'>".T_("STAFFCP")."</font></a>] ");
+                        print("[<a href='/admincp'><font color='#fff'>".T_("STAFFCP")."</font></a>] ");
                     }
 
                     // check for new pm's
                     $arr = DB::run("SELECT COUNT(*) FROM messages WHERE receiver=" . $CURUSER["id"] . " and unread='yes' AND location IN ('in','both')")->fetch();
                     $unreadmail = $arr[0];
                     if ($unreadmail){
-                        print("[<a href='mailbox.php?inbox'><b><font color='#fff'>$unreadmail</font> ".P_("NEWPM", $unreadmail)."</b></a>]");  
+                        print("[<a href='/mailbox?inbox'><b><font color='#fff'>$unreadmail</font> ".P_("NEWPM", $unreadmail)."</b></a>]");  
                     }else{
-                        print("[<a href='mailbox.php'><font color='#fff'>".T_("YOUR_MESSAGES")."</font></a>] ");
+                        print("[<a href='/mailbox'><font color='#fff'>".T_("YOUR_MESSAGES")."</font></a>] ");
                     }   
                     //end check for pm's
                 }
@@ -67,11 +67,11 @@
         <div class='menu'>
             <ul id='nav-one' class='dropmenu'>
                 <li><a href="index.php"><?php echo T_("HOME");?></a></li>
-                <li><a href="forums.php"><?php echo T_("FORUMS");?></a></li>
-                <li><a href="torrents-upload.php"><?php echo T_("UPLOAD_TORRENT");?></a></li>
-                <li><a href="torrents.php"><?php echo T_("BROWSE_TORRENTS");?></a></li>
-                <li><a href="torrents-today.php"><?php echo T_("TODAYS_TORRENTS");?></a></li>
-                <li><a href="torrents-search.php"><?php echo T_("SEARCH_TORRENTS");?></a></li>
+                <li><a href="/forums"><?php echo T_("FORUMS");?></a></li>
+                <li><a href="torrentsupload"><?php echo T_("UPLOAD_TORRENT");?></a></li>
+                <li><a href="torrentsmain"><?php echo T_("BROWSE_TORRENTS");?></a></li>
+                <li><a href="torrentstoday"><?php echo T_("TODAYS_TORRENTS");?></a></li>
+                <li><a href="torrentssearch"><?php echo T_("SEARCH_TORRENTS");?></a></li>
             </ul>
         </div>
     </div>

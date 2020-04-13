@@ -21,7 +21,7 @@ if (!$site_config["MEMBERSONLY"] || $CURUSER) {
 		foreach ($rows as $row) { 
 				$char1 = 18; //cut length 
 				$smallname = htmlspecialchars(CutName($row["name"], $char1));
-				echo "<a href='torrents-details.php?id=$row[id]' title='".htmlspecialchars($row["name"])."'>$smallname</a><br /> - [S: " . number_format($row["seeders"]) . " - L: " . number_format($row["leechers"]) . "]<br /><br />\n";
+				echo "<a href='torrentsdetails?id=$row[id]' title='".htmlspecialchars($row["name"])."'>$smallname</a><br /> - [S: " . number_format($row["seeders"]) . " - L: " . number_format($row["leechers"]) . "]<br /><br />\n";
 		}
 
 } else {

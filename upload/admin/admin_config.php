@@ -7,7 +7,7 @@
  {          
      if ($do == 'save')
      {                             
-         #$file = new SplFileObject('backend/config.php', 'w');                                
+         #$file = new SplFileObject('helpers/config.php', 'w');                                
          #$file->fwrite('<?php ' . "\r\n\r\n" . '$site_config = ' . var_export((array)$site_config, true) . ';');
          write_log( '<pre>', print_r($_POST, true), '</pre>' );
          die;
@@ -104,7 +104,7 @@ jQuery(document).ready(function() {
 });
      </script>
 
-     <form id="dd-form" method="post" action="admincp.php?action=settings&amp;do=save">
+     <form id="dd-form" method="post" action="/admincp?action=settings&amp;do=save">
      <input type="hidden" name="sort_order" id="sort_order" value="<?php echo $site_config['torrenttable_columns']; ?>" />
      <table border="0" width="100%" cellpadding="3" cellspacing="3">
  

@@ -7,7 +7,7 @@ if ($action=="news" && $do=="view"){
 	navmenu();
 
 	begin_frame(T_("NEWS"));
-	echo "<center><a href='admincp.php?action=news&amp;do=add'><b>".T_("CP_NEWS_ADD_ITEM")."</b></a></center><br />";
+	echo "<center><a href='/admincp?action=news&amp;do=add'><b>".T_("CP_NEWS_ADD_ITEM")."</b></a></center><br />";
 
 	$res = DB::run("SELECT * FROM news ORDER BY added DESC");
 	if ($res->rowCount() > 0){
@@ -25,7 +25,7 @@ if ($action=="news" && $do=="view"){
 			if ($postername == "")
 				$by = "Unknown";
 			else
-				$by = "<a href='account-details.php?id=$userid'><b>$postername</b></a>";
+				$by = "<a href='/accountdetails?id=$userid'><b>$postername</b></a>";
 			
 			print("<table border='0' cellspacing='0' cellpadding='0'><tr><td>");
 			print("$added&nbsp;---&nbsp;by&nbsp;$by");
@@ -62,7 +62,7 @@ if ($action=="news" && $do=="takeadd"){
 
 	$afr = DB::run("INSERT INTO news (userid, added, body, title) VALUES (?,?,?,?)", [$CURUSER['id'], $added, $body, $title]);
 	if ($afr)
-		autolink("admincp.php?action=news&do=view", T_("CP_NEWS_ITEM_ADDED_SUCCESS"));
+		autolink("/admincp?action=news&do=view", T_("CP_NEWS_ITEM_ADDED_SUCCESS"));
 	else
 		show_error_msg(T_("ERROR"),T_("CP_NEWS_UNABLE_TO_ADD"),1);
 }
@@ -72,7 +72,7 @@ if ($action=="news" && $do=="add"){
 	navmenu();
 
 	begin_frame(T_("CP_NEWS_ADD"));
-	print("<center><form method='post' action='admincp.php' name='news'>\n");
+	print("<center><form method='post' action='/admincp' name='news'>\n");
 	print("<input type='hidden' name='action' value='news' />\n");
 	print("<input type='hidden' name='do' value='takeadd' />\n");
 
@@ -123,7 +123,7 @@ if ($action=="news" && $do=="edit"){
 		if ($returnto != "")
 			header("Location: $returnto");
 		else
-			autolink("admincp.php?action=news&do=view", T_("CP_NEWS_ITEM_WAS_EDITED_SUCCESS")); 
+			autolink("/admincp?action=news&do=view", T_("CP_NEWS_ITEM_WAS_EDITED_SUCCESS")); 
 	} else {
 		$returnto = htmlspecialchars($_GET['returnto']);
 		begin_frame(T_("CP_NEWS_EDIT"));
@@ -150,6 +150,6 @@ if ($action=="news" && $do=="delete"){
 	DB::run("DELETE FROM news WHERE id=?", [$newsid]);
     DB::run("DELETE FROM comments WHERE news =?", [$newsid]);
 	
-	autolink("admincp.php?action=news&do=view", T_("CP_NEWS_ITEM_DEL_SUCCESS"));
+	autolink("/admincp?action=news&do=view", T_("CP_NEWS_ITEM_DEL_SUCCESS"));
 }
 

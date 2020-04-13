@@ -30,10 +30,10 @@ function submenu($pages, $default, $prefix='', $class='submenu', $space=false)
    if (!$space)
    {
      if ((!$prefix && isset($_GET[$page])) || ($prefix && $_GET[$prefix] == $page)) $menu .= '<td style="width:'.floor(100/count($arr)).'%"><b>'.$name.'</b></td>';
-     else $menu .= '<td style="width:'.floor(100/count($arr)).'%"><a href="mailbox.php?'.$prefix.($prefix ? '=' : '').$page.'">'.$name.'</a></td>';
+     else $menu .= '<td style="width:'.floor(100/count($arr)).'%"><a href="/mailbox?'.$prefix.($prefix ? '=' : '').$page.'">'.$name.'</a></td>';
    } else {
      if ((!$prefix && isset($_GET[$page])) || ($prefix && $_GET[$prefix] == $page)) $menu .= "&nbsp;<b>$name</b>";
-     else $menu .= '&nbsp;<a href="mailbox.php?'.$prefix.($prefix ? '=' : '').$page.'">'.$name.'</a>';
+     else $menu .= '&nbsp;<a href="/mailbox?'.$prefix.($prefix ? '=' : '').$page.'">'.$name.'</a>';
    }
  }
  return $menu.($space ? "</p>" : "</tr></table>");

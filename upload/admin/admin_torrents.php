@@ -4,12 +4,12 @@
         
         if ($_POST["do"] == "delete") {
             if (!@count($_POST["torrentids"]))
-                  show_error_msg(T_("ERROR"), "Nothing selected click <a href='admincp.php?action=torrentmanage'>here</a> to go back.", 1);
+                  show_error_msg(T_("ERROR"), "Nothing selected click <a href='/admincp?action=torrentmanage'>here</a> to go back.", 1);
             foreach ($_POST["torrentids"] as $id) {
                 deletetorrent(intval($id));
                 write_log("Torrent ID $id was deleted by $CURUSER[username]");
             }
-            show_error_msg("Torrents Deleted", "Go <a href='admincp.php?action=torrentmanage'>back</a>?", 1);
+            show_error_msg("Torrents Deleted", "Go <a href='/admincp?action=torrentmanage'>back</a>?", 1);
         }
         
         $search = (!empty($_GET["search"])) ? htmlspecialchars(trim($_GET["search"])) : "";
@@ -18,7 +18,7 @@
         
         $count = get_row_count("torrents", $where);
         
-        list($pagertop, $pagerbottom, $limit) = pager(25, $count, "admincp.php?action=torrentmanage&amp;");
+        list($pagertop, $pagerbottom, $limit) = pager(25, $count, "/admincp?action=torrentmanage&amp;");
         
         $res = DB::run("SELECT id, name, seeders, leechers, visible, banned, external FROM torrents $where ORDER BY name $limit");
         
@@ -30,13 +30,13 @@
         ?>
 
         <center>
-        <form method='get' action='admincp.php'>
+        <form method='get' action='/admincp'>
         <input type='hidden' name='action' value='torrentmanage' />
         Search: <input type='text' name='search' value='<?php echo $search; ?>' size='30' />
         <input type='submit' value='Search' />
         </form>
 
-        <form id="myform" method='post' action='admincp.php?action=torrentmanage'>
+        <form id="myform" method='post' action='/admincp?action=torrentmanage'>
         <input type='hidden' name='do' value='delete' />
         <table cellpadding='5' cellspacing='3' width='100%' align='center' class='table_table'>
         <tr>
@@ -53,13 +53,13 @@
         <?php while ($row = $res->fetch(PDO::FETCH_LAZY)) { ?>
         
         <tr>
-            <td class='table_col1'><a href='torrents-details.php?id=<?php echo $row["id"]; ?>'><?php echo CutName(htmlspecialchars($row["name"]), 40); ?></a></td>
+            <td class='table_col1'><a href='torrentsdetails?id=<?php echo $row["id"]; ?>'><?php echo CutName(htmlspecialchars($row["name"]), 40); ?></a></td>
             <td class='table_col2'><?php echo $row["visible"]; ?></td>
             <td class='table_col1'><?php echo $row["banned"]; ?></td>
             <td class='table_col2'><?php echo number_format($row["seeders"]); ?></td>
             <td class='table_col1'><?php echo number_format($row["leechers"]); ?></td>
             <td class='table_col2'><?php echo $row["external"]; ?></td>
-            <td class='table_col1'><a href='torrents-edit.php?id=<?php echo $row["id"]; ?>&amp;returnto=<?php echo urlencode($_SERVER['REQUEST_URI']); ?>'>Edit</a></td>
+            <td class='table_col1'><a href='torrentsedit?id=<?php echo $row["id"]; ?>&amp;returnto=<?php echo urlencode($_SERVER['REQUEST_URI']); ?>'>Edit</a></td>
             <td class='table_col2' align='center'><input type='checkbox' name='torrentids[]' value='<?php echo $row["id"]; ?>' /></td>    
         </tr>
         

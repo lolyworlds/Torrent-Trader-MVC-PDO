@@ -59,10 +59,10 @@ if ($action == "ipbans") {
     if ($count == 0)
     print("<b>No Bans Found</b><br />\n");
     else {
-        list($pagertop, $pagerbottom, $limit) = pager(50, $count, "admincp.php?action=ipbans&amp;"); // 50 per page
+        list($pagertop, $pagerbottom, $limit) = pager(50, $count, "/admincp?action=ipbans&amp;"); // 50 per page
         echo $pagertop;
 
-        echo "<form id='ipbans' action='admincp.php?action=ipbans&amp;do=del' method='post'><table width='98%' cellspacing='0' cellpadding='5' align='center' class='table_table'>
+        echo "<form id='ipbans' action='/admincp?action=ipbans&amp;do=del' method='post'><table width='98%' cellspacing='0' cellpadding='5' align='center' class='table_table'>
         <tr>
             <th class='table_head'>".T_("DATE_ADDED")."</th>
             <th class='table_head'>First IP</th>
@@ -78,7 +78,7 @@ if ($action == "ipbans") {
                 <td align='center' class='table_col1'>".date('d/m/Y H:i:s', utc_to_tz_time($arr["added"]))."</td>
                 <td align='center' class='table_col2'>$arr[first]</td>
                 <td align='center' class='table_col1'>$arr[last]</td>
-                <td align='center' class='table_col2'><a href='account-details.php?id=$arr[addedby]'>$arr[username]</a></td>
+                <td align='center' class='table_col2'><a href='/accountdetails?id=$arr[addedby]'>$arr[username]</a></td>
                 <td align='center' class='table_col1'>$arr[comment]</td>
                 <td align='center' class='table_col2'><input type='checkbox' name='delids[]' value='$arr[id]' /></td>
             </tr>";
@@ -88,7 +88,7 @@ if ($action == "ipbans") {
     }
 
     echo "<br />";
-    print("<form method='post' action='admincp.php?action=ipbans&amp;do=add'>\n");
+    print("<form method='post' action='/admincp?action=ipbans&amp;do=add'>\n");
     print("<table cellspacing='0' cellpadding='5' align='center' class='table_table' width='98%'>\n");
     print("<tr><th class='table_head' align='center'>Add Ban</th></tr>\n");
     print("<tr><td class='table_col1' align='center'>First IP:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='text' name='first' size='40' /></td></tr>\n");

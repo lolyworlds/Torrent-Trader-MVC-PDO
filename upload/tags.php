@@ -1,5 +1,5 @@
 <?php
-require_once("backend/init.php");
+require_once("core/init.php");
 dbconn(false);
 
 function insert_tag($name, $description, $syntax, $example, $remarks)
@@ -18,7 +18,7 @@ function insert_tag($name, $description, $syntax, $example, $remarks)
 
 $test = $_POST["test"];
 ?>
-<script type="text/javascript" src="backend/java_klappe.js"></script>
+<script type="text/javascript" src="helpers/java_klappe.js"></script>
 <font face="arial">
 <p><?php echo T_("TAGS_MSG"); ?></p>
 

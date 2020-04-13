@@ -46,7 +46,7 @@ if ($action == "privacylevel")
         <td valign="top">
         <form id='sort' action=''>
         <b>Privacy Level:</b>
-        <select name="type" onchange="window.location='admincp.php?action=privacylevel&type='+this.options[this.selectedIndex].value">
+        <select name="type" onchange="window.location='/admincp?action=privacylevel&type='+this.options[this.selectedIndex].value">
         <option value="">Any</option>
         <option value="low" <?php echo ($_GET['type'] == "low" ? " selected='selected'" : ""); ?>>Low</option>
         <option value="normal" <?php echo ($_GET['type'] == "normal" ? " selected='selected'" : ""); ?>>Normal</option>
@@ -72,7 +72,7 @@ if ($action == "privacylevel")
     </tr></thead>
     <?php while ($row = $res->fetch(PDO::FETCH_ASSOC)): ?>
     <tbody><tr>
-        <td><a href="account-details.php?id=<?php echo $row["id"]; ?>"><?php echo class_user($row["username"]); ?></a></td>
+        <td><a href="/accountdetails?id=<?php echo $row["id"]; ?>"><?php echo class_user($row["username"]); ?></a></td>
         <td><?php echo get_user_class_name($row["class"]); ?></td>
         <td><?php echo $row["email"]; ?></td>
         <td><?php echo $row["ip"]; ?></td>

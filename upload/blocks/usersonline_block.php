@@ -21,7 +21,7 @@ if (!$rows) {
 		echo "<div id='uOnline' class='bMenu'><ul>\n";;
 	for ($i = 0, $cnt = count($rows), $n = $cnt - 1; $i < $cnt; $i++) {
 		$row = &$rows[$i];
-		echo "<li><a href='account-details.php?id=$row[id]'>" . class_user($row["username"]) . "</a>".($i < $n ? ", " : "")."</li>\n";;
+		echo "<li><a href='/accountdetails?id=$row[id]'>" . class_user($row["username"]) . "</a>".($i < $n ? ", " : "")."</li>\n";;
 	}
 		echo "</ul></div>\n";;
 }

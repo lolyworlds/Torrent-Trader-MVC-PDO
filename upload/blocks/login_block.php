@@ -3,7 +3,7 @@
 if (!$CURUSER) {
 	begin_block(T_("LOGIN"));
 ?>
-<form method="post" action="account-login.php">
+<form method="post" action="/accountlogin">
 <table border="0" width="100%">
 	<tr><td>
 		<table border="0" align="center">
@@ -22,7 +22,7 @@ if (!$CURUSER) {
 		</td>
 		</tr>
 	<tr>
-<td align="center">[<a href="account-signup.php"><?php echo T_("SIGNUP");?></a>]<br />[<a href="account-recover.php"><?php echo T_("RECOVER_ACCOUNT");?></a>]</td> </tr>
+<td align="center">[<a href="/accountsignup"><?php echo T_("SIGNUP");?></a>]<br />[<a href="/accountrecover"><?php echo T_("RECOVER_ACCOUNT");?></a>]</td> </tr>
 	</table>
     </form> 
 <?php
@@ -53,8 +53,8 @@ begin_block(class_user($CURUSER["username"]));
 ?>
 
 
-<center><a href="account.php"><?php echo T_("ACCOUNT"); ?></a> <br /> 
-<?php if ($CURUSER["control_panel"]=="yes") {print("<a href=\"admincp.php\">".T_("STAFFCP")."</a>");}?>
+<center><a href="/account"><?php echo T_("ACCOUNT"); ?></a> <br /> 
+<?php if ($CURUSER["control_panel"]=="yes") {print("<a href=\"/admincp\">".T_("STAFFCP")."</a>");}?>
 </center>
 <?php
 end_block();

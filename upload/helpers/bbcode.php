@@ -154,7 +154,7 @@ switch(tag)
       </tr>
       <tr>
           <td width="26"><a href="javascript:SmileIT(':gigg','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="images/smilies/giggle.png" border="0" alt=':|' title=':|' /></a></td>
-          <td width="26"><a href="javascript:SmileIT(':rofl','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="images/smilies/roflamo.png" border="0" alt='O:-D' title='0:-D' /></a></td>
+          <td width="26"><a href="javascript:SmileIT(':rofl','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="images/smilies/roflmao.png" border="0" alt='O:-D' title='0:-D' /></a></td>
           <td width="26"><a href="javascript:SmileIT(':slep','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="images/smilies/sleep.png" border="0" alt=':-@' title=':-@' /></a></td>
           <td width="26"><a href="javascript:SmileIT(':thum','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="images/smilies/thumbsup.png" border="0" alt=':o)' title=':o)' /></a></td>
       </tr>

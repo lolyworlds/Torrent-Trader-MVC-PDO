@@ -74,7 +74,7 @@ if ($action == "cheats") {
 		 
 		 echo "<tr>";
 		  echo "<td align='center class='table_col1'>$counter.</td>";
-		  echo "<td class='table_col2'><a href='account-details.php?id=$id'>$username</a></td>";
+		  echo "<td class='table_col2'><a href='/accountdetails?id=$id'>$username</a></td>";
 		  echo "<td class='table_col1'>" . mksize($uploaded). "</td>";
 		  echo "<td class='table_col2'>" . mksize($downloaded) . "</td>";
 		  echo "<td class='table_col1'>$ratio</td>";
@@ -83,7 +83,7 @@ if ($action == "cheats") {
 
 		  echo "<td class='table_col1'>" . mksize($dayUpload) . "</td>";
 
-		  echo "<td align='center' class='table_col2'><a href='mailbox.php?compose&amp;id=$id'>PM</a></td>";
+		  echo "<td align='center' class='table_col2'><a href='/mailbox?compose&amp;id=$id'>PM</a></td>";
 		  echo "<td class='table_col1'>" . $joindate . "</td>";
 		 echo "</tr>";
 
@@ -100,7 +100,7 @@ if ($action == "cheats") {
 
 	}else{
 	begin_frame("Possible Cheater Detection");?>
-	<center><form action='admincp.php?action=cheats' method='post'>
+	<center><form action='/admincp?action=cheats' method='post'>
 		Number of days joined: <input type='text' size='4' maxlength='4' name='daysago' /> Days<br /><br />
 		MB Uploaded: <input type='text' size='6' maxlength='6' name='megabts' /> MB<br />
 		<input type='submit' value='<?php echo T_("SUBMIT"); ?>' />

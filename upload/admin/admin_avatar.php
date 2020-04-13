@@ -10,7 +10,7 @@ if ($action=="avatars"){
 	$count = $query->fetch(PDO::FETCH_LAZY);
 	$count = $count[0];
 
-	list($pagertop, $pagerbottom, $limit) = pager(50, $count, 'admincp.php?action=avatars&amp;');
+	list($pagertop, $pagerbottom, $limit) = pager(50, $count, '/admincp?action=avatars&amp;');
 	echo ($pagertop);
 	?>
 	<table border="0" class="table_table" align="center">
@@ -23,7 +23,7 @@ if ($action=="avatars"){
 	$res = DB::run($query);
 
 	while($arr = $res->fetch(PDO::FETCH_ASSOC)){
-			echo("<tr><td class='table_col1'><b><a href=\"account-details.php?id=" . $arr['id'] . "\">" . class_user($arr['username']) . "</a></b></td><td class='table_col2'>");
+			echo("<tr><td class='table_col1'><b><a href=\"/accountdetails?id=" . $arr['id'] . "\">" . class_user($arr['username']) . "</a></b></td><td class='table_col2'>");
 
 			if (!$arr['avatar'])
 				echo "<img width=\"80\" src='images/default_avatar.png' alt='' /></td></tr>";

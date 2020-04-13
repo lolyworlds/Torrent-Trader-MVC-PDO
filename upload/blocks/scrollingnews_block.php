@@ -77,7 +77,7 @@ if ($site_config['NEWSON']){ //check news is turned on first
 	<?php
 	if ($res->rowCount()){
 		while($array = $res->fetch(PDO::FETCH_ASSOC)){
-			print("<a href='comments.php?type=news&amp;id=". $array['id'] . "'><b>". $array['title'] . "</b></a><br /><b>".T_("POSTED").":</b> " . gmdate("d-M-y", utc_to_tz_time($array["added"])) . "<br /><br />");
+			print("<a href='/comments?type=news&amp;id=". $array['id'] . "'><b>". $array['title'] . "</b></a><br /><b>".T_("POSTED").":</b> " . gmdate("d-M-y", utc_to_tz_time($array["added"])) . "<br /><br />");
 		}
 	}else{
 		echo T_("NO_NEWS");

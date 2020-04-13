@@ -10,7 +10,7 @@ if ($action=="bannedtorrents"){
 
 	$perpage = 50;
 
-	list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, "admincp.php?action=bannedtorrents&amp;");
+	list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, "/admincp?action=bannedtorrents&amp;");
 
 	begin_frame("Banned ".T_("TORRENT_MANAGEMENT"));
 
@@ -37,7 +37,7 @@ if ($action=="bannedtorrents"){
 		$char1 = 35; //cut name length
 		$smallname = CutName(htmlspecialchars($row["name"]), $char1);
 
-		echo "<tr><td class='table_col1'>" . $smallname . "</td><td class='table_col2'>$row[visible]</td><td class='table_col1'>".number_format($row["seeders"])."</td><td class='table_col2'>".number_format($row["leechers"])."</td><td class='table_col1'>$row[external]</td><td class='table_col2'><a href=\"torrents-edit.php?returnto=" . urlencode($_SERVER["REQUEST_URI"]) . "&amp;id=" . $row["id"] . "\"><font size='1' face='verdana'>EDIT</font></a></td></tr>\n";
+		echo "<tr><td class='table_col1'>" . $smallname . "</td><td class='table_col2'>$row[visible]</td><td class='table_col1'>".number_format($row["seeders"])."</td><td class='table_col2'>".number_format($row["leechers"])."</td><td class='table_col1'>$row[external]</td><td class='table_col2'><a href=\"torrentsedit?returnto=" . urlencode($_SERVER["REQUEST_URI"]) . "&amp;id=" . $row["id"] . "\"><font size='1' face='verdana'>EDIT</font></a></td></tr>\n";
 	}
 
 	echo "</table>\n";

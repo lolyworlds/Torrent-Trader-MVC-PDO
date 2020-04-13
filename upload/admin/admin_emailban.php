@@ -33,7 +33,7 @@ if ($action=="emailbans"){
 
 	begin_frame(T_("EMAILS_OR_DOMAINS_BANS"));
 	print(T_("EMAIL_BANS_INFO") . "<br /><br /><br /><b>".T_("ADD_EMAIL_BANS")."</b>\n");
-	print("<form method='post' action='admincp.php?action=emailbans&amp;add=1'>\n"); 
+	print("<form method='post' action='/admincp?action=emailbans&amp;add=1'>\n"); 
     print("<table border='0' cellspacing='0' cellpadding='5' align='center'>\n");
 	print("<tr><td align='right'>".T_("EMAIL_ADDRESS") . T_("DOMAIN_BANS")."</td><td><input type='text' name='mail_domain' size='40' /></td></tr>\n");
 	print("<tr><td align='right'>".T_("ADDCOMMENT")."</td><td><input type='text' name='comment' size='40' /></td></tr>\n");
@@ -61,7 +61,7 @@ if ($action=="emailbans"){
 
 			$r4 = DB::run("SELECT username,id FROM users WHERE id=$arr[addedby]");
 			$a4 = $r4->fetch(PDO::FETCH_ASSOC);
-			print("<tr><td class='table_col1'>".utc_to_tz($arr['added'])."</td><td align='left' class='table_col2'>$arr[mail_domain]</td><td align='left' class='table_col1'><a href='account-details.php?id=$a4[id]'>$a4[username]"."</a></td><td align='left' class='table_col2'>$arr[comment]</td><td class='table_col1'><a href='admincp.php?action=emailbans&amp;remove=$arr[id]'>Remove</a></td></tr>\n");
+			print("<tr><td class='table_col1'>".utc_to_tz($arr['added'])."</td><td align='left' class='table_col2'>$arr[mail_domain]</td><td align='left' class='table_col1'><a href='/accountdetails?id=$a4[id]'>$a4[username]"."</a></td><td align='left' class='table_col2'>$arr[comment]</td><td class='table_col1'><a href='/admincp?action=emailbans&amp;remove=$arr[id]'>Remove</a></td></tr>\n");
 		}
 
 		print("</table>\n");

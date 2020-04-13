@@ -5,7 +5,7 @@
 if ($action == "users")
 {
     if ($CURUSER['delete_users'] == 'no' || $CURUSER['delete_torrents'] == 'no')
-        autolink("admincp.php", "You do not have permission to be here.");
+        autolink("/admincp", "You do not have permission to be here.");
     
     if ($do == "del") 
     {
@@ -31,7 +31,7 @@ if ($action == "users")
             }  
         } 
 
-        autolink("admincp.php?action=users", "Entries Deleted");
+        autolink("/admincp?action=users", "Entries Deleted");
     }
     
     $where = null;
@@ -46,7 +46,7 @@ if ($action == "users")
 
     $count = get_row_count("users", "WHERE enabled = 'yes' AND status = 'confirmed' $where");
     
-    list($pagertop, $pagerbottom, $limit) = pager(25, $count, 'admincp.php?action=users&amp;');  
+    list($pagertop, $pagerbottom, $limit) = pager(25, $count, '/admincp?action=users&amp;');  
                                                                      
     $res = DB::run("SELECT id, username, class, email, ip, added, last_access FROM users WHERE enabled = 'yes' AND status = 'confirmed' $where ORDER BY username DESC $limit");
     
@@ -62,7 +62,7 @@ if ($action == "users")
     redefining your search.
     
     <br />
-    <form method="get" action="admincp.php">
+    <form method="get" action="/admincp">
     <input type="hidden" name="action" value="users" />
     Search: <input type="text" name="search" size="30" value="<?php echo htmlspecialchars( $_GET['search'] ); ?>" />
     <input type="submit" value="Search" />
@@ -71,7 +71,7 @@ if ($action == "users")
 
     <?php if ($count > 0): ?>
     <br />
-    <form id="usersearch" method="post" action="admincp.php?action=users">
+    <form id="usersearch" method="post" action="/admincp?action=users">
     <input type="hidden" name="do" value="del" />
     <table border="0" cellpadding="3" cellspacing="0" width="100%" align="center" class="table_table">
     <tr>
@@ -85,7 +85,7 @@ if ($action == "users")
     </tr>
     <?php while ($row = $res->fetch(PDO::FETCH_ASSOC)): ?>
     <tr>
-        <td class="table_col1" align="center"><a href="account-details.php?id=<?php echo $row["id"]; ?>"><?php echo class_user($row["username"]); ?></a></td>
+        <td class="table_col1" align="center"><a href="/accountdetails?id=<?php echo $row["id"]; ?>"><?php echo class_user($row["username"]); ?></a></td>
         <td class="table_col2" align="center"><?php echo get_user_class_name($row["class"]); ?></td>
         <td class="table_col1" align="center"><?php echo $row["email"]; ?></td>
         <td class="table_col2" align="center"><?php echo $row["ip"]; ?></td>

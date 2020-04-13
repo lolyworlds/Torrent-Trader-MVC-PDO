@@ -17,7 +17,7 @@ if (!$site_config["MEMBERSONLY"] || $CURUSER) {
 		foreach ($latestuploadsrecords as $row) { 
 			$char1 = 18; //cut length 
 			$smallname = htmlspecialchars(CutName($row["name"], $char1));
-			echo "<a href='torrents-details.php?id=$row[id]' title='".htmlspecialchars($row["name"])."'>$smallname</a><br />\n";
+			echo "<a href='torrentsdetails?id=$row[id]' title='".htmlspecialchars($row["name"])."'>$smallname</a><br />\n";
 			echo "- [".T_("SIZE").": ".mksize($row["size"])."]<br /><br />\n";
 		}
 	} else {

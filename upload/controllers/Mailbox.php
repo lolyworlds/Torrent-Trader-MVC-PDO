@@ -88,7 +88,7 @@ if (isset($_POST['send']) || isset($_POST['draft']) || isset($_POST['template'])
                 if (strpos($user['notifs'], '[pm]') !== false) {
                     $cusername = $CURUSER["username"];
 
-                    $body = "You have received a PM from ".$cusername."\n\nYou can use the URL below to view the message (you may have to login).\n\n    ".$site_config['SITEURL']."//mailbox\n\n".$site_config['SITENAME']."";
+                    $body = "You have received a PM from ".$cusername."\n\nYou can use the URL below to view the message (you may have to login).\n\n    ".$site_config['SITEURL']."/mailbox\n\n".$site_config['SITENAME']."";
 
                     sendmail($user["email"], "You have received a PM from $cusername", $body, "From: $site_config[SITEEMAIL]", "-f$site_config[SITEEMAIL]");
                 }

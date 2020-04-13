@@ -27,13 +27,13 @@ if ($action=="masspm"){
 		}
 
 		write_log("A Mass PM was sent by ($CURUSER[username])");
-		autolink("admincp.php?action=masspm", T_("SUCCESS"),"Mass PM Sent!");
+		autolink("/admincp?action=masspm", T_("SUCCESS"),"Mass PM Sent!");
 		die;
 	}
 
 	begin_frame("Mass Private Message");
     
-    print("<form name='masspm' method='post' action='admincp.php?action=masspm&amp;send=1'>\n"); 
+    print("<form name='masspm' method='post' action='/admincp?action=masspm&amp;send=1'>\n"); 
 	print("<table border='0' cellspacing='0' cellpadding='5' align='center' width='90%'>\n");
 	
 

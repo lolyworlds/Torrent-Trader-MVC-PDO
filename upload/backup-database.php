@@ -1,5 +1,5 @@
 <?php
-require_once("backend/init.php");
+require_once("core/init.php");
 
 dbconn();
 
@@ -153,9 +153,9 @@ $return = "";
 
 // lets redirect still
 if ($compression) {
-    autolink("admincp.php?action=backups", "Has encountered a error during the backup.<br><br>");
+    autolink("/admincp?action=backups", "Has encountered a error during the backup.<br><br>");
 } else {
-    autolink("admincp.php?action=backups", "BackUp Complete.<br><br>");
+    autolink("/admincp?action=backups", "BackUp Complete.<br><br>");
 }
 
 

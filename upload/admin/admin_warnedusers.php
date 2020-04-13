@@ -27,12 +27,12 @@ if ($action == "warned")
         }
         
         
-        autolink("admincp.php?action=warned", "Entries Confirmed");
+        autolink("/admincp?action=warned", "Entries Confirmed");
     }
     
     $count = get_row_count("users", "WHERE enabled = 'yes' AND status = 'confirmed' AND warned = 'yes'");
     
-    list($pagertop, $pagerbottom, $limit) = pager(25, $count, 'admincp.php?action=warned&amp;');
+    list($pagertop, $pagerbottom, $limit) = pager(25, $count, '/admincp?action=warned&amp;');
     
     $res = DB::run("SELECT `id`, `username`, `class`, `added`, `last_access` FROM `users` WHERE `enabled` = 'yes' AND `status` = 'confirmed' AND `warned` = 'yes' ORDER BY `added` DESC $limit");
 
@@ -50,7 +50,7 @@ if ($action == "warned")
     <br />
     <?php if ($count > 0): ?>
     <br />
-    <form id="warned" method="post" action="admincp.php?action=warned&amp;do=delete">
+    <form id="warned" method="post" action="/admincp?action=warned&amp;do=delete">
     <table cellpadding="3" cellspacing="0" width="100%" align="center" class="table_table">
     <tr>
         <th class="table_head">Username</th>
@@ -62,11 +62,11 @@ if ($action == "warned")
     </tr>
     <?php while ($row = $res->fetch(PDO::FETCH_ASSOC)): ?>
     <tr>
-        <td class="table_col1" align="center"><a href="account-details.php?id=<?php echo $row["id"]; ?>"><?php echo class_user($row["username"]); ?></a></td>
+        <td class="table_col1" align="center"><a href="/accountdetails?id=<?php echo $row["id"]; ?>"><?php echo class_user($row["username"]); ?></a></td>
         <td class="table_col2" align="center"><?php echo get_user_class_name($row["class"]); ?></td>  
         <td class="table_col1" align="center"><?php echo utc_to_tz($row["added"]); ?></td>
         <td class="table_col2" align="center"><?php echo utc_to_tz($row["last_access"]); ?></td>
-        <td class="table_col1" align="center"><a href="account-details.php?id=<?php echo $row["id"]; ?>#warnings"><?php echo number_format(get_row_count("warnings", "WHERE userid = '$row[id]' AND active = 'yes'")); ?></a></td>
+        <td class="table_col1" align="center"><a href="/accountdetails?id=<?php echo $row["id"]; ?>#warnings"><?php echo number_format(get_row_count("warnings", "WHERE userid = '$row[id]' AND active = 'yes'")); ?></a></td>
         <td class="table_col2" align="center"><input type="checkbox" name="warned[]" value="<?php echo $row["id"]; ?>" /></td>
     </tr>
     <?php endwhile; ?>

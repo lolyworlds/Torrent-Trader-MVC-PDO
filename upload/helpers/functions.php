@@ -390,7 +390,7 @@ function gmtime() {
 function loggedinonly() {
 	global $CURUSER;
 	if (!$CURUSER) {
-		header("Refresh: 0; url=account-login.php?returnto=" . urlencode($_SERVER["REQUEST_URI"]));
+		header("Refresh: 0; url=/accountlogin?returnto=" . urlencode($_SERVER["REQUEST_URI"]));
 		exit();
 	}
 }
@@ -860,7 +860,7 @@ $wait = '';
                 case 'category':
                     print("<td class='ttable_col$x' align='center' valign='middle'>");
                     if (!empty($row["cat_name"])) {
-                        print("<a href=\"torrents.php?cat=" . $row["category"] . "\">");
+                        print("<a href=\"torrentsmain?cat=" . $row["category"] . "\">");
                         if (!empty($row["cat_pic"]) && $row["cat_pic"] != "")
                             print("<img border=\"0\"src=\"" . $site_config['SITEURL'] . "/images/categories/" . $row["cat_pic"] . "\" alt=\"" . $row["cat_name"] . "\" />");
                         else
@@ -884,10 +884,10 @@ $wait = '';
 
                     if ($row["freeleech"] == 1)
                         $dispname .= " <img src='images/free.gif' border='0' alt='' />";
-                    print("<td class='ttable_col$x' nowrap='nowrap'>".(count($expandrows)?"<a href=\"javascript: klappe_torrent('t".$row['id']."')\"><img border=\"0\" src=\"".$site_config["SITEURL"]."/images/plus.gif\" id=\"pict".$row['id']."\" alt=\"Show/Hide\" class=\"showthecross\" /></a>":"")."&nbsp;<a title=\"".$row["name"]."\" href=\"torrents-details.php?id=$id&amp;hit=1\">$dispname</a></td>");
+                    print("<td class='ttable_col$x' nowrap='nowrap'>".(count($expandrows)?"<a href=\"javascript: klappe_torrent('t".$row['id']."')\"><img border=\"0\" src=\"".$site_config["SITEURL"]."/images/plus.gif\" id=\"pict".$row['id']."\" alt=\"Show/Hide\" class=\"showthecross\" /></a>":"")."&nbsp;<a title=\"".$row["name"]."\" href=\"torrentsdetails?id=$id&amp;hit=1\">$dispname</a></td>");
                     break;
                 case 'dl':
-                    print("<td class='ttable_col$x' align='center'><a href=\"download.php?id=$id&amp;name=" . rawurlencode($row["filename"]) . "\"><img src='" . $site_config['SITEURL'] . "/images/icon_download.gif' border='0' alt=\"Download .torrent\" /></a></td>");
+                    print("<td class='ttable_col$x' align='center'><a href=\"/download?id=$id&amp;name=" . rawurlencode($row["filename"]) . "\"><img src='" . $site_config['SITEURL'] . "/images/icon_download.gif' border='0' alt=\"Download .torrent\" /></a></td>");
                     break;
 					case 'magnet':
 					$magnet = DB::run("SELECT info_hash FROM torrents WHERE id=?", [$id])->fetch();
@@ -898,17 +898,17 @@ $wait = '';
                     if (($row["anon"] == "yes" || $row["privacy"] == "strong") && $CURUSER["id"] != $row["owner"] && $CURUSER["edit_torrents"] != "yes")
                         echo "Anonymous";
                     elseif ($row["username"])
-                        echo "<a href='account-details.php?id=$row[owner]'>".class_user($row['username'])."</a>";
+                        echo "<a href='/accountdetails?id=$row[owner]'>".class_user($row['username'])."</a>";
                     else
                         echo "Unknown";
                     echo "</td>";
                     break;
                 case 'comments':
-                    print("<td class='ttable_col$x' align='center'><font size='1' face='verdana'><a href='comments.php?type=torrent&amp;id=$id'>" . number_format($row["comments"]) . "</a></font></td>\n");
+                    print("<td class='ttable_col$x' align='center'><font size='1' face='verdana'><a href='/comments?type=torrent&amp;id=$id'>" . number_format($row["comments"]) . "</a></font></td>\n");
                     break;
                 case 'nfo':
                     if ($row["nfo"] == "yes")
-                        print("<td class='ttable_col$x' align='center'><a href='nfo-view.php?id=$row[id]'><img src='" . $site_config['SITEURL'] . "/images/icon_nfo.gif' border='0' alt='View NFO' /></a></td>");
+                        print("<td class='ttable_col$x' align='center'><a href='/nfoview?id=$row[id]'><img src='" . $site_config['SITEURL'] . "/images/icon_nfo.gif' border='0' alt='View NFO' /></a></td>");
                     else
                         print("<td class='ttable_col$x' align='center'>-</td>");
                     break;
@@ -952,7 +952,7 @@ $wait = '';
                         $elapsed = floor((gmtime() - strtotime($row["added"])) / 3600);
                         if ($elapsed < $wait && $row["external"] != "yes") {
                             $color = dechex(floor(127*($wait - $elapsed)/48 + 128)*65536);
-                            print("<td class='ttable_col$x' align='center'><a href=\"faq.php#section46\"><font color=\"$color\">" . number_format($wait - $elapsed) . " h</font></a></td>\n");
+                            print("<td class='ttable_col$x' align='center'><a href=\"/faq#section46\"><font color=\"$color\">" . number_format($wait - $elapsed) . " h</font></a></td>\n");
                         } else
                             print("<td class='ttable_col$x' align='center'>--</td>\n");
                     }
@@ -979,7 +979,7 @@ $wait = '';
             $elapsed = floor((gmtime() - strtotime($row["added"])) / 3600);
             if ($elapsed < $wait && $row["external"] != "yes") {
                 $color = dechex(floor(127*($wait - $elapsed)/48 + 128)*65536);
-                print("<td class='ttable_col$x' align='center'><a href=\"faq.php\"><font color=\"$color\">" . number_format($wait - $elapsed) . " h</font></a></td>\n");
+                print("<td class='ttable_col$x' align='center'><a href=\"/faq\"><font color=\"$color\">" . number_format($wait - $elapsed) . " h</font></a></td>\n");
             } else
                 print("<td class='ttable_col$x' align='center'>--</td>\n");
             $colspan++;
@@ -1144,22 +1144,22 @@ function commenttable($res, $type = null) {
 
         $edit = null;
         if ($type == "torrent" && $CURUSER["edit_torrents"] == "yes" || $type == "news" && $CURUSER["edit_news"] == "yes" || $CURUSER['id'] == $row['user'])
-            $edit = '[<a href="comments.php?id='.$row["id"].'&amp;type='.$type.'&amp;edit=1">Edit</a>]&nbsp;';
+            $edit = '[<a href="/comments?id='.$row["id"].'&amp;type='.$type.'&amp;edit=1">Edit</a>]&nbsp;';
 
         $delete = null;
         if ($type == "torrent" && $CURUSER["delete_torrents"] == "yes" || $type == "news" && $CURUSER["delete_news"] == "yes")
-            $delete = '[<a href="comments.php?id='.$row["id"].'&amp;type='.$type.'&amp;delete=1">Delete</a>]&nbsp;';
+            $delete = '[<a href="/comments?id='.$row["id"].'&amp;type='.$type.'&amp;delete=1">Delete</a>]&nbsp;';
 
         print('<div class="f-post f-border"><table cellspacing="0" width="100%">');
         print('<tr class="p-title">');
         print('<th align="center" width="150"></th>');
-        print('<th align="right">' . $edit . $delete . '[<a href="report.php?comment='.$row["id"].'">Report</a>] Posted: '.date("d-m-Y \\a\\t H:i:s", utc_to_tz_time($row["added"])).'<a id="comment'.$row["id"].'"></a></th>');
+        print('<th align="right">' . $edit . $delete . '[<a href="/report?comment='.$row["id"].'">Report</a>] Posted: '.date("d-m-Y \\a\\t H:i:s", utc_to_tz_time($row["added"])).'<a id="comment'.$row["id"].'"></a></th>');
         print('</tr>');
         print('<tr valign="top">');
         if ($CURUSER['edit_users'] == 'no' && $privacylevel == 'strong')
-            print('<td class="f-border comment-details" align="left" width="150"><center><b>'.$postername.'</b><br /><i>'.$title.'</i><br /><img width="80" height="80" src="'.$avatar.'" alt="" /><br /><br />Uploaded: ---<br />Downloaded: ---<br />Ratio: ---<br /><br /><a href="account-details.php?id='.$row["user"].'"><img src="themes/'.$THEME.'/forums/icon_profile.png" border="" alt="" /></a> <a href="mailbox.php?compose&amp;id='.$row["user"].'"><img src="themes/'.$THEME.'/forums/icon_pm.png" border="0" alt="" /></a></center></td>');
+            print('<td class="f-border comment-details" align="left" width="150"><center><b>'.$postername.'</b><br /><i>'.$title.'</i><br /><img width="80" height="80" src="'.$avatar.'" alt="" /><br /><br />Uploaded: ---<br />Downloaded: ---<br />Ratio: ---<br /><br /><a href="/accountdetails?id='.$row["user"].'"><img src="themes/'.$THEME.'/forums/icon_profile.png" border="" alt="" /></a> <a href="/mailbox?compose&amp;id='.$row["user"].'"><img src="themes/'.$THEME.'/forums/icon_pm.png" border="0" alt="" /></a></center></td>');
         else
-            print('<td class="f-border comment-details" align="left" width="150"><center><b>'.$postername.'</b><br /><i>'.$title.'</i><br /><img width="80" height="80" src="'.$avatar.'" alt="" /><br /><br />Uploaded: '.$useruploaded.'<br />Downloaded: '.$userdownloaded.'<br />Ratio: '.$userratio.'<br /><br /><a href="account-details.php?id='.$row["user"].'"><img src="themes/'.$THEME.'/forums/icon_profile.png" border="0" alt="" /></a> <a href="mailbox.php?compose&amp;id='.$row["user"].'"><img src="themes/'.$THEME.'/forums/icon_pm.png" border="0" alt="" /></a></center></td>');
+            print('<td class="f-border comment-details" align="left" width="150"><center><b>'.$postername.'</b><br /><i>'.$title.'</i><br /><img width="80" height="80" src="'.$avatar.'" alt="" /><br /><br />Uploaded: '.$useruploaded.'<br />Downloaded: '.$userdownloaded.'<br />Ratio: '.$userratio.'<br /><br /><a href="/accountdetails?id='.$row["user"].'"><img src="themes/'.$THEME.'/forums/icon_profile.png" border="0" alt="" /></a> <a href="/mailbox?compose&amp;id='.$row["user"].'"><img src="themes/'.$THEME.'/forums/icon_pm.png" border="0" alt="" /></a></center></td>');
         print('<td class="f-border comment">'.$commenttext.'<hr />'.$usersignature.'</td>');
         print('</tr>');
         print('</table></div>');
@@ -1172,7 +1172,7 @@ function where ($scriptname = "index", $userid, $update=1){
 		die;
 	if (preg_match("/torrents-details/i", $scriptname))
 		$where = "Browsing Torrents Details (ID: $_GET[id])...";
-	elseif (preg_match("/torrents.php/i", $scriptname))
+	elseif (preg_match("/torrentsmain/i", $scriptname))
 		$where = "Browsing Torrents...";
 	elseif (preg_match("/account-details/i", $scriptname))
 		$where = "Browsing Account Details (ID: $_GET[id])...";

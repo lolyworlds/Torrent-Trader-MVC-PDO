@@ -77,12 +77,12 @@ if ($action == "usersearch") {
 			respectively, as well as linking to the history page.\n
 			</td></tr></table><br /><br />\n";
 	} else {
-		echo "<p align='center'>[<a href='admincp.php?action=usersearch&amp;h=1'>Instructions</a>]";
-		echo "&nbsp;-&nbsp;[<a href='admincp.php?action=usersearch'>Reset</a>]</p>\n";
+		echo "<p align='center'>[<a href='/admincp?action=usersearch&amp;h=1'>Instructions</a>]";
+		echo "&nbsp;-&nbsp;[<a href='/admincp?action=usersearch'>Reset</a>]</p>\n";
 	}
 ?>
     <br />
-	<form method="get" action="admincp.php">
+	<form method="get" action="/admincp">
 	<input type="hidden" name="action" value="usersearch" />
 	<table border="0" class="table_table" cellspacing="0" cellpadding="0" width="100%">
     <tr>
@@ -617,7 +617,7 @@ if ($action == "usersearch") {
 		}
 		$from_is = "users AS u".$join_is;
 		$distinct = isset($distinct)?$distinct:"";
-        # To Avoid Confusion we skip invite_* which are invited users which haven't confirmed yet, visit admincp.php?action=pendinginvited
+        # To Avoid Confusion we skip invite_* which are invited users which haven't confirmed yet, visit /admincp?action=pendinginvited
         $where_is .= (isset($where_is))?" AND ":"";   
         $where_is .= "u.username NOT LIKE '%invite_%'";
         
@@ -630,7 +630,7 @@ if ($action == "usersearch") {
 		$count = DB::run($queryc, $params)->fetchColumn();
 		$q = isset($q)?($q."&amp;"):"";
 		$perpage = 25;
-		list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, "admincp.php?action=usersearch&amp;$q");
+		list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, "/admincp?action=usersearch&amp;$q");
 		$query .= $limit;
 		$res = DB::run($query, $params)->fetchAll();
 
@@ -640,7 +640,7 @@ if ($action == "usersearch") {
 			if ($count > $perpage) {
 				echo $pagertop;
 			}
-            echo "<form action='admincp.php?action=usersearch&amp;do=warndisable' method='post'>";
+            echo "<form action='/admincp?action=usersearch&amp;do=warndisable' method='post'>";
 			echo "<table border='0' class='table_table' cellspacing='0' cellpadding='0' width='100%'>\n";
 			echo "<tr><th class='table_head'>".T_("NAME")."</th>
 			<th class='table_head'>IP</th>
@@ -675,7 +675,7 @@ if ($action == "usersearch") {
 			$auxres = DB::run("SELECT COUNT(id) FROM comments WHERE user = ".$user['id']);
 			$n = $auxres->fetch();
 			$n_comments = $n[0];
-			echo "<tr><td class='table_col1' align='center'><b><a href='account-details.php?id=$user[id]'>" . class_user($user['username']) . "</a></b></td>" .
+			echo "<tr><td class='table_col1' align='center'><b><a href='/accountdetails?id=$user[id]'>" . class_user($user['username']) . "</a></b></td>" .
 				"<td class='table_col2' align='center'>" . $ipstr . "</td><td class='table_col1' align='center'>" . $user['email'] . "</td>".
 				"<td class='table_col2' align='center'>" . utc_to_tz($user['added']) . "</td>".
 				"<td class='table_col1' align='center'>" . $user['last_access'] . "</td>".

@@ -7,7 +7,7 @@ if ($action=="backups" && $do=="delete"){
    $delete_error = false;
    if (!unlink('backups/'.$filename)) { $delete_error = true; }
 //   if (!unlink('backups/'.$filename.'.gz')) { $delete_error = true; }
-   header("Refresh: 3 ;url=admincp.php?action=backups");
+   header("Refresh: 3 ;url=/admincp?action=backups");
 //   end_frame();
 stdhead();
 show_error_msg(T_("SUCCESS"), "Selected Backup Files deleted", 0);
@@ -16,7 +16,7 @@ show_error_msg(T_("SUCCESS"), "Selected Backup Files deleted", 0);
    } else {
           echo("<br><center><b>$filename<br><br><br>DELETED !!!</b></center><br><br><br>");
    }
-          echo("<center>You'll be redirected in about 3 secs. If not, click <a href='admincp.php?action=backups'>here</a></center>");
+          echo("<center>You'll be redirected in about 3 secs. If not, click <a href='/admincp?action=backups'>here</a></center>");
    stdfoot();
 }
 if ($action=="backups"){
@@ -62,13 +62,13 @@ if ($action=="backups"){
             echo ("<td>".$Sizebk[$x]." KByte</td>"); // Size
             echo ("<td>".$data[3]."</td>"); // Hash
             echo ("<td><a href='".$site_config['SITEURL']."/backups/".$Namebk[$x].".sql'>SQL</a> - <a href='".$site_config['SITEURL']."/backups/".$Namebk[$x].".sql.gz'>GZ</a></td>"); // Download
-            echo ("<td><a href='".$site_config['SITEURL']."/admincp.php?action=backups&amp;do=delete&amp;filename=".$Namebk[$x].".sql'><img src='images/delete.png'></a></td>"); // Delete
+            echo ("<td><a href='".$site_config['SITEURL']."/admincp?action=backups&amp;do=delete&amp;filename=".$Namebk[$x].".sql'><img src='images/delete.png'></a></td>"); // Delete
             echo ("</tr>"); // End table row
   }
   // CLOSE TABLE
   echo ("</table>");
   // CREATE BACKUP LINK
-  echo ("<br><br><center><a href='backup-database.php'>Backup Database</a> (or create a CRON task on ".$site_config["SITEURL"]."/backup-database.php)</center>");
+  echo ("<br><br><center><a href='/backupdatabase'>Backup Database</a> (or create a CRON task on ".$site_config["SITEURL"]."/backupdatabase)</center>");
   end_frame();
   stdfoot();
 }

@@ -4,7 +4,7 @@
 error_reporting(E_ALL ^ E_NOTICE);
 
 require_once("config/config.php");
-require_once("backend/dbclass.php");
+require_once("helpers/dbclass.php");
 
 $MEMBERSONLY = $site_config["MEMBERSONLY"];
 $MEMBERSONLY_WAIT = $site_config["MEMBERSONLY_WAIT"];

@@ -1,5 +1,5 @@
 <?php
-require_once("backend/init.php");
+require_once("core/init.php");
 dbconn();
 
 if (!$CURUSER || $CURUSER["control_panel"]!="yes"){

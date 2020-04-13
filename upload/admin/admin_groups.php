@@ -6,7 +6,7 @@ if ($action=="groups" && $do=="view"){
 
 	begin_frame(T_("USER_GROUPS"));
 	
-    print("<center><a href='admincp.php?action=groups&amp;do=add'>".T_("GROUPS_ADD_NEW")."</a></center>\n");
+    print("<center><a href='/admincp?action=groups&amp;do=add'>".T_("GROUPS_ADD_NEW")."</a></center>\n");
 
 	print("<br /><br />\n<table width=\"100%\" align=\"center\" border=\"0\" class=\"table_table\">\n");
 	print("<tr>\n");
@@ -27,7 +27,7 @@ if ($action=="groups" && $do=="view"){
 	$getlevel=DB::run("SELECT * from groups ORDER BY group_id");
 	while ($level=$getlevel->fetch(PDO::FETCH_LAZY)) {
 		 print("<tr>\n");
-		 print("<td class='table_col1'><a href=admincp.php?action=groups&do=edit&group_id=".$level["group_id"]."><font color=\"$level[Color]\">".$level["level"]."</font></td>\n");
+		 print("<td class='table_col1'><a href=/admincp?action=groups&do=edit&group_id=".$level["group_id"]."><font color=\"$level[Color]\">".$level["level"]."</font></td>\n");
 		 print("<td class='table_col2'>".$level["view_torrents"]."/".$level["edit_torrents"]."/".$level["delete_torrents"]."</td>\n");
 		 print("<td class='table_col1'>".$level["view_users"]."/".$level["edit_users"]."/".$level["delete_users"]."</td>\n");
 		 print("<td class='table_col2'>".$level["view_news"]."/".$level["edit_news"]."/".$level["delete_news"]."</td>\n");
@@ -38,7 +38,7 @@ if ($action=="groups" && $do=="view"){
          print("<td class='table_col1'>".$level["staff_page"]."</td>\n");
          print("<td class='table_col2'>".$level["staff_public"]."</td>\n");  
          print("<td class='table_col1'>".$level["staff_sort"]."</td>\n");  
-		 print("<td class='table_col1'><a href='admincp.php?action=groups&amp;do=delete&amp;group_id=".$level["group_id"]."'>Del</a></td>\n");
+		 print("<td class='table_col1'><a href='/admincp?action=groups&amp;do=delete&amp;group_id=".$level["group_id"]."'>Del</a></td>\n");
 
 		 print("</tr>\n");
 	}
@@ -62,7 +62,7 @@ if ($action=="groups" && $do=="edit"){
 
 	begin_frame(T_("CP_EDIT_GROUP"));
 	?>
-	<form action="admincp.php?action=groups&amp;do=update&amp;group_id=<?php echo $level["group_id"]; ?>" name="level" method="post">
+	<form action="/admincp?action=groups&amp;do=update&amp;group_id=<?php echo $level["group_id"]; ?>" name="level" method="post">
 	<table width="100%" align="center">
 	<tr><td>Name:</td><td><input type="text" name="gname" value="<?php echo $level["level"];?>" size="40" /></td></tr>
 	<tr><td>Group Colour:</td><td><input type="text" name="gcolor" value="<?php echo $level["Color"];?>" size="10" /></td></tr>
@@ -123,7 +123,7 @@ if ($action=="groups" && $do=="update"){
      $group_id=intval($_GET["group_id"]);
      DB::run("UPDATE groups SET $strupdate WHERE group_id=?", [$group_id]);
                  
-		autolink("admincp.php?action=groups&do=view", T_("SUCCESS"),"Groups Updated!");
+		autolink("/admincp?action=groups&do=view", T_("SUCCESS"),"Groups Updated!");
 		end_frame();
 		stdfoot();	
 }
@@ -135,7 +135,7 @@ if ($action=="groups" && $do=="delete"){
 			show_error_msg(T_("ERROR"),T_("CP_YOU_CANT_DEL_THIS_GRP"),1);
  
 		DB::run("DELETE FROM groups WHERE group_id=?", [$group_id]);
-        autolink("admincp.php?action=groups&do=view", T_("CP_DEL_OK"));
+        autolink("/admincp?action=groups&do=view", T_("CP_DEL_OK"));
 }
 
 
@@ -146,7 +146,7 @@ if ($action=="groups" && $do=="add") {
 
 	begin_frame(T_("GROUPS_ADD_NEW"));
 	?>
-	<form action="admincp.php?action=groups&amp;do=addnew" name="level" method="post">
+	<form action="/admincp?action=groups&amp;do=addnew" name="level" method="post">
 	<table width="100%" align="center">
 	<tr><td>Group Name:</td><td><input type="text" name="gname" value="" size="40" /></td></tr>
 	<tr><td>Group colour:</td><td align="left"><input type="text" name="gcolor" value="" size="10" /></td></tr>
@@ -202,7 +202,7 @@ if ($action=="groups" && $do=="addnew") {
     $update[] = "staff_sort = " . intval($level["staff_sort"]);
 	$strupdate = implode(",", $update);
 	DB::run("INSERT INTO groups SET $strupdate");
-	autolink("admincp.php?action=groups&do=view", T_("SUCCESS"),"Groups Updated!");
+	autolink("/admincp?action=groups&do=view", T_("SUCCESS"),"Groups Updated!");
 	end_frame();
 	stdfoot();	
 }

@@ -23,7 +23,7 @@ begin_frame(T_("WORD_CENSOR"));
 ------------------*/
 ?>
 
-<form method="post" action="admincp.php?action=censor">  
+<form method="post" action="/admincp?action=censor">  
 <table width='100%' cellspacing='3' cellpadding='3' align='center'>
 <tr>
 <td bgcolor='#eeeeee'><font face="verdana" size="1">Word:  <input type="text" name="word" id="word" size="50" maxlength="255" value="" /></font></td></tr>
@@ -34,7 +34,7 @@ begin_frame(T_("WORD_CENSOR"));
 </table>
 </form>
 
-<form method="post" action="admincp.php?action=censor">
+<form method="post" action="/admincp?action=censor">
 <table>
 <tr>
 <td bgcolor='#eeeeee'><font face="verdana" size="1">Remove Censor For: <select name="censor">
@@ -65,7 +65,7 @@ switch ($to)
             @fwrite($f,$_POST["badwords"]);
             fclose($f);
             }
-			autolink("admincp.php?action=censor", T_("SUCCESS"),"Censor Updated!");
+			autolink("/admincp?action=censor", T_("SUCCESS"),"Censor Updated!");
          break;
 
 
@@ -76,7 +76,7 @@ switch ($to)
       $badwords=@fread($f,filesize("censor.txt"));
       @fclose($f);
 	  begin_frame($LANG['ACP_CENSORED']);
-      echo'<form action="admincp.php?action=censor&to=write" method="post" enctype="multipart/form-data">
+      echo'<form action="/admincp?action=censor&to=write" method="post" enctype="multipart/form-data">
   <table width="100%" align="center">
     <tr>
       <td align="center">'.$LANG['ACP_CENSORED_NOTE'].'</td>

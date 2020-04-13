@@ -10,7 +10,7 @@ if ($action == "sitelog") {
 			$ids = implode(", ", $ids);
 			DB::run("DELETE FROM `log` WHERE `id` IN ($ids)");
 		}
-		autolink("admincp.php?action=sitelog", T_("CP_DELETED_ENTRIES"));
+		autolink("/admincp?action=sitelog", T_("CP_DELETED_ENTRIES"));
 		stdhead();
 		show_error_msg(T_("SUCCESS"), T_("CP_DELETED_ENTRIES"), 0);
 		stdfoot();
@@ -32,7 +32,7 @@ if ($action == "sitelog") {
 
 	$perpage = 50;
 
-	list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, "admincp.php?action=sitelog&amp;");
+	list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, "/admincp?action=sitelog&amp;");
 
 	begin_frame("Site Log");
 
@@ -45,7 +45,7 @@ if ($action == "sitelog") {
 	echo $pagertop;
 	?>
                            
-    <form id='sitelog' action='admincp.php?action=sitelog&amp;do=del' method='post'>
+    <form id='sitelog' action='/admincp?action=sitelog&amp;do=del' method='post'>
     <table border="0" cellpadding="0" cellspacing="0" width="100%" align="center" class="table_table">
     <tr>
         <th class="table_head"><input type="checkbox" name="checkall" onclick="checkAll(this.form.id)" /></th>

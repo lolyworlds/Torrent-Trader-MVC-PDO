@@ -13,7 +13,7 @@ if ($action=="peers"){
 	$count = DB::run("SELECT COUNT(*) FROM peers $limit")->fetchColumn();
 	$peersperpage = 50;
 
-	list($pagertop, $pagerbottom, $limit) = pager($peersperpage, $count, "admincp.php?action=peers&amp;");
+	list($pagertop, $pagerbottom, $limit) = pager($peersperpage, $count, "/admincp?action=peers&amp;");
 
 	print("$pagertop");
 
@@ -42,7 +42,7 @@ if ($action=="peers"){
 			}
 
 			if ($row1['username'])
-				print'<tr><td class="table_col1"><a href="account-details.php?id=' . $row['userid'] . '">' . class_user($row1['username']) . '</a></td>';
+				print'<tr><td class="table_col1"><a href="/accountdetails?id=' . $row['userid'] . '">' . class_user($row1['username']) . '</a></td>';
 			else
 				print'<tr><td class="table_col1">'.$row["ip"].'</td>';
 
@@ -51,7 +51,7 @@ if ($action=="peers"){
 
 			while ($row2 = $result2->fetch(PDO::FETCH_ASSOC)) {
                 $smallname = CutName(htmlspecialchars($row2["name"]), 40);
-				print'<td class="table_col2"><a href="torrents-details.php?id=' . $row['torrent'] . '">' . $smallname . '</a></td>';
+				print'<td class="table_col2"><a href="torrentsdetails?id=' . $row['torrent'] . '">' . $smallname . '</a></td>';
 				print'<td align="center" class="table_col1">' . $row['ip'] . '</td>';
 				print'<td align="center" class="table_col2">' . $row['port'] . '</td>';
 

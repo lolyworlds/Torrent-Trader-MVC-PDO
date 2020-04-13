@@ -4,7 +4,7 @@ if (!$site_config["MEMBERSONLY"] || $CURUSER) {
 
 ?>
 	<center>
-	<form method="get" action="torrents-search.php"><br />
+	<form method="get" action="torrentssearch"><br />
 	<input type="text" name="search" size="15" value="<?php echo htmlspecialchars($_GET["search"]); ?>" />
 	<br /><br />
 	<select name="cat">

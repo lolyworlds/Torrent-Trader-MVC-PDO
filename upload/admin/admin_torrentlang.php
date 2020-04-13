@@ -4,7 +4,7 @@ if ($action=="torrentlangs" && $do=="view"){
 	stdhead(T_("TORRENT_LANGUAGES"));
 	navmenu();
 	begin_frame(T_("TORRENT_LANGUAGES"));
-	echo "<center><a href='admincp.php?action=torrentlangs&amp;do=add'><b>Add New Language</b></a></center><br />";
+	echo "<center><a href='/admincp?action=torrentlangs&amp;do=add'><b>Add New Language</b></a></center><br />";
 
 	print("<i>Please note that language image is optional</i><br /><br />");
 
@@ -21,7 +21,7 @@ if ($action=="torrentlangs" && $do=="view"){
 			print("<img border=\"0\" src=\"" . $site_config['SITEURL'] . "/images/languages/" . $row["image"] . "\" alt=\"" . $row["name"] . "\" />");
 		else
 			print("-");	
-		print("</td><td class='table_col1'><a href='admincp.php?action=torrentlangs&amp;do=edit&amp;id=$id'>[EDIT]</a> <a href='admincp.php?action=torrentlangs&amp;do=delete&amp;id=$id'>[DELETE]</a></td></tr>");
+		print("</td><td class='table_col1'><a href='/admincp?action=torrentlangs&amp;do=edit&amp;id=$id'>[EDIT]</a> <a href='/admincp?action=torrentlangs&amp;do=delete&amp;id=$id'>[DELETE]</a></td></tr>");
 	}
 	echo("</table></center>");
 	end_frame();
@@ -60,7 +60,7 @@ if ($action=="torrentlangs" && $do=="edit"){
 
 		DB::run("UPDATE torrentlang SET name=?, sort_index=?, image=? WHERE id=?", [$name, $sort_index, $image, $id]);
 
-		autolink("admincp.php?action=torrentlangs&do=view", T_("Language was edited successfully."));
+		autolink("/admincp?action=torrentlangs&do=view", T_("Language was edited successfully."));
 
 	} else {
 		begin_frame("Edit Language");
@@ -94,7 +94,7 @@ if ($action=="torrentlangs" && $do=="delete"){
 
 		DB::run("DELETE FROM torrentlang WHERE id=$id"); //delete old cat
 		
-		autolink("admincp.php?action=torrentlangs&do=view", T_("Language Deleted OK."));
+		autolink("/admincp?action=torrentlangs&do=view", T_("Language Deleted OK."));
 
 	}else{
 		begin_frame("Delete Language");
@@ -124,7 +124,7 @@ if ($action=="torrentlangs" && $do=="takeadd"){
 	$ins = DB::run("INSERT INTO torrentlang (name, sort_index, image) VALUES (?, ?, ?)", [$name, $sort_index, $image]);
 
 	if ($ins)
-		autolink("admincp.php?action=torrentlangs&do=view", T_("Language was added successfully."));
+		autolink("/admincp?action=torrentlangs&do=view", T_("Language was added successfully."));
 	else
 		show_error_msg(T_("ERROR"),"Unable to add Language",1);
 }
@@ -134,7 +134,7 @@ if ($action=="torrentlangs" && $do=="add"){
 	navmenu();
 
 	begin_frame("Add Language");
-	print("<center><form method='post' action='admincp.php'>\n");
+	print("<center><form method='post' action='/admincp'>\n");
 	print("<input type='hidden' name='action' value='torrentlangs' />\n");
 	print("<input type='hidden' name='do' value='takeadd' />\n");
 

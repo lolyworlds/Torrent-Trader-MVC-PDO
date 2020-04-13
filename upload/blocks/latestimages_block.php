@@ -13,9 +13,9 @@ if (!$site_config["MEMBERSONLY"] || $CURUSER) {
 				$name = htmlspecialchars($row["name"]);
 
 				if ($row["image1"]) {
-					print("<tr><td align='center'><a href='$site_config[SITEURL]/torrents-details.php?id=$row[id]' title='$name / $cat'><img border='0' src='uploads/images/$row[image1]' alt=\"$name / $cat\" width='100' /></a><br /></td></tr>");
+					print("<tr><td align='center'><a href='$site_config[SITEURL]/torrentsdetails?id=$row[id]' title='$name / $cat'><img border='0' src='uploads/images/$row[image1]' alt=\"$name / $cat\" width='100' /></a><br /></td></tr>");
 				} else {
-					print("<tr><td align='center'><a href='$site_config[SITEURL]/torrents-details.php?id=$row[id]' title='$name / $cat'><img border='0' src='uploads/images/$row[image2]' alt=\"$name / $cat\" width='100' /></a><br /></td></tr>");
+					print("<tr><td align='center'><a href='$site_config[SITEURL]/torrentsdetails?id=$row[id]' title='$name / $cat'><img border='0' src='uploads/images/$row[image2]' alt=\"$name / $cat\" width='100' /></a><br /></td></tr>");
 				}
 		}
 		print("</table>");

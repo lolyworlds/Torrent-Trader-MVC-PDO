@@ -5,7 +5,7 @@ if ($action=="categories" && $do=="view"){
 	navmenu();
 
 	begin_frame(T_("TORRENT_CATEGORIES"));
-	echo "<center><a href='admincp.php?action=categories&amp;do=add'><b>Add New Category</b></a></center><br />";
+	echo "<center><a href='/admincp?action=categories&amp;do=add'><b>Add New Category</b></a></center><br />";
 
 	print("<i>Please note that if no image is specified, the category name will be displayed</i><br /><br />");
 
@@ -24,7 +24,7 @@ if ($action=="categories" && $do=="view"){
 			print("<img border=\"0\" src=\"" . $site_config['SITEURL'] . "/images/categories/" . $row["image"] . "\" alt=\"" . $row["name"] . "\" />");
 		else
 			print("-");	
-		print("</td><td class='table_col1'><a href='admincp.php?action=categories&amp;do=edit&amp;id=$id'>[EDIT]</a> <a href='admincp.php?action=categories&amp;do=delete&amp;id=$id'>[DELETE]</a></td></tr>");
+		print("</td><td class='table_col1'><a href='/admincp?action=categories&amp;do=edit&amp;id=$id'>[EDIT]</a> <a href='/admincp?action=categories&amp;do=delete&amp;id=$id'>[DELETE]</a></td></tr>");
 	}
 	echo("</table></center>");
 	end_frame();
@@ -64,7 +64,7 @@ if ($action=="categories" && $do=="edit"){
 		$image = $image;
 
 		DB::run("UPDATE categories SET parent_cat=?, name=?, sort_index=?, image=? WHERE id=?", [$parent_cat, $name, $sort_index, $image, $id]);
-		autolink("admincp.php?action=categories&do=view", T_("SUCCESS"),"category was edited successfully!");
+		autolink("/admincp?action=categories&do=view", T_("SUCCESS"),"category was edited successfully!");
 
 	} else {
 		begin_frame(T_("CP_CATEGORY_EDIT"));
@@ -99,7 +99,7 @@ if ($action=="categories" && $do=="delete"){
 
 		DB::run("DELETE FROM categories WHERE id=?", [$id]); //delete old cat
 		
-		autolink("admincp.php?action=categories&do=view", T_("Category Deleted OK."));
+		autolink("/admincp?action=categories&do=view", T_("Category Deleted OK."));
 
 	}else{
 		begin_frame(T_("CATEGORY_DEL"));
@@ -134,7 +134,7 @@ if ($action=="categories" && $do=="takeadd"){
 	$ins = DB::run("INSERT INTO categories (name, parent_cat, sort_index, image) VALUES (?,?,?,?)", [$name, $parent_cat, $sort_index, $image]);
 
 	if ($ins)
-		autolink("admincp.php?action=categories&do=view", T_("Category was added successfully."));
+		autolink("/admincp?action=categories&do=view", T_("Category was added successfully."));
 	else
 		show_error_msg(T_("ERROR"),"Unable to add category",1);
 }
@@ -144,7 +144,7 @@ if ($action=="categories" && $do=="add"){
 	navmenu();
 
 	begin_frame(T_("CATEGORY_ADD"));
-	print("<center><form method='post' action='admincp.php'>\n");
+	print("<center><form method='post' action='/admincp'>\n");
 	print("<input type='hidden' name='action' value='categories' />\n");
 	print("<input type='hidden' name='do' value='takeadd' />\n");
                        

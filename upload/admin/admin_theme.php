@@ -24,7 +24,7 @@ if ($action == "style") {
 		}
 		begin_frame(T_("THEME_ADD"));
 		?>
-        <form action='admincp.php' method='post'>
+        <form action='/admincp' method='post'>
 		<input type='hidden' name='action' value='style' />
         <input type='hidden' name='do' value='add' />
         <table align='center' width='400' cellspacing='0' class='table_table'>
@@ -55,7 +55,7 @@ if ($action == "style") {
         $ids = implode(', ', $ids);
         DB::run("DELETE FROM `stylesheets` WHERE `id` IN ($ids)");
         DB::run("UPDATE `users` SET `stylesheet` = ".$site_config["default_theme"]." WHERE stylesheet NOT IN (SELECT id FROM stylesheets)");
-        autolink("admincp.php?action=style", T_("THEME_SUCCESS_THEME_DELETED"));
+        autolink("/admincp?action=style", T_("THEME_SUCCESS_THEME_DELETED"));
                                  
 	}elseif ($do == "add2") {
 
@@ -74,10 +74,10 @@ if ($action == "style") {
 		}
         
         if ($a == count($add))
-            autolink("admincp.php?action=style", T_("THEME_NOTHING_SELECTED"));
+            autolink("/admincp?action=style", T_("THEME_NOTHING_SELECTED"));
 
 		if ($added)
-            autolink("admincp.php?action=style", sprintf(T_("THEME_THE_FOLLOWING_THEMES_WAS_ADDED"), $added));   
+            autolink("/admincp?action=style", sprintf(T_("THEME_THE_FOLLOWING_THEMES_WAS_ADDED"), $added));   
 		if ($error)
 			show_error_msg(T_("FAILED"), sprintf(T_("THEME_THE_FOLLOWING_THEMES_WAS_NOT_ADDED"), $error), 1);
         
@@ -86,8 +86,8 @@ if ($action == "style") {
 		navmenu();
 		begin_frame(T_("THEME_MANAGEMENT"));
 		$res = DB::run("SELECT * FROM stylesheets");
-		echo "<center><a href='admincp.php?action=style&amp;do=add'>".T_("THEME_ADD")."</a><!-- - <b>".T_("THEME_CLICK_A_THEME_TO_EDIT")."</b>--></center><br />";
-		echo T_("THEME_CURRENT").":<form id='deltheme' method='post' action='admincp.php?action=style&amp;do=del'><table width='60%' class='table_table' align='center'>".
+		echo "<center><a href='/admincp?action=style&amp;do=add'>".T_("THEME_ADD")."</a><!-- - <b>".T_("THEME_CLICK_A_THEME_TO_EDIT")."</b>--></center><br />";
+		echo T_("THEME_CURRENT").":<form id='deltheme' method='post' action='/admincp?action=style&amp;do=del'><table width='60%' class='table_table' align='center'>".
 			"<tr><th class='table_head'>ID</th><th class='table_head'>".T_("NAME")."</th><th class='table_head'>".T_("THEME_FOLDER_NAME")."</th><th width='5%' class='table_head'><input type='checkbox' name='checkall' onclick='checkAll(this.form.id);' /></th></tr>";
 		while ($row=$res->fetch(PDO::FETCH_ASSOC)) {
 			if (!is_dir("themes/$row[uri]"))
@@ -96,7 +96,7 @@ if ($action == "style") {
 		}
 		echo "<tr><td colspan='4' align='right'><input type='submit' value='".T_("SELECTED_DELETE")."' /></td></tr></table></form>";
 		
-		echo "<p>".T_("THEME_IN_THEMES_BUT_NOT_IN_DB")."</p><form id='addtheme' action='admincp.php?action=style&amp;do=add2' method='post'><table width='60%' class='table_table' align='center'>".
+		echo "<p>".T_("THEME_IN_THEMES_BUT_NOT_IN_DB")."</p><form id='addtheme' action='/admincp?action=style&amp;do=add2' method='post'><table width='60%' class='table_table' align='center'>".
 			"<tr><th class='table_head'>".T_("NAME")."</th><th class='table_head'>".T_("THEME_FOLDER_NAME")."</th><th width='5%' class='table_head'><input type='checkbox' name='checkall' onclick='checkAll(this.form.id);' /></th></tr>";
 		$dh = opendir("themes/");
 		$i=0;

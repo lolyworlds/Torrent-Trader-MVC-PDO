@@ -11,13 +11,13 @@
           $ids = implode(',', $ids);
           
           DB::run("DELETE FROM `sqlerr` WHERE `id` IN ($ids)");
-          autolink("admincp.php?action=sqlerr", "Entries deleted.");
+          autolink("/admincp?action=sqlerr", "Entries deleted.");
       }
       
       
       $count = get_row_count('sqlerr');
       
-      list($pagertop, $pagerbottom, $limit) = pager(25, $count, 'admincp.php?action=sqlerr&amp;');
+      list($pagertop, $pagerbottom, $limit) = pager(25, $count, '/admincp?action=sqlerr&amp;');
       
       $res = DB::run("SELECT * FROM `sqlerr` ORDER BY `time` DESC $limit");
       
@@ -27,7 +27,7 @@
       begin_frame('SQL Error');
       
       if ($count > 0): ?>
-      <form id="sqlerr" method="post" action="admincp.php?action=sqlerr">
+      <form id="sqlerr" method="post" action="/admincp?action=sqlerr">
       <input type="hidden" name="do" value="delete" />
       <table cellpadding="5" class="table_table" width="100%">
       <tr>

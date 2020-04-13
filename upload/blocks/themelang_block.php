@@ -39,7 +39,7 @@ $languages = '';
 
 ?>
  
- <form method="post" action="take-theme.php">
+ <form method="post" action="taketheme">
 <table width="100%">
   <tr>
 <td align="center" valign="middle"><b><?php echo T_("THEME"); ?></b>

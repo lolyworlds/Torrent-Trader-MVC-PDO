@@ -19,7 +19,7 @@ if (!$rows) {
 } else {
 		echo "<div id='nMember' class='bMenu'><ul>\n";
 	foreach ($rows as $row) {
-		echo "<li><a href='account-details.php?id=$row[id]'>" . class_user($row["username"]) . "</a></li>\n";
+		echo "<li><a href='/accountdetails?id=$row[id]'>" . class_user($row["username"]) . "</a></li>\n";
 	}
 		echo "</ul></div>\n";
 }

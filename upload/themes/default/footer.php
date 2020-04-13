@@ -19,12 +19,12 @@
                     </b></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href='rss.php'><b>
+                <a class="nav-link" href='/rss'><b>
                         <font color='#fff'><?php if ($CURUSER){  echo T_("RSS_FEED");}?></font>
                     </b></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href='rss.php?custom=1'><b>
+                <a class="nav-link" href='/rss?custom=1'><b>
                         <font color='#fff'><?php if ($CURUSER){  echo T_("FEED_INFO"); }?></font>
                     </b></a>
             </li>

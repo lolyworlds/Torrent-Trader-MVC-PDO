@@ -9,7 +9,7 @@ if ($action=="messagespy"){
 			$ids = implode(", ", $ids);
 			DB::run("DELETE FROM `messages` WHERE `id` IN ($ids)");
 		}
-		autolink("admincp.php?action=messagespy", T_("CP_DELETED_ENTRIES")); 
+		autolink("/admincp?action=messagespy", T_("CP_DELETED_ENTRIES")); 
 		stdhead();
 		show_error_msg(T_("SUCCESS"), T_("CP_DELETED_ENTRIES"), 0);
 		stdfoot();
@@ -25,7 +25,7 @@ if ($action=="messagespy"){
 
 	$perpage = 50;
 
-	list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, "admincp.php?action=messagespy&amp;");
+	list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, "/admincp?action=messagespy&amp;");
 
 	begin_frame("Message Spy");
 
@@ -41,13 +41,13 @@ if ($action=="messagespy"){
 		$res2 = DB::run("SELECT username FROM users WHERE id=?", [$arr["receiver"]]);
 
 		if ($arr2 = $res2->fetch())
-			$receiver = "<a href='account-details.php?id=" . $arr["receiver"] . "'><b>" . class_user($arr2["username"]) . "</b></a>";
+			$receiver = "<a href='/accountdetails?id=" . $arr["receiver"] . "'><b>" . class_user($arr2["username"]) . "</b></a>";
 		else
 			$receiver = "<i>Deleted</i>";
 
 		$arr3 = DB::run("SELECT username FROM users WHERE id=?", [$arr["sender"]])->fetch();
 
-		$sender = "<a href='account-details.php?id=" . $arr["sender"] . "'><b>" . class_user($arr3["username"]) . "</b></a>";
+		$sender = "<a href='/accountdetails?id=" . $arr["sender"] . "'><b>" . class_user($arr3["username"]) . "</b></a>";
 		if( $arr["sender"] == 0 )
 			$sender = "<font class='error'><b>System</b></font>";
 		$msg = format_comment($arr["msg"]);

@@ -2,7 +2,7 @@
 
 if ($action=="lastcomm"){
     $count = get_row_count("comments");
-    list($pagertop, $pagerbottom, $limit) = pager(10, $count, "admincp.php?action=lastcomm&amp;");
+    list($pagertop, $pagerbottom, $limit) = pager(10, $count, "/admincp?action=lastcomm&amp;");
 	stdhead("Latest Comments");
 	navmenu();
 
@@ -19,14 +19,14 @@ if ($action=="lastcomm"){
 		$comentario = stripslashes(format_comment($arr["text"]));
 		$cid = $arr["id"];    
         
-        $type = 'Torrent: <a href="torrents-details.php?id='.$tid.'">'.$title.'</a>';
+        $type = 'Torrent: <a href="torrentsdetails?id='.$tid.'">'.$title.'</a>';
         
         if ( $nid > 0 )
         {
-             $type = 'News: <a href="comments.php?id='.$nid.'&amp;type=news">'.$title.'</a>';
+             $type = 'News: <a href="/comments?id='.$nid.'&amp;type=news">'.$title.'</a>';
         }
                        
-		echo "<table class='table_table' align='center' cellspacing='0' width='100%'><tr><th class='table_head' align='center'>".$type."</td></tr><tr><td class='table_col2'>".$comentario."</th></tr><tr><td class='table_col1' align='center'>Posted in <b>".$data."</b> by <a href=\"account-details.php?id=".$userid."\">".$username."</a><!--  [ <a href=\"edit-comments.php?cid=".$cid."\">edit</a> | <a href=\"edit-comments.php?action=delete&amp;cid=".$cid."\">delete</a> ] --></td></tr></table><br />";
+		echo "<table class='table_table' align='center' cellspacing='0' width='100%'><tr><th class='table_head' align='center'>".$type."</td></tr><tr><td class='table_col2'>".$comentario."</th></tr><tr><td class='table_col1' align='center'>Posted in <b>".$data."</b> by <a href=\"/accountdetails?id=".$userid."\">".$username."</a><!--  [ <a href=\"edit-/comments?cid=".$cid."\">edit</a> | <a href=\"edit-/comments?action=delete&amp;cid=".$cid."\">delete</a> ] --></td></tr></table><br />";
         #$rows[] = $arr;
 	}
     
