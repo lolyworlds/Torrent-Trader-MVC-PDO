@@ -1,5 +1,5 @@
 <?php
-require_once("backend/functions.php");
+require_once("backend/init.php");
 dbconn();
 loggedinonly ();
 if ($site_config['SHOUTBOX']){
@@ -117,11 +117,11 @@ while ($row = $result->fetch(PDO::FETCH_LAZY)) {
 
 	echo "</div>";
 
-	if ( ($CURUSER["edit_users"]=="yes") || ($CURUSER['username'] == $row['user']) ){
+	if ( ($CURUSER["edit_users"]=="yes") || ($CURUSER['username'] == class_user($row['user'])) ){
 		echo "<div align='right' style='float: right'><a href='".$site_config['SITEURL']."/shoutbox.php?del=".$row['msgid']."' style='font-size: 8px'>[D]</a></div>";
 	}
 
-	echo	'</td><td style="font-size: 12px; padding-left: 5px"><a href="'.$site_config['SITEURL'].'/account-details.php?id='.$row['userid'].'" target="_parent"><b>'.$row['user'].':</b></a>&nbsp;&nbsp;'.nl2br(format_comment($row['message']));
+	echo	'</td><td style="font-size: 12px; padding-left: 5px"><a href="'.$site_config['SITEURL'].'/account-details.php?id='.$row['userid'].'" target="_parent"><b>'.class_user($row['user']).':</b></a>&nbsp;&nbsp;'.nl2br(format_comment($row['message']));
 	echo	'</td></tr>';
 }
 ?>

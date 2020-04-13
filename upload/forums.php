@@ -1,5 +1,5 @@
 <?php
-require_once("backend/functions.php");
+require_once("backend/init.php");
 require_once("backend/bbcode.php");
 dbconn();
 
@@ -266,7 +266,7 @@ $added = utc_to_tz($arr["added"]);
 $res = DB::run("SELECT id, username FROM users WHERE id=$userid");
 if ($res->rowCount() == 1) {
 $arr = $res->fetch(PDO::FETCH_ASSOC);
-$username = "<a href='account-details.php?id=$userid'>$arr[username]</a>";
+$username = "<a href='account-details.php?id=$userid'>".class_user($arr['username'])."</a>";
 }
 else
 $username = "Unknown[$topic_userid]";
@@ -275,7 +275,7 @@ $username = "Unknown[$topic_userid]";
 $res = DB::run("SELECT username FROM users WHERE id=?", [$topic_userid]);
 if ($res->rowCount() == 1) {
 $arr = $res->fetch(PDO::FETCH_ASSOC);
-$author = "<a href='account-details.php?id=$topic_userid'>$arr[username]</a>";
+$author = "<a href='account-details.php?id=$topic_userid'>".class_user($arr['username'])."</a>";
 }
 else
 $author = "Unknown[$topic_userid]";
@@ -366,7 +366,7 @@ if ($action == "post") {
     //Insert the new post
     $added = "'" . get_date_time() . "'";
     $body = $body;
-    DB::run("INSERT INTO forum_posts (topicid, userid, added, body) VALUES(?, ?, ?, ?)", [$topicid, $userid, $added, $body]);
+    DB::run("INSERT INTO forum_posts (topicid, userid, added, body) VALUES(?, ?, ?, ?)", [$topicid, $userid, get_date_time(), $body]);
     $postid = DB::lastInsertId() or showerror(T_("FORUM_ERROR"),"Post id n/a");
 
     //Update topic last post
@@ -504,7 +504,7 @@ if ($action == "viewtopic") {
 
 		$res2 = DB::run("SELECT * FROM users WHERE id=?", [$posterid]);
 		$arr2 = $res2->fetch(PDO::FETCH_ASSOC);
-		$postername = $arr2["username"];
+		$postername = class_user($arr2["username"]);
 
 			if ($postername == "") {
 				$by = "Deluser";
@@ -1008,7 +1008,7 @@ if ($action == "viewforum") {
         $res = DB::run("SELECT * FROM users WHERE id=$lpuserid");
         if ($res->rowCount() == 1) {
           $arr = $res->fetch(PDO::FETCH_ASSOC);
-          $lpusername = "<a href='account-details.php?id=$lpuserid'>$arr[username]</a>";
+          $lpusername = "<a href='account-details.php?id=$lpuserid'>".class_user($arr['username'])."</a>";
         }
         else
           $lpusername = "Deluser";
@@ -1021,7 +1021,7 @@ if ($action == "viewforum") {
         $res = DB::run("SELECT username FROM users WHERE id=$topic_userid");
         if ($res->rowCount() == 1) {
           $arr = $res->fetch(PDO::FETCH_ASSOC);
-          $lpauthor = "<a href='account-details.php?id=$topic_userid'>$arr[username]</a>";
+          $lpauthor = "<a href='account-details.php?id=$topic_userid'>".class_user($arr['username'])."</a>";
         }
         else
           $lpauthor = "Deluser";
@@ -1268,7 +1268,7 @@ while ($forums_arr = $forums_res->fetch(PDO::FETCH_ASSOC)){
 		$lasttopicid = $post_arr["topicid"];
 		$user_res = DB::run("SELECT username FROM users WHERE id=$lastposterid");
 		$user_arr = $user_res->fetch(PDO::FETCH_ASSOC);
-		$lastposter = htmlspecialchars($user_arr['username']);
+		$lastposter = class_user($user_arr["username"]);
 		$topic_res = DB::run("SELECT subject FROM forum_topics WHERE id=$lasttopicid");
 		$topic_arr = $topic_res->fetch(PDO::FETCH_ASSOC);
 		$lasttopic = stripslashes(htmlspecialchars($topic_arr['subject']));

@@ -1,5 +1,5 @@
 <?php
-require_once("backend/functions.php");
+require_once("backend/init.php");
 require_once("mailbox-functions.php");
 dbconn();
 loggedinonly();

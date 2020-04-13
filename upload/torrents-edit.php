@@ -1,5 +1,5 @@
 <?php
-require_once("backend/functions.php");
+require_once("backend/init.php");
 dbconn();
 loggedinonly();
 
@@ -122,7 +122,7 @@ if ($action=="doedit"){
     $updateset[] = "visible = '" . ($_POST["visible"] ? "yes" : "no") . "'";
 
     if ($CURUSER["edit_torrents"] == "yes")
-        $updateset[] = "freeleech = '".$_POST["freeleech"]."'";
+        $updateset[] = "freeleech = '".($_POST["freeleech"] ? "1" : "0")."'";
 
     $updateset[] = "anon = '" . ($_POST["anon"] ? "yes" : "no") . "'";
 

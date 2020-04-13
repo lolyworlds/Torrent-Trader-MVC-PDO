@@ -72,7 +72,7 @@ if ($action == "privacylevel")
     </tr>
     <?php while ($row = $res->fetch(PDO::FETCH_ASSOC)): ?>
     <tr>
-        <td class="table_col1" align="center"><a href="account-details.php?id=<?php echo $row["id"]; ?>"><?php echo $row["username"]; ?></a></td>
+        <td class="table_col1" align="center"><a href="account-details.php?id=<?php echo $row["id"]; ?>"><?php echo class_user($row["username"]); ?></a></td>
         <td class="table_col2" align="center"><?php echo get_user_class_name($row["class"]); ?></td>
         <td class="table_col1" align="center"><?php echo $row["email"]; ?></td>
         <td class="table_col2" align="center"><?php echo $row["ip"]; ?></td>

@@ -1,5 +1,5 @@
 <?php
-require_once("backend/functions.php");
+require_once("backend/init.php");
 dbconn();
 loggedinonly();
 
@@ -42,7 +42,7 @@ if (!$action){
 	<table class="f-border comment" cellpadding="10" border="0" max-width="100%">
 	<tr>
     <td width="10%" valign="top">
-	<b><?php echo T_("USERNAME"); ?>:</b> <?php echo $CURUSER["username"]; ?><br />
+	<b><?php echo T_("USERNAME"); ?>:</b> <?php echo class_user($CURUSER["username"]); ?><br />
 	<b><?php echo T_("CLASS"); ?>:</b> <?php echo $CURUSER["level"]; ?><br />
 	<b><?php echo T_("EMAIL"); ?>:</b> <?php echo $CURUSER["email"]; ?><br />
 	<b><?php echo T_("JOINED"); ?>:</b> <?php echo utc_to_tz($CURUSER["added"]); ?><br />

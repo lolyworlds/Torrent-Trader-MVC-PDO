@@ -1,20 +1,5 @@
 <?php
 
-include('exceptionhelper.php');
-// Register custom exception handler
-set_exception_handler("handleUncaughtException");
-
-// Prefer unescaped. Data will be escaped as needed.
-if (ini_get("magic_quotes_gpc")) {
-	$_POST = array_map_recursive("unesc", $_POST);
-	$_GET = array_map_recursive("unesc", $_GET);
-	$_REQUEST = array_map_recursive("unesc", $_REQUEST);
-	$_COOKIE = array_map_recursive("unesc", $_COOKIE);
-}
-
-if (function_exists("date_default_timezone_set"))
-	date_default_timezone_set("Europe/London"); // Do NOT change this. All times are converted to user's chosen timezone.
-
 /// each() replacement for php 7+. Change all instances of each() to thisEach() in all TT files. each() deprecated as of 7.2
 function thisEach(&$arr) {
     $key = key($arr);
@@ -22,19 +7,6 @@ function thisEach(&$arr) {
     next($arr);
     return $result;
 }
-
-define("BASEPATH", str_replace("backend", "", dirname(__FILE__)));
-$BASEPATH = BASEPATH;
-define("BACKEND", dirname(__FILE__));
-$BACKEND = BACKEND;
-
-require_once(BACKEND."/config.php");  //Get Site Settings and Vars ($site_config)
-require(BACKEND."/tzs.php"); // Get Timezones
-require_once(BACKEND."/cache.php"); // Caching
-require_once(BACKEND."/mail.php"); // Mail functions
-require_once(BACKEND."/languages.php");
-
-$GLOBALS['tstart'] = array_sum(explode(" ", microtime()));
 
 function dbconn($autoclean = false) {
 	global $THEME, $LANGUAGE, $LANG, $site_config;
@@ -48,7 +20,7 @@ function dbconn($autoclean = false) {
 	}
 	
 	header("Content-Type: text/html;charset=$site_config[CHARSET]");
-	require_once(BACKEND."/dbclass.php");
+
 	userlogin(); //Get user info
 
 	//Get language and theme
@@ -334,7 +306,6 @@ function sqlesc($x) {
 }
 
 function unesc($x) {
-	if (get_magic_quotes_gpc())
 		return stripslashes($x);
 	return $x;
 }
@@ -916,7 +887,7 @@ $wait = '';
                     if (($row["anon"] == "yes" || $row["privacy"] == "strong") && $CURUSER["id"] != $row["owner"] && $CURUSER["edit_torrents"] != "yes")
                         echo "Anonymous";
                     elseif ($row["username"])
-                        echo "<a href='account-details.php?id=$row[owner]'>$row[username]</a>";
+                        echo "<a href='account-details.php?id=$row[owner]'>".class_user($row['username'])."</a>";
                     else
                         echo "Unknown";
                     echo "</td>";
@@ -1133,7 +1104,7 @@ function commenttable($res, $type = null) {
 
     while ($row = $res->fetch(PDO::FETCH_LAZY)) {
 
-        $postername = htmlspecialchars($row["username"]);
+        $postername = class_user($row["username"]);
         if ($postername == "") {
             $postername = T_("DELUSER");
             $title = T_("DELETED_ACCOUNT");
@@ -1378,4 +1349,30 @@ function autolink($al_url, $al_msg) {
       stdfoot();
       exit;
   }
+
+// Start class_user colour function
+function class_user($name)
+{
+    global $site_config;
+    $classy = DB::run("SELECT u.class, u.donated, u.warned, u.enabled, g.Color, g.level, u.uploaded, u.downloaded FROM `users` `u` INNER JOIN `groups` `g` ON g.group_id=u.class WHERE username ='" . $name . "'")->fetch();
+    $gcolor = $classy['Color'];
+    if ($classy['donated'] > 0) {
+        $star = "<img src='" . $site_config['SITEURL'] . "/images/donor.png' alt='donated' border='0' width='15' height='15'>";
+    } else {
+        $star = "";
+    }
+    if ($classy['warned'] == "yes") {
+        $warn = "<img src='" . $site_config['SITEURL'] . "/images/warn.png' alt='Warn' border='0'>";
+    } else {
+        $warn = "";
+    }
+   if ($classy['enabled'] == "no") {
+        $disabled = "<img src='".$site_config['SITEURL']."/images/disabled.png' title='Disabled' border='0'>";
+   } else {
+       $disabled = "";
+   }
+ 
+    return unesc("<font color='" . $gcolor . "'>" . $name . "" . $star . "" . $warn . "" . $disabled . "</font>");
+}
+
 ?>

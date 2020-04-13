@@ -31,7 +31,7 @@ end_block();
 } else {
 */
 if ($CURUSER){
-begin_block($CURUSER["username"]);
+begin_block(class_user($CURUSER["username"]));
 
 	$avatar = htmlspecialchars($CURUSER["avatar"]);
 	if (!$avatar)

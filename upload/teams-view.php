@@ -1,5 +1,5 @@
 <?php
- require_once("backend/functions.php"); 
+ require_once("backend/init.php"); 
  dbconn(); 
 
  if ($site_config["MEMBERSONLY"]) {
@@ -23,7 +23,7 @@
  <table border="0" cellspacing="0" cellpadding="3" width="100%" class="table_table">
  <tr>
      <th class="table_head" width="10%"></th>
-     <th class="table_head" width="90%">Owner: <?php echo ( $row["username"] ) ? '<a href="account-details.php?id='.$row["owner"].'">'.htmlspecialchars($row["username"]).'</a>' : "Unknown User"; ?> - Added: <?php echo utc_to_tz($row["added"]); ?></th>
+     <th class="table_head" width="90%">Owner: <?php echo ( $row["username"] ) ? '<a href="account-details.php?id='.$row["owner"].'">' . class_user($row["username"]) . '</a>' : "Unknown User"; ?> - Added: <?php echo utc_to_tz($row["added"]); ?></th>
  </tr>
  <tr>
      <td class="table_col1" width="10%"><img src="<?php echo htmlspecialchars($row["image"]); ?>" border="0" alt="<?php echo htmlspecialchars($row["name"]); ?>" title="<?php echo htmlspecialchars($row["name"]); ?>" /></td>

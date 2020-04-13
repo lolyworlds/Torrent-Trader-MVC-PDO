@@ -27,7 +27,7 @@ if ($action=="groups" && $do=="view"){
 	$getlevel=DB::run("SELECT * from groups ORDER BY group_id");
 	while ($level=$getlevel->fetch(PDO::FETCH_LAZY)) {
 		 print("<tr>\n");
-		 print("<td class='table_col1'><a href='admincp.php?action=groups&amp;do=edit&amp;group_id=".$level["group_id"]."'>".htmlspecialchars($level["level"])."</a></td>\n");
+		 print("<td class='table_col1'><a href=admincp.php?action=groups&do=edit&group_id=".$level["group_id"]."><font color=\"$level[Color]\">".$level["level"]."</font></td>\n");
 		 print("<td class='table_col2'>".$level["view_torrents"]."/".$level["edit_torrents"]."/".$level["delete_torrents"]."</td>\n");
 		 print("<td class='table_col1'>".$level["view_users"]."/".$level["edit_users"]."/".$level["delete_users"]."</td>\n");
 		 print("<td class='table_col2'>".$level["view_news"]."/".$level["edit_news"]."/".$level["delete_news"]."</td>\n");
@@ -65,6 +65,7 @@ if ($action=="groups" && $do=="edit"){
 	<form action="admincp.php?action=groups&amp;do=update&amp;group_id=<?php echo $level["group_id"]; ?>" name="level" method="post">
 	<table width="100%" align="center">
 	<tr><td>Name:</td><td><input type="text" name="gname" value="<?php echo $level["level"];?>" size="40" /></td></tr>
+	<tr><td>Group Colour:</td><td><input type="text" name="gcolor" value="<?php echo $level["Color"];?>" size="10" /></td></tr>
 	<tr><td>View Torrents:</td><td>  <?php echo T_("YES");?> <input type="radio" name="vtorrent" value="yes" <?php if ($level["view_torrents"]=="yes") echo "checked = 'checked'" ?> />&nbsp;&nbsp; <?php echo T_("NO");?> <input type="radio" name="vtorrent" value="no" <?php if ($level["view_torrents"]=="no") echo "checked = 'checked'"; ?> /></td></tr>
 	<tr><td>Edit Torrents:</td><td>  <?php echo T_("YES");?> <input type="radio" name="etorrent" value="yes" <?php if ($level["edit_torrents"]=="yes") echo "checked = 'checked'" ?> />&nbsp;&nbsp; <?php echo T_("NO");?> <input type="radio" name="etorrent" value="no" <?php if ($level["edit_torrents"]=="no") echo "checked = 'checked'"; ?> /></td></tr>
 	<tr><td>Delete Torrents:</td><td>  <?php echo T_("YES");?> <input type="radio" name="dtorrent" value="yes" <?php if ($level["delete_torrents"]=="yes") echo "checked = 'checked'" ?> />&nbsp;&nbsp; <?php echo T_("NO");?> <input type="radio" name="dtorrent" value="no" <?php if ($level["delete_torrents"]=="no") echo "checked = 'checked'"; ?> /></td></tr>
@@ -98,6 +99,7 @@ if ($action=="groups" && $do=="update"){
 
      $update = array();
      $update[] = "level = " . sqlesc($_POST["gname"]);
+	 $update[] = "Color= " . sqlesc($_POST["gcolor"]);
      $update[] = "view_torrents = " . sqlesc($_POST["vtorrent"]);
      $update[] = "edit_torrents = " . sqlesc($_POST["etorrent"]);
      $update[] = "delete_torrents = " . sqlesc($_POST["dtorrent"]);
@@ -147,6 +149,7 @@ if ($action=="groups" && $do=="add") {
 	<form action="admincp.php?action=groups&amp;do=addnew" name="level" method="post">
 	<table width="100%" align="center">
 	<tr><td>Group Name:</td><td><input type="text" name="gname" value="" size="40" /></td></tr>
+	<tr><td>Group colour:</td><td align="left"><input type="text" name="gcolor" value="" size="10" /></td></tr>
 	<tr><td>Copy Settings From: </td><td><select name="getlevel" size="1">
 	<?php
 	$rlevel=DB::run("SELECT DISTINCT group_id, level FROM groups ORDER BY group_id");
@@ -178,6 +181,7 @@ if ($action=="groups" && $do=="addnew") {
 
 	$update = array();
 	$update[] = "level = " . sqlesc($level["level"]);
+	$update[] = "Color = ". sqlesc($level["gcolor"]);
 	$update[] = "view_torrents = " . sqlesc($level["view_torrents"]);
 	$update[] = "edit_torrents = " . sqlesc($level["edit_torrents"]);
 	$update[] = "delete_torrents = " . sqlesc($level["delete_torrents"]);

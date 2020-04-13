@@ -1,5 +1,5 @@
 <?php
- require_once("backend/functions.php");
+ require_once("backend/init.php");
  dbconn();
  
  // Check permissions
@@ -43,7 +43,7 @@
         if ($row["anon"] == "yes" && ($CURUSER["edit_torrents"] == "no" || $CURUSER["id"] != $row["owner"]))
             $owner = T_("ANONYMOUS");
         elseif ($row["username"])
-            $owner = "<a href='account-details.php?id=".$row["owner"]."'>".$row["username"]."</a>";
+            $owner = "<a href='account-details.php?id=".$row["owner"]."'>" . class_user($row["username"]) . "</a>";
         else
             $owner = T_("UNKNOWN_USER");
 

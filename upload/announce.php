@@ -9,27 +9,6 @@ require_once("backend/dbclass.php");
 $MEMBERSONLY = $site_config["MEMBERSONLY"];
 $MEMBERSONLY_WAIT = $site_config["MEMBERSONLY_WAIT"];
 
-$_GET = array_map_recursive("unesc", $_GET);
-
-//START FUNCTIONS
-function array_map_recursive ($callback, $array) {
-	$ret = array();
-
-	if (!is_array($array))
-		return $callback($array);
-
-	foreach ($array as $key => $val) {
-		$ret[$key] = array_map_recursive($callback, $val);
-	}
-	return $ret;
-}
-
-
-function unesc($x) {
-		return stripslashes($x);
-	return $x;
-}
-
 function is_valid_id($id) {
 	return is_numeric($id) && ($id > 0) && (floor($id) == $id);
 }

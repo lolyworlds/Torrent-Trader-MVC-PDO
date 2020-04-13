@@ -627,15 +627,14 @@ if ($action == "usersearch") {
 		$select_is = "u.id, u.username, u.email, u.status, u.added, u.last_access, u.ip,
 		u.class, u.uploaded, u.downloaded, u.donated, u.modcomment, u.enabled, u.warned, u.invited_by";
 		$query = "SELECT ".$distinct." ".$select_is." ".$querypm;
-		$res = DB::run($queryc);
-		$arr = $res->fetch();
-		$count = $arr[0];
+		$count = DB::run($queryc, $params)->fetchColumn();
 		$q = isset($q)?($q."&amp;"):"";
 		$perpage = 25;
 		list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, "admincp.php?action=usersearch&amp;$q");
 		$query .= $limit;
-		$res = DB::run($query);
-		if ($res->rowCount() <= 0) {
+		$res = DB::run($query, $params)->fetchAll();
+
+		if (! $res) {
 		show_error_msg("Warning","No user was found.", 0);
 		} else {
 			if ($count > $perpage) {
@@ -655,7 +654,8 @@ if ($action == "usersearch") {
 			"<th class='table_head'>Downloaded</th>".
 			"<th class='table_head'>History</th>".
 			"<th class='table_head' colspan='2'>Status</th></tr>\n";
-			while ($user = $res->fetch(PDO::FETCH_LAZY)) {
+
+			foreach ($res as $user) {
 				if ($user['added'] == '0000-00-00 00:00:00')
 					$user['added'] = '---';
 				if ($user['last_access'] == '0000-00-00 00:00:00')
@@ -675,7 +675,7 @@ if ($action == "usersearch") {
 			$auxres = DB::run("SELECT COUNT(id) FROM comments WHERE user = ".$user['id']);
 			$n = $auxres->fetch();
 			$n_comments = $n[0];
-			echo "<tr><td class='table_col1' align='center'><b><a href='account-details.php?id=$user[id]'>$user[username]</a></b></td>" .
+			echo "<tr><td class='table_col1' align='center'><b><a href='account-details.php?id=$user[id]'>" . class_user($user['username']) . "</a></b></td>" .
 				"<td class='table_col2' align='center'>" . $ipstr . "</td><td class='table_col1' align='center'>" . $user['email'] . "</td>".
 				"<td class='table_col2' align='center'>" . utc_to_tz($user['added']) . "</td>".
 				"<td class='table_col1' align='center'>" . $user['last_access'] . "</td>".

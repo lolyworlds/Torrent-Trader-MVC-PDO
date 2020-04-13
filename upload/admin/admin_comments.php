@@ -11,7 +11,7 @@ if ($action=="lastcomm"){
 	$res = DB::run("SELECT c.id, c.text, c.user, c.torrent, c.news, t.name, n.title, u.username, c.added FROM comments c LEFT JOIN torrents t ON c.torrent = t.id LEFT JOIN news n ON c.news = n.id LEFT JOIN users u ON c.user = u.id ORDER BY c.added DESC $limit");
 	while ($arr = $res->fetch(PDO::FETCH_ASSOC)) {
 		$userid = $arr["user"];
-		$username = $arr["username"];
+		$username = class_user($arr["username"]);
 		$data = $arr["added"];
 		$tid = $arr["torrent"];
         $nid = $arr["news"];

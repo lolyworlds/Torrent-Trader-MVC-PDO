@@ -158,7 +158,7 @@ if ($action == "reports" && $do == "view") {
           $link = "forums.php?action=viewtopic&amp;topicid=$row[votedfor]&amp;page=last#post$row[votedfor_xtra]";
       ?>
       <tr>
-          <td class="table_col1" align="center" width="10%"><a href="account-details.php?id=<?php echo $row['addedby']; ?>"><?php echo $row['username']; ?></a></td>
+          <td class="table_col1" align="center" width="10%"><a href="account-details.php?id=<?php echo $row['addedby']; ?>"><?php echo class_user($row['username']); ?></a></td>
           <td class="table_col2" align="center" width="15%"><a href="<?php echo $link; ?>"><?php echo CutName($r[0], 40); ?></a></td>
           <td class="table_col1" align="center" width="10%"><?php echo $row['type']; ?></td>
           <td class="table_col2" align="center" width="50%"><?php echo htmlspecialchars($row['reason']); ?></td>

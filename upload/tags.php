@@ -1,5 +1,5 @@
 <?php
-require_once("backend/functions.php");
+require_once("backend/init.php");
 dbconn(false);
 
 function insert_tag($name, $description, $syntax, $example, $remarks)

@@ -1,5 +1,5 @@
 <?php
-  require_once("backend/functions.php");
+  require_once("backend/init.php");
   dbconn();
        
   if ($site_config["MEMBERSONLY"]) {
@@ -46,7 +46,7 @@
            $peers = (get_row_count("peers", "WHERE torrent = '$id' AND userid = '$row[id]' AND seeder = 'yes'")) ? "<font color='green'>" . T_("YES") . "</font>" : "<font color='#ff0000'>" . T_("NO") . "</font>";
   ?>
        <tr>
-           <td class="table_col1"><a href="account-details.php?id=<?php echo $row["id"]; ?>"><?php echo $row["username"]; ?></a></td>
+           <td class="table_col1"><a href="account-details.php?id=<?php echo $row["id"]; ?>"><?php echo class_user($row['username']); ?></a></td>
            <td class="table_col2"><?php echo $peers; ?></td>
            <td class="table_col1"><?php echo utc_to_tz($row["date"]); ?></td>
            <td class="table_col2"><?php echo number_format($ratio, 2); ?></td>

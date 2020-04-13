@@ -48,7 +48,7 @@ if ($action=="polls" && $do=="results"){
 		echo '<tr>';
 		echo '<td class="table_col1" align="left"><b>';
 		echo '<a href="account-details.php?id='.$user["id"].'">';
-		echo '&nbsp;&nbsp;'.$user['username'];
+		echo '&nbsp;&nbsp;'.class_user($user['username']);
 		echo '</a>';
 		echo '</b></td>';
 		echo '<td class="table_col2" align="center">';

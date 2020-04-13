@@ -1,5 +1,5 @@
 <?php
-require_once("backend/functions.php");
+require_once("backend/init.php");
 require_once("backend/bbcode.php");
 dbconn();
 
@@ -30,7 +30,7 @@ if ($edit=='1'){
 			$text = $_POST['text'];
 
 			$result= DB::run("UPDATE comments SET text=? WHERE id=?", [$text, $id]);
-			write_log($CURUSER['username']." has edited comment: ID:$id");
+			write_log(class_user($CURUSER['username'])." has edited comment: ID:$id");
 			show_error_msg(T_("COMPLETE"), "Comment Edited OK",1);
 		}
 
@@ -61,7 +61,7 @@ if ($delete=='1'){
 	}
 
 	DB::run("DELETE FROM comments WHERE id =?", [$id]);
-	write_log($CURUSER['username']." has deleted comment: ID: $id");
+	write_log(clas_user($CURUSER['username'])." has deleted comment: ID: $id");
 	show_error_msg(T_("COMPLETE"), "Comment deleted OK", 1);
 }
 

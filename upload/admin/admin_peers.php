@@ -10,9 +10,6 @@ if ($action=="peers"){
 
 	print("<center>We have $count1 peers</center><br />");
 
-/*	$res4 = DB::run("SELECT COUNT(*) FROM peers $limit");
-	$row4 = $res4->fetch(PDO::FETCH_LAZY);
-	$count = $row4[0];*/
 	$count = DB::run("SELECT COUNT(*) FROM peers $limit")->fetchColumn();
 	$peersperpage = 50;
 
@@ -22,7 +19,7 @@ if ($action=="peers"){
 
 	$result = DB::run("SELECT * FROM peers ORDER BY started DESC $limit");
 
-	if($result->fetchColumn() != 0 ) {
+	if($result->rowCount() != 0 ) {
 		print'<center><table width="100%" border="0" cellspacing="0" cellpadding="3" class="table_table">';
 		print'<tr>';
 		print'<th class="table_head">User</th>';
@@ -45,7 +42,7 @@ if ($action=="peers"){
 			}
 
 			if ($row1['username'])
-				print'<tr><td class="table_col1"><a href="account-details.php?id=' . $row['userid'] . '">' . $row1['username'] . '</a></td>';
+				print'<tr><td class="table_col1"><a href="account-details.php?id=' . $row['userid'] . '">' . class_user($row1['username']) . '</a></td>';
 			else
 				print'<tr><td class="table_col1">'.$row["ip"].'</td>';
 

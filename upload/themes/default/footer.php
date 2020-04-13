@@ -1,16 +1,12 @@
-<?php
-			if ($site_config["MIDDLENAV"]){
-				middleblocks();
-			} ?>
 </div>
 <!-- END MIDDLE COLUMN -->
 <!-- START RIGHT COLUMN -->
-<div class="col-sm-2 sidenav">
     <?php if ($site_config["RIGHTNAV"]){ ?>
+<div class="col-sm-2 sidenav">
     <?php rightblocks(); ?>
+</div>
     <?php } ?>
 <!-- END RIGHT COLUMN -->
-</div>
 </div>
 </div>
 <!-- START FOOTER COLUMN -->

@@ -39,7 +39,7 @@
                 if (!$CURUSER){
                     echo "[<a href=\"account-login.php\"><font color='#fff'>".T_("LOGIN")."</font></a>]<b> ";
                 }else{
-                    print (T_("LOGGED_IN_AS").": ".$CURUSER["username"].""); 
+                    print (T_("LOGGED_IN_AS").": ".class_user($CURUSER["username"]).""); 
                     echo " [<a href=\"account-logout.php\"><font color='#fff'>".T_("LOGOUT")."</font></a>] ";
                     if ($CURUSER["control_panel"]=="yes") {
                         print("[<a href='admincp.php'><font color='#fff'>".T_("STAFFCP")."</font></a>] ");
@@ -81,12 +81,15 @@
     <div class="container-fluid">
         <div class="row content">
             <!-- START left COLUMN -->
+            <?php if ($site_config["LEFTNAV"]){ ?>
             <div class="col-sm-2 sidenav">
-                <?php if ($site_config["LEFTNAV"]){ ?>
-
                 <?php leftblocks();?>
             </div>
             <?php } ?>
             <!-- END LEFT COLUMN -->
             <!-- START MIDDLE COLUMN -->
+            <!-- START MIDDLE COLUMN -->
+            <?php if ($site_config["MIDDLENAV"]){ ?>
             <div class="col-sm-8 middlebit">
+                <?php middleblocks();?>
+            <?php } ?>

@@ -1,5 +1,5 @@
 <?php
-require_once ("backend/functions.php");
+require_once ("backend/init.php");
 require_once ("backend/bbcode.php");
 dbconn();
 loggedinonly();
@@ -194,7 +194,7 @@ while ($row = $sql->fetch(PDO::FETCH_LAZY)) {
 	$owner = (int)$row['owner'];
 	$info = format_comment($row['info']);
 	$OWNERNAME2 = DB::run("SELECT username, class FROM users WHERE id=$owner")->fetch();
-	$OWNERNAME = $OWNERNAME2['username'];
+	$OWNERNAME = class_user($OWNERNAME2['username']);
 
 	echo("<tr><td class='table_col1'><b>$id</b> </td> <td class='table_col2' align='center'><img src='$image' alt='' /></td> <td class='table_col1'><b>$name</b></td><td class='table_col2'><a href='account-details.php?id=$owner'>$OWNERNAME</a></td><td class='table_col1'>$info</td><td class='table_col2'><a href='teams-create.php?editmembers=$id'>[Members]</a>&nbsp;<a href='teams-create.php?editid=$id&amp;name=$name&amp;image=$image&amp;info=$info&amp;owner=$OWNERNAME'>[".T_("EDIT")."]</a>&nbsp;<a href='teams-create.php?del=$id&amp;team=$name'>[Delete]</a></td></tr>");
 }

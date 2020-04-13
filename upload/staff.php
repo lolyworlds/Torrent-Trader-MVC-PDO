@@ -1,5 +1,5 @@
 <?php
-  require_once("backend/functions.php");
+  require_once("backend/init.php");
   dbconn();
   loggedinonly();
   stdhead("Staff");
@@ -13,7 +13,7 @@
   {
       $table[$row["class"]] = ($table[$row["class"]]).
         "<td><img src='images/button_o".($row["last_access"] > $dt ? "n" : "ff")."line.png' alt='' /> ". 
-        "<a href='account-details.php?id=".$row["id"]."'>".$row["username"]."</a> ".       
+        "<a href='account-details.php?id=".$row["id"]."'>" . class_user($row["username"]) . "</a> ".       
         "<a href='mailbox.php?compose&amp;id=".$row["id"]."'><img src='images/button_pm.gif' border='0' alt='' /></a></td>";
         
        $col[$row['class']] = ($col[$row['class']] ?? 0) + 1;

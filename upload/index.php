@@ -1,5 +1,5 @@
 <?php
-require_once("backend/functions.php");
+require_once("backend/init.php");
 dbconn(true);
 loggedinonly ();
 stdhead(T_("HOME"));
@@ -45,7 +45,7 @@ if ($site_config['NEWSON'] && $CURUSER['view_news'] == "yes"){
 			}
 
 			print("<br /><a href=\"javascript: klappe_news('a".$array['id']."')\"><img border=\"0\" src=\"".$site_config["SITEURL"]."/images/$pic.gif\" id=\"pica".$array['id']."\" alt=\"Show/Hide\" />");
-			print("&nbsp;<b>". $array['title'] . "</b></a> - <b>".T_("POSTED").":</b> " . date("d-M-y", utc_to_tz_time($array['added'])) . " <b>".T_("BY").":</b> $array[username]");
+			print("&nbsp;<b>". $array['title'] . "</b></a> - <b>".T_("POSTED").":</b> " . date("d-M-y", utc_to_tz_time($array['added'])) . " <b>".T_("BY").":</b> ".class_user($array['username'])."");
 
 			print("<div id=\"ka".$array['id']."\" style=\"display: $disp;\"> ".format_comment($array["body"])." <br /><br />".T_("COMMENTS")." (<a href='comments.php?type=news&amp;id=".$array['id']."'>".number_format($numcomm)."</a>)</div><br /> ");
 

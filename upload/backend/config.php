@@ -13,7 +13,7 @@ $site_config['mysql_user'] = "user";  //Username to connect
 $site_config['mysql_pass'] = "pass"; //Password to connect
 $site_config['mysql_db'] = "dbname";  //Database name
 
-$site_config['ttversion'] = '3.0';							//DONT CHANGE THIS!
+$site_config['ttversion'] = 'PDO';							//DONT CHANGE THIS!
 
 // Main Site Settings
 $site_config['SITENAME'] = 'TorrentTrader';					//Site Name
@@ -69,7 +69,7 @@ $site_config['WELCOMEPMON'] = true;			//Auto PM New members
 $site_config['WELCOMEPMMSG'] = 'Thank you for registering at our tracker! Please remember to keep your ratio at 1.00 or greater :)';
 
 $site_config['SITENOTICEON'] = true;
-$site_config['SITENOTICE'] = 'Welcome To TorrentTrader v3.0';
+$site_config['SITENOTICE'] = 'Welcome To TorrentTrader PDO';
 
 $site_config['UPLOADRULES'] = 'You should also include a .nfo file wherever possible<br />Try to make sure your torrents are well-seeded for at least 24 hours<br />Do not re-release material that is still active';
 
@@ -144,5 +144,14 @@ $site_config["passhash_method"] = "sha1"; // Hashing method (sha1, md5 or hmac).
 // Only used for hmac.
 $site_config["passhash_algorithm"] = "sha1"; // See http://php.net/hash_algos for a list of supported algorithms.
 $site_config["passhash_salt"] = ""; // Shouldn't be blank. At least 20 characters of random text.
+
+// Set User Group
+$site_config['User'] = "1";
+$site_config['PowerUser'] = "2";
+$site_config['VIP'] = "3";
+$site_config['Uploader'] = "4";
+$site_config['Moderator'] = "5";
+$site_config['SuperModerator'] = "6";
+$site_config['Administrator'] = "7";
 
 ?>

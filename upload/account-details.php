@@ -1,5 +1,5 @@
 <?php
-require_once("backend/functions.php");
+require_once("backend/init.php");
 dbconn();
 loggedinonly();
 
@@ -65,7 +65,7 @@ function peerstable($res){
 }
 
 //Layout		
-begin_frame(sprintf(T_("USER_DETAILS_FOR"), $user["username"]));
+begin_frame(sprintf(T_("USER_DETAILS_FOR"), class_user($user["username"])));
 ?>
 <script type="text/javascript">
 
@@ -100,7 +100,7 @@ document.getElementById("id1").style.display="none";
 
 	<tr valign="top">
 		<td align="left">
-		<?php echo T_("USERNAME"); ?>: <?php echo htmlspecialchars($user["username"])?><br />
+		<?php echo T_("USERNAME"); ?>: <?php echo class_user($user["username"])?><br />
 		<?php echo T_("USERCLASS"); ?>: <?php echo get_user_class_name($user["class"])?><br />
 		<?php echo T_("TITLE"); ?>: <i><?php echo format_comment($user["title"])?></i><br />
 		<?php echo T_("JOINED"); ?>: <?php echo htmlspecialchars(utc_to_tz($user["added"]))?><br />
@@ -136,7 +136,7 @@ document.getElementById("id1").style.display="none";
 		</td>
 
 		<td align="left">
-		<img src="<?php echo $avatar; ?>" alt="" title="<?php echo $user["username"]; ?>" height="80" width="80" /><br />
+		<img src="<?php echo $avatar; ?>" alt="" title="<?php echo class_user($user["username"]); ?>" height="80" width="80" /><br />
 		<a href="mailbox.php?compose&amp;id=<?php echo $user["id"]?>"><?php echo T_("SEND_PM"); ?></a><br />
 		<!-- <a href=#>View Forum Posts</a><br />
 		<a href=#>View Comments</a><br /> -->
@@ -318,7 +318,7 @@ document.getElementById("id1").style.display="none";
 			} else {
 				$res2 = DB::run("SELECT id,username FROM users WHERE id =?", [$arr['warnedby']]);
 				$arr2 = $res2->fetch();
-				$wusername = htmlspecialchars($arr2["username"]);
+				$wusername = class_user($arr2["username"]);
 			}
 			$arr['added'] = utc_to_tz($arr['added']);
 			$arr['expiry'] = utc_to_tz($arr['expiry']);
@@ -346,7 +346,7 @@ document.getElementById("id1").style.display="none";
 		print("<hr /><center><form method='post' action='admin-modtasks.php'>\n");
 		print("<input type='hidden' name='action' value='deleteaccount' />\n");
 		print("<input type='hidden' name='userid' value='$id' />\n");
-		print("<input type='hidden' name='username' value='".$user["username"]."' />\n");
+		print("<input type='hidden' name='username' value='".class_user($user["username"])."' />\n");
 		echo "<b>".T_("REASON").":</b><input type='text' size='30' name='delreason' />";
 		echo "&nbsp;<input type='submit' value='".T_("DELETE_ACCOUNT")."' /></form></center>";
 	}

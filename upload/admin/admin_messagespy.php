@@ -41,13 +41,13 @@ if ($action=="messagespy"){
 		$res2 = DB::run("SELECT username FROM users WHERE id=?", [$arr["receiver"]]);
 
 		if ($arr2 = $res2->fetch())
-			$receiver = "<a href='account-details.php?id=" . $arr["receiver"] . "'><b>" . $arr2["username"] . "</b></a>";
+			$receiver = "<a href='account-details.php?id=" . $arr["receiver"] . "'><b>" . class_user($arr2["username"]) . "</b></a>";
 		else
 			$receiver = "<i>Deleted</i>";
 
 		$arr3 = DB::run("SELECT username FROM users WHERE id=?", [$arr["sender"]])->fetch();
 
-		$sender = "<a href='account-details.php?id=" . $arr["sender"] . "'><b>" . $arr3["username"] . "</b></a>";
+		$sender = "<a href='account-details.php?id=" . $arr["sender"] . "'><b>" . class_user($arr3["username"]) . "</b></a>";
 		if( $arr["sender"] == 0 )
 			$sender = "<font class='error'><b>System</b></font>";
 		$msg = format_comment($arr["msg"]);

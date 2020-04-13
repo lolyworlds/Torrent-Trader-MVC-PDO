@@ -20,7 +20,7 @@ if ($action=="news" && $do=="view"){
 			$added = $arr["added"] . " GMT (" . (get_elapsed_time(sql_timestamp_to_unix_timestamp($arr["added"]))) . " ago)";
 
 			$arr2 = DB::run("SELECT username FROM users WHERE id =?", [$userid])->fetch();
-			$postername = $arr2["username"];
+			$postername = class_user($arr2["username"]);
 			
 			if ($postername == "")
 				$by = "Unknown";

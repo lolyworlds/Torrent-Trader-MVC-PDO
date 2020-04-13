@@ -2,7 +2,7 @@
  # For Security Purposes.
  if ( $_SERVER['PHP_SELF'] != $_SERVER['REQUEST_URI'] ) die; 
  
- require_once("backend/functions.php");
+ require_once("backend/init.php");
  dbconn();
  
  logoutcookie();

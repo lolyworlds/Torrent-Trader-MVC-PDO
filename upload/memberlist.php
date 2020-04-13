@@ -1,5 +1,5 @@
 <?php
-require_once("backend/functions.php");
+require_once("backend/init.php");
 dbconn();
 loggedinonly();
 
@@ -122,7 +122,7 @@ while ($arr = $res->fetch(PDO::FETCH_ASSOC)) {
 	if ($arr['last_access'] == '0000-00-00 00:00:00')
 		$arr['last_access'] = T_("NEVER");*/
 
-  print("<tr><td class='table_col1' align='left'><a href='account-details.php?id=$arr[id]'><b>$arr[username]</b></a>" .($arr["donated"] > 0 ? "<img src='$site_config[SITEURL]/images/star.png' border='0' alt='Donated' />" : "")."</td>" .
+  print("<tr><td class='table_col1' align='left'><a href='account-details.php?id=$arr[id]'><b>".class_user($arr['username'])."</b></a>" .($arr["donated"] > 0 ? "<img src='$site_config[SITEURL]/images/star.png' border='0' alt='Donated' />" : "")."</td>" .
   "<td align=\"center\" class='table_col2'>".utc_to_tz($arr["added"])."</td><td align=\"center\" class='table_col1'>".utc_to_tz($arr["last_access"])."</td>".
     "<td class='table_col2' align='center'>" . T_($arr["level"]) . "</td>$country</tr>\n");
 }
