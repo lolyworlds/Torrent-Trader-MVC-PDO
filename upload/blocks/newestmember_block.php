@@ -1,13 +1,14 @@
 <?php
 //USERS ONLINE
+if ($CURUSER){
 begin_block(T_("NEWEST_MEMBERS"));
 
 $expire = 600; // time in seconds
 if (($rows = $TTCache->Get("newestmember_block", $expire)) === false) {
-	$res = SQL_Query_exec("SELECT id, username FROM users WHERE enabled = 'yes' AND status='confirmed' AND privacy != 'strong' ORDER BY id DESC LIMIT 5");
+	$res = DB::run("SELECT id, username FROM users WHERE enabled =?  AND status=? AND privacy !=?  ORDER BY id DESC LIMIT 5", ['yes', 'confirmed', 'strong']);
 	$rows = array();
 
-	while ($row = mysqli_fetch_assoc($res))
+	while ($row = $res->fetch(PDO::FETCH_ASSOC))
 		$rows[] = $row;
 
 	$TTCache->Set("newestmember_block", $rows, $expire);
@@ -24,4 +25,5 @@ if (!$rows) {
 }
 
 end_block();
+}
 ?>

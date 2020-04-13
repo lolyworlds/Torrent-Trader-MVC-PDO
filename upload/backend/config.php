@@ -1,5 +1,18 @@
 <?php
+
+//Access Security check
+if (preg_match('/config.php/i',$_SERVER['PHP_SELF'])) {
+	die;
+}
+
 $site_config = array();
+
+//Change the settings below to match your MYSQL server connection settings
+$site_config['mysql_host'] = "localhost";  //leave this as localhost if you are unsure
+$site_config['mysql_user'] = "user";  //Username to connect
+$site_config['mysql_pass'] = "pass"; //Password to connect
+$site_config['mysql_db'] = "dbname";  //Database name
+
 $site_config['ttversion'] = '3.0';							//DONT CHANGE THIS!
 
 // Main Site Settings
@@ -132,5 +145,4 @@ $site_config["passhash_method"] = "sha1"; // Hashing method (sha1, md5 or hmac).
 $site_config["passhash_algorithm"] = "sha1"; // See http://php.net/hash_algos for a list of supported algorithms.
 $site_config["passhash_salt"] = ""; // Shouldn't be blank. At least 20 characters of random text.
 
-die("You didn't edit your config correctly."); // You MUST remove this line
 ?>

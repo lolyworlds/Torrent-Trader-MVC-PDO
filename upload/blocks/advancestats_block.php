@@ -1,4 +1,5 @@
 <?php
+
 $date_time = get_date_time(gmtime()-(3600*24)); // the 24hrs is the hours you want listed
 $registered = number_format(get_row_count("users"));
 $ncomments = number_format(get_row_count("comments"));
@@ -13,13 +14,13 @@ $leechers = get_row_count("peers", "WHERE seeder='no'");
 $members = number_format(get_row_count("users", "WHERE UNIX_TIMESTAMP('" . get_date_time() . "') - UNIX_TIMESTAMP(users.last_access) < 900"));
 $totalonline = $members + $guests;
 
-$result = SQL_Query_exec("SELECT SUM(downloaded) AS totaldl FROM users"); 
-while ($row = mysqli_fetch_array ($result)) { 
+$result = DB::run("SELECT SUM(downloaded) AS totaldl FROM users");
+while ($row = $result->fetch(PDO::FETCH_LAZY)) {
 	$totaldownloaded = $row["totaldl"]; 
 } 
 
-$result = SQL_Query_exec("SELECT SUM(uploaded) AS totalul FROM users"); 
-while ($row = mysqli_fetch_array ($result)) { 
+$result = DB::run("SELECT SUM(uploaded) AS totalul FROM users");
+while ($row =  $result->fetch(PDO::FETCH_LAZY)) {
 	$totaluploaded      = $row["totalul"]; 
 }
 $localpeers = $leechers+$seeders;

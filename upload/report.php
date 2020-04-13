@@ -29,10 +29,10 @@ if (!empty($takeuser)){
         die;
     }
 
-    $res = SQL_Query_exec("SELECT id FROM reports WHERE addedby = $CURUSER[id] AND votedfor = $takeuser AND type = 'user'");
+    $res = DB::run("SELECT id FROM reports WHERE addedby =? AND votedfor =? AND type =?", [$CURUSER['id'], $takeuser, 'user']);
 
-    if (mysqli_num_rows($res) == 0){
-        SQL_Query_exec("INSERT into reports (addedby,votedfor,type,reason) VALUES ($CURUSER[id],$takeuser,'user', ".sqlesc($takereason).")");
+    if ($res->rowCount() == 0){
+        DB::run("INSERT into reports (addedby,votedfor,type,reason) VALUES (?, ?, ?, ?)", [$CURUSER['id'], $takeuser, 'user', $takereason]);
         print("User: $takeuser, Reason: ".htmlspecialchars($takereason)."<p>Successfully Reported</p>");
         end_frame();
         stdfoot();
@@ -54,9 +54,9 @@ if (($taketorrent !="") && ($takereason !="")){
         die;
     }
 
-    $res = SQL_Query_exec("SELECT id FROM reports WHERE addedby = $CURUSER[id] AND votedfor = $taketorrent AND type = 'torrent'");
-    if (mysqli_num_rows($res) == 0){
-        SQL_Query_exec("INSERT into reports (addedby,votedfor,type,reason) VALUES ($CURUSER[id],$taketorrent,'torrent', ".sqlesc($takereason).")");
+    $res = DB::run("SELECT id FROM reports WHERE addedby =? AND votedfor =? AND type =?", [$CURUSER['id'], $taketorrent, 'torrent']);
+    if ($res->rowCount() == 0){
+        DB::run("INSERT into reports (addedby,votedfor,type,reason) VALUES (?, ?, ?, ?)", [$CURUSER['id'], $taketorrent, 'torrent', $takereason]);
         print("Torrent: $taketorrent, Reason: ".htmlspecialchars($takereason)."<p>Successfully Reported</p>");
         end_frame();
         stdfoot();
@@ -78,9 +78,9 @@ if (($takecomment !="") && ($takereason !="")){
         die;
     }
 
-    $res = SQL_Query_exec("SELECT id FROM reports WHERE addedby = $CURUSER[id] AND votedfor = $takecomment AND type = 'comment'");
-    if (mysqli_num_rows($res) == 0){
-        SQL_Query_exec("INSERT into reports (addedby,votedfor,type,reason) VALUES ($CURUSER[id],$takecomment,'comment', ".sqlesc($takereason).")");
+    $res = DB::run("SELECT id FROM reports WHERE addedby =? AND votedfor =? AND type =?", [$CURUSER['id'], $takecomment, 'comment']);
+    if ($res->rowCount() == 0){
+        DB::run("INSERT into reports (addedby,votedfor,type,reason) VALUES (?, ?, ?, ?)", [$CURUSER['id'], $takecomment, 'comment', $takereason]);
         print("Comment: $takecomment, Reason: ".htmlspecialchars($takereason)."<p>Successfully Reported</p>");
         end_frame();
         stdfoot();
@@ -102,10 +102,10 @@ if (($takeforumid !="") && ($takereason !="")){
         die;
     }
 
-    $res = SQL_Query_exec("SELECT id FROM reports WHERE addedby = $CURUSER[id] AND votedfor= $takeforumid AND votedfor_xtra= $takeforumpost AND type = 'forum'");
+    $res = DB::run("SELECT id FROM reports WHERE addedby =? AND votedfor=? AND votedfor_xtra=? AND type =?", [$CURUSER['id'], $takeforumid, $takeforumpost, 'forum']);
 
-    if (mysqli_num_rows($res) == 0){
-        SQL_Query_exec("INSERT into reports (addedby,votedfor,votedfor_xtra,type,reason) VALUES ($CURUSER[id],$takeforumid,$takeforumpost ,'forum', ".sqlesc($takereason).")");
+    if ($res->rowCount() == 0){
+        DB::run("INSERT into reports (addedby,votedfor,votedfor_xtra,type,reason) VALUES (?, ?, ?, ?, ?)", [$CURUSER['id'], $takeforumid, $takeforumpost, 'forum', $takereason]);
         print("User: $takeuser, Reason: ".htmlspecialchars($takereason)."<p>Successfully Reported</p>");
         end_frame();
         stdfoot();
@@ -121,15 +121,15 @@ if (($takeforumid !="") && ($takereason !="")){
 
 //report user form
 if ($user !=""){
-    $res = SQL_Query_exec("SELECT username, class FROM users WHERE id=$user");
-    if (mysqli_num_rows($res) == 0){
+    $res = DB::run("SELECT username, class FROM users WHERE id=?", [$user]);
+    if ($res->rowCount() == 0){
         print(T_("INVALID_USERID"));
         end_frame();
         stdfoot();
         die();
     }    
 
-    $arr = mysqli_fetch_assoc($res);
+    $arr = $res->fetch(PDO::FETCH_ASSOC);
     
     print("<b>Are you sure you would like to report user:</b><br /><a href='account-details.php?id=$user'><b>$arr[username]</b></a>?<br />");
     print("<p>Please note, this is <b>not</b> to be used to report leechers, we have scripts in place to deal with them</p>");
@@ -141,16 +141,16 @@ if ($user !=""){
 
 //report torrent form
 if ($torrent !=""){
-    $res = SQL_Query_exec("SELECT name FROM torrents WHERE id=$torrent");
+    $res = DB::run("SELECT name FROM torrents WHERE id=?", [$torrent]);
 
-    if (mysqli_num_rows($res) == 0){
+    if ($res->rowCount() == 0){
         print("Invalid TorrentID");
         end_frame();
         stdfoot();
         die();
     }
 
-    $arr = mysqli_fetch_array($res);
+    $arr = $res->fetch(PDO::FETCH_LAZY);
     print("<b>Are you sure you would like to report torrent:</b><br /><a href='torrents-details.php?id=$torrent'><b>$arr[name]</b></a>?<br />");
     print("<b>Reason</b> (required): <form method='post' action='report.php'><input type='hidden' name='torrent' value='$torrent' /><input type='text' size='100' name='reason' /><input type='submit' value='Confirm' /></form>");
     end_frame();
@@ -160,16 +160,16 @@ if ($torrent !=""){
 
 //report forum post form
 if (($forumid !="") && ($forumpost !="")){
-    $res = SQL_Query_exec("SELECT subject FROM forum_topics WHERE id=$forumid");
+    $res = DB::run("SELECT subject FROM forum_topics WHERE id=?", [$forumid]);
 
-    if (mysqli_num_rows($res) == 0){
+    if ($res->rowCount() == 0){
         print("Invalid Forum ID");
         end_frame();
         stdfoot();
         die();
     }
 
-    $arr = mysqli_fetch_array($res);
+    $arr = $res->fetch(PDO::FETCH_LAZY);
     print("<b>Are you sure you would like to report the following forum post:</b><br /><a href='forums.php?action=viewtopic&amp;topicid=$forumid&amp;page=p#post$forumpost'><b>$arr[subject]</b></a>?<br />");
     print("<b>Reason</b> (required): <form method='post' action='report.php'><input type='hidden' name='forumid' value='$forumid' /><input type='hidden' name='forumpost' value='$forumpost'><input type='text' size='100' name='reason' /><input type='submit'  value='Confirm' /></form>");
     end_frame();
@@ -179,15 +179,15 @@ if (($forumid !="") && ($forumpost !="")){
 
 //report comment form
 if ($comment !=""){
-    $res = SQL_Query_exec("SELECT id, text FROM comments WHERE id=$comment");
-    if (mysqli_num_rows($res) == 0){
+    $res = DB::run("SELECT id, text FROM comments WHERE id=?", [$comment]);
+    if ($res->rowCount() == 0){
         print("Invalid Comment");
         end_frame();
         stdfoot();
         die();
     }    
 
-    $arr = mysqli_fetch_assoc($res);
+    $arr = $res->fetch(PDO::FETCH_LAZY);
     
     print("<b>Are you sure you would like to report Comment:</b><br /><br /><b>".format_comment($arr["text"])."</b>?<br />");
     print("<p>Please note, this is <b>not</b> to be used to report leechers, we have scripts in place to deal with them</p>");

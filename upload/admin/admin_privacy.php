@@ -24,10 +24,11 @@ if ($action == "privacylevel")
     $where = implode(' AND ', $where);
     
     $count = get_row_count("users", "WHERE $where");
-    
+    // $count = DB::run("SELECT COUNT(*) FROM users WHERE $where")->fetchColumn();
+
     list($pagertop, $pagerbottom, $limit) = pager(25, $count, htmlspecialchars($_SERVER['REQUEST_URI'] . '&'));  
                                                                      
-    $res = SQL_Query_exec("SELECT id, username, class, email, ip, added, last_access FROM users WHERE $where ORDER BY username DESC $limit");
+    $res = DB::run("SELECT id, username, class, email, ip, added, last_access FROM users WHERE $where ORDER BY username DESC $limit");
     
     stdhead("Privacy Level");
     navmenu();
@@ -69,7 +70,7 @@ if ($action == "privacylevel")
         <th class="table_head">Added</th>
         <th class="table_head">Last Visited</th>  
     </tr>
-    <?php while ($row = mysqli_fetch_assoc($res)): ?>
+    <?php while ($row = $res->fetch(PDO::FETCH_ASSOC)): ?>
     <tr>
         <td class="table_col1" align="center"><a href="account-details.php?id=<?php echo $row["id"]; ?>"><?php echo $row["username"]; ?></a></td>
         <td class="table_col2" align="center"><?php echo get_user_class_name($row["class"]); ?></td>

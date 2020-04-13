@@ -14,8 +14,8 @@ if ($action == "users")
         $ids = array_map("intval", $_POST["users"]);
         $ids = implode(", ", $ids);
 
-        $res = SQL_Query_exec("SELECT `id`, `username` FROM `users` WHERE `id` IN ($ids)");
-        while ($row = mysqli_fetch_row($res))
+        $res = DB::run("SELECT `id`, `username` FROM `users` WHERE `id` IN ($ids)");
+        while ($row = $res->fetch(PDO::FETCH_LAZY))
         {
             write_log("Account '$row[1]' (ID: $row[0]) was deleted by $CURUSER[username]");  
             deleteaccount($row[0]); 
@@ -23,8 +23,8 @@ if ($action == "users")
         
         if ($_POST['inc']) 
         {
-            $res = SQL_Query_exec("SELECT `id`, `name` FROM `torrents` WHERE `owner` IN ($ids)");
-            while ($row = mysqli_fetch_row($res))
+            $res = DB::run("SELECT `id`, `name` FROM `torrents` WHERE `owner` IN ($ids)");
+            while ($row = $res->fetch(PDO::FETCH_LAZY))
             {
                 write_log("Torrent '$row[1]' (ID: $row[0]) was deleted by $CURUSER[username]");    
                 deletetorrent($row["id"]);
@@ -48,7 +48,7 @@ if ($action == "users")
     
     list($pagertop, $pagerbottom, $limit) = pager(25, $count, 'admincp.php?action=users&amp;');  
                                                                      
-    $res = SQL_Query_exec("SELECT id, username, class, email, ip, added, last_access FROM users WHERE enabled = 'yes' AND status = 'confirmed' $where ORDER BY username DESC $limit");
+    $res = DB::run("SELECT id, username, class, email, ip, added, last_access FROM users WHERE enabled = 'yes' AND status = 'confirmed' $where ORDER BY username DESC $limit");
     
     stdhead(T_("USERS_SEARCH_SIMPLE"));
     navmenu();
@@ -83,7 +83,7 @@ if ($action == "users")
         <th class="table_head">Last Visited</th>  
         <th class="table_head"><input type="checkbox" name="checkall" onclick="checkAll(this.form.id);" /></th>
     </tr>
-    <?php while ($row = mysqli_fetch_assoc($res)): ?>
+    <?php while ($row = $res->fetch(PDO::FETCH_ASSOC)): ?>
     <tr>
         <td class="table_col1" align="center"><a href="account-details.php?id=<?php echo $row["id"]; ?>"><?php echo $row["username"]; ?></a></td>
         <td class="table_col2" align="center"><?php echo get_user_class_name($row["class"]); ?></td>

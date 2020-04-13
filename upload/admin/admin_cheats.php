@@ -12,8 +12,8 @@ if ($action == "cheats") {
 		$timeago = 84600 * $daysago; //last 7 days
 		$bytesover = 1048576 * $megabts; //over 500MB Upped
 
-		$result = SQL_Query_exec("select * FROM users WHERE UNIX_TIMESTAMP('" . get_date_time() . "') - UNIX_TIMESTAMP(added) < '$timeago' AND status='confirmed' AND uploaded > '$bytesover' ORDER BY uploaded DESC "); 
-		$num = mysqli_num_rows($result); // how many uploaders
+		$result = DB::run("select * FROM users WHERE UNIX_TIMESTAMP('" . get_date_time() . "') - UNIX_TIMESTAMP(added) < '$timeago' AND status='confirmed' AND uploaded > '$bytesover' ORDER BY uploaded DESC ");
+		$num = $result->rowCount(); // how many uploaders
 
 		begin_frame("Possible Cheater Detection");
 		echo "<p>" . $num . " Users with found over last ".$daysago." days with more than ".$megabts." MB (".$bytesover.") Bytes Uploaded.</p>";
@@ -34,17 +34,16 @@ if ($action == "cheats") {
 		 echo "<th class='table_head'>Joined</th>";
 		echo "</tr>";
 
-		for ($i = 0; $i <= $zerofix; $i++) {
-			 $id = mysqli_result($result, $i, "id");
-			 $username = mysqli_result($result, $i, "username");
-			 $added = mysqli_result($result, $i, "added");
-			 $uploaded = mysqli_result($result, $i, "uploaded");
-			 $downloaded = mysqli_result($result, $i, "downloaded");
-			 $donated = mysqli_result($result, $i, "donated");
-			 $warned = mysqli_result($result, $i, "warned");
+		for ($i = 0; $i <= $zerofix; $i++) { //need to change mysqli_result
+			 $id = $result->fetch($i, "id"); //need to change mysqli_result
+			 $username = $result->fetch($i, "username"); //need to change mysqli_result
+			 $added = $result->fetch($i, "added"); //need to change mysqli_result
+			 $uploaded = $result->fetch($i, "uploaded"); //need to change mysqli_result
+			 $downloaded = $result->fetch($i, "downloaded"); //need to change mysqli_result
+			 $donated = $result->fetch($i, "donated"); //need to change mysqli_result
+			 $warned = $result->fetch($i, "warned"); //need to change mysqli_result
 			 $joindate = "" . get_elapsed_time(sql_timestamp_to_unix_timestamp($added)) . " ago";
-			 $upperquery = "SELECT added FROM torrents WHERE owner = $id";
-			 $upperresult = SQL_Query_exec($upperquery);
+			 $upperresult = DB::run("SELECT added FROM torrents WHERE owner =?", [$id]);
 			 $seconds = mkprettytime(utc_to_tz_time() - utc_to_tz_time($added));
 			 $days = explode("d ", $seconds);
 
@@ -53,9 +52,9 @@ if ($action == "cheats") {
 				 $dayDownload = $downloaded / $days[0];
 			}
 		 
-		  $torrentinfo = mysqli_fetch_array($upperresult);
+		  $torrentinfo = $upperresult->fetch(PDO::FETCH_LAZY);
 		 
-		  $numtorrents = mysqli_num_rows($upperresult);
+		  $numtorrents = $upperresult->rowCount();
 		   
 		  if ($downloaded > 0){
 		   $ratio = $uploaded / $downloaded;

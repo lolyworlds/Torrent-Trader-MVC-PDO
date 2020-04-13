@@ -6,14 +6,14 @@ stdhead(T_("FAQ"));
 
 $faq_categ = null;
 
-$res = SQL_Query_exec("SELECT `id`, `question`, `flag` FROM `faq` WHERE `type`='categ' ORDER BY `order` ASC");
-while ($arr = mysqli_fetch_array($res, MYSQLI_BOTH)) {
+$res = DB::run("SELECT `id`, `question`, `flag` FROM `faq` WHERE `type`=? ORDER BY `order` ASC", ['categ']);
+while ($arr = $res->fetch(PDO::FETCH_BOTH)) {
  $faq_categ[$arr['id']]['title'] = $arr['question'];
  $faq_categ[$arr['id']]['flag'] = $arr['flag'];
 }
 
-$res = SQL_Query_exec("SELECT `id`, `question`, `answer`, `flag`, `categ` FROM `faq` WHERE `type`='item' ORDER BY `order` ASC");
-while ($arr = mysqli_fetch_array($res, MYSQLI_BOTH)) {
+$res = DB::run("SELECT `id`, `question`, `answer`, `flag`, `categ` FROM `faq` WHERE `type`=? ORDER BY `order` ASC", ['item']);
+while ($arr = $res->fetch(PDO::FETCH_BOTH)) {
  $faq_categ[$arr['categ']]['items'][$arr['id']]['question'] = $arr['question'];
  $faq_categ[$arr['categ']]['items'][$arr['id']]['answer'] = $arr['answer'];
  $faq_categ[$arr['categ']]['items'][$arr['id']]['flag'] = $arr['flag'];

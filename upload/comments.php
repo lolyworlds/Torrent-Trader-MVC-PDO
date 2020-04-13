@@ -19,7 +19,7 @@ if (!isset($id) || !$id || ($type != "torrent" && $type != "news"))
 	show_error_msg(T_("ERROR"), T_("ERROR"), 1);
 
 if ($edit=='1'){
-	$row = mysqli_fetch_assoc(SQL_Query_exec("SELECT user FROM comments WHERE id=$id"));
+	$row = DB::run("SELECT user FROM comments WHERE id=?", [$id])->fetch();
 
     if (($type == "torrent" && $CURUSER["edit_torrents"] == "no" || $type == "news" && $CURUSER["edit_news"] == "no") && $CURUSER['id'] != $row['user'])   
 		show_error_msg(T_("ERROR"),T_("ERR_YOU_CANT_DO_THIS"),1);
@@ -27,18 +27,16 @@ if ($edit=='1'){
 		$save = (int)$_GET["save"];
 
 		if($save){
-			$text = sqlesc($_POST['text']);
+			$text = $_POST['text'];
 
-			$query="UPDATE comments SET text=$text WHERE id=$id";
-			$result=SQL_Query_exec($query);
+			$result= DB::run("UPDATE comments SET text=? WHERE id=?", [$text, $id]);
 			write_log($CURUSER['username']." has edited comment: ID:$id");
 			show_error_msg(T_("COMPLETE"), "Comment Edited OK",1);
 		}
 
 		stdhead("Edit Comment");
 
-		$res = SQL_Query_exec("SELECT * FROM comments WHERE id=$id");
-		$arr = mysqli_fetch_array($res);
+    	$arr = DB::run("SELECT * FROM comments WHERE id=?", [$id])->fetch();
 
 		begin_frame(T_("EDITCOMMENT"));
 		print("<center><b> ".T_("EDITCOMMENT")." </b><p>\n");
@@ -55,14 +53,14 @@ if ($delete=='1'){
 		show_error_msg(T_("ERROR"),T_("ERR_YOU_CANT_DO_THIS"),1);
 
 	if ($type == "torrent") {
-		$res = SQL_Query_exec("SELECT torrent FROM comments WHERE id=$id");
-		$row = mysqli_fetch_assoc($res);
+		$res = DB::run("SELECT torrent FROM comments WHERE id=?", [$id]);
+		$row = $res->fetch(PDO::FETCH_ASSOC);
 		if ($row["torrent"] > 0) {
-			SQL_Query_exec("UPDATE torrents SET comments = comments - 1 WHERE id = $row[torrent]");
+			DB::run("UPDATE torrents SET comments = comments - 1 WHERE id = $row[torrent]");
 		}
 	}
 
-	SQL_Query_exec("DELETE FROM comments WHERE id = $id");
+	DB::run("DELETE FROM comments WHERE id =?", [$id]);
 	write_log($CURUSER['username']." has deleted comment: ID: $id");
 	show_error_msg(T_("COMPLETE"), "Comment deleted OK", 1);
 }
@@ -79,12 +77,12 @@ if ($_GET["takecomment"] == 'yes'){
 		show_error_msg(T_("ERROR"), T_("YOU_DID_NOT_ENTER_ANYTHING"), 1);
 
 	if ($type =="torrent"){
-		SQL_Query_exec("UPDATE torrents SET comments = comments + 1 WHERE id = $id");
+        DB::run("UPDATE torrents SET comments = comments + 1 WHERE id = $id");
 	}
 
-	SQL_Query_exec("INSERT INTO comments (user, ".$type.", added, text) VALUES (".$CURUSER["id"].", ".$id.", '" .get_date_time(). "', " . sqlesc($body).")");
+    $ins = DB::run("INSERT INTO comments (user, ".$type.", added, text) VALUES (?, ?, ?, ?)",[$CURUSER["id"], $id, get_date_time(), $body]);
 
-	if (mysqli_affected_rows($GLOBALS["DBconnector"]) == 1)
+	if ($ins)
 			show_error_msg(T_("COMPLETED"), "Your Comment was added successfully.", 0);
 		else
 			show_error_msg(T_("ERROR"), T_("UNABLE_TO_ADD_COMMENT"), 0);
@@ -92,8 +90,8 @@ if ($_GET["takecomment"] == 'yes'){
 
 //NEWS
 if ($type =="news"){
-	$res = SQL_Query_exec("SELECT * FROM news WHERE id = $id");
-	$row = mysqli_fetch_array($res);
+	$res = DB::run("SELECT * FROM news WHERE id =?", [$id]);
+	$row = $res->fetch(PDO::FETCH_LAZY);
 
 	if (!$row){
 		show_error_msg(T_("ERROR"), "News id invalid", 0);
@@ -108,8 +106,8 @@ if ($type =="news"){
 
 //TORRENT
 if ($type =="torrent"){
-	$res = SQL_Query_exec("SELECT id, name FROM torrents WHERE id = $id");
-	$row = mysqli_fetch_array($res);
+	$res = DB::run("SELECT id, name FROM torrents WHERE id =?", [$id]);
+	$row = $res->fetch(PDO::FETCH_LAZY);
 
 	if (!$row){
 		show_error_msg(T_("ERROR"), "News id invalid", 0);
@@ -121,15 +119,11 @@ if ($type =="torrent"){
 }
 
 begin_frame(T_("COMMENTS"));
-	
-	$subres = SQL_Query_exec("SELECT COUNT(*) FROM comments WHERE $type = $id");
-	$subrow = mysqli_fetch_array($subres);
-	$commcount = $subrow[0];
+	$commcount = DB::run("SELECT COUNT(*) FROM comments WHERE $type =?", [$id])->fetchColumn();
 
 	if ($commcount) {
 		list($pagertop, $pagerbottom, $limit) = pager(10, $commcount, "comments.php?id=$id&amp;type=$type&amp;");
-		$commquery = "SELECT comments.id, text, user, comments.added, avatar, signature, username, title, class, uploaded, downloaded, privacy, donated FROM comments LEFT JOIN users ON comments.user = users.id WHERE $type = $id ORDER BY comments.id $limit";
-		$commres = SQL_Query_exec($commquery);
+        $commres = DB::run("SELECT comments.id, text, user, comments.added, avatar, signature, username, title, class, uploaded, downloaded, privacy, donated FROM comments LEFT JOIN users ON comments.user = users.id WHERE $type = $id ORDER BY comments.id $limit");
 	}else{
 		unset($commres);
 	}
@@ -151,4 +145,3 @@ begin_frame(T_("COMMENTS"));
 	end_frame();
 
 stdfoot();
-?>

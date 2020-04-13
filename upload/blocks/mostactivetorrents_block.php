@@ -8,10 +8,10 @@ if (!$site_config["MEMBERSONLY"] || $CURUSER) {
 
 	$expires = 600; // Cache time in seconds
 	if (($rows = $TTCache->Get("mostactivetorrents_block", $expires)) === false) {
-		$res = SQL_Query_exec("SELECT id, name, seeders, leechers FROM torrents $where ORDER BY seeders + leechers DESC, seeders DESC, added ASC LIMIT 10");
+		$res = DB::run("SELECT id, name, seeders, leechers FROM torrents $where ORDER BY seeders + leechers DESC, seeders DESC, added ASC LIMIT 10");
 
 		$rows = array();
-		while ($row = mysqli_fetch_assoc($res))
+		while ($row = $res->fetch(PDO::FETCH_ASSOC))
 			$rows[] = $row;
 
 		$TTCache->Set("mostactivetorrents_block", $rows, $expires);

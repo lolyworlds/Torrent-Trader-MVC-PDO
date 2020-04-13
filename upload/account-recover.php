@@ -2,7 +2,7 @@
 require_once("backend/functions.php");
 dbconn();
 
-$kind = "0";
+$kind = '0';
 
 if (is_valid_id($_POST["id"]) && strlen($_POST["secret"]) == 32) {
     $password = $_POST["password"];
@@ -17,8 +17,9 @@ if (is_valid_id($_POST["id"]) && strlen($_POST["secret"]) == 32) {
 	$n = get_row_count("users", "WHERE `id`=".intval($_POST["id"])." AND MD5(`secret`) = ".sqlesc($_POST["secret"]));
 	if ($n != 1)
 		show_error_msg(T_("ERROR"), T_("NO_SUCH_USER"));
-        $newsec = sqlesc(mksecret());
-        SQL_Query_exec("UPDATE `users` SET `password` = '".passhash($password)."', `secret` = $newsec WHERE `id`=".intval($_POST['id'])." AND MD5(`secret`) = ".sqlesc($_POST["secret"]));
+        $newsec = mksecret();
+        $wantpassword = password_hash($password, PASSWORD_BCRYPT);
+        DB::run("UPDATE `users` SET `password` =?, `secret` =? WHERE `id`=? AND secret =?", [$wantpassword, $newsec, $_POST['id'], $_POST["secret"]]);
         $kind = T_("SUCCESS");
         $msg =  T_("PASSWORD_CHANGED_OK");
     }
@@ -31,9 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_GET["take"] == 1) {
         $msg = T_("EMAIL_ADDRESS_NOT_VAILD");
         $kind = T_("ERROR");
     }else{
-        $res = SQL_Query_exec("SELECT id, username, email FROM users WHERE email=" . sqlesc($email) . " LIMIT 1");
-        $arr = mysqli_fetch_assoc($res);
-
+        $arr = DB::run("SELECT id, username, email FROM users WHERE email=? LIMIT 1", [$email])->fetch();
         if (!$arr) {
             $msg = T_("EMAIL_ADDRESS_NOT_FOUND");
             $kind = T_("ERROR");
@@ -47,12 +46,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_GET["take"] == 1) {
             $body = T_("SOMEONE_FROM")." " . $_SERVER["REMOTE_ADDR"] . " ".T_("MAILED_BACK")." ($email) ".T_("BE_MAILED_BACK")." \r\n\r\n ".T_("ACCOUNT_INFO")." \r\n\r\n ".T_("USERNAME").": ".$arr["username"]." \r\n ".T_("CHANGE_PSW")."\n\n$site_config[SITEURL]/account-recover.php?id=$id&secret=$secmd5\n\n\n".$site_config["SITENAME"]."\r\n";
             
             @sendmail($arr["email"], T_("ACCOUNT_DETAILS"), $body, "", "-f".$site_config['SITEEMAIL']);
-           
-              $res2 = SQL_Query_exec("UPDATE `users` SET `secret` = ".sqlesc($sec)." WHERE `email`= ". sqlesc($email) ." LIMIT 1");
-
-              $msg = sprintf(T_('MAIL_RECOVER'), htmlspecialchars($email));
-
-              $kind = T_("SUCCESS");
+            $res2 =DB::run("UPDATE `users` SET `secret` =? WHERE `email`=? LIMIT 1", [$sec, $email]);
+            $msg = sprintf(T_('MAIL_RECOVER'), htmlspecialchars($email));
+            $kind = T_("SUCCESS");
         }
     }
 }
@@ -106,4 +102,3 @@ if (is_valid_id($_GET["id"]) && strlen($_GET["secret"]) == 32) {?>
 }
 end_frame();
 stdfoot();
-?>

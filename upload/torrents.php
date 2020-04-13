@@ -34,8 +34,8 @@ $category = (int) $_GET["cat"];
 $where = implode(" AND ", $wherea);
 $wherecatina = array();
 $wherecatin = "";
-$res = SQL_Query_exec("SELECT id FROM categories");
-while($row = mysqli_fetch_array($res)){
+$res = DB::run("SELECT id FROM categories");
+while($row = $res->fetch(PDo::FETCH_LAZY)){
     if ($_GET["c$row[id]"]) {
         $wherecatina[] = $row["id"];
         $addparam .= "c$row[id]=1&amp;";
@@ -79,15 +79,14 @@ if ($_GET["sort"] || $_GET["order"]) {
     }
 
 //Get Total For Pager
-$res = SQL_Query_exec("SELECT COUNT(*) FROM torrents LEFT JOIN categories ON category = categories.id $where");
-$row = mysqli_fetch_row($res);
-$count = $row[0];
+$count = DB::run("SELECT COUNT(*) FROM torrents LEFT JOIN categories ON category = categories.id $where")->fetchColumn();
+// $count = $row[0];
 
 //get sql info
 if ($count) {
     list($pagertop, $pagerbottom, $limit) = pager(20, $count, "torrents.php?" . $addparam);
     $query = "SELECT torrents.id, torrents.anon, torrents.announce, torrents.category, torrents.leechers, torrents.nfo, torrents.seeders, torrents.name, torrents.times_completed, torrents.size, torrents.added, torrents.comments, torrents.numfiles, torrents.filename, torrents.owner, torrents.external, torrents.freeleech, categories.name AS cat_name, categories.parent_cat AS cat_parent, categories.image AS cat_pic, users.username, users.privacy, IF(torrents.numratings < 2, NULL, ROUND(torrents.ratingsum / torrents.numratings, 1)) AS rating FROM torrents LEFT JOIN categories ON category = categories.id LEFT JOIN users ON torrents.owner = users.id $where $orderby $limit";
-    $res = SQL_Query_exec($query);
+    $res = DB::run($query);
 }else{
     unset($res);
 }
@@ -97,9 +96,9 @@ begin_frame(T_("BROWSE_TORRENTS"));
 
 // get all parent cats
 echo "<center><b>".T_("CATEGORIES").":</b> ";
-$catsquery = SQL_Query_exec("SELECT distinct parent_cat FROM categories ORDER BY parent_cat");
+$catsquery = DB::run("SELECT distinct parent_cat FROM categories ORDER BY parent_cat");
 echo " - <a href='torrents.php'>".T_("SHOW_ALL")."</a>";
-while($catsrow = mysqli_fetch_assoc($catsquery)){
+while($catsrow = $catsquery->fetch(PDO::FETCH_ASSOC)){
         echo " - <a href='torrents.php?parent_cat=".urlencode($catsrow['parent_cat'])."'>$catsrow[parent_cat]</a>";
 }
 
@@ -110,8 +109,9 @@ while($catsrow = mysqli_fetch_assoc($catsquery)){
 <tr align='right'>
 <?php
 $i = 0;
-$cats = SQL_Query_exec("SELECT * FROM categories ORDER BY parent_cat, name");
-while ($cat = mysqli_fetch_assoc($cats)) {
+
+$cats = DB::run("SELECT * FROM categories ORDER BY parent_cat, name");
+while ($cat = $cats->fetch(PDO::FETCH_ASSOC)) {
     $catsperrow = 5;
     print(($i && $i % $catsperrow == 0) ? "</tr><tr align='right'>" : "");
     print("<td style=\"padding-bottom: 2px;padding-left: 2px\"><a href='torrents.php?cat={$cat["id"]}'>".htmlspecialchars($cat["parent_cat"])." - " . htmlspecialchars($cat["name"]) . "</a> <input name='c{$cat["id"]}' type=\"checkbox\" " . (in_array($cat["id"], $wherecatina) || $_GET["cat"] == $cat["id"] ? "checked='checked' " : "") . "value='1' /></td>\n");
@@ -124,8 +124,8 @@ echo "</table></form>";
 if ($parent_cat){
     $thisurl .= "parent_cat=".urlencode($parent_cat)."&amp;";
     echo "<br /><br /><b>".T_("YOU_ARE_IN").":</b> <a href='torrents.php?parent_cat=".urlencode($parent_cat)."'>".htmlspecialchars($parent_cat)."</a><br /><b>".T_("SUB_CATS").":</b> ";
-    $subcatsquery = SQL_Query_exec("SELECT id, name, parent_cat FROM categories WHERE parent_cat=".sqlesc($parent_cat)." ORDER BY name");
-    while($subcatsrow = mysqli_fetch_assoc($subcatsquery)){
+    $subcatsquery = DB::run("SELECT id, name, parent_cat FROM categories WHERE parent_cat=".sqlesc($parent_cat)." ORDER BY name");
+    while($subcatsrow = $subcatsquery->fetch(PDO::FETCH_ASSOC)){
         $name = $subcatsrow['name'];
         echo " - <a href='torrents.php?cat=$subcatsrow[id]'>$name</a>";
     }
@@ -169,7 +169,7 @@ if ($count) {
 }
 
 if ($CURUSER)
-    SQL_Query_exec("UPDATE users SET last_browse=".gmtime()." WHERE id=$CURUSER[id]");
+    DB::run("UPDATE users SET last_browse=? WHERE id=?", [gmtime(), $CURUSER['id']]);
 
 end_frame();
 stdfoot();

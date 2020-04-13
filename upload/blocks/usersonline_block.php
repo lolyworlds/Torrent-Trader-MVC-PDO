@@ -1,13 +1,14 @@
 <?php
+if ($CURUSER){
 begin_block(T_("ONLINE_USERS"));
 
 $expires = 600; // Cache time in seconds
 
 if (($rows = $TTCache->Get("usersonline_block", $expires)) === false) {
-	$res = SQL_Query_exec("SELECT id, username FROM users WHERE enabled = 'yes' AND status = 'confirmed' AND privacy !='strong' AND UNIX_TIMESTAMP('".get_date_time()."') - UNIX_TIMESTAMP(users.last_access) <= 900");
+	$res = DB::run("SELECT id, username FROM users WHERE enabled = 'yes' AND status = 'confirmed' AND privacy !='strong' AND UNIX_TIMESTAMP('".get_date_time()."') - UNIX_TIMESTAMP(users.last_access) <= 900");
 
 	$rows = array();
-	while ($row = mysqli_fetch_assoc($res)) {
+	while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
 		$rows[] = $row;
 	}
 
@@ -26,4 +27,5 @@ if (!$rows) {
 }
 
 end_block();
+}
 ?>

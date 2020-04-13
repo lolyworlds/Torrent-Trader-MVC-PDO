@@ -29,6 +29,20 @@
    ":bad"  => "bad.png",
    ":!"    => "important.png",
    "brb"   => "brb.png",
+   ":gigg" => "giggle.png",
+   ":rofl"  => "roflmao.png",
+   ":slep"    => "sleep.png",
+   ":thum"   => "thumbsup.png",
+   ":0_0" => "zpo.png",
+   ":poop"  => "poop.png",
+   ":spechles"    => "speechless.png",
+   ":unsure"   => "unsure.png",
+   ":mad"  => "mad.png",
+   ":roll"    => "rolleyes.png",
+   ":sick"   => "sick.png",
+   ":crylol"  => "crylaugh.png",
+   ":confos"    => "confound.png",
+   ":fire"   => "fire.png",
  );
 
 

@@ -3,12 +3,12 @@
 if ($action == "sitelog") {
 	if ($do == "del") {
 		if ($_POST["delall"])
-			SQL_Query_exec("DELETE FROM `log`");
+			DB::run("DELETE FROM `log`");
 		else {
 			if (!@count($_POST["del"])) show_error_msg(T_("ERROR"), T_("NOTHING_SELECTED"), 1);
 			$ids = array_map("intval", $_POST["del"]);
 			$ids = implode(", ", $ids);
-			SQL_Query_exec("DELETE FROM `log` WHERE `id` IN ($ids)");
+			DB::run("DELETE FROM `log` WHERE `id` IN ($ids)");
 		}
 		autolink("admincp.php?action=sitelog", T_("CP_DELETED_ENTRIES"));
 		stdhead();
@@ -26,8 +26,8 @@ if ($action == "sitelog") {
 		$where = "WHERE txt LIKE " . sqlesc("%$search%") . "";
 	}
 
-	$res2 = SQL_Query_exec("SELECT COUNT(*) FROM log $where");
-	$row = mysqli_fetch_array($res2);
+	$res2 = DB::run("SELECT COUNT(*) FROM log $where");
+	$row = $res2->fetch(PDO::FETCH_LAZY);
 	$count = $row[0];
 
 	$perpage = 50;
@@ -57,9 +57,9 @@ if ($action == "sitelog") {
 	<?php
 	
 	$rqq = "SELECT id, added, txt FROM log $where ORDER BY id DESC $limit";
-	$res = SQL_Query_exec($rqq);
+	$res = DB::run($rqq);
 
-	 while ($arr = mysqli_fetch_array($res)){
+	 while ($arr = $res->fetch(PDO::FETCH_ASSOC)){
 		$arr['added'] = utc_to_tz($arr['added']);
 		$date = substr($arr['added'], 0, strpos($arr['added'], " "));
 		$time = substr($arr['added'], strpos($arr['added'], " ") + 1);

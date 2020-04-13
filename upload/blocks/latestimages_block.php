@@ -2,13 +2,13 @@
 if (!$site_config["MEMBERSONLY"] || $CURUSER) {
 	$limit = 25; // Only show 25 max
 
-	$res = SQL_Query_exec("SELECT torrents.id, torrents.name, torrents.image1, torrents.image2, categories.name as cat_name, categories.parent_cat as cat_parent FROM torrents LEFT JOIN categories ON torrents.category=categories.id WHERE banned = 'no' AND (image1 != '' OR image2 != '') AND visible = 'yes' ORDER BY id DESC LIMIT $limit");
-	if (mysqli_num_rows($res)) {
+	$res = DB::run("SELECT torrents.id, torrents.name, torrents.image1, torrents.image2, categories.name as cat_name, categories.parent_cat as cat_parent FROM torrents LEFT JOIN categories ON torrents.category=categories.id WHERE banned = 'no' AND (image1 != '' OR image2 != '') AND visible = 'yes' ORDER BY id DESC LIMIT $limit");
+	if ($res->rowCount() > 0) {
 		begin_block(T_("LATEST_POSTERS"));
 
 		print("<table align='center' cellpadding='0' cellspacing='0' width='100%' border='0'>");
 
-		while ($row = mysqli_fetch_assoc($res)) {
+		while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
 				$cat = htmlspecialchars("$row[cat_parent] - $row[cat_name]");
 				$name = htmlspecialchars($row["name"]);
 

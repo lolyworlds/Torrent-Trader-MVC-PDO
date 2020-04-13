@@ -1,5 +1,6 @@
 <?php
-class SimpleXmlParser{
+if ($CURUSER){
+class SimpleXmlParser1{
     // @ Variable Holding Parser
 	var $SimpleParser;
 
@@ -94,7 +95,8 @@ $FeedUrl = "";
 if (!$FeedUrl) {
 	echo "<center>This would need editing with an rss feed of your choice.</center>";
 } else {
-	$XMLpar = new SimpleXmlParser($FeedUrl);
+	$XMLpar = new SimpleXmlParser1($FeedUrl);
 }
 end_block();
+}
 ?>

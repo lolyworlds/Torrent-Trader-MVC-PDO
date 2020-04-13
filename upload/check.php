@@ -36,9 +36,9 @@ function view() {
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
+<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>TorrentTrader Check</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
 <style type="text/css">
 td { vertical-align: top; }
 </style>
@@ -199,101 +199,102 @@ writableCell( 'censor.txt', 1 );
 </table>
 <br />
 <?php
-require_once("backend/mysql.php");
+require_once("backend/config.php");
 echo "<b>Table Status Check:</b><br /><br />";
-	$link = mysqli_connect($mysql_host, $mysql_user, $mysql_pass);
-	if (!$link)
-	printf("<font color='#ff0000'><b>Failed to connect to database:</b></font> (%d) %s<br />", mysqli_errno($link), mysqli_error($link));
-else {
-	if (!mysqli_select_db($link, $mysql_db))
-		printf("<font color='#ff0000'><b>Failed to select database:</b></font> (%d) %s<br />", mysqli_errno($link), mysqli_error($link));
-	else {
-		$r = mysqli_query($link, "SHOW TABLES");
-		if (!$r)
-			printf("<font color='#ff0000'><b>Failed to list tables:</b></font> (%d) %s<br />", mysqli_errno($link), mysqli_error($link));
-		else {
-			$tables = array();
-			while($rr=mysqli_fetch_row($r))
-			$tables[] = $rr[0];
-			$arr[] = "announce";
-			$arr[] = "bans";
-			$arr[] = "blocks";
-			$arr[] = "categories";
-			$arr[] = "censor";
-			$arr[] = "comments";
-			$arr[] = "completed";
-			$arr[] = "countries";
-			$arr[] = "email_bans";
-			$arr[] = "faq";
-			$arr[] = "groups";
-			$arr[] = "guests";
-			$arr[] = "languages";
-			$arr[] = "log";
-			$arr[] = "messages";
-			$arr[] = "news";
-			$arr[] = "peers";
-			$arr[] = "pollanswers";
-			$arr[] = "polls";
-			$arr[] = "ratings";
-			$arr[] = "reports";
-			$arr[] = "rules";
-			$arr[] = "shoutbox";
-			$arr[] = "stylesheets";
-			$arr[] = "tasks";
-			$arr[] = "teams";
-			$arr[] = "torrentlang";
-			$arr[] = "torrents";
-			$arr[] = "users";
-			$arr[] = "warnings";
+    try {
+        $link = new PDO('mysql:host='.$site_config['mysql_host'].';dbname='.$site_config['mysql_db'], $site_config['mysql_user'], $site_config['mysql_pass']);       
+        $link->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $stmt = $link->prepare("SHOW TABLES");
+        $stmt->execute();
+        if (!$stmt)
+            echo "<font color='#ff0000'><b>Failed to list tables:</b></font> (%d) %s<br />".$stmt->errorInfo();
+        else {
+            $tables = array();
+            while($rr=$stmt->fetch())
+            $tables[] = $rr[0];
+            $arr[] = "announce";
+            $arr[] = "bans";
+            $arr[] = "blocks";
+            $arr[] = "categories";
+            $arr[] = "censor";
+            $arr[] = "comments";
+            $arr[] = "completed";
+            $arr[] = "countries";
+            $arr[] = "email_bans";
+            $arr[] = "faq";
+            $arr[] = "groups";
+            $arr[] = "guests";
+            $arr[] = "languages";
+            $arr[] = "log";
+            $arr[] = "messages";
+            $arr[] = "news";
+            $arr[] = "peers";
+            $arr[] = "pollanswers";
+            $arr[] = "polls";
+            $arr[] = "ratings";
+            $arr[] = "reports";
+            $arr[] = "rules";
+            $arr[] = "shoutbox";
+            $arr[] = "stylesheets";
+            $arr[] = "tasks";
+            $arr[] = "teams";
+            $arr[] = "torrentlang";
+            $arr[] = "torrents";
+            $arr[] = "users";
+            $arr[] = "warnings";
             $arr[] = "forumcats";
             $arr[] = "forum_topics";
             $arr[] = "forum_posts";
             $arr[] = "forum_forums";
             $arr[] = "forum_readposts";
-            $arr[] = "sqlerr";  
+            $arr[] = "sqlerr";
 
-			echo "<table cellpadding='3' cellspacing='1' style='border-collapse: collapse' border='1'>";
-			echo "<tr><th>Table</th><th>Status</th></tr>";
-			foreach ($arr as $t)
-				if (!in_array($t, $tables))
-					echo "<tr><td>$t</td><td align='right'><font color='#ff0000'><b>MISSING</b></font></td></tr>";
-				else
-					echo "<tr><td>$t</td><td align='right'><font color='green'><b>OK</b></font></td></tr>";
-				echo "</table>";
+            echo "<table cellpadding='3' cellspacing='1' style='border-collapse: collapse' border='1'>";
+            echo "<tr><th>Table</th><th>Status</th></tr>";
+            foreach ($arr as $t)
+                if (!in_array($t, $tables))
+                    echo "<tr><td>$t</td><td align='right'><font color='#ff0000'><b>MISSING</b></font></td></tr>";
+                else
+                    echo "<tr><td>$t</td><td align='right'><font color='green'><b>OK</b></font></td></tr>";
+            echo "</table>";
 
-			require("backend/config.php");
-			echo "<br /><br /><b>Default Theme:</b> ";
-			if (!is_numeric($site_config["default_theme"]))
-				echo "<font color='#ff0000'><b>Invalid.</b></font> (Not a number)";
-			else {
-				$res = mysqli_query($link,"SELECT uri FROM stylesheets WHERE id=$site_config[default_theme]");
-				if ($row = mysqli_fetch_row($res)) {
-					if (file_exists("themes/$row[0]/header.php"))
-						echo "<font color='green'><b>Valid.</b></font> (ID: $site_config[default_theme], Path: themes/$row[0]/)";
-					else
-						echo "<font color='#ff0000'><b>Invalid.</b></font> (No header.php found)";
-				} else
-					echo "<font color='#ff0000'><b>Invalid.</b></font> (No theme found with ID $site_config[default_theme])";
-		}
+            require("backend/config.php");
+            echo "<br /><br /><b>Default Theme:</b> ";
+            if (!is_numeric($site_config["default_theme"]))
+                echo "<font color='#ff0000'><b>Invalid.</b></font> (Not a number)";
+            else {
+                $res = $link->prepare("SELECT uri FROM stylesheets WHERE id=$site_config[default_theme]");
+                $res->execute();
+                if ($row = $res->fetch(PDO::FETCH_LAZY)) {
+                    if (file_exists("themes/$row[0]/header.php"))
+                        echo "<font color='green'><b>Valid.</b></font> (ID: $site_config[default_theme], Path: themes/$row[0]/)";
+                    else
+                        echo "<font color='#ff0000'><b>Invalid.</b></font> (No header.php found)";
+                } else
+                    echo "<font color='#ff0000'><b>Invalid.</b></font> (No theme found with ID $site_config[default_theme])";
+            }
 
-		echo "<br /><b>Default Language:</b> ";
-		if (!is_numeric($site_config["default_language"]))
-			echo "<font color='#ff0000'><b>Invalid.</b></font> (Not a number)";
-		else {
-			$res = mysqli_query($link,"SELECT uri FROM languages WHERE id=$site_config[default_language]");
-			if ($row = mysqli_fetch_row($res)) {
-				if (file_exists("languages/$row[0]"))
-					echo "<font color='green'><b>Valid.</b></font> (ID: $site_config[default_language], Path: languages/$row[0])";
-				else
-					echo "<font color='#ff0000'><b>Invalid.</b></font> (File languages/$row[0] missing)";
-			} else
-				echo "<font color='#ff0000'><b>Invalid.</b></font> (No language found with ID $site_config[default_language])";
-			}
-		}
-	}
-}
-mysqli_free_result($res); ///not sure if this is really necessary, but whatever. Here it is.
-mysqli_close($link);
+            echo "<br /><b>Default Language:</b> ";
+            if (!is_numeric($site_config["default_language"]))
+                echo "<font color='#ff0000'><b>Invalid.</b></font> (Not a number)";
+            else {
+                $res = $link->prepare("SELECT uri FROM languages WHERE id=$site_config[default_language]");
+                $res->execute();
+                if ($row = $res->fetch(PDO::FETCH_LAZY)) {
+                    if (file_exists("languages/$row[0]"))
+                        echo "<font color='green'><b>Valid.</b></font> (ID: $site_config[default_language], Path: languages/$row[0])";
+                    else
+                        echo "<font color='#ff0000'><b>Invalid.</b></font> (File languages/$row[0] missing)";
+                } else
+                    echo "<font color='#ff0000'><b>Invalid.</b></font> (No language found with ID $site_config[default_language])";
+            }
+        }
+    }
+    catch(PDOException $e)
+    {
+        echo "<font color='#ff0000'><b>Failed to connect to database:</b></font> (%d) %s<br />" . $e->getMessage();
+    }
+$link = null;
 ?>
 </body>
 </html>

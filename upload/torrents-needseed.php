@@ -10,9 +10,9 @@
          show_error_msg(T_("ERROR"), T_("NO_TORRENT_VIEW"), 1);
  }  
  
- $res = SQL_Query_exec("SELECT torrents.id, torrents.name, torrents.owner, torrents.external, torrents.size, torrents.seeders, torrents.leechers, torrents.times_completed, torrents.added, users.username FROM torrents LEFT JOIN users ON torrents.owner = users.id WHERE torrents.banned = 'no' AND torrents.leechers > 0 AND torrents.seeders <= 1 ORDER BY torrents.seeders");
+ $res = DB::run("SELECT torrents.id, torrents.name, torrents.owner, torrents.external, torrents.size, torrents.seeders, torrents.leechers, torrents.times_completed, torrents.added, users.username FROM torrents LEFT JOIN users ON torrents.owner = users.id WHERE torrents.banned = 'no' AND torrents.leechers > 0 AND torrents.seeders <= 1 ORDER BY torrents.seeders");
  
- if (mysqli_num_rows($res) == 0)
+ if ($res->rowCount() == 0)
      show_error_msg(T_("ERROR"), T_("NO_TORRENT_NEED_SEED"), 1);
      
      stdhead(T_("TORRENT_NEED_SEED"));
@@ -36,7 +36,7 @@
      
      <?php 
      
-     while ($row = mysqli_fetch_assoc($res)) { 
+     while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
         
         $type = ($row["external"] == "yes") ? T_("EXTERNAL") : T_("LOCAL"); 
 

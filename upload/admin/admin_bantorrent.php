@@ -4,8 +4,8 @@ if ($action=="bannedtorrents"){
 	stdhead("Banned Torrents");
 	navmenu();
 		
-	$res2 = SQL_Query_exec("SELECT COUNT(*) FROM torrents WHERE banned='yes'");
-	$row = mysqli_fetch_array($res2);
+	$res2 = DB::run("SELECT COUNT(*) FROM torrents WHERE banned=?", ['yes']);
+	$row = $res2->fetch(PDO::FETCH_LAZY);
 	$count = $row[0];
 
 	$perpage = 50;
@@ -32,12 +32,9 @@ if ($action=="bannedtorrents"){
 	<th class="table_head">Edit?</th>
 	</tr>
 	<?php
-	$rqq = "SELECT id, name, seeders, leechers, visible, banned, external FROM torrents WHERE banned='yes' ORDER BY name";
-	$resqq = SQL_Query_exec($rqq);
-
-	while ($row = mysqli_fetch_assoc($resqq)){
-
-		$char1 = 35; //cut name length 
+	$resqq = DB::run("SELECT id, name, seeders, leechers, visible, banned, external FROM torrents WHERE banned=? ORDER BY name", ['yes']);
+	while ($row = $resqq->fetch(PDO::FETCH_ASSOC)){
+		$char1 = 35; //cut name length
 		$smallname = CutName(htmlspecialchars($row["name"]), $char1);
 
 		echo "<tr><td class='table_col1'>" . $smallname . "</td><td class='table_col2'>$row[visible]</td><td class='table_col1'>".number_format($row["seeders"])."</td><td class='table_col2'>".number_format($row["leechers"])."</td><td class='table_col1'>$row[external]</td><td class='table_col2'><a href=\"torrents-edit.php?returnto=" . urlencode($_SERVER["REQUEST_URI"]) . "&amp;id=" . $row["id"] . "\"><font size='1' face='verdana'>EDIT</font></a></td></tr>\n";

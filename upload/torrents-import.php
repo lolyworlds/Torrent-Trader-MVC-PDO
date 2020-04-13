@@ -35,9 +35,7 @@ if ($_POST["takeupload"] == "yes") {
 		$message = T_("UPLOAD_NO_CAT");
 	
 	if (empty($message)) {
-		$r = SQL_Query_exec("SELECT name, parent_cat FROM categories WHERE id=$catid");
-		$r = mysqli_fetch_row($r);
-
+		$r = DB::run("SELECT name, parent_cat FROM categories WHERE id=$catid")->fetch();
 		echo "<b>Category:</b> ".htmlspecialchars($r[1])." -> ".htmlspecialchars($r[0])."<br />";
 		for ($i=0;$i<count($files);$i++) {
 			$fname = $files[$i];
@@ -90,11 +88,11 @@ if ($_POST["takeupload"] == "yes") {
 			else
 				$anon = "no";
 
-			$ret = SQL_Query_exec("INSERT INTO torrents (filename, owner, name, descr, category, added, info_hash, size, numfiles, save_as, announce, external, torrentlang, anon, last_action) VALUES (".sqlesc($fname).", '".$CURUSER['id']."', ".sqlesc($name).", ".sqlesc($descr).", '".$catid."', '" . get_date_time() . "', '".$infohash."', '".$torrentsize."', '".$filecount."', ".sqlesc($fname).", '".$announce."', '".$external."', '".$langid."','$anon', '".get_date_time()."')");
+			$ret = DB::run("INSERT INTO torrents (filename, owner, name, descr, category, added, info_hash, size, numfiles, save_as, announce, external, torrentlang, anon, last_action) VALUES (".sqlesc($fname).", '".$CURUSER['id']."', ".sqlesc($name).", ".sqlesc($descr).", '".$catid."', '" . get_date_time() . "', '".$infohash."', '".$torrentsize."', '".$filecount."', ".sqlesc($fname).", '".$announce."', '".$external."', '".$langid."','$anon', '".get_date_time()."')");
 
-			$id = mysqli_insert_id($GLOBALS["DBconnector"]);
-	
-			if (mysqli_errno($GLOBALS["DBconnector"]) == 1062) {
+			$id = $ret->lastInsertId();
+
+			if ($ret->errorCode() == 1062) {
 				$message .= T_("UPLOAD_ALREADY_UPLOADED");
 				echo $message;
 				continue;
@@ -116,7 +114,7 @@ if ($_POST["takeupload"] == "yes") {
 				$leechers 		= strip_tags($stats['peers']);
 				$downloaded 	= strip_tags($stats['downloaded']);
 
-				SQL_Query_exec("UPDATE torrents SET leechers='".$leechers."', seeders='".$seeders."',times_completed='".$downloaded."',last_action= '".get_date_time()."',visible='yes' WHERE id='".$id."'"); 
+                DB::run("UPDATE torrents SET leechers='".$leechers."', seeders='".$seeders."',times_completed='".$downloaded."',last_action= '".get_date_time()."',visible='yes' WHERE id='".$id."'");
 			}
 			//END SCRAPE
 

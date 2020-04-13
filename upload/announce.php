@@ -1,13 +1,10 @@
 <?php
 // Please Note: Languages should not be implemented here...
-               
+             
 error_reporting(E_ALL ^ E_NOTICE);
-require_once("backend/mysql.php");
-require_once("backend/config.php");
-require_once("backend/mysql.class.php");
 
-$GLOBALS["DBconnector"] = @mysqli_connect($mysql_host, $mysql_user, $mysql_pass) or err('dbconn: mysqli_connect: ' . mysqli_connect_error());
-@mysqli_select_db($GLOBALS["DBconnector"],$mysql_db) or err('dbconn: mysqli_select_db: ' . mysqli_error($GLOBALS["DBconnector"]));
+require_once("backend/config.php");
+require_once("backend/dbclass.php");
 
 $MEMBERSONLY = $site_config["MEMBERSONLY"];
 $MEMBERSONLY_WAIT = $site_config["MEMBERSONLY_WAIT"];
@@ -29,7 +26,6 @@ function array_map_recursive ($callback, $array) {
 
 
 function unesc($x) {
-	if (get_magic_quotes_gpc())
 		return stripslashes($x);
 	return $x;
 }
@@ -39,11 +35,10 @@ function is_valid_id($id) {
 }
 
 function sqlesc($x) {
-    return "'".mysqli_real_escape_string($GLOBALS["DBconnector"],$x)."'";
+    return "'".$x."'";
 }
 
 function err($msg) {
-   mysqli_close($GLOBALS["DBconnector"]);
    return benc_resp_raw("d".benc_str("failure reason").benc_str($msg)."e");
 }
 
@@ -182,8 +177,8 @@ $torrentfields = "id, info_hash, banned, freeleech, seeders + leechers AS numpee
 $userid = 0;
 if ($MEMBERSONLY){
 	//check passkey is valid, and get users details
-	$res = SQL_Query_exec("SELECT $userfields FROM users u INNER JOIN groups g ON u.class = g.group_id WHERE u.passkey=".sqlesc($passkey)." AND u.enabled = 'yes' AND u.status = 'confirmed' LIMIT 1") or err("Cannot Get User Details");
-	$user = mysqli_fetch_assoc($res);
+	$res = DB::run("SELECT $userfields FROM users u INNER JOIN groups g ON u.class = g.group_id WHERE u.passkey=".sqlesc($passkey)." AND u.enabled = 'yes' AND u.status = 'confirmed' LIMIT 1") or err("Cannot Get User Details");
+	$user = $res->fetch(PDO::FETCH_ASSOC);
 	if (!$user)
 		err("Cannot locate a user with that passkey!");
     if ($user["can_download"] == "no")
@@ -193,8 +188,8 @@ if ($MEMBERSONLY){
 
 
 //check torrent is valid and get torrent fields
-$res = SQL_Query_exec("SELECT $torrentfields FROM torrents WHERE info_hash=".sqlesc($info_hash)) or err("Cannot Get Torrent Details");
-$torrent = mysqli_fetch_assoc($res);
+$res = DB::run("SELECT $torrentfields FROM torrents WHERE info_hash=".sqlesc($info_hash)) or err("Cannot Get Torrent Details");
+$torrent = $res->fetch(PDO::FETCH_ASSOC);
 
 if (!$torrent)
     err("Torrent not found on this tracker - hash = " . $info_hash);
@@ -211,13 +206,13 @@ if ($numpeers > $peerlimit){
 }else{
     $limit = "";
 }
-$res = SQL_Query_exec("SELECT $peerfields FROM peers WHERE torrent = $torrentid $limit") or err("Error Selecting Peers");
+$res = DB::run("SELECT $peerfields FROM peers WHERE torrent = $torrentid $limit") or err("Error Selecting Peers");
 
 //DO SOME BENC STUFF TO THE PEERS CONNECTION
 $resp = "d8:completei$torrent[seeders]e10:downloadedi$torrent[times_completed]e10:incompletei$torrent[leechers]e";
 $resp .= benc_str("interval") . "i" . $site_config['announce_interval'] . "e" . benc_str("min interval") . "i300e" . benc_str("peers");
 unset($self);
-while ($row = mysqli_fetch_assoc($res)) {
+while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
 	if ($row["peer_id"] === $peer_id) {
 		$self = $row;
 		continue;
@@ -240,7 +235,7 @@ if (!isset($self)){
 
 	//check passkey isnt leaked
 	if ($MEMBERSONLY) {
-		$valid = @mysqli_fetch_row(@SQL_Query_exec("SELECT COUNT(*) FROM peers WHERE torrent=$torrentid AND passkey=" . sqlesc($passkey)));
+		$valid = DB::run("SELECT COUNT(*) FROM peers WHERE torrent=$torrentid AND passkey=" . sqlesc($passkey))->fetch();
 
 		if ($valid[0] >= 1 && $seeder == 'no')
 			err("Connection limit exceeded! You may only leech from one location at a time.");
@@ -249,8 +244,8 @@ if (!isset($self)){
 			err("Connection limit exceeded!");
 	}
 
-	$res = SQL_Query_exec("SELECT $peerfields FROM peers WHERE $selfwhere");
-	$row = mysqli_fetch_assoc($res);
+	$res = DB::run("SELECT $peerfields FROM peers WHERE $selfwhere");
+	$row = $res->fetch(PDO::FETCH_ASSOC);
 	if ($row){
 	        $self = $row;
 	}
@@ -288,9 +283,9 @@ if (!isset($self)){ //IF PEER IS NOT IN PEERS TABLE DO THE WAIT TIME CHECK
 
     if (($upthis > 0 || $downthis > 0) && is_valid_id($userid)){ // LIVE STATS!)
 		if ($torrent["freeleech"] == 1){
-			SQL_Query_exec("UPDATE users SET uploaded = uploaded + $upthis WHERE id=$userid") or err("Tracker error: Unable to update stats");
+            DB::run("UPDATE users SET uploaded = uploaded + $upthis WHERE id=$userid") or err("Tracker error: Unable to update stats");
 		}else{
-			SQL_Query_exec("UPDATE users SET uploaded = uploaded + $upthis, downloaded = downloaded + $downthis WHERE id=$userid") or err("Tracker error: Unable to update stats");
+            DB::run("UPDATE users SET uploaded = uploaded + $upthis, downloaded = downloaded + $downthis WHERE id=$userid") or err("Tracker error: Unable to update stats");
 		}
     }
 }//END WAIT AND STATS UPDATE
@@ -300,8 +295,8 @@ $updateset = array();
 ////////////////// NOW WE DO THE TRACKER EVENT UPDATES ///////////////////
 
 if ($event == "stopped") { // UPDATE "STOPPED" EVENT
-        SQL_Query_exec("DELETE FROM peers WHERE $selfwhere");
-        if (mysqli_affected_rows($GLOBALS["DBconnector"])){
+        $sql = DB::run("DELETE FROM peers WHERE $selfwhere");
+        if ($sql){
             if ($self["seeder"] == "yes")
                 $updateset[] = "seeders = seeders - 1";
             else
@@ -313,14 +308,14 @@ if ($event == "completed") { // UPDATE "COMPLETED" EVENT
     $updateset[] = "times_completed = times_completed + 1";
 
 	if ($MEMBERSONLY)
-		SQL_Query_exec("INSERT INTO completed (userid, torrentid, date) VALUES ($userid, $torrentid, '".get_date_time()."')");
+        DB::run("INSERT INTO completed (userid, torrentid, date) VALUES ($userid, $torrentid, '".get_date_time()."')");
 }//END COMPLETED
 
 if (isset($self)){// NO EVENT? THEN WE MUST BE A NEW PEER OR ARE NOW SEEDING A COMPLETED TORRENT
-    
-    SQL_Query_exec("UPDATE peers SET ip = " . sqlesc($ip) . ", passkey = " . sqlesc($passkey) . ", port = $port, uploaded = $uploaded, downloaded = $downloaded, to_go = $left, last_action = '".get_date_time()."', client = " . sqlesc($agent) . ", seeder = '$seeder' WHERE $selfwhere");
 
-    if (mysqli_affected_rows($GLOBALS["DBconnector"]) && $self["seeder"] != $seeder){
+    $peerupd = DB::run("UPDATE peers SET ip = " . sqlesc($ip) . ", passkey = " . sqlesc($passkey) . ", port = $port, uploaded = $uploaded, downloaded = $downloaded, to_go = $left, last_action = '".get_date_time()."', client = " . sqlesc($agent) . ", seeder = '$seeder' WHERE $selfwhere");
+
+    if ($peerupd && $self["seeder"] != $seeder){
         if ($seeder == "yes"){
             $updateset[] = "seeders = seeders + 1";
             $updateset[] = "leechers = leechers - 1";
@@ -332,7 +327,7 @@ if (isset($self)){// NO EVENT? THEN WE MUST BE A NEW PEER OR ARE NOW SEEDING A C
 
 } else {
 
-    $ret = SQL_Query_exec("INSERT INTO peers (connectable, torrent, peer_id, ip, passkey, port, uploaded, downloaded, to_go, started, last_action, seeder, userid, client) VALUES ('$connectable', $torrentid, " . sqlesc($peer_id) . ", " . sqlesc($ip) . ", " . sqlesc($passkey) . ", $port, $uploaded, $downloaded, $left, '".get_date_time()."', '".get_date_time()."', '$seeder', '$userid', " . sqlesc($agent) . ")");
+    $ret = DB::run("INSERT INTO peers (connectable, torrent, peer_id, ip, passkey, port, uploaded, downloaded, to_go, started, last_action, seeder, userid, client) VALUES ('$connectable', $torrentid, " . sqlesc($peer_id) . ", " . sqlesc($ip) . ", " . sqlesc($passkey) . ", $port, $uploaded, $downloaded, $left, '".get_date_time()."', '".get_date_time()."', '$seeder', '$userid', " . sqlesc($agent) . ")");
     
     if ($ret){
         if ($seeder == "yes")
@@ -353,9 +348,9 @@ if ($seeder == "yes") {
 
 // NOW WE UPDATE THE TORRENT AS PER ABOVE
 if (count($updateset))
-    SQL_Query_exec("UPDATE torrents SET " . join(",", $updateset) . " WHERE id=$torrentid") or err("Tracker error: Unable to update torrent");
+    DB::run("UPDATE torrents SET " . join(",", $updateset) . " WHERE id=$torrentid") or err("Tracker error: Unable to update torrent");
 
 // NOW BENC THE DATA AND SEND TO CLIENT???
 benc_resp_raw($resp);
-mysqli_close($GLOBALS["DBconnector"]);
+//mysqli_close($GLOBALS["DBconnector"]);
 ?>

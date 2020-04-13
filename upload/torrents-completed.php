@@ -1,7 +1,7 @@
 <?php
   require_once("backend/functions.php");
   dbconn();
-                     
+       
   if ($site_config["MEMBERSONLY"]) {
       loggedinonly();
       
@@ -11,16 +11,16 @@
                   
   $id = (int) $_GET["id"];
   
-  $res = SQL_Query_exec("SELECT name, external, banned FROM torrents WHERE id = $id");
-  $row = mysqli_fetch_assoc($res);
+  $res = DB::run("SELECT name, external, banned FROM torrents WHERE id =?", [$id]);
+  $row = $res->fetch(PDO::FETCH_ASSOC);
   
   if ((!$row) || ($row["banned"] == "yes" && $CURUSER["edit_torrents"] == "no"))
        show_error_msg(T_("ERROR"), T_("TORRENT_NOT_FOUND"), 1);
   if ($row["external"] == "yes")
        show_error_msg(T_("ERROR"), T_("THIS_TORRENT_IS_EXTERNALLY_TRACKED"), 1);
 
-  $res = SQL_Query_exec("SELECT users.id, users.username, users.uploaded, users.downloaded, users.privacy, completed.date FROM users LEFT JOIN completed ON users.id = completed.userid WHERE users.enabled = 'yes' AND completed.torrentid = '$id'");
-  if (mysqli_num_rows($res) == 0)
+  $res = DB::run("SELECT users.id, users.username, users.uploaded, users.downloaded, users.privacy, completed.date FROM users LEFT JOIN completed ON users.id = completed.userid WHERE users.enabled = 'yes' AND completed.torrentid = '$id'");
+  if ($res->rowCount() == 0)
       show_error_msg(T_("ERROR"), T_("NO_DOWNLOADS_YET"), 1);
   
   $title = sprintf(T_("COMPLETED_DOWNLOADS"), CutName($row["name"], 40));   
@@ -37,7 +37,7 @@
      <th class="table_head"><?php echo T_("RATIO"); ?></th>
   </tr>
   <?php 
-       while ($row = mysqli_fetch_assoc($res)) { 
+       while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
            
            if (($row["privacy"] == "strong") && ($CURUSER["edit_users"] == "no"))
                 continue;

@@ -1,6 +1,7 @@
 <?php
 if (!$site_config["MEMBERSONLY"] || $CURUSER) {
 	begin_block(T_("SEARCH"));
+
 ?>
 	<center>
 	<form method="get" action="torrents-search.php"><br />

@@ -1,19 +1,15 @@
 <?php
 
 if ($action=="lastcomm"){
-    
     $count = get_row_count("comments");
-    
     list($pagertop, $pagerbottom, $limit) = pager(10, $count, "admincp.php?action=lastcomm&amp;");
-                 
 	stdhead("Latest Comments");
 	navmenu();
 
 	begin_frame("Last Comments");
 
-	$res = SQL_Query_exec("SELECT c.id, c.text, c.user, c.torrent, c.news, t.name, n.title, u.username, c.added FROM comments c LEFT JOIN torrents t ON c.torrent = t.id LEFT JOIN news n ON c.news = n.id LEFT JOIN users u ON c.user = u.id ORDER BY c.added DESC $limit");
-    
-	while ($arr = mysqli_fetch_assoc($res)) {
+	$res = DB::run("SELECT c.id, c.text, c.user, c.torrent, c.news, t.name, n.title, u.username, c.added FROM comments c LEFT JOIN torrents t ON c.torrent = t.id LEFT JOIN news n ON c.news = n.id LEFT JOIN users u ON c.user = u.id ORDER BY c.added DESC $limit");
+	while ($arr = $res->fetch(PDO::FETCH_ASSOC)) {
 		$userid = $arr["user"];
 		$username = $arr["username"];
 		$data = $arr["added"];

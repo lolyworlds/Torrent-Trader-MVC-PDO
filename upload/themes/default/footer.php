@@ -1,42 +1,47 @@
-<?php function_exists('T_') or die;
-
+<?php
 			if ($site_config["MIDDLENAV"]){
 				middleblocks();
-			} //MIDDLENAV ON/OFF END
-			?>
-          </td>
-          <!-- END MAIN COLUM -->
-          <?php if ($site_config["RIGHTNAV"]){ ?>
-          <!-- START RIGHT COLUMN -->
-          <td valign="top" width="170">
-		  <?php rightblocks(); ?>
-          </td>
-          <!-- END RIGHT COLUMN -->
-          <?php } ?>
-        </tr>
-    </table>
-  </div>
-<!-- End Content -->
-      <!-- START FOOTER CODE -->
-      <div class='credits'>
-        <?php
-        //
-        // *************************************************************************************************************************************
-        //			PLEASE DO NOT REMOVE THE POWERED BY LINE, SHOW SOME SUPPORT! WE WILL NOT SUPPORT ANYONE WHO HAS THIS LINE EDITED OR REMOVED!
-        // *************************************************************************************************************************************
-        printf (T_("POWERED_BY_TT")." -|- ", $site_config["ttversion"]);
-        $totaltime = array_sum(explode(" ", microtime())) - $GLOBALS['tstart'];
-        printf(T_("PAGE_GENERATED_IN"), $totaltime);
-        print ("<br /><a href=\"https://www.torrenttrader.org\" target=\"_blank\">www.torrenttrader.org</a> -|- <a href='rss.php'><img src='".$site_config["SITEURL"]."/images/icon_rss.gif' border='0' width='13' height='13' alt='' /></a> -|- <a href='rss.php'>".T_("RSS_FEED")."</a> -|- <a href='rss.php?custom=1'>".T_("FEED_INFO")."</a><br />Theme By: <a href='http://nikkbu.info' target='_blank'>Nikkbu</a>");
-        //
-        // *************************************************************************************************************************************
-        //			PLEASE DO NOT REMOVE THE POWERED BY LINE, SHOW SOME SUPPORT! WE WILL NOT SUPPORT ANYONE WHO HAS THIS LINE EDITED OR REMOVED!
-        // *************************************************************************************************************************************
-        
-        ?>
-      </div>
-      <!-- END FOOTER CODE -->
+			} ?>
 </div>
+<!-- END MIDDLE COLUMN -->
+<!-- START RIGHT COLUMN -->
+<div class="col-sm-2 sidenav">
+    <?php if ($site_config["RIGHTNAV"]){ ?>
+    <?php rightblocks(); ?>
+    <?php } ?>
+<!-- END RIGHT COLUMN -->
+</div>
+</div>
+</div>
+<!-- START FOOTER COLUMN -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="collapse navbar-collapse" id="navbarText">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="index.php"><b>
+                        <font color='#fff'><?php if ($CURUSER){ echo T_("HOME");}?></font>
+                    </b></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href='rss.php'><b>
+                        <font color='#fff'><?php if ($CURUSER){  echo T_("RSS_FEED");}?></font>
+                    </b></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href='rss.php?custom=1'><b>
+                        <font color='#fff'><?php if ($CURUSER){  echo T_("FEED_INFO"); }?></font>
+                    </b></a>
+            </li>
+        </ul>
+        <span class="navbar-text">
+            <?php echo '<a href="http://www.torrenttrader.xyz"><b><font color="#fff">Powered by TorrentTrader PDO/BOOTSTRAP&nbsp&nbsp</font></b></a>';?>
+            <?php $totaltime = array_sum(explode(" ", microtime())) - $GLOBALS['tstart'];
+            printf(T_("PAGE_GENERATED_IN"), $totaltime);?>
+        </span>
+    </div>
+</nav>
+<!-- END FOOTER COLUMN -->
 </body>
+
 </html>
 <?php ob_end_flush(); ?>

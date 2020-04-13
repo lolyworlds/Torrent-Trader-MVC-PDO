@@ -33,7 +33,7 @@
       {
           unlink($nfo);
           write_log("NFO ($id) was deleted by $CURUSER[username] $reason");
-          SQL_Query_exec("UPDATE `torrents` SET `nfo` = 'no' WHERE `id` = $id");
+          DB::run("UPDATE `torrents` SET `nfo` = 'no' WHERE `id` = $id");
           show_error_msg(T_("NFO_DELETED"), T_("NFO_DELETED"), 1);
       }
       

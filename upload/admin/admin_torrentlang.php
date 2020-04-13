@@ -1,32 +1,4 @@
 <?php
-if ($action=="torrentlangs" && $do=="view"){
-	stdhead(T_("TORRENT_LANGUAGES"));
-	navmenu();
-	begin_frame(T_("TORRENT_LANGUAGES"));
-	echo "<center><a href='admincp.php?action=torrentlangs&amp;do=add'><b>Add New Language</b></a></center><br />";
-
-	print("<i>Please note that language image is optional</i><br /><br />");
-
-	echo("<center><table width='650' class='table_table'><tr>");
-	echo("<th width='10' class='table_head'><b>Sort</b></th><th class='table_head'><b>".T_("NAME")."</b></th><th class='table_head'><b>Image</b></th><th width='30' class='table_head'></th></tr>");
-	$query = "SELECT * FROM torrentlang ORDER BY sort_index ASC";
-	$sql = SQL_Query_exec($query);
-	while ($row = mysqli_fetch_array($sql)) {
-		$id = $row['id'];
-		$name = $row['name'];
-		$priority = $row['sort_index'];
-
-		print("<tr><td class='table_col1' align='center'>$priority</td><td class='table_col2'>$name</td><td class='table_col1' width='50' align='center'>");
-		if (isset($row["image"]) && $row["image"] != "")
-			print("<img border=\"0\" src=\"" . $site_config['SITEURL'] . "/images/languages/" . $row["image"] . "\" alt=\"" . $row["name"] . "\" />");
-		else
-			print("-");	
-		print("</td><td class='table_col1'><a href='admincp.php?action=torrentlangs&amp;do=edit&amp;id=$id'>[EDIT]</a> <a href='admincp.php?action=torrentlangs&amp;do=delete&amp;id=$id'>[DELETE]</a></td></tr>");
-	}
-	echo("</table></center>");
-	end_frame();
-	stdfoot();
-}
 
 if ($action=="torrentlangs" && $do=="view"){
 	stdhead(T_("TORRENT_LANGUAGES"));
@@ -38,9 +10,8 @@ if ($action=="torrentlangs" && $do=="view"){
 
 	echo("<center><table width='650' class='table_table'><tr>");
 	echo("<th width='10' class='table_head'><b>Sort</b></th><th class='table_head'><b>".T_("NAME")."</b></th><th class='table_head'><b>Image</b></th><th width='30' class='table_head'></th></tr>");
-	$query = "SELECT * FROM torrentlang ORDER BY sort_index ASC";
-	$sql = SQL_Query_exec($query);
-	while ($row = mysqli_fetch_array($sql)) {
+	$sql = DB::run("SELECT * FROM torrentlang ORDER BY sort_index ASC");
+	while ($row = $sql->fetch(PDO::FETCH_LAZY)) {
 		$id = $row['id'];
 		$name = $row['name'];
 		$priority = $row['sort_index'];
@@ -67,12 +38,12 @@ if ($action=="torrentlangs" && $do=="edit"){
 	if (!is_valid_id($id))
 		show_error_msg(T_("ERROR"),T_("INVALID_ID"),1);
 
-	$res = SQL_Query_exec("SELECT * FROM torrentlang WHERE id=$id");
+	$res = DB::run("SELECT * FROM torrentlang WHERE id=$id");
 
-	if (mysqli_num_rows($res) != 1)
+	if ($res->rowCount() != 1)
 		show_error_msg(T_("ERROR"), "No Language with ID $id.",1);
 
-	$arr = mysqli_fetch_array($res);
+	$arr = $res->fetch(PDO::FETCH_LAZY);
 
 	if ($_GET["save"] == '1'){
   	
@@ -83,13 +54,13 @@ if ($action=="torrentlangs" && $do=="edit"){
 		$sort_index = $_POST['sort_index'];
 		$image = $_POST['image'];
 
-		$name = sqlesc($name);
-		$sort_index = sqlesc($sort_index);
-		$image = sqlesc($image);
+		$name = $name;
+		$sort_index = $sort_index;
+		$image = $image;
 
-		SQL_Query_exec("UPDATE torrentlang SET name=$name, sort_index=$sort_index, image=$image WHERE id=$id");
+		DB::run("UPDATE torrentlang SET name=?, sort_index=?, image=? WHERE id=?", [$name, $sort_index, $image, $id]);
 
-		show_error_msg(T_("COMPLETED"),"Language was edited successfully.",0);
+		autolink("admincp.php?action=torrentlangs&do=view", T_("Language was edited successfully."));
 
 	} else {
 		begin_frame("Edit Language");
@@ -119,11 +90,11 @@ if ($action=="torrentlangs" && $do=="delete"){
 
 		$newlangid = (int) $_POST["newlangid"];
 
-		SQL_Query_exec("UPDATE torrents SET torrentlang=$newlangid WHERE torrentlang=$id"); //move torrents to a new cat
+		DB::run("UPDATE torrents SET torrentlang=$newlangid WHERE torrentlang=$id"); //move torrents to a new cat
 
-		SQL_Query_exec("DELETE FROM torrentlang WHERE id=$id"); //delete old cat
+		DB::run("DELETE FROM torrentlang WHERE id=$id"); //delete old cat
 		
-		show_error_msg(T_("COMPLETED"),"Language Deleted OK",1);
+		autolink("admincp.php?action=torrentlangs&do=view", T_("Language Deleted OK."));
 
 	}else{
 		begin_frame("Delete Language");
@@ -146,14 +117,14 @@ if ($action=="torrentlangs" && $do=="takeadd"){
 		$sort_index = $_POST['sort_index'];
 		$image = $_POST['image'];
 
-		$name = sqlesc($name);
-		$sort_index = sqlesc($sort_index);
-		$image = sqlesc($image);
+		$name = $name;
+		$sort_index = $sort_index;
+		$image = $image;
 
-	SQL_Query_exec("INSERT INTO torrentlang (name, sort_index, image) VALUES ($name, $sort_index, $image)");
+	$ins = DB::run("INSERT INTO torrentlang (name, sort_index, image) VALUES (?, ?, ?)", [$name, $sort_index, $image]);
 
-	if (mysqli_affected_rows($GLOBALS["DBconnector"]) == 1)
-		show_error_msg(T_("COMPLETED"),"Language was added successfully.",1);
+	if ($ins)
+		autolink("admincp.php?action=torrentlangs&do=view", T_("Language was added successfully."));
 	else
 		show_error_msg(T_("ERROR"),"Unable to add Language",1);
 }

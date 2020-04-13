@@ -45,27 +45,28 @@ PRIMARY KEY (`id`),
 KEY `position_enabled` (`position`,`enabled`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 ;
 
-INSERT INTO `blocks` VALUES
-(1, 'donate', 'donate', 'left', 'Description here...', 0, 0),
-(2, 'invite', 'invite', 'right', 'Description here...', 1, 2),
-(3, 'Main Navigation', 'navigate', 'left', 'Description here...', 1, 4),
+INSERT INTO `blocks` (`id`, `named`, `name`, `position`, `description`, `enabled`, `sort`) VALUES
+(1, 'donate', 'donate', 'right', 'Description here...', 1, 11),
+(2, 'invite', 'invite', 'right', 'Description here...', 1, 3),
+(3, 'Main Navigation', 'navigate', 'right', 'Description here...', 1, 1),
 (4, 'Login Block', 'login', 'left', 'Description here...', 1, 1),
-(5, 'rss', 'rss', 'right', 'Description here...', 0, 0),
-(6, 'latestuploads', 'latestuploads', 'right', 'Description here...', 1, 1),
-(7, 'advancestats', 'advancestats', 'left', 'Description here...', 1, 5),
-(8, 'serverload', 'serverload', 'right', 'Description here...', 1, 3),
-(9, 'usersonline', 'usersonline', 'right', 'Description here...', 1, 5),
+(5, 'rss', 'rss', 'right', 'Description here...', 1, 12),
+(6, 'latestuploads', 'latestuploads', 'left', 'Description here...', 1, 7),
+(7, 'advancestats', 'advancestats', 'left', 'Description here...', 1, 8),
+(8, 'serverload', 'serverload', 'right', 'Description here...', 1, 13),
+(9, 'usersonline', 'usersonline', 'right', 'Description here...', 1, 2),
 (10, 'Main Category', 'maincats', 'left', 'Description here...', 1, 3),
-(11, 'simplesearch', 'simplesearch', 'right', 'Description here...', 1, 4),
-(12, 'advancesearch', 'advancesearch', 'right', 'Description here...', 0, 0),
-(13, 'latestimages', 'latestimages', 'right', 'Description here...', 0, 0),
-(14, 'mostactivetorrents', 'mostactivetorrents', 'left', 'Description here...', 0, 0),
-(15, 'scrollingnews', 'scrollingnews', 'left', 'Description here...', 0, 0),
-(16, 'newestmember', 'newestmember', 'left', 'Description here...', 0, 0),
-(17, 'polls', 'polls', 'left', 'Description here...', 1, 6),
-(18, 'seedwanted', 'seedwanted', 'left', 'Description here...', 0, 0),
-(19, 'Theme &amp; Language', 'themelang', 'left', 'Description here...', 1, 2),
-(20, 'Powered By', 'poweredby', 'right', 'Description here...', 1, 2);
+(11, 'simplesearch', 'simplesearch', 'right', 'Description here...', 1, 5),
+(12, 'advancesearch', 'advancesearch', 'right', 'Description here...', 1, 6),
+(13, 'latestimages', 'latestimages', 'right', 'Description here...', 1, 7),
+(14, 'mostactivetorrents', 'mostactivetorrents', 'left', 'Description here...', 1, 6),
+(15, 'scrollingnews', 'scrollingnews', 'left', 'Description here...', 1, 5),
+(16, 'newestmember', 'newestmember', 'right', 'Description here...', 1, 10),
+(17, 'polls', 'polls', 'right', 'Description here...', 1, 9),
+(18, 'seedwanted', 'seedwanted', 'left', 'Description here...', 1, 4),
+(19, 'Theme & Language', 'themelang', 'left', 'Description here...', 1, 2),
+(20, 'Powered By', 'poweredby', 'right', 'Description here...', 1, 4),
+(21, 'admincp', 'admincp', 'right', '', 1, 8);
 
 DROP TABLE IF EXISTS `categories`;
 CREATE TABLE `categories` (
@@ -584,12 +585,12 @@ CREATE TABLE `torrentlang` (
 
 INSERT INTO `torrentlang` (`id`, `name`, `image`, `sort_index`) VALUES 
 (1, 'English', 'english.gif', 1),
-(2, 'French', 'french.jpg', 1),
-(3, 'German', 'german.jpg', 1),
-(4, 'Italian', 'italian.jpg', 1),
-(5, 'Japanese', 'japanese.jpg', 1),
-(6, 'Spanish', 'spanish.jpg', 1),
-(7, 'Russian', 'russian.jpg', 1);
+(2, 'French', 'french.gif', 1),
+(3, 'German', 'german.gif', 1),
+(4, 'Italian', 'italian.gif', 1),
+(5, 'Japanese', 'japanese.gif', 1),
+(6, 'Spanish', 'spanish.gif', 1),
+(7, 'Russian', 'russian.gif', 1);
 
 DROP TABLE IF EXISTS `torrents`;
 CREATE TABLE `torrents` (
@@ -636,7 +637,7 @@ DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `username` varchar(40) NOT NULL default '',
-  `password` varchar(40) NOT NULL default '',
+  `password` varchar(255) NOT NULL default '',
   `secret` varchar(20) binary NOT NULL default '' COLLATE latin1_bin,
   `email` varchar(80) NOT NULL default '',
   `status` enum('pending','confirmed') NOT NULL default 'pending',

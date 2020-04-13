@@ -7,4 +7,3 @@
  
  logoutcookie();
  header("Location: index.php");
-?>

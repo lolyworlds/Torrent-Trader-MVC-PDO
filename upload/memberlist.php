@@ -45,8 +45,8 @@ print("<center><br /><form method='get' action='memberlist.php'>\n");
 print(T_("SEARCH").": <input type='text' size='30' name='search' />\n");
 print("<select name='class'>\n");
 print("<option value='-'>(any class)</option>\n");
-$res = SQL_Query_exec("SELECT group_id, level FROM groups");
-while ($row = mysqli_fetch_assoc($res)) {
+$res = DB::run("SELECT group_id, level FROM groups");
+while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
 	print("<option value='$row[group_id]'" . ($class && $class == $row['group_id'] ? " selected='selected'" : "") . ">".htmlspecialchars($row['level'])."</option>\n");
 }
 print("</select>\n");
@@ -69,8 +69,8 @@ print("</p>\n");
 $page = (int) $_GET['page'];
 $perpage = 25;
 
-$res = SQL_Query_exec("SELECT COUNT(*) FROM users WHERE $query");
-$arr = mysqli_fetch_row($res);
+$arr = DB::run("SELECT COUNT(*) FROM users WHERE $query")->fetch();
+
 $pages = floor($arr[0] / $perpage);
 if ($pages * $perpage < $arr[0])
   ++$pages;
@@ -103,14 +103,14 @@ else
 
 $offset = max( 0, ( $page * $perpage ) - $perpage );
 
-$res = SQL_Query_exec("SELECT users.*, groups.level FROM users INNER JOIN groups ON groups.group_id=users.class WHERE $query ORDER BY username LIMIT $offset,$perpage");
+$res = DB::run("SELECT users.*, groups.level FROM users INNER JOIN groups ON groups.group_id=users.class WHERE $query ORDER BY username LIMIT $offset,$perpage");
 
 print("<br /><table border='0' class='table_table' width='100%' cellpadding='3' cellspacing='3'><tr><th class='table_head'>" . T_("USERNAME") . "</th><th class='table_head'>" . T_("REGISTERED") . "</th><th class='table_head'>" . T_("LAST_ACCESS") . "</th><th class='table_head'>" . T_("CLASS") . "</th><th class='table_head'>" . T_("COUNTRY") . "</th></tr>\n");
-while ($arr = mysqli_fetch_assoc($res)) {
+while ($arr = $res->fetch(PDO::FETCH_ASSOC)) {
 	
-		$cres = SQL_Query_exec("SELECT name,flagpic FROM countries WHERE id=$arr[country]");
+		$cres = DB::run("SELECT name,flagpic FROM countries WHERE id=?", [$arr['country']]);
 
-		if ($carr = mysqli_fetch_assoc($cres)) {
+		if ($carr = $cres->fetch(PDO::FETCH_ASSOC)) {
 			$country = "<td align=\"center\" class='table_col1' style='padding: 0px'><img src='$site_config[SITEURL]/images/countries/$carr[flagpic]' title='".htmlspecialchars($carr['name'])."' alt='".htmlspecialchars($carr['name'])."' /></td>";
 		} else {
 			$country = "<td align=\"center\"  class='table_col1' style='padding: 0px'><img src='$site_config[SITEURL]/images/countries/unknown.gif' alt='Unknown' /></td>";
@@ -131,5 +131,3 @@ print('</table>');
 print("<br /><p align='center'>$pagemenu<br />$browsemenu</p>");
 end_frame();
 stdfoot();
-
-?>

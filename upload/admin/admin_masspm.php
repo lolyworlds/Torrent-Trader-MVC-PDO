@@ -1,4 +1,5 @@
 <?php
+
 if ($action=="masspm"){
 	stdhead("Mass Private Message");
 	navmenu();
@@ -11,7 +12,7 @@ if ($action=="masspm"){
 
 		$sender_id = ($_POST['sender'] == 'system' ? 0 : $CURUSER['id']);
 
-		$dt = sqlesc(get_date_time());
+		$dt = get_date_time();
 		$msg = $_POST['msg'];
         $subject = $_POST["subject"];
 
@@ -20,13 +21,13 @@ if ($action=="masspm"){
 
 		$updateset = array_map("intval", $_POST['clases']);
 
-		$query = SQL_Query_exec("SELECT id FROM users WHERE class IN (".implode(",", $updateset).") AND enabled = 'yes' AND status = 'confirmed'");
-		while($dat=mysqli_fetch_assoc($query)){
-			SQL_Query_exec("INSERT INTO messages (sender, receiver, added, msg, subject) VALUES ($sender_id, $dat[id], '" . get_date_time() . "', " . sqlesc($msg) .", ".sqlesc($subject).")");
+		$query = DB::run("SELECT id FROM users WHERE class IN (".implode(",", $updateset).") AND enabled = 'yes' AND status = 'confirmed'");
+		while($dat=$query->fetch(PDO::FETCH_ASSOC)){
+			DB::run("INSERT INTO messages (sender, receiver, added, msg, subject) VALUES (?,?,?,?,?)", [$sender_id, $dat['id'], get_date_time(), $msg, $subject]);
 		}
 
 		write_log("A Mass PM was sent by ($CURUSER[username])");
-		show_error_msg(T_("COMPLETE"), "Mass PM Sent",1);
+		autolink("admincp.php?action=masspm", T_("SUCCESS"),"Mass PM Sent!");
 		die;
 	}
 
@@ -36,12 +37,10 @@ if ($action=="masspm"){
 	print("<table border='0' cellspacing='0' cellpadding='5' align='center' width='90%'>\n");
 	
 
-	$query = "SELECT group_id, level FROM groups";
-	$res = SQL_Query_exec($query);
+	$res = DB::run("SELECT group_id, level FROM groups");
 
     echo "<tr><td><b>Send to:</b></td></tr>";
-	while ($row = mysqli_fetch_array($res)){
-
+	while ($row = $res->fetch(PDO::FETCH_LAZY)){
 		echo "<tr><td><input type='checkbox' name='clases[]' value='$row[group_id]' /> $row[level]<br /></td></tr>\n";
 	}
                            

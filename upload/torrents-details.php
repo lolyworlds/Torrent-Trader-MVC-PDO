@@ -9,10 +9,9 @@ $nfo_dir = $site_config["nfo_dir"];
 //check permissions
 if ($site_config["MEMBERSONLY"]){
 	loggedinonly();
-
-	if($CURUSER["view_torrents"]=="no")
-		show_error_msg(T_("ERROR"), T_("NO_TORRENT_VIEW"), 1);
 }
+		if($CURUSER["view_torrents"]=="no")	
+		show_error_msg(T_("ERROR"), T_("NO_TORRENT_VIEW"), 1);
 
 //************ DO SOME "GET" STUFF BEFORE PAGE LAYOUT ***************
 
@@ -22,8 +21,8 @@ if (!is_valid_id($id))
 	show_error_msg(T_("ERROR"), T_("THATS_NOT_A_VALID_ID"), 1);
 
 //GET ALL MYSQL VALUES FOR THIS TORRENT
-$res = SQL_Query_exec("SELECT torrents.anon, torrents.seeders, torrents.banned, torrents.leechers, torrents.info_hash, torrents.filename, torrents.nfo, torrents.last_action, torrents.numratings, torrents.name, torrents.owner, torrents.save_as, torrents.descr, torrents.visible, torrents.size, torrents.added, torrents.views, torrents.hits, torrents.times_completed, torrents.id, torrents.type, torrents.external, torrents.image1, torrents.image2, torrents.announce, torrents.numfiles, torrents.freeleech, IF(torrents.numratings < 2, NULL, ROUND(torrents.ratingsum / torrents.numratings, 1)) AS rating, torrents.numratings, categories.name AS cat_name, torrentlang.name AS lang_name, torrentlang.image AS lang_image, categories.parent_cat as cat_parent, users.username, users.privacy FROM torrents LEFT JOIN categories ON torrents.category = categories.id LEFT JOIN torrentlang ON torrents.torrentlang = torrentlang.id LEFT JOIN users ON torrents.owner = users.id WHERE torrents.id = $id");
-$row = mysqli_fetch_assoc($res);
+$res = DB::run("SELECT torrents.anon, torrents.seeders, torrents.banned, torrents.leechers, torrents.info_hash, torrents.filename, torrents.nfo, torrents.last_action, torrents.numratings, torrents.name, torrents.owner, torrents.save_as, torrents.descr, torrents.visible, torrents.size, torrents.added, torrents.views, torrents.hits, torrents.times_completed, torrents.id, torrents.type, torrents.external, torrents.image1, torrents.image2, torrents.announce, torrents.numfiles, torrents.freeleech, IF(torrents.numratings < 2, NULL, ROUND(torrents.ratingsum / torrents.numratings, 1)) AS rating, torrents.numratings, categories.name AS cat_name, torrentlang.name AS lang_name, torrentlang.image AS lang_image, categories.parent_cat as cat_parent, users.username, users.privacy FROM torrents LEFT JOIN categories ON torrents.category = categories.id LEFT JOIN torrentlang ON torrents.torrentlang = torrentlang.id LEFT JOIN users ON torrents.owner = users.id WHERE torrents.id = $id");
+$row = $res->fetch(PDO::FETCH_ASSOC);
 
 //DECIDE IF TORRENT EXISTS
 if (!$row || ($row["banned"] == "yes" && $CURUSER["edit_torrents"] == "no"))
@@ -32,8 +31,8 @@ if (!$row || ($row["banned"] == "yes" && $CURUSER["edit_torrents"] == "no"))
 //torrent is availiable so do some stuff
 
 if ($_GET["hit"]) {
-	SQL_Query_exec("UPDATE torrents SET views = views + 1 WHERE id = $id");
-	header("Location: torrents-details.php?id=$id");
+	DB::run("UPDATE torrents SET views = views + 1 WHERE id = $id");
+    header("Location: torrents-details.php?id=$id"); 
 	die;
 	}
 
@@ -51,17 +50,17 @@ if ($_GET["takerating"] == 'yes'){
 	if ($rating <= 0 || $rating > 5)
 		show_error_msg(T_("RATING_ERROR"), T_("INVAILD_RATING"), 1);
 
-	$res = SQL_Query_exec("INSERT INTO ratings (torrent, user, rating, added) VALUES ($id, " . $CURUSER["id"] . ", $rating, '".get_date_time()."')");
+	$res = DB::run("INSERT INTO ratings (torrent, user, rating, added) VALUES ($id, " . $CURUSER["id"] . ", $rating, '".get_date_time()."')");
 
 	if (!$res) {
-		if (mysqli_errno($GLOBALS["DBconnector"]) == 1062)
+		if ($res->errorCode() == 1062)
 			show_error_msg(T_("RATING_ERROR"), T_("YOU_ALREADY_RATED_TORRENT"), 1);
 		else
 			show_error_msg(T_("RATING_ERROR"), T_("A_UNKNOWN_ERROR_CONTACT_STAFF"), 1);
 	}
 
-	SQL_Query_exec("UPDATE torrents SET numratings = numratings + 1, ratingsum = ratingsum + $rating WHERE id = $id");
-	show_error_msg(T_("RATING_SUCCESS"), T_("RATING_THANK")."<br /><br /><a href='torrents-details.php?id=$id'>" .T_("BACK_TO_TORRENT"). "</a>");
+	DB::run("UPDATE torrents SET numratings = numratings + 1, ratingsum = ratingsum + $rating WHERE id = $id");
+	show_error_msg(T_("RATING_SUCCESS"), T_("RATING_THANK")."<br /><br /><a href='torrents-details.php/?id=$id'>" .T_("BACK_TO_TORRENT"). "</a>");
 }
 
 //take comment add
@@ -72,54 +71,109 @@ if ($_GET["takecomment"] == 'yes'){
 	if (!$body)
 		show_error_msg(T_("RATING_ERROR"), T_("YOU_DID_NOT_ENTER_ANYTHING"), 1);
 
-	SQL_Query_exec("UPDATE torrents SET comments = comments + 1 WHERE id = $id");
+	DB::run("UPDATE torrents SET comments = comments + 1 WHERE id = $id");
 
-	SQL_Query_exec("INSERT INTO comments (user, torrent, added, text) VALUES (".$CURUSER["id"].", ".$id.", '" .get_date_time(). "', " . sqlesc($body).")");
+	$comins = ("INSERT INTO comments (user, torrent, added, text) VALUES (".$CURUSER["id"].", ".$id.", '" .get_date_time(). "', " . sqlesc($body).")");
 
-	if (mysqli_affected_rows($GLOBALS["DBconnector"]) == 1)
+	if ($comins)
 			show_error_msg(T_("COMPLETED"), T_("COMMENT_ADDED"), 0);
 		else
 			show_error_msg(T_("ERROR"), T_("UNABLE_TO_ADD_COMMENT"), 0);
 }//end insert comment
 
 //START OF PAGE LAYOUT HERE
-$char1 = 50; //cut length
+
+?>
+<style> 
+.hide{
+    display:none;
+}
+
+.block{
+    width: 100px;
+    height:50px;
+    background-color:#cccccc;
+    text-align:center;
+    line-height:50px;
+}	
+</style> 
+
+
+
+
+<?php		$char1 = 55; //cut length
 $shortname = CutName(htmlspecialchars($row["name"]), $char1);
 
 begin_frame(T_("TORRENT_DETAILS_FOR"). " \"" . $shortname . "\"");
-
-echo "<div align='right'>[<a href='report.php?torrent=$id'><b>" .T_("REPORT_TORRENT"). "</b></a>]&nbsp;";
-if ($owned)
-	echo "[<a href='torrents-edit.php?id=$row[id]&amp;returnto=" . urlencode($_SERVER["REQUEST_URI"]) . "'><b>".T_("EDIT_TORRENT")."</b></a>]";
-echo "</div>";
-
-echo "<center><h1>" . $shortname . "</h1></center>";
-
-// Calculate local torrent speed test
-if ($row["leechers"] >= 1 && $row["seeders"] >= 1 && $row["external"]!='yes'){
-	$speedQ = SQL_Query_exec("SELECT (SUM(p.downloaded)) / (UNIX_TIMESTAMP('".get_date_time()."') - UNIX_TIMESTAMP(added)) AS totalspeed FROM torrents AS t LEFT JOIN peers AS p ON t.id = p.torrent WHERE p.seeder = 'no' AND p.torrent = '$id' GROUP BY t.id ORDER BY added ASC LIMIT 15");
-	$a = mysqli_fetch_assoc($speedQ);
-	$totalspeed = mksize($a["totalspeed"]) . "/s";
-}else{
-	$totalspeed = T_("NO_ACTIVITY"); 
+?>
+<script type="text/javascript">
+function show1(elementId) { 
+ document.getElementById("id1").style.display="none";
+  document.getElementById(elementId).style.display="block";
+}
+function show(elementId) { 
+document.getElementById("id1").style.display="none";
+ document.getElementById("id2").style.display="none";
+ document.getElementById("id3").style.display="none";
+ document.getElementById("id4").style.display="none";
+ document.getElementById("id5").style.display="none";
+ document.getElementById("id6").style.display="none";
+ document.getElementById("id7").style.display="none";
+ document.getElementById(elementId).style.display="block";
 }
 
+</script>
+
+
+<button type="button" onclick="show('id1');">DETAILS</button>
+<button type="button" onclick="show('id2');">RATING</button>
+<button type="button" onclick="show('id3');">IMAGES</button>
+<button type="button" onclick="show('id4');">FILES</button>
+<button type="button" onclick="show('id5');">PEERLIST</button>
+<button type="button" onclick="show('id6');">NFO</button>
+<button type="button" onclick="show('id7');">COMMENTS</button>
+<?php
+echo "<table border=\"0\" width=\"100%\" cellspacing=\"5\" cellpadding=\"5\" class=\"account\"><tr><td><h3>" . $shortname . "</h3></td><td><p align=\"right\"><a href='report.php?torrent=$id' class='btn btn-danger' ><i class=\"fas fa-exclamation-triangle\"></i>&nbsp;&nbsp;<b>" .T_("REPORT_TORRENT"). "</b></a> &nbsp;";	
+if ($owned)	
+	echo " <a href='torrents-edit.php?id=$row[id]&amp;returnto=" . urlencode($_SERVER["REQUEST_URI"]) . "' class='btn btn-success' ><i class=\"far fa-edit\"></i>&nbsp;&nbsp;<b>".T_("EDIT_TORRENT")."</b></a>&nbsp; ";	
+print ("<a href=\"download.php?id=$id&amp;name=" . rawurlencode($row["filename"]) . "\"><img src=\"".$site_config["SITEURL"]."/images/download_torrent.png\" border=\"0\" alt='' /></a><br />");
+echo "</td>";	
+echo "</tr></table>";
+
+
+
+echo "<div id=id1  style=display:block>"; // start id1
 //download box
-echo "<center><table border='0' width='100%'><tr><td><div id='downloadbox'>";
-if ($row["banned"] == "yes"){
-	print ("<center><b>" .T_("DOWNLOAD"). ": </b>BANNED!</center>");
-}else{
-	print ("<table border='0' cellpadding='0' width='100%'><tr><td align='center' valign='middle' width='54'><a href=\"download.php?id=$id&amp;name=" . rawurlencode($row["filename"]) . "\"><img src=\"".$site_config["SITEURL"]."/images/download_torrent.png\" border=\"0\" alt='' /></a></td>");
-	print ("<td valign='top'><a href=\"download.php?id=$id&amp;name=" . rawurlencode($row["filename"]) . "\">".T_("DOWNLOAD_TORRENT")."</a><br />");
-	print ("<b>" .T_("HEALTH"). ": </b><img src='".$site_config["SITEURL"]."/images/health/health_".health($row["leechers"], $row["seeders"]).".gif' alt='' /><br />");
-	print ("<b>" .T_("SEEDS"). ": </b><font color='green'>" . number_format($row["seeders"]) . "</font><br />");
-	print ("<b>".T_("LEECHERS").": </b><font color='#ff0000'>" .  number_format($row["leechers"]) . "</font><br />");
+
+
+
+
+
+
+
+
+
+
+
+echo "<div class=row>"; // start row
+
+echo "<div class=col-sm-2>";
+print ("<div><img src='".$site_config["SITEURL"]."/uploads/images/$row[image1]' width='200' height='265' class='poster' alt='' /><br>");	
+print ("</div>");
+echo "  </div>"; 
+
+
+echo "<div class=col-sm>"; // first col
+print ("<ul class='list'>");		
+	print ("<b>" .T_("HEALTH"). ": </b></br><img src='".$site_config["SITEURL"]."/images/health/health_".health($row["leechers"], $row["seeders"]).".gif' alt='' /><br />");
+	print ("<b>" .T_("SEEDS"). ": </b></br><font color='green'>" . number_format($row["seeders"]) . "</font><br />");
+	print ("<b>".T_("LEECHERS").": </b></br><font color='#ff0000'>" .  number_format($row["leechers"]) . "</font><br />");
 
 	if ($row["external"]!='yes'){
-		print ("<b>".T_("SPEED").": </b>" . $totalspeed . "<br />");
+		print ("<b>".T_("SPEED").": </b></br>" . $totalspeed . "<br />");
 	}
 
-	print ("<b>".T_("COMPLETED").":</b> " . number_format($row["times_completed"]) . "&nbsp;"); 
+	print ("<b>".T_("COMPLETED").":</b></br> " . number_format($row["times_completed"]) . "&nbsp;"); 
 
 	if ($row["external"] != "yes" && $row["times_completed"] > 0) {
 		echo("[<a href='torrents-completed.php?id=$id'>" .T_("WHOS_COMPLETED"). "</a>] ");
@@ -130,100 +184,63 @@ if ($row["banned"] == "yes"){
 	echo "<br />";
 
 	if ($row["external"]!='yes' && $row["freeleech"]=='1'){
-		print ("<b>".T_("FREE_LEECH").": </b><font color='#ff0000'>".T_("FREE_LEECH_MSG")."</font><br />");
+		print ("<b>".T_("FREE_LEECH").": </b></br><font color='#ff0000'>".T_("FREE_LEECH_MSG")."</font><br />");
 	}
 
-	print ("<b>".T_("LAST_CHECKED").": </b>" . date("d-m-Y H:i:s", utc_to_tz_time($row["last_action"])) . "<br /></td>");
+print ("<b>".T_("LAST_CHECKED").": </b></br>" . date("d-m-Y H:i:s", utc_to_tz_time($row["last_action"])) . "<br />");		
+echo "</ul>";
+echo "  </div>"; 
 
-	if ($row["external"]=='yes'){
-
-		if ($scrape =='1'){
-			print("<td valign='top' align='right'><b>Tracked: </b>EXTERNAL<br /><br />");
-			$seeders1 = $leechers1 = $downloaded1 = null;
-
-			$tres = SQL_Query_exec("SELECT url FROM announce WHERE torrent=$id");
-			while ($trow = mysqli_fetch_assoc($tres)) {
-				$ann = $trow["url"];
-				$tracker = explode("/", $ann);
-				$path = array_pop($tracker);
-				$oldpath = $path;
-				$path = preg_replace("/^announce/", "scrape", $path);
-				$tracker = implode("/", $tracker)."/".$path;
-
-				if ($oldpath == $path) {
-					continue; // Scrape not supported, ignored
-				}
-
-				// TPB's tracker is dead. Use openbittorrent instead
-				if (preg_match("/thepiratebay.org/i", $tracker) || preg_match("/prq.to/", $tracker)) {
-					$tracker = "http://tracker.openbittorrent.com/scrape";
-				}
-
-				$stats = torrent_scrape_url($tracker, $row["info_hash"]);
-				if ($stats['seeds'] != -1) {
-					$seeders1 += $stats['seeds'];
-					$leechers1 += $stats['peers'];
-					$downloaded1 += $stats['downloaded'];
-					SQL_Query_exec("UPDATE `announce` SET `online` = 'yes', `seeders` = $stats[seeds], `leechers` = $stats[peers], `times_completed` = $stats[downloaded] WHERE `url` = ".sqlesc($ann)." AND `torrent` = $id");
-				} else {
-					SQL_Query_exec("UPDATE `announce` SET `online` = 'no' WHERE `url` = ".sqlesc($ann)." AND `torrent` = $id");
-
-				}
-			}
-
-			if ($seeders1 !== null){ //only update stats if data is received
-				print ("<b>".T_("LIVE_STATS").": </b><br />");
-				print ("Seeders: ".number_format($seeders1)."<br />");
-				print ("Leechers: ".number_format($leechers1)."<br />");
-				print (T_("COMPLETED").": ".number_format($downloaded1)."<br />");
-
-				SQL_Query_exec("UPDATE torrents SET leechers='".$leechers1."', seeders='".$seeders1."', times_completed='".$downloaded1."',last_action= '".get_date_time()."',visible='yes' WHERE id='".$row['id']."'"); 
-			}else{
-				print ("<b>".T_("LIVE_STATS").": </b><br />");
-				print ("<font color='#ff0000'>Tracker Timeout<br />Please retry later</font><br />");
-			}
-
-			print ("<form action='torrents-details.php?id=$id&amp;scrape=1' method='post'><input type=\"submit\" name=\"submit\" value=\"Update Stats\" /></form></td>");
-		}else{
-			print ("<td valign='top' align='right'><b>Tracked:</b> EXTERNAL<br /><br /><form action='torrents-details.php?id=$id&amp;scrape=1' method='post'><input type=\"submit\" name=\"submit\" value=\"Update Stats\" /></form></td>");
-		}
-	}
-
-	echo "</tr></table>";
-}
-echo "</div></td></tr></table></center><br /><br />";
-//end download box
-
-
-echo "<fieldset class='download'><legend><b>Details</b></legend>";
-echo "<table cellpadding='3' border='0' width='100%'>";
-print("<tr><td align='left'><b>".T_("NAME").":</b></td><td>" . $shortname . "</td></tr>\n");
-print("<tr><td align='left' colspan='2'><b>" .T_("DESCRIPTION"). ":</b><br />" .  format_comment($row['descr']) . "</td></tr>\n");
-print("<tr><td align='left'><b>" .T_("CATEGORY"). ":</b></td><td>" . $row["cat_parent"] . " > " . $row["cat_name"] . "</td></tr>\n");
+echo "<div class=col-sm>";
+print("<ul class='list'>");	
+print("<b>" .T_("CATEGORY"). ":</b></br>" . $row["cat_parent"] . " > " . $row["cat_name"] . "</br>");
 
 if (empty($row["lang_name"])) $row["lang_name"] = "Unknown/NA";
-print("<tr><td align='left'><b>" .T_("LANG"). ":</b></td><td>" . $row["lang_name"] . "\n");
+print("<b>" .T_("LANG"). ":</b></br>" . $row["lang_name"] . "</br>");
 
 if (isset($row["lang_image"]) && $row["lang_image"] != "")
-			print("&nbsp;<img border=\"0\" src=\"" . $site_config['SITEURL'] . "/images/languages/" . $row["lang_image"] . "\" alt=\"" . $row["lang_name"] . "\" />");
+			print("&nbsp;<img border=\"0\" src=\"" . $site_config['SITEURL'] . "/images/languages/" . $row["lang_image"] . "\" alt=\"" . $row["lang_name"] . "\"</br>");
 
-print("</td></tr>");
 
-print("<tr><td align='left'><b>" .T_("TOTAL_SIZE"). ":</b></td><td>" . mksize($row["size"]) . " </td></tr>\n");
-print("<tr><td align='left'><b>" .T_("INFO_HASH"). ":</b></td><td>" . $row["info_hash"] . "</td></tr>\n");
+
+print("<b>" .T_("TOTAL_SIZE"). ":</b></br>" . mksize($row["size"]) . "</br> ");
+print("<b>" .T_("INFO_HASH"). ":</b></br><font color='green'>" . $row["info_hash"] . "</font></br>");
 print("");
 if ($row["anon"] == "yes" && !$owned)
-	print("<tr><td align='left'><b>" .T_("ADDED_BY"). ":</b></td><td>Anonymous</td></tr>");
+	print("<b>" .T_("ADDED_BY"). ":</b></br>Anonymous");
 elseif ($row["username"])
-	print("<tr><td align='left'><b>" .T_("ADDED_BY"). ":</b></td><td><a href='account-details.php?id=" . $row["owner"] . "'>" . $row["username"] . "</a></td></tr>");
+	print("<b>" .T_("ADDED_BY"). ":</b></br><a href='account-details.php?id=" . $row["owner"] . "'>" . $row["username"] . "</a></br>");
 else
-	print("<tr><td align='left'><b>" .T_("ADDED_BY"). ":</b></td><td>Unknown</td></tr>");
+	print("<b>" .T_("ADDED_BY"). ":</b></br>Unknown");
 
-print("<tr><td align='left'><b>" .T_("DATE_ADDED"). ":</b></td><td>" . date("d-m-Y H:i:s", utc_to_tz_time($row["added"])) . "</td></tr>\n");
-print("<tr><td align='left'><b>" .T_("VIEWS"). ":</b></td><td>" . number_format($row["views"]) . "</td></tr>\n");
-print("<tr><td align='left'><b>".T_("HITS").":</b></td><td>" . number_format($row["hits"]) . "</td></tr>\n");
-echo "</table></fieldset><br /><br />";
+print("<b>" .T_("DATE_ADDED"). ":</b></br>" . date("d-m-Y H:i:s", utc_to_tz_time($row["added"])) . "</br>");
+print("<b>" .T_("VIEWS"). ":</b></br>" . number_format($row["views"]) . "</br>");
+print("<b>".T_("HITS").":</b></br>" . number_format($row["hits"]) . "");		
+echo "</ul>";
+echo "  </div>"; 
 
+echo "<div class=col-sm>";
+echo " we can add whatever";
+echo "  </div>"; 
+
+
+echo "</div>";// end row
+
+
+
+
+echo "</div>"; // end id1
+
+
+
+
+
+
+
+
+
+
+echo "<div id=id2  style=display:none>";
 // $srating IS RATING VARIABLE
 		$srating = "";
 		$srating .= "<table class='f-border' cellspacing=\"1\" cellpadding=\"4\" width='100%'><tr><td class='f-title' width='60'><b>".T_("RATINGS").":</b></td><td class='f-title' valign='middle'>";
@@ -248,8 +265,8 @@ echo "</table></fieldset><br /><br />";
 					1 => T_("SUCKS")
 			);
 			//if (!$owned || $moderator) {
-				$xres = SQL_Query_exec("SELECT rating, added FROM ratings WHERE torrent = $id AND user = " . $CURUSER["id"]);
-				$xrow = mysqli_fetch_assoc($xres);
+				$xres = DB::run("SELECT rating, added FROM ratings WHERE torrent = $id AND user = " . $CURUSER["id"]);
+				$xrow = $xres->fetch(PDO::FETCH_ASSOC);
 				if ($xrow)
 					$srating .= "<br /><i>(".T_("YOU_RATED")." \"" . $xrow["rating"] . " - " . $ratings[$xrow["rating"]] . "\")</i>";
 				else {
@@ -270,9 +287,9 @@ echo "</table></fieldset><br /><br />";
 print("<center>". $srating . "</center>");// rating
 
 //END DEFINE RATING VARIABLE
+echo "</div>";
 
-echo "<br />";
-                                                  
+echo "<div id=id3  style=display:none>";
 if ($row["image1"] != "" OR $row["image2"] != "") {
   if ($row["image1"] != "")
     $img1 = "<img src='".$site_config["SITEURL"]."/uploads/images/$row[image1]' width='150' border='0' alt='' />";
@@ -280,18 +297,20 @@ if ($row["image1"] != "" OR $row["image2"] != "") {
     $img2 = "<img src='".$site_config["SITEURL"]."/uploads/images/$row[image2]' width='150' border='0' alt='' />";
   print("<center>". $img1 . "&nbsp;&nbsp;" . $img2."</center><br />");
 }
+echo "</div>";
 
+echo "<div id=id4  style=display:none>";
 if ($row["external"]=='yes'){
 	print ("<br /><b>Tracker:</b><br /> ".htmlspecialchars($row['announce'])."<br />");
 }
 
-$tres = SQL_Query_exec("SELECT * FROM `announce` WHERE `torrent` = $id");
-if (mysqli_num_rows($tres) > 1){
+$tres = DB::run("SELECT * FROM `announce` WHERE `torrent` = $id");
+if ($tres->rowCount() > 1){
 	echo "<br /><b>".T_("THIS_TORRENT_HAS_BACKUP_TRACKERS")."</b><br />";
 	echo '<table cellpadding="1" cellspacing="2" class="table_table"><tr>';
 	echo '<th class="table_head">URL</th><th class="table_head">'.T_("SEEDERS").'</th><th class="table_head">'.T_("LEECHERS").'</th><th class="table_head">'.T_("COMPLETED").'</th></tr>';
 	$x = 1;
-	while ($trow = mysqli_fetch_assoc($tres)) {
+	while ($trow = $tres->fetch(PDO::FETCH_ASSOC)) {
 		$colour = $trow["online"] == "yes" ? "green" : "red";
 		echo "<tr class=\"table_col$x\"><td><font color=\"$colour\"><b>".htmlspecialchars($trow['url'])."</b></font></td><td align=\"center\">".number_format($trow["seeders"])."</td><td align=\"center\">".number_format($trow["leechers"])."</td><td align=\"center\">".number_format($trow["times_completed"])."</td></tr>";
 		$x = $x == 1 ? 2 : 1;
@@ -300,21 +319,23 @@ if (mysqli_num_rows($tres) > 1){
 }
 
 echo "<br /><br /><b>".T_("FILE_LIST").":</b>&nbsp;<img src='images/plus.gif' id='pic1' onclick='klappe_torrent(1)' alt='' /><div id='k1' style='display: none;'><table align='center' cellpadding='0' cellspacing='0' class='table_table' border='1' width='100%'><tr><th class='table_head' align='left'>&nbsp;".T_("FILE")."</th><th width='50' class='table_head'>&nbsp;".T_("SIZE")."</th></tr>";
-$fres = SQL_Query_exec("SELECT * FROM `files` WHERE `torrent` = $id ORDER BY `path` ASC");
-if (mysqli_num_rows($fres)) {
-    while ($frow = mysqli_fetch_assoc($fres)) {
+$fres = DB::run("SELECT * FROM `files` WHERE `torrent` = $id ORDER BY `path` ASC");
+if ($fres->rowCount()) {
+    while ($frow = $fres->fetch(PDO::FETCH_ASSOC)) {
         echo "<tr><td class='table_col1'>".htmlspecialchars($frow['path'])."</td><td class='table_col2'>".mksize($frow['filesize'])."</td></tr>";
     }
 }else{
     echo "<tr><td class='table_col1'>".htmlspecialchars($row["name"])."</td><td class='table_col2'>".mksize($row["size"])."</td></tr>";
 }
 echo "</table></div>";
+echo "</div>";
 
+echo "<div id=id5  style=display:none>";
 if ($row["external"]!='yes'){
 	echo "<br /><br /><b>".T_("PEERS_LIST").":</b><br />";
-	$query = SQL_Query_exec("SELECT * FROM peers WHERE torrent = $id ORDER BY seeder DESC");
+	$query = DB::run("SELECT * FROM peers WHERE torrent = $id ORDER BY seeder DESC");
 
-	$result = mysqli_num_rows($query);
+	$result = $query->rowCount();
 		if($result == 0) {
 			echo T_("NO_ACTIVE_PEERS")."\n";
 		}else{
@@ -335,7 +356,7 @@ if ($row["external"]!='yes'){
 			</tr>
 
 			<?php
-			while($row1 = mysqli_fetch_assoc($query))	{
+			while($row1 = $query->fetch(PDO::FETCH_ASSOC))	{
 				
 				if ($row1["downloaded"] > 0){
 					$ratio = $row1["uploaded"] / $row1["downloaded"];
@@ -347,8 +368,8 @@ if ($row["external"]!='yes'){
 				$percentcomp = sprintf("%.2f", 100 * (1 - ($row1["to_go"] / $row["size"])));    
 
 				if ($site_config["MEMBERSONLY"]) {
-					$res = SQL_Query_exec("SELECT id, username, privacy FROM users WHERE id=".$row1["userid"]."");
-					$arr = mysqli_fetch_array($res);
+					$res = DB::run("SELECT id, username, privacy FROM users WHERE id=".$row1["userid"]."");
+					$arr = $res->fetch(PDO::FETCH_ASSOC);
                     
                     $arr["username"] = "<a href='account-details.php?id=$arr[id]'>$arr[username]</a>";
 				}
@@ -368,7 +389,9 @@ if ($row["external"]!='yes'){
 }
 
 echo "<br /><br />";
+echo "</div>";	
 
+echo "<div id=id6  style=display:none>";
 //DISPLAY NFO BLOCK
 function my_nfo_translate($nfo){
         $trans = array(
@@ -424,19 +447,15 @@ if($row["nfo"]== "yes"){
             print(T_("ERROR")." reading .nfo file!");
         }
 }
-end_frame();
+echo "</div>";
 
-begin_frame(T_("COMMENTS"));
-	//echo "<p align=center><a class=index href=torrents-comment.php?id=$id>" .T_("ADDCOMMENT"). "</a></p>\n";
-
-	$subres = SQL_Query_exec("SELECT COUNT(*) FROM comments WHERE torrent = $id");
-	$subrow = mysqli_fetch_array($subres);
-	$commcount = $subrow[0];
+echo "<div id=id7  style=display:none>";
+    $commcount = DB::run("SELECT COUNT(*) FROM comments WHERE torrent = $id")->fetchColumn();
 
 	if ($commcount) {
 		list($pagertop, $pagerbottom, $limit) = pager(10, $commcount, "torrents-details.php?id=$id&amp;");
 		$commquery = "SELECT comments.id, text, user, comments.added, avatar, signature, username, title, class, uploaded, downloaded, privacy, donated FROM comments LEFT JOIN users ON comments.user = users.id WHERE torrent = $id ORDER BY comments.id $limit";
-		$commres = SQL_Query_exec($commquery);
+		$commres = DB::run($commquery);
 	}else{
 		unset($commres);
 	}
@@ -458,8 +477,9 @@ begin_frame(T_("COMMENTS"));
 		echo "<input type=\"submit\"  value=\"".T_("ADDCOMMENT")."\" />";
 		echo "</form></center>";
 	}
+echo "</div>";
+	
 
-	end_frame();
-
+end_frame();
 stdfoot();
 ?>

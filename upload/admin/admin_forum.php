@@ -11,7 +11,7 @@ if ($action == "forum") {
         $new_forum_cat  = (int) $_POST["new_forum_cat"];
         $minclassread = (int)  $_POST["minclassread"];
         $minclasswrite = (int) $_POST["minclasswrite"];
-        $guest_read = sqlesc($_POST["guest_read"]);
+        $guest_read = $_POST["guest_read"];
         
         if ($new_forum_name == "") $error_ac .= "<li>".T_("CP_FORUM_NAME_WAS_EMPTY")."</li>\n";
         if ($new_desc == "") $error_ac .= "<li>".T_("CP_FORUM_DESC_WAS_EMPTY")."</li>\n";
@@ -19,7 +19,7 @@ if ($action == "forum") {
         if ($new_forum_cat == "") $error_ac .= "<li>".T_("CP_FORUM_CATAGORY_WAS_EMPTY")."</li>\n";
 
         if ($error_ac == "") {
-            $res = SQL_Query_exec("INSERT INTO forum_forums (`name`, `description`, `sort`, `category`, `minclassread`, `minclasswrite`, `guest_read`) VALUES (".sqlesc($new_forum_name).", ".sqlesc($new_desc).", ".sqlesc($new_forum_sort).", '$new_forum_cat', '$minclassread', '$minclasswrite', $guest_read)");
+            $res = DB::run("INSERT INTO forum_forums (`name`, `description`, `sort`, `category`, `minclassread`, `minclasswrite`, `guest_read`) VALUES (?,?,?,?,?,?,?)", [$new_forum_name, $new_desc, $new_forum_sort, $new_forum_cat, $minclassread, $minclasswrite, $guest_read]);
             if ($res)
                 autolink("admincp.php?action=forum", T_("CP_FORUM_NEW_ADDED_TO_DB"));
             else
@@ -38,7 +38,7 @@ if ($action == "forum") {
         if ($new_forumcat_sort == "") $error_ac .= "<li>".T_("CP_FORUM_CAT_SORT_WAS_EMPTY")."</li>\n";
 
         if ($error_ac == "") {
-            $res = SQL_Query_exec("INSERT INTO forumcats (`name`, `sort`) VALUES (".sqlesc($new_forumcat_name).", '".intval($new_forumcat_sort)."')");
+            $res = DB::run("INSERT INTO forumcats (`name`, `sort`) VALUES (?,?)", [$new_forumcat_name, intval($new_forumcat_sort)]);
             if ($res)
                 autolink("admincp.php?action=forum", "Thank you, new forum cat added to db ...");
             else
@@ -52,14 +52,14 @@ if ($action == "forum") {
         
         $id = (int) $_POST["id"];
         $changed_sort = (int) $_POST["changed_sort"];
-        $changed_forum = sqlesc($_POST["changed_forum"]);
-        $changed_forum_desc = sqlesc($_POST["changed_forum_desc"]);
+        $changed_forum = $_POST["changed_forum"];
+        $changed_forum_desc = $_POST["changed_forum_desc"];
         $changed_forum_cat = (int) $_POST["changed_forum_cat"];
         $minclasswrite = (int) $_POST["minclasswrite"];
         $minclassread  = (int) $_POST["minclassread"];
-        $guest_read = sqlesc($_POST["guest_read"]);
+        $guest_read = $_POST["guest_read"];
         
-        SQL_Query_exec("UPDATE forum_forums SET sort = '$changed_sort', name = $changed_forum, description = $changed_forum_desc, category = '$changed_forum_cat', minclassread='$minclassread', minclasswrite='$minclasswrite', guest_read=$guest_read WHERE id='$id'");
+        DB::run("UPDATE forum_forums SET sort =?, name =?, description =?, category =?, minclassread=?, minclasswrite=?, guest_read=? WHERE id=?", [$changed_sort, $changed_forum, $changed_forum_desc, $changed_forum_cat, $minclassread, $minclasswrite, $guest_read, $id]);
         autolink("admincp.php?action=forum", "<center><b>".T_("CP_UPDATE_COMPLETED")."</b></center>");
     }
 
@@ -68,37 +68,37 @@ if ($action == "forum") {
         $id = (int) $_POST["id"];
         $changed_sortcat = (int) $_POST["changed_sortcat"];
         
-        SQL_Query_exec("UPDATE forumcats SET sort = '$changed_sortcat', name = ".sqlesc($_POST["changed_forumcat"])." WHERE id='$id'");
+        DB::run("UPDATE forumcats SET sort = '$changed_sortcat', name = ".sqlesc($_POST["changed_forumcat"])." WHERE id='$id'");
         autolink("admincp.php?action=forum", "<center><b>".T_("CP_UPDATE_COMPLETED")."</b></center>");
     }
 
     if ($_POST["do"] == "delete_forum" && is_valid_id($_POST["id"])) 
     {
-        SQL_Query_exec("DELETE FROM forum_forums WHERE id = $_POST[id]");
-        SQL_Query_exec("DELETE FROM forum_topics WHERE forumid = $_POST[id]");
-        SQL_Query_exec("DELETE FROM forum_posts WHERE topicid = $_POST[id]");
-        SQL_Query_exec("DELETE FROM forum_readposts WHERE topicid = $_POST[id]");
+        DB::run("DELETE FROM forum_forums WHERE id = $_POST[id]");
+        DB::run("DELETE FROM forum_topics WHERE forumid = $_POST[id]");
+        DB::run("DELETE FROM forum_posts WHERE topicid = $_POST[id]");
+        DB::run("DELETE FROM forum_readposts WHERE topicid = $_POST[id]");
         autolink("admincp.php?action=forum", T_("CP_FORUM_DELETED"));
     }
     
     if ($_POST["do"] == "delete_forumcat" && is_valid_id($_POST["id"])) 
     {
-        SQL_Query_exec("DELETE FROM forumcats WHERE id = $_POST[id]");
+        DB::run("DELETE FROM forumcats WHERE id = $_POST[id]");
         
-        $res = SQL_Query_exec("SELECT id FROM forum_forums WHERE category = $_POST[id]");
+        $res = DB::run("SELECT id FROM forum_forums WHERE category = $_POST[id]");
         
-        while ( $row = mysqli_fetch_assoc($res) )
+        while ( $row = $res->fetch(PDO::FETCH_ASSOC))
         {
-            $res2 = SQL_Query_exec("SELECT id FROM forum_topics WHERE forumid = $row[id]");
+            $res2 = DB::run("SELECT id FROM forum_topics WHERE forumid = $row[id]");
             
-            while ( $arr = mysqli_fetch_assoc($res2) )
+            while ( $arr = $res2->fetch(PDO::FETCH_ASSOC))
             {
-                SQL_Query_exec("DELETE FROM forum_posts WHERE topicid = $arr[id]");
-                SQL_Query_exec("DELETE FROM forum_readposts WHERE topicid = $arr[id]");
+                DB::run("DELETE FROM forum_posts WHERE topicid = $arr[id]");
+                DB::run("DELETE FROM forum_readposts WHERE topicid = $arr[id]");
             }
             
-            SQL_Query_exec("DELETE FROM forum_topics WHERE forumid = $row[id]");  
-            SQL_Query_exec("DELETE FROM forum_forums WHERE id = $row[id]");  
+            DB::run("DELETE FROM forum_topics WHERE forumid = $row[id]");
+            DB::run("DELETE FROM forum_forums WHERE id = $row[id]");
         }
         
         autolink("admincp.php?action=forum", T_("CP_FORUM_CAT_DELETED"));
@@ -106,17 +106,15 @@ if ($action == "forum") {
     
     stdhead(T_("FORUM_MANAGEMENT"));
     
-    $groupsres = SQL_Query_exec("SELECT group_id, level FROM groups ORDER BY group_id ASC");
-    while ($groupsrow = mysqli_fetch_row($groupsres))
+    $groupsres = DB::run("SELECT group_id, level FROM groups ORDER BY group_id ASC");
+    while ($groupsrow = $groupsres->fetch())
         $groups[$groupsrow[0]] = $groupsrow[1];
 
     if ($_GET["do"] == "edit_forum") {
         
         $id = (int) $_GET["id"];
-        
-        $q = SQL_Query_exec("SELECT * FROM forum_forums WHERE id = '$id'");
-        $r = mysqli_fetch_array($q);
-        
+        $q = DB::run("SELECT * FROM forum_forums WHERE id = '$id'");
+        $r = $q->fetch();
         if (!$r)
              autolink("admincp.php?action=forum", T_("FORUM_INVALID"));
         
@@ -127,44 +125,63 @@ if ($action == "forum") {
           <input type="hidden" name="id" value="<?php echo $id; ?>" />
           <table class='f-border a-form' align='center' width='80%' cellspacing='2' cellpadding='5'>
           <tr class='f-form'>
-          <td>New Name for Forum:</td>
-          <td align='right'><input type="text" name="changed_forum" class="option" size="35" value="<?php echo $r["name"]; ?>" /></td>
+<td class='table_col1'>New Name for Forum:</td>
+<td class='table_col2' align='right'><input type="text" name="changed_forum" class="option" size="35" value="<?php echo $r["name"]; ?>" /></td>
           </tr><tr class='f-form'>
-          <td><?php echo T_("CP_FORUM_NEW_SORT_ORDER");?>:</td>
-          <td align='right'><input type="text" name="changed_sort" class="option" size="35" value="<?php echo $r["sort"]; ?>" /></td>
+<td class='table_col1'>Sort Order:</td>
+<td class='table_col2' align='right'><input type="text" name="changed_sort" class="option" size="35" value="<?php echo $r["sort"]; ?>" /></td>
           </tr><tr class='f-form'>
-          <td>Description:</td>
-          <td align='right'><textarea cols='50' rows='5' name='changed_forum_desc'><?php echo $r["description"]; ?></textarea></td>
+<td class='table_col1'>Description:</td>
+<td class='table_col2' align='right'><textarea cols='50' rows='5' name='changed_forum_desc'><?php echo $r["description"]; ?></textarea></td>
           </tr><tr class='f-form'>
-          <td>New Category:</td>
-          <td align='right'><select name='changed_forum_cat'>
+<td class='table_col1'>New Category:</td>
+<td class='table_col2' align='right'><select name='changed_forum_cat'>
     <?php
-    $query = SQL_Query_exec("SELECT * FROM forumcats ORDER BY sort, name");
-    while ($row = mysqli_fetch_array($query))
-        echo "<option value='{$row['id']}'>{$row['name']}</option>";
+$query = DB::query("SELECT * FROM forumcats ORDER BY sort, name");
+while ($row = $query->fetch()) {
+    echo "<option value={$row['id']}>{$row['name']}</option>";
+}
+?>
+</select></td>
+</tr>
+<tr>
+<td class='table_col1'>Mininum Class Needed to Read:</td>
+<td class='table_col2' align='right'><select name='minclassread'>
+<option value='<? echo $site_config['User']; ?>'>User</option>
+<option value='<? echo $site_config['PowerUser']; ?>'>Power User</option>
+<option value='<? echo $site_config['VIP']; ?>'>VIP</option>
+<option value='<? echo $site_config['Uploader']; ?>'>Uploader</option>
+<option value='<? echo $site_config['Moderator']; ?>'>Moderator</option>
+<option value='<? echo $site_config['SuperModerator']; ?>'>Super Moderator</option>
+<option value='<? echo $site_config['Administrator']; ?>'>Administrator</option>
+</select></td>
+</tr>
+<tr>
+<td class='table_col1'>Mininum Class Needed to Post:</td>
+<td class='table_col2' align='right'><select name='minclasswrite'>
+<option value='<? echo $site_config['User']; ?>'>User</option>
+<option value='<? echo $site_config['PowerUser']; ?>'>Power User</option>
+<option value='<? echo $site_config['VIP']; ?>'>VIP</option>
+<option value='<? echo $site_config['Uploader']; ?>'>Uploader</option>
+<option value='<? echo $site_config['Moderator']; ?>'>Moderator</option>
+<option value='<? echo $site_config['SuperModerator']; ?>'>Super Moderator</option>
+<option value='<? echo $site_config['Administrator']; ?>'>Administrator</option>
 
-    echo "</select></td></tr>
-    <tr class='f-form'><td>".T_("FORUM_MIN_CLASS_READ").":</td>
-    <td align='right'><select name='minclassread'>";
+<</select></td>
+</tr>".
+<tr>
+<td class='table_col1'>Allow Guest Read:</td>
+	<td align='right'><input type="radio" name="guest_read" value="yes" <?php echo $r["guest_read"] == "yes" ? "checked='checked'" : ""?> />Yes, 
+	           <input type="radio" name="guest_read" value="no" <?php echo $r["guest_read"] != "yes" ? "checked='checked'" : ""?> />No</td></tr>
 
-    foreach ($groups as $id => $level) {
-        $s = $r["minclassread"] == $id ? " selected='selected'" : "";
-        echo "<option value='$id' $s>$level</option>";
-    }
+<tr>
+<th class='table_head' colspan='2' align='center'>
+<input type="submit" class="button" value="Change" />
+</th>
+</tr>
 
-    echo "</select></td></tr><tr class='f-form'><td>".T_("FORUM_MIN_CLASS_POST").":</td>
-    <td align='right'><select name='minclasswrite'>";
-
-    foreach ($groups as $id => $level) {
-        $s = $r["minclasswrite"] == $id ? " selected='selected'" : "";
-        echo "<option value='$id' $s>$level</option>";
-    }
-    ?>
-    </select></td></tr><tr class='f-form'>
-    <td><td><?php echo T_("FORUM_ALLOW_GUEST_READ");?>:</td><td align='right'><input type="radio" name="guest_read" value="yes" <?php echo $r["guest_read"] == "yes" ? "checked='checked'" : ""?> />Yes, <input type="radio" name="guest_read" value="no" <?php echo $r["guest_read"] != "yes" ? "checked='checked'" : ""?> />No</td></tr>
-    <tr class='f-form'><td><input type="submit" class="button" value="Change" /></td></tr>
-    </table>
-    </form>
+</table>
+</form>
     <?php
         end_frame();
         stdfoot();
@@ -174,9 +191,7 @@ if ($_GET["do"] == "del_forum") {
     
     $id = (int) $_GET["id"];
     
-    $t = SQL_Query_exec("SELECT * FROM forum_forums WHERE id = '$id'");
-    $v = mysqli_fetch_array($t);
-    
+    $v = DB::run("SELECT * FROM forum_forums WHERE id = '$id'")->fetch();
     if (!$v)
          autolink("admincp.php?action=forum", T_("FORUM_INVALID"));
     
@@ -197,8 +212,8 @@ if ($_GET["do"] == "del_forumcat") {
     
     $id = (int) $_GET["id"];
 
-    $t = SQL_Query_exec("SELECT * FROM forumcats WHERE id = '$id'");
-    $v = mysqli_fetch_array($t);
+    $t = DB::run("SELECT * FROM forumcats WHERE id = '$id'");
+    $v = $t->fetch();
     
     if (!$v)
          autolink("admincp.php?action=forum", T_("FORUM_INVALID_CAT"));
@@ -220,9 +235,7 @@ if ($_GET["do"] == "edit_forumcat") {
     
     $id = (int) $_GET["id"];
 
-    $q = SQL_Query_exec("SELECT * FROM forumcats WHERE id = '$id'");
-    $r = mysqli_fetch_array($q);
-    
+    $r = DB::run("SELECT * FROM forumcats WHERE id = '$id'")->fetch();
     if (!$r)
          autolink("admincp.php?action=forum", T_("FORUM_INVALID_CAT")); 
          
@@ -247,10 +260,10 @@ if ($_GET["do"] == "edit_forumcat") {
     if (!$do) {
         navmenu();
         begin_frame(T_("FORUM_MANAGEMENT"));
-        $query = SQL_Query_exec("SELECT * FROM forumcats ORDER BY sort, name");
-        $allcat = mysqli_num_rows($query);
+        $query = DB::run("SELECT * FROM forumcats ORDER BY sort, name");
+        $allcat = $query->rowCount();
         $forumcat = array();
-        while ($row = mysqli_fetch_array($query))
+        while ($row = $query->fetch(PDO::FETCH_ASSOC))
             $forumcat[] = $row;
 
         echo "
@@ -277,27 +290,35 @@ if ($_GET["do"] == "edit_forumcat") {
 foreach ($forumcat as $row)
     echo "<option value='{$row['id']}'>{$row['name']}</option>";
 
-echo "</select></td>
+
+
+?>
+</select>
 </tr>
 <tr>
-<td class='table_col1'>".T_("FORUM_MIN_CLASS_READ").":</td>
-<td class='table_col2' align='right'><select name='minclassread'>";
-
-foreach ($groups as $id => $level) {
-    $s = $r["minclassread"] == $id ? " selected='selected'" : "";
-    echo "<option value='$id' $s>$level</option>";
-}
-
-echo "</select></td></tr>
+<td class='table_col1'>Mininum Class Needed to Read:</td>
+<td class='table_col2' align='right'><select name='minclassread'>
+<option value='<? echo $site_config['User']; ?>'>User</option>
+<option value='<? echo $site_config['PowerUser']; ?>'>Power User</option>
+<option value='<? echo $site_config['VIP']; ?>'>VIP</option>
+<option value='<? echo $site_config['Uploader']; ?>'>Uploader</option>
+<option value='<? echo $site_config['Moderator']; ?>'>Moderator</option>
+<option value='<? echo $site_config['SuperModerator']; ?>'>Super Moderator</option>
+<option value='<? echo $site_config['Administrator']; ?>'>Administrator</option>
+</select></td>
+</tr>
 <tr>
-<td class='table_col1'>".T_("FORUM_MIN_CLASS_POST").":</td>
-<td class='table_col2' align='right'><select name='minclasswrite'>";
+<td class='table_col1'>Mininum Class Needed to Post:</td>
+<td class='table_col2' align='right'><select name='minclasswrite'>
+<option value='<? echo $site_config['User']; ?>'>User</option>
+<option value='<? echo $site_config['PowerUser']; ?>'>Power User</option>
+<option value='<? echo $site_config['VIP']; ?>'>VIP</option>
+<option value='<? echo $site_config['Uploader']; ?>'>Uploader</option>
+<option value='<? echo $site_config['Moderator']; ?>'>Moderator</option>
+<option value='<? echo $site_config['SuperModerator']; ?>'>Super Moderator</option>
+<option value='<? echo $site_config['Administrator']; ?>'>Administrator</option>
 
-foreach ($groups as $id => $level) {
-    $s = $r["minclasswrite"] == $id ? " selected='selected'" : "";
-    echo "<option value='$id' $s>$level</option>";
-}
-
+<?php
 echo "</select></td>
 </tr>".
 "<tr>
@@ -319,12 +340,12 @@ echo "</table>
 <table class='table_table' align='center' width='80%' cellspacing='0' cellpadding='4'>";
 
 echo "<tr><th class='table_head' width='60'><font size='2'><b>".T_("ID")."</b></font></th><th class='table_head' width='120'>".T_("NAME")."</th><th class='table_head' width='250'>DESC</th><th class='table_head' width='45'>".T_("SORT")."</th><th class='table_head' width='45'>CATEGORY</th><th class='table_head' width='18'>".T_("EDIT")."</th><th class='table_head' width='18'>".T_("DEL")."</th></tr>\n";
-$query = SQL_Query_exec("SELECT * FROM forum_forums ORDER BY sort, name");
-$allforums = mysqli_num_rows($query);
+$query = DB::run("SELECT * FROM forum_forums ORDER BY sort, name");
+$allforums = $query->rowCount();
 if ($allforums == 0) {
     echo "<tr><td class='table_col1' colspan='7' align='center'>No Forums found</td></tr>\n";
 } else {
-    while($row = mysqli_fetch_array($query)) {
+    while($row = $query->fetch()) {
         foreach ($forumcat as $cat)
             if ($cat['id'] == $row['category'])
                 $category = $cat['name'];

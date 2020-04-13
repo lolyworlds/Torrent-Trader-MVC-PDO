@@ -7,7 +7,7 @@ if ($action=="emailbans"){
 	$remove = (int) $_GET['remove'];
 
 	if (is_valid_id($remove)){
-		SQL_Query_exec("DELETE FROM email_bans WHERE id=$remove");
+		DB::run("DELETE FROM email_bans WHERE id=$remove");
 		write_log(sprintf(T_("EMAIL_BANS_REM"), $remove, $CURUSER["username"]));
 	}
 
@@ -20,12 +20,11 @@ if ($action=="emailbans"){
 			stdfoot();
 			die;
 		}
-		$mail_domain= sqlesc($mail_domain);
-		$comment = sqlesc($comment);
-		$added = sqlesc(get_date_time());
+		$mail_domain= $mail_domain;
+		$comment = $comment;
+		$added = get_date_time();
 
-		SQL_Query_exec("INSERT INTO email_bans (added, addedby, mail_domain, comment) VALUES($added, $CURUSER[id], $mail_domain, $comment)");
-
+		$ins = DB::run("INSERT INTO email_bans (added, addedby, mail_domain, comment) VALUES(?,?,?,?)", [$added, $CURUSER['id'], $mail_domain, $comment]);
 		write_log(sprintf(T_("EMAIL_BANS_ADD"), $mail_domain, $CURUSER["username"]));
 		show_error_msg(T_("COMPLETE"), T_("EMAIL_BAN_ADDED"), 0);
 		stdfoot();
@@ -42,9 +41,9 @@ if ($action=="emailbans"){
 	print("\n</table></form>\n<br />");
 	//}
 
-	$res2 = SQL_Query_exec("SELECT count(id) FROM email_bans");
-	$row = mysqli_fetch_array($res2);
-	$count = $row[0];
+//	$row = DB::run("SELECT count(id) FROM email_bans")->fetch();
+	$count = DB::run("SELECT count(id) FROM email_bans")->fetchColumn();
+// $count = $row[0];
 	$perpage = 40;list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, basename(__FILE__)."?action=emailbans&amp;");
 	print("<br /><b>".T_("EMAIL_BANS")." ($count)</b>\n");
 
@@ -54,14 +53,14 @@ if ($action=="emailbans"){
 		echo $pagertop;
 		print("<table border='0' cellspacing='0' cellpadding='5' width='90%' align='center' class='table_table'>\n");
 		print("<tr><th class='table_head'>Added</th><th class='table_head'>Mail Address Or Domain</th><th class='table_head'>Banned By</th><th class='table_head'>Comment</th><th class='table_head'>Remove</th></tr>\n");
-		$res = SQL_Query_exec("SELECT * FROM email_bans ORDER BY added DESC $limit");
+		$res = DB::run("SELECT * FROM email_bans ORDER BY added DESC $limit");
 
-		while ($arr = mysqli_fetch_assoc($res)){
-			$r2 = SQL_Query_exec("SELECT username FROM users WHERE id=$arr[userid]");
-			$a2 = mysqli_fetch_assoc($r2);
+		while ($arr = $res->fetch(PDO::FETCH_LAZY)){
+			$r2 = DB::run("SELECT username FROM users WHERE id=$arr[userid]");
+			$a2 = $r2->fetch(PDO::FETCH_ASSOC);
 
-			$r4 = SQL_Query_exec("SELECT username,id FROM users WHERE id=$arr[addedby]");
-			$a4 = mysqli_fetch_assoc($r4);
+			$r4 = DB::run("SELECT username,id FROM users WHERE id=$arr[addedby]");
+			$a4 = $r4->fetch(PDO::FETCH_ASSOC);
 			print("<tr><td class='table_col1'>".utc_to_tz($arr['added'])."</td><td align='left' class='table_col2'>$arr[mail_domain]</td><td align='left' class='table_col1'><a href='account-details.php?id=$a4[id]'>$a4[username]"."</a></td><td align='left' class='table_col2'>$arr[comment]</td><td class='table_col1'><a href='admincp.php?action=emailbans&amp;remove=$arr[id]'>Remove</a></td></tr>\n");
 		}
 

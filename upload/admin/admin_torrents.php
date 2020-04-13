@@ -20,7 +20,7 @@
         
         list($pagertop, $pagerbottom, $limit) = pager(25, $count, "admincp.php?action=torrentmanage&amp;");
         
-        $res = SQL_Query_exec("SELECT id, name, seeders, leechers, visible, banned, external FROM torrents $where ORDER BY name $limit");
+        $res = DB::run("SELECT id, name, seeders, leechers, visible, banned, external FROM torrents $where ORDER BY name $limit");
         
         stdhead("Torrent Management");
         navmenu();
@@ -50,7 +50,7 @@
             <th class='table_head'><input type='checkbox' name='checkall' onclick='checkAll(this.form.id);' /></th>
         </tr>
         
-        <?php while ($row = mysqli_fetch_array($res)) { ?>
+        <?php while ($row = $res->fetch(PDO::FETCH_LAZY)) { ?>
         
         <tr>
             <td class='table_col1'><a href='torrents-details.php?id=<?php echo $row["id"]; ?>'><?php echo CutName(htmlspecialchars($row["name"]), 40); ?></a></td>

@@ -28,7 +28,7 @@ $image = $_GET['image'];
 $owner = $_GET['owner'];
 $info = $_GET['info'];
 $add = $_GET['add'];
-$added = sqlesc(get_date_time());
+$added = get_date_time();
 
 
 stdhead(T_("TEAMS"));
@@ -38,11 +38,9 @@ begin_frame(T_("TEAMS_MANAGEMENT"));
 //Delete Team
 if($sure == "yes") {
 	
-	$query = "UPDATE users SET team=0 WHERE team=" .sqlesc($del) . "";
-	$sql = SQL_Query_exec($query);
+	$sql = DB::run("UPDATE users SET team=? WHERE team=?", ['0', $del]);
 
-	$query = "DELETE FROM teams WHERE id=" .sqlesc($del) . " LIMIT 1";
-	$sql = SQL_Query_exec($query);
+	$sql = DB::run("DELETE FROM teams WHERE id=? LIMIT 1", [$del]);
 	echo("Team Successfully Deleted![<a href='teams-create.php'>Back</a>]");
 	write_log($CURUSER['username']." has deleted team id:$del");
 	end_frame();
@@ -67,22 +65,20 @@ if($edited == 1) {
          die;
     }
     
-    $team_name = sqlesc($team_name);
-    $team_image = sqlesc($team_image);
-    $teamownername = sqlesc($teamownername);
-    $team_info = sqlesc($team_info);
+    $team_name = $team_name;
+    $team_image = $team_image;
+    $teamownername = $teamownername;
+    $team_info = $team_info;
     
-	$aa = SQL_Query_exec("SELECT class, id FROM users WHERE username=$teamownername");
-	$ar = mysqli_fetch_assoc($aa);
+	$aa = DB::run("SELECT class, id FROM users WHERE username=?", [$teamownername]);
+	$ar = $aa->fetch(PDO::FETCH_ASSOC);
 	$team_owner = $ar["id"];
-	$query = "UPDATE teams SET	name = $team_name, info = $team_info, owner = $team_owner, image = $team_image WHERE id=".sqlesc($id);
-	$sql = SQL_Query_exec($query);
-
-	SQL_Query_exec("UPDATE users SET team = '$id' WHERE id= '$team_owner'");
+	$sql = DB::run("UPDATE teams SET name =?, info =?, owner =?, image =?  WHERE id=?", [$team_name, $team_info, $team_owner, $team_image,$id]);
+    DB::run("UPDATE users SET team =? WHERE id=?", [$id, $team_owner]);
 
 	if($sql) {
 		echo("<table cellspacing='0' cellpadding='5' width='50%'>");
-		echo("<tr><td><div align='center'><b>Successfully Edited</b>[<a href='teams-create.php'>Back</a>]</div></tr>");
+		echo("<tr><td><b>Successfully Edited</b>[<a href='teams-create.php'>Back</a>]</tr>");
 		echo("</table>");
 		write_log($CURUSER['username']." has edited team ($team_name)");
 		end_frame();
@@ -111,9 +107,8 @@ if($editid > 0) {
 if($editmembers > 0) {
 	echo("<center><table class='table_table' cellspacing='0' align='center'><tr>");
 	echo("<th class='table_head'>Username</th><td class='table_head'>".T_("UPLOADED").": </th><th class='table_head'>Downloaded</th></tr>");
-	$query = "SELECT id,username,uploaded,downloaded FROM users WHERE team=$editmembers";
-	$sql = SQL_Query_exec($query);
-	while ($row = mysqli_fetch_array($sql)) {
+	$sql = DB::run("SELECT id,username,uploaded,downloaded FROM users WHERE team=$editmembers");
+	while ($row = $sql->fetch(PDO::FETCH_LAZY)) {
 		$username = htmlspecialchars($row['username']);
 		$uploaded = mksize($row['uploaded']);
 		$downloaded = mksize($row['downloaded']);
@@ -137,13 +132,13 @@ if($add == 'true') {
          die;
     }
     
-    $team_name = sqlesc($team_name);
-    $team_description = sqlesc($team_description);
-    $team_image = sqlesc($team_image);
-    $teamownername = sqlesc($teamownername);
+    $team_name = $team_name;
+    $team_description = $team_description;
+    $team_image = $team_image;
+    $teamownername = $teamownername;
     
-	$aa = SQL_Query_exec("SELECT id FROM users WHERE username = $teamownername");
-	$ar = mysqli_fetch_assoc($aa);
+	$aa = DB::run("SELECT id FROM users WHERE username =?", [$teamownername]);
+	$ar = $aa->fetch(PDO::FETCH_ASSOC);
 	$team_owner = $ar["id"];
     
     if ( !$team_owner )
@@ -153,20 +148,19 @@ if($add == 'true') {
           stdfoot();
           die;
     }
-        
-	$query = "INSERT INTO teams SET	name = $team_name, owner = $team_owner, info = $team_description, image = $team_image, added = $added";
-	$sql = SQL_Query_exec($query);
 
-	$tid = mysqli_insert_id($GLOBALS["DBconnector"]);
+	$sql = DB::run("INSERT INTO teams SET name =?, owner =?, info =?, image =?, added =?", [$team_name, $team_owner, $team_description, $team_image, $added]);
+    $tid = DB::lastInsertId();
 
-	SQL_Query_exec("UPDATE users SET team = '$tid' WHERE id= '$team_owner'");
+    DB::run("UPDATE users SET team = $tid WHERE id= $team_owner");
 
+/*
 	if($sql) {
 		write_log($CURUSER['username']." has created new team ($team_name)");
 		$success = TRUE;
 	}else{
 		$success = FALSE;
-	}
+	}*/
 }
 
 print("<b>Add new team:</b>");
@@ -192,16 +186,14 @@ print("<br />");
 print("<br />");
 echo("<center><table class='table_table' cellspacing='0' cellpadding='3' width='98%'><tr>");
 echo("<td class='table_head'>ID</td><td class='table_head'>".T_("TEAM_LOGO")."</td><td class='table_head'>".T_("TEAM_NAME")."</td><td class='table_head'>".T_("TEAM_OWNER_NAME")."</td><td class='table_head'>".T_("DESCRIPTION")."</td><td class='table_head'>".T_("OTHER")."</td></tr>");
-$query = "SELECT * FROM teams";
-$sql = SQL_Query_exec($query);
-while ($row = mysqli_fetch_array($sql)) {
+$sql = DB::run( "SELECT * FROM teams");
+while ($row = $sql->fetch(PDO::FETCH_LAZY)) {
 	$id = (int)$row['id'];
 	$name = htmlspecialchars($row['name']);
 	$image = htmlspecialchars($row['image']);
 	$owner = (int)$row['owner'];
 	$info = format_comment($row['info']);
-	$OWNERNAME1 = SQL_Query_exec("SELECT username, class FROM users WHERE id=$owner");
-	$OWNERNAME2 = mysqli_fetch_array($OWNERNAME1);
+	$OWNERNAME2 = DB::run("SELECT username, class FROM users WHERE id=$owner")->fetch();
 	$OWNERNAME = $OWNERNAME2['username'];
 
 	echo("<tr><td class='table_col1'><b>$id</b> </td> <td class='table_col2' align='center'><img src='$image' alt='' /></td> <td class='table_col1'><b>$name</b></td><td class='table_col2'><a href='account-details.php?id=$owner'>$OWNERNAME</a></td><td class='table_col1'>$info</td><td class='table_col2'><a href='teams-create.php?editmembers=$id'>[Members]</a>&nbsp;<a href='teams-create.php?editid=$id&amp;name=$name&amp;image=$image&amp;info=$info&amp;owner=$OWNERNAME'>[".T_("EDIT")."]</a>&nbsp;<a href='teams-create.php?del=$id&amp;team=$name'>[Delete]</a></td></tr>");
@@ -210,5 +202,3 @@ echo "</table></center>";
 
 end_frame();
 stdfoot();
-
-?> 

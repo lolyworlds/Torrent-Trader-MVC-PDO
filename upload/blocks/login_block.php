@@ -1,11 +1,12 @@
 <?php
+/*
 if (!$CURUSER) {
 	begin_block(T_("LOGIN"));
 ?>
 <form method="post" action="account-login.php">
-<table border="0" width="100%" cellspacing="0" cellpadding="0">
+<table border="0" width="100%">
 	<tr><td>
-		<table border="0" cellpadding="1" align="center">
+		<table border="0" align="center">
 			<tr>
 			<td align="center"><font face="verdana" size="1"><b><?php echo T_("USERNAME"); ?>:</b></font></td>
 			</tr><tr>
@@ -28,7 +29,8 @@ if (!$CURUSER) {
 end_block();
 
 } else {
-
+*/
+if ($CURUSER){
 begin_block($CURUSER["username"]);
 
 	$avatar = htmlspecialchars($CURUSER["avatar"]);

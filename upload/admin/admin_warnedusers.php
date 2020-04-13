@@ -1,4 +1,5 @@
 <?php
+
 #======================================================================#
 # Warned Users - Updated by djhowarth (11-12-2011)
 #======================================================================#
@@ -8,11 +9,11 @@ if ($action == "warned")
     {
         if ($_POST["removeall"])
         {
-            $res = SQL_Query_exec("SELECT `id` FROM `users` WHERE `enabled` = 'yes' AND `status` = 'confirmed' AND `warned` = 'yes'");
-            while ($row = mysqli_fetch_assoc($res))
+            $res = DB::run("SELECT `id` FROM `users` WHERE `enabled` = 'yes' AND `status` = 'confirmed' AND `warned` = 'yes'");
+            while ($row = $res->fetch(PDO::FETCH_LAZY))
             {
-                SQL_Query_exec("DELETE FROM `warnings` WHERE `active` = 'yes' AND `userid` = '$row[id]'");
-                SQL_Query_exec("UPDATE `users` SET `warned` = 'no' WHERE `id` = '$row[id]'");
+                DB::run("DELETE FROM `warnings` WHERE `active` = 'yes' AND `userid` = '$row[id]'");
+                DB::run("UPDATE `users` SET `warned` = 'no' WHERE `id` = '$row[id]'");
             }
         }
         else
@@ -21,8 +22,8 @@ if ($action == "warned")
             $ids = array_map("intval", $_POST["warned"]);
             $ids = implode(", ", $ids);
                 
-            SQL_Query_exec("DELETE FROM `warnings` WHERE `active` = 'yes' AND `userid` IN ($ids)");
-            SQL_Query_exec("UPDATE `users` SET `warned` = 'no' WHERE `id` IN ($ids)");
+            DB::run("DELETE FROM `warnings` WHERE `active` = 'yes' AND `userid` IN ($ids)");
+            DB::run("UPDATE `users` SET `warned` = 'no' WHERE `id` IN ($ids)");
         }
         
         
@@ -33,7 +34,7 @@ if ($action == "warned")
     
     list($pagertop, $pagerbottom, $limit) = pager(25, $count, 'admincp.php?action=warned&amp;');
     
-    $res = SQL_Query_exec("SELECT `id`, `username`, `class`, `added`, `last_access` FROM `users` WHERE `enabled` = 'yes' AND `status` = 'confirmed' AND `warned` = 'yes' ORDER BY `added` DESC $limit");
+    $res = DB::run("SELECT `id`, `username`, `class`, `added`, `last_access` FROM `users` WHERE `enabled` = 'yes' AND `status` = 'confirmed' AND `warned` = 'yes' ORDER BY `added` DESC $limit");
 
     stdhead("Warned Users");
     navmenu();
@@ -59,7 +60,7 @@ if ($action == "warned")
         <th class="table_head">Warnings</th>
         <th class="table_head"><input type="checkbox" name="checkall" onclick="checkAll(this.form.id);" /></th>
     </tr>
-    <?php while ($row = mysqli_fetch_assoc($res)): ?>
+    <?php while ($row = $res->fetch(PDO::FETCH_ASSOC)): ?>
     <tr>
         <td class="table_col1" align="center"><a href="account-details.php?id=<?php echo $row["id"]; ?>"><?php echo $row["username"]; ?></a></td>
         <td class="table_col2" align="center"><?php echo get_user_class_name($row["class"]); ?></td>  

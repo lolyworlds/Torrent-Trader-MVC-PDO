@@ -9,13 +9,13 @@ if (!empty($_REQUEST["returnto"])) {
 }
 
 if ($_POST["username"] && $_POST["password"]) {
-	$password = passhash($_POST["password"]);
+
+	$password = $_POST["password"];
 
 	if (!empty($_POST["username"]) && !empty($_POST["password"])) {
-		$res = SQL_Query_exec("SELECT id, password, secret, status, enabled FROM users WHERE username = " . sqlesc($_POST["username"]) . "");
-		$row = mysqli_fetch_assoc($res);
+        $row = DB::run("SELECT id, password, secret, status, enabled FROM users WHERE username =? ", [$_POST["username"]])->fetch();
 
-		if ( ! $row || $row["password"] != $password )
+		if ( !$row || !password_verify($password,$row["password"]))
 			$message = T_("LOGIN_INCORRECT");
 		elseif ($row["status"] == "pending")
 			$message = T_("ACCOUNT_PENDING");
@@ -70,4 +70,3 @@ if ( ! empty($_REQUEST["returnto"]) )
 <?php
 end_frame();
 stdfoot();
-?>

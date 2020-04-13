@@ -5,10 +5,10 @@ if (!$site_config["MEMBERSONLY"] || $CURUSER) {
 	$expire = 900; // time in seconds
 
 	if (($latestuploadsrecords = $TTCache->Get("latestuploadsblock", $expire)) === false) {
-		$latestuploadsquery = SQL_Query_exec("SELECT id, name, size, seeders, leechers FROM torrents WHERE banned='no' AND visible = 'yes' ORDER BY id DESC LIMIT 5");
+		$latestuploadsquery = DB::run("SELECT id, name, size, seeders, leechers FROM torrents WHERE banned='no' AND visible = 'yes' ORDER BY id DESC LIMIT 5");
 
 		$latestuploadsrecords = array();
-		while ($latestuploadsrecord = mysqli_fetch_assoc($latestuploadsquery))
+		while ($latestuploadsrecord = $latestuploadsquery->fetch(PDO::FETCH_ASSOC))
 			$latestuploadsrecords[] = $latestuploadsrecord;
 		$TTCache->Set("latestuploadsblock", $latestuploadsrecords, $expire);
 	}

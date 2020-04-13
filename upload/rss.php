@@ -7,7 +7,7 @@ if (isset($_GET["custom"])){
 	begin_frame(T_("CUSTOM_RSS_XML_FEED"));
 
 	$rqt = "SELECT id, name, parent_cat FROM categories ORDER BY parent_cat ASC, sort_index ASC";
-	$resqn = SQL_Query_exec($rqt);
+	$resqn = DB::run($rqt);
 
 	if ($_POST) {
 		$params = array();
@@ -47,7 +47,7 @@ if (isset($_GET["custom"])){
 	<tr>
 		<td class="table_col1" valign="top">Categories:</td>
 		<td class="table_col2" valign="top">(Leave blank for All)<br /><br />
-		<?php while ($row = mysqli_fetch_array($resqn)) {
+		<?php while ($row = $resqn->fetch(PDO::FETCH_LAZY)) {
 			echo '<input type="checkbox" name="cats[]" value="'.$row['id'].'" /> '.htmlspecialchars("$row[parent_cat] - $row[name]").'<br />';
 		}
 		?>
@@ -124,9 +124,9 @@ echo("<?xml version=\"1.0\" encoding=\"$site_config[CHARSET]\"?>");
 echo("<rss version=\"2.0\"><channel><generator>" . htmlspecialchars($site_config["SITENAME"]) . " RSS 2.0</generator><language>en</language>" . 
 "<title>" . $site_config["SITENAME"] . "</title><description>" . htmlspecialchars($site_config["SITENAME"]) . " RSS Feed</description><link>" . $site_config["SITEURL"] . "</link><copyright>Copyright " . htmlspecialchars($site_config["SITENAME"]) . "</copyright><pubDate>".date("r")."</pubDate>"); 
 
-$res = SQL_Query_exec("SELECT torrents.id, torrents.name, torrents.size, torrents.category, torrents.added, torrents.leechers, torrents.seeders, categories.parent_cat as cat_parent, categories.name AS cat_name FROM torrents LEFT JOIN categories ON category = categories.id $where ORDER BY added DESC $limit");
+$res = DB::run("SELECT torrents.id, torrents.name, torrents.size, torrents.category, torrents.added, torrents.leechers, torrents.seeders, categories.parent_cat as cat_parent, categories.name AS cat_name FROM torrents LEFT JOIN categories ON category = categories.id $where ORDER BY added DESC $limit");
 
-while ($row = mysqli_fetch_array ($res)){ 
+while ($row = $res->fetch(PDO::FETCH_LAZY)){
 	list($id,$name,$size,$category,$added,$leechers,$seeders,$catname) = $row; 
 
 	if ($dllink) {

@@ -1,6 +1,5 @@
 <?php
 
-
 if ($action=="peers"){
 	stdhead("Peers List");
 	navmenu();
@@ -11,20 +10,19 @@ if ($action=="peers"){
 
 	print("<center>We have $count1 peers</center><br />");
 
-	$res4 = SQL_Query_exec("SELECT COUNT(*) FROM peers $limit");
-	$row4 = mysqli_fetch_array($res4);
-
-	$count = $row4[0];
+/*	$res4 = DB::run("SELECT COUNT(*) FROM peers $limit");
+	$row4 = $res4->fetch(PDO::FETCH_LAZY);
+	$count = $row4[0];*/
+	$count = DB::run("SELECT COUNT(*) FROM peers $limit")->fetchColumn();
 	$peersperpage = 50;
 
 	list($pagertop, $pagerbottom, $limit) = pager($peersperpage, $count, "admincp.php?action=peers&amp;");
 
 	print("$pagertop");
 
-	$sql = "SELECT * FROM peers ORDER BY started DESC $limit";
-	$result = SQL_Query_exec($sql);
+	$result = DB::run("SELECT * FROM peers ORDER BY started DESC $limit");
 
-	if( mysqli_num_rows($result) != 0 ) {
+	if($result->fetchColumn() != 0 ) {
 		print'<center><table width="100%" border="0" cellspacing="0" cellpadding="3" class="table_table">';
 		print'<tr>';
 		print'<th class="table_head">User</th>';
@@ -40,11 +38,10 @@ if ($action=="peers"){
 		print'<th class="table_head">Last<br />Action</th>';
 		print'</tr>';
 
-		while($row = mysqli_fetch_assoc($result)) {
+		while($row = $result->fetch(PDO::FETCH_ASSOC)) {
 			if ($site_config['MEMBERSONLY']) {
 				$sql1 = "SELECT id, username FROM users WHERE id = $row[userid]";
-				$result1 = SQL_Query_exec($sql1);
-				$row1 = mysqli_fetch_assoc($result1);
+				$row1 = DB::run($sql1)->fetch();
 			}
 
 			if ($row1['username'])
@@ -53,12 +50,10 @@ if ($action=="peers"){
 				print'<tr><td class="table_col1">'.$row["ip"].'</td>';
 
 			$sql2 = "SELECT id, name FROM torrents WHERE id = $row[torrent]";
-			$result2 = SQL_Query_exec($sql2);
+			$result2 = DB::run($sql2);
 
-			while ($row2 = mysqli_fetch_assoc($result2)) {
-
+			while ($row2 = $result2->fetch(PDO::FETCH_ASSOC)) {
                 $smallname = CutName(htmlspecialchars($row2["name"]), 40);
-                
 				print'<td class="table_col2"><a href="torrents-details.php?id=' . $row['torrent'] . '">' . $smallname . '</a></td>';
 				print'<td align="center" class="table_col1">' . $row['ip'] . '</td>';
 				print'<td align="center" class="table_col2">' . $row['port'] . '</td>';
@@ -91,6 +86,5 @@ if ($action=="peers"){
 		print'<center><b>No Peers</b></center><br />';
 	}
 	end_frame();
-
 	stdfoot();
 }

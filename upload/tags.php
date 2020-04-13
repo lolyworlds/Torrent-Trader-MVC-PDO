@@ -158,5 +158,3 @@ insert_tag(
 	"[spoiler=Heading]The quick brown fox jumps over the lazy dog.[/spoiler]",
 	""
 );
-
-?>

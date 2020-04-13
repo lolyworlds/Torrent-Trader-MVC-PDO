@@ -1,4 +1,5 @@
 <?php
+
 if ($action == "reports" && $do == "view") {
 
       $page = 'admincp.php?action=reports&amp;do=view&amp;';
@@ -9,7 +10,7 @@ if ($action == "reports" && $do == "view") {
           if (!@count($_POST["reports"])) show_error_msg(T_("ERROR"), "Nothing selected to mark.", 1);
           $ids = array_map("intval", $_POST["reports"]);
           $ids = implode(",", $ids);
-          SQL_Query_exec("UPDATE reports SET complete = '1', dealtwith = '1', dealtby = '$CURUSER[id]' WHERE id IN ($ids)");
+          DB::run("UPDATE reports SET complete = '1', dealtwith = '1', dealtby = '$CURUSER[id]' WHERE id IN ($ids)");
           header("Refresh: 2; url=admincp.php?action=reports&do=view");
           show_error_msg(T_("SUCCESS"), T_("CP_ENTRIES_MARK_COMP"), 1);
       }
@@ -19,7 +20,7 @@ if ($action == "reports" && $do == "view") {
           if (!@count($_POST["reports"])) show_error_msg(T_("ERROR"), "Nothing selected to delete.", 1);
           $ids = array_map("intval", $_POST["reports"]);
           $ids = implode(",", $ids);
-          SQL_Query_exec("DELETE FROM reports WHERE id IN ($ids)");
+          DB::run("DELETE FROM reports WHERE id IN ($ids)");
           header("Refresh: 2; url=admincp.php?action=reports&do=view");
           show_error_msg(T_("SUCCESS"), "Entries marked deleted.", 1);
       }
@@ -68,7 +69,7 @@ if ($action == "reports" && $do == "view") {
       
       list($pagertop, $pagerbottom, $limit) = pager(25, $num, "$pager&amp;");
       
-      $res = SQL_Query_exec("SELECT reports.id, reports.dealtwith, reports.dealtby, reports.addedby, reports.votedfor, reports.votedfor_xtra, reports.reason, reports.type, users.username, reports.complete FROM `reports` INNER JOIN users ON reports.addedby = users.id WHERE $where ORDER BY reports.id DESC $limit");
+      $res = DB::run("SELECT reports.id, reports.dealtwith, reports.dealtby, reports.addedby, reports.votedfor, reports.votedfor_xtra, reports.reason, reports.type, users.username, reports.complete FROM `reports` INNER JOIN users ON reports.addedby = users.id WHERE $where ORDER BY reports.id DESC $limit");
       
       stdhead("Reported Items");
       navmenu();    
@@ -112,41 +113,40 @@ if ($action == "reports" && $do == "view") {
           <th class="table_head"><input type="checkbox" name="checkall" onclick="checkAll(this.form.id);" /></th>
       </tr>
       
-      <?php if (!mysqli_num_rows($res)): ?>
+      <?php if ($res->rowCount() <= 0): ?>
       <tr>
           <td class="table_col1" colspan="6" align="center">No reports found.</td>
       </tr>
       <?php endif; ?>
       
       <?php
-      while ($row = mysqli_fetch_assoc($res)):  
+      while ($row = $res->fetch(PDO::FETCH_LAZY)):
           
       
       $dealtwith = '<b>No</b>';
       if ($row["dealtby"] > 0)
       {
-          $q = SQL_Query_exec("SELECT username FROM users WHERE id = '$row[dealtby]'");
-          $r = mysqli_fetch_assoc($q);
+          $r = DB::run("SELECT username FROM users WHERE id = '$row[dealtby]'")->fetch();
           $dealtwith = 'By <a href="account-details.php?id='.$row['dealtby'].'">'.$r['username'].'</a>';
       }    
       
       switch ( $row["type"] )
       {
           case "user":
-            $q = SQL_Query_exec("SELECT username FROM users WHERE id = '$row[votedfor]'");
+            $q = DB::run("SELECT username FROM users WHERE id = '$row[votedfor]'");
             break;
           case "torrent":
-            $q = SQL_Query_exec("SELECT name FROM torrents WHERE id = '$row[votedfor]'");
+            $q = DB::run("SELECT name FROM torrents WHERE id = '$row[votedfor]'");
             break;
           case "comment":
-            $q = SQL_Query_exec("SELECT text, news, torrent FROM comments WHERE id = '$row[votedfor]'");
+            $q = DB::run("SELECT text, news, torrent FROM comments WHERE id = '$row[votedfor]'");
             break;
           case "forum":
-            $q = SQL_Query_exec("SELECT subject FROM forum_topics WHERE id = '$row[votedfor]'");
+            $q = DB::run("SELECT subject FROM forum_topics WHERE id = '$row[votedfor]'");
             break;
       }
       
-      $r = mysqli_fetch_row($q);
+      $r = $q->fetch(PDO::FETCH_LAZY);
       
       if ($row["type"] == "user")
           $link = "account-details.php?id=$row[votedfor]";

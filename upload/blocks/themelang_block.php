@@ -1,11 +1,12 @@
 <?php
 if ($CURUSER){
 	begin_block(T_("THEME")." / ".T_("LANGUAGE"));
-
-	$ss_r = SQL_Query_exec("SELECT * from stylesheets");
+$stylesheets= '';
+$languages = '';
+	$ss_r = DB::run("SELECT * from stylesheets");
 	$ss_sa = array();
 
-	while ($ss_a = mysqli_fetch_assoc($ss_r)){
+	while ($ss_a = $ss_r->fetch(PDO::FETCH_ASSOC)){
 		$ss_id = $ss_a["id"];
 		$ss_name = $ss_a["name"];
 		$ss_sa[$ss_name] = $ss_id;
@@ -19,10 +20,10 @@ if ($CURUSER){
 		$stylesheets .= "<option value='$ss_id'$ss>$ss_name</option>\n";
 	}
 
-	$lang_r = SQL_Query_exec("SELECT * from languages");
+	$lang_r = DB::run("SELECT * from languages");
 	$lang_sa = array();
 
-	while ($lang_a = mysqli_fetch_assoc($lang_r)){
+	while ($lang_a = $lang_r->fetch(PDO::FETCH_ASSOC)){
 		$lang_id = $lang_a["id"];
 		$lang_name = $lang_a["name"];
 		$lang_sa[$lang_name] = $lang_id;
@@ -39,7 +40,7 @@ if ($CURUSER){
 ?>
  
  <form method="post" action="take-theme.php">
-<table width="100%" border="0" cellspacing="0" cellpadding="5">
+<table width="100%">
   <tr>
 <td align="center" valign="middle"><b><?php echo T_("THEME"); ?></b>
 <select name="stylesheet"><?php echo $stylesheets; ?></select></td>

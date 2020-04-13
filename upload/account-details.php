@@ -10,11 +10,11 @@ $id = (int)$_GET["id"];
 if (!is_valid_id($id))
   show_error_msg(T_("NO_SHOW_DETAILS"), "Bad ID.",1);
 
-$r = @SQL_Query_exec("SELECT * FROM users WHERE id=$id");
-$user = mysqli_fetch_array($r) or  show_error_msg(T_("NO_SHOW_DETAILS"), T_("NO_USER_WITH_ID")." $id.",1);
+$user = DB::run("SELECT * FROM users WHERE id=?", [$id])->fetch();
+if(!$user)
+    show_error_msg(T_("NO_SHOW_DETAILS"), T_("NO_USER_WITH_ID")." $id.",1);
 
 //add invites check here
-
 if ($CURUSER["view_users"] == "no" && $CURUSER["id"] != $id)
      show_error_msg(T_("ERROR"), T_("NO_USER_VIEW"), 1);
      
@@ -24,12 +24,11 @@ if (($user["enabled"] == "no" || ($user["status"] == "pending")) && $CURUSER["ed
 //get all vars first
 
 //$country
-$res = SQL_Query_exec("SELECT name FROM countries WHERE id=$user[country] LIMIT 1");
-if (mysqli_num_rows($res) == 1){
-	$arr = mysqli_fetch_assoc($res);
+$res = DB::run("SELECT name FROM countries WHERE id=? LIMIT 1", [$user['country']]);
+if ($res->rowCount() == 1){
+	$arr =$res->fetch();
 	$country = "$arr[name]";
 }
-
 if (!$country) $country = "<b>Unknown</b>";
 
 //$ratio
@@ -51,9 +50,9 @@ $avatar = htmlspecialchars($user["avatar"]);
 function peerstable($res){
 	$ret = "<table align='center' cellpadding=\"3\" cellspacing=\"0\" class=\"table_table\" width=\"100%\" border=\"1\"><tr><th class='table_head'>".T_("NAME")."</th><th class='table_head'>".T_("SIZE")."</th><th class='table_head'>" .T_("UPLOADED"). "</th>\n<th class='table_head'>" .T_("DOWNLOADED"). "</th><th class='table_head'>" .T_("RATIO"). "</th></tr>\n";
 
-	while ($arr = mysqli_fetch_assoc($res)){
-		$res2 = SQL_Query_exec("SELECT name,size FROM torrents WHERE id=$arr[torrent] ORDER BY name");
-		$arr2 = mysqli_fetch_assoc($res2);
+	while ($arr = $res->fetch(PDO::FETCH_LAZY)){
+		$res2 = DB::run("SELECT name,size FROM torrents WHERE id=? ORDER BY name", [$arr['torrent']]);
+		$arr2 = $res2->fetch(PDO::FETCH_LAZY);
 		if ($arr["downloaded"] > 0){
 			$ratio = number_format($arr["uploaded"] / $arr["downloaded"], 2);
 		}else{
@@ -65,13 +64,33 @@ function peerstable($res){
   return $ret;
 }
 
-
-//Layout
-stdhead(sprintf(T_("USER_DETAILS_FOR"), $user["username"]));
-
+//Layout		
 begin_frame(sprintf(T_("USER_DETAILS_FOR"), $user["username"]));
+?>
+<script type="text/javascript">
 
-if ($user["privacy"] != "strong" || ($CURUSER["control_panel"] == "yes") || ($CURUSER["id"] == $user["id"])) {
+function show(elementId) { 
+document.getElementById("id1").style.display="none";
+ document.getElementById("id2").style.display="none";
+ document.getElementById("id3").style.display="none";
+ document.getElementById("id4").style.display="none";
+ document.getElementById(elementId).style.display="block";
+}
+
+</script>
+
+
+<button type="button" onclick="show('id1');">DETAILS</button>
+<button type="button" onclick="show('id2');">SHARING</button>
+<button type="button" onclick="show('id3');">UPLOADED</button>
+<?php if($CURUSER["edit_users"]=="yes"){ ?>
+<button type="button" onclick="show('id4');">EDIT</button>
+<button type="button" onclick="show('id5');">WARNINGS</button>
+<?php } ?>
+<?php
+
+	echo "<div id=id1  style=display:block>"; // start id1
+    if ($user["privacy"] != "strong" || ($CURUSER["control_panel"] == "yes") || ($CURUSER["id"] == $user["id"])) {
 	?>
 	<table align="center" border="0" cellpadding="6" cellspacing="1" width="100%">
 	<tr>
@@ -133,16 +152,16 @@ if ($user["privacy"] != "strong" || ($CURUSER["control_panel"] == "yes") || ($CU
 		<td align="left">
 			<?php
 				if ($user["invited_by"]) {
-					$res = SQL_Query_exec("SELECT username FROM users WHERE id=$user[invited_by]");
-					$row = mysqli_fetch_array($res);
+					$invited = $user['invited_by'];
+                    $row = DB::run("SELECT username FROM users WHERE id=?", [$invited])->fetch();
 					echo "<b>".T_("INVITED_BY").":</b> <a href=\"account-details.php?id=$user[invited_by]\">$row[username]</a><br />";
 				}
 				echo "<b>".T_("INVITES").":</b> ".number_format($user["invites"])."<br />";
 				$invitees = array_reverse(explode(" ", $user["invitees"]));
 				$rows = array();
 				foreach ($invitees as $invitee) {
-					$res = SQL_Query_exec("SELECT id, username FROM users WHERE id='$invitee' and status='confirmed'");
-					if ($row = mysqli_fetch_array($res)) {
+					$res = DB::run("SELECT id, username FROM users WHERE id=? and status=?", [$invitee, 'confirmed']);
+					if ($row = $res->fetch()) {
 						$rows[] = "<a href=\"account-details.php?id=$row[id]\">$row[username]</a>";
 					}
 				}
@@ -154,9 +173,9 @@ if ($user["privacy"] != "strong" || ($CURUSER["control_panel"] == "yes") || ($CU
 	<?php
 	}
 	//team
-	$res = SQL_Query_exec("SELECT name,image FROM teams WHERE id=$user[team] LIMIT 1");
-	if (mysqli_num_rows($res) == 1) {
-		$arr = mysqli_fetch_assoc($res);
+	$res = DB::run("SELECT name,image FROM teams WHERE id=? LIMIT 1", [$user['team']]);
+	if ($res->rowCount() == 1) {
+		$arr = $res->fetch();
 		echo "<tr><td colspan='2' align='left'><b>Team Member Of:</b><br />";
 		echo"<img src='".htmlspecialchars($arr["image"])."' alt='' /><br />".sqlesc($arr["name"])."<br /><br /><a href='teams-view.php'>[View ".T_("TEAMS")."]</a></td></tr>"; 
 	}
@@ -168,18 +187,18 @@ if ($user["privacy"] != "strong" || ($CURUSER["control_panel"] == "yes") || ($CU
 }else{
 	echo sprintf(T_("REPORT_MEMBER_MSG"), $user["id"]);
 }
+	echo "</div>"; // start id1
+	
+	echo "<div id=id2  style=display:none>"; // start id1 // start id1
+    if ($user["privacy"] != "strong" || ($CURUSER["control_panel"] == "yes") || ($CURUSER["id"] == $user["id"])) {
 
-end_frame();
-
-if ($user["privacy"] != "strong" || ($CURUSER["control_panel"] == "yes") || ($CURUSER["id"] == $user["id"])) {
-	begin_frame(T_("LOCAL_ACTIVITY"));
-
-	$res = SQL_Query_exec("SELECT torrent, uploaded, downloaded FROM peers WHERE userid = '$id' AND seeder = 'yes'");
-	if (mysqli_num_rows($res) > 0)
+	$res = DB::run("SELECT torrent, uploaded, downloaded FROM peers WHERE userid =? AND seeder =?", [$id, 'yes']);
+	if ($res->rowCount() > 0)
 	  $seeding = peerstable($res);
 
-	$res = SQL_Query_exec("SELECT torrent, uploaded, downloaded FROM peers WHERE userid = '$id' AND seeder = 'no'");
-	if (mysqli_num_rows($res) > 0)
+	$res = DB::run("SELECT torrent, uploaded, downloaded FROM peers WHERE userid =? AND seeder =?", [$id, 'no']);
+	if ($res->rowCount() > 0)
+
 	  $leeching = peerstable($res);
 
 	if ($seeding)
@@ -191,28 +210,24 @@ if ($user["privacy"] != "strong" || ($CURUSER["control_panel"] == "yes") || ($CU
 	if (!$leeching && !$seeding)
 		print("<b>".T_("NO_ACTIVE_TRANSFERS")."</b><br />");
 
-	end_frame();
-
-
-	begin_frame(T_("UPLOADED_TORRENTS"));
+}
+	echo "</div>"; // start id1
+    
+	echo "<div id=id3  style=display:none>"; // start id1
 	//page numbers
 	$page = (int) $_GET["page"];
 	$perpage = 25;
 	$where = "";
 	if ($CURUSER['control_panel'] != "yes")
 		$where = "AND anon='no'";
-	$res = SQL_Query_exec("SELECT COUNT(*) FROM torrents WHERE owner='$id' $where");
-	$row = mysqli_fetch_array($res);
-	$count = $row[0];
+	$count = DB::run("SELECT COUNT(*) FROM torrents WHERE owner='$id' $where")->fetchColumn();
+
 	unset($where);
-
 	$orderby = "ORDER BY id DESC";
-
 	//get sql info
 	if ($count) {
 		list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, "account-details.php?id=$id&amp;");
-		$query = "SELECT torrents.id, torrents.category, torrents.leechers, torrents.nfo, torrents.seeders, torrents.name, torrents.times_completed, torrents.size, torrents.added, torrents.comments, torrents.numfiles, torrents.filename, torrents.owner, torrents.external, torrents.freeleech, categories.name AS cat_name, categories.parent_cat AS cat_parent, categories.image AS cat_pic, users.username, users.privacy, torrents.anon, IF(torrents.numratings < 2, NULL, ROUND(torrents.ratingsum / torrents.numratings, 1)) AS rating, torrents.announce FROM torrents LEFT JOIN categories ON category = categories.id LEFT JOIN users ON torrents.owner = users.id WHERE owner = $id $orderby $limit";
-		$res = SQL_Query_exec($query);
+		$res = DB::run("SELECT torrents.id, torrents.category, torrents.leechers, torrents.nfo, torrents.seeders, torrents.name, torrents.times_completed, torrents.size, torrents.added, torrents.comments, torrents.numfiles, torrents.filename, torrents.owner, torrents.external, torrents.freeleech, categories.name AS cat_name, categories.parent_cat AS cat_parent, categories.image AS cat_pic, users.username, users.privacy, torrents.anon, IF(torrents.numratings < 2, NULL, ROUND(torrents.ratingsum / torrents.numratings, 1)) AS rating, torrents.announce FROM torrents LEFT JOIN categories ON category = categories.id LEFT JOIN users ON torrents.owner = users.id WHERE owner = $id $orderby $limit");
 	}else{
 		unset($res);
 	}
@@ -225,13 +240,10 @@ if ($user["privacy"] != "strong" || ($CURUSER["control_panel"] == "yes") || ($CU
 		print("<b>".T_("UPLOADED_TORRENTS_ERROR")."</b><br />");
 	}
 
-	end_frame();
-}
+	echo "</div>"; // start id1
 
-
-
-if($CURUSER["edit_users"]=="yes"){
-	begin_frame(T_("STAFF_ONLY_INFO"));
+	echo "<div id=id4  style=display:none>"; // start id1
+    if($CURUSER["edit_users"]=="yes"){
 
 	$avatar = htmlspecialchars($user["avatar"]);
 	$signature = htmlspecialchars($user["signature"]);
@@ -276,19 +288,18 @@ if($CURUSER["edit_users"]=="yes"){
 	print("</table>\n");
 	print("</form>\n");
 
-	end_frame();
 }
+	echo "</div>"; // start id1
+    
+	echo "<div id=id5  style=display:none>"; // start id1
+    if($CURUSER["edit_users"]=="yes"){
 
-if($CURUSER["edit_users"]=="yes"){
-	begin_frame(T_("BANS_WARNINGS"));
 
     print '<a name="warnings"></a>';
     
-	$rqq = "SELECT * FROM warnings WHERE userid=$id ORDER BY id DESC";
-	$res = SQL_Query_exec($rqq);
+	$res = DB::run("SELECT * FROM warnings WHERE userid=? ORDER BY id DESC", [$id]);
 
-	if (mysqli_num_rows($res) > 0){
-
+	if ($res->rowCount() > 0){
 		?>
 		<b>Warnings:</b><br />
 		<table border="1" cellpadding="3" cellspacing="0" width="80%" align="center" class="table_table">
@@ -301,13 +312,12 @@ if($CURUSER["edit_users"]=="yes"){
 		</tr>
 		<?php
 
-		while ($arr = mysqli_fetch_assoc($res)){
+		while ($arr = $res->fetch(PDO::FETCH_ASSOC)){
 			if ($arr["warnedby"] == 0) {
 				$wusername = T_("SYSTEM");
 			} else {
-				$res2 = SQL_Query_exec("SELECT id,username FROM users WHERE id = ".$arr['warnedby']."");
-				$arr2 = mysqli_fetch_assoc($res2);
-
+				$res2 = DB::run("SELECT id,username FROM users WHERE id =?", [$arr['warnedby']]);
+				$arr2 = $res2->fetch();
 				$wusername = htmlspecialchars($arr2["username"]);
 			}
 			$arr['added'] = utc_to_tz($arr['added']);
@@ -341,9 +351,9 @@ if($CURUSER["edit_users"]=="yes"){
 		echo "&nbsp;<input type='submit' value='".T_("DELETE_ACCOUNT")."' /></form></center>";
 	}
 
-	end_frame();
+
 }
+	echo "</div>"; // start id1
 
+end_frame();
 stdfoot();
-
-?>

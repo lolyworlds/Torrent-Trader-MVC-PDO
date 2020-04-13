@@ -1,5 +1,4 @@
 <?php
-// Confirm account OK!
 require_once("backend/functions.php");
 dbconn();
 
@@ -9,8 +8,7 @@ $email = $_GET["email"];
 if (!$type)
 	die;
 
-
-if ($type =="noconf"){//email conf is disabled?
+if ($type =="noconf"){ //email conf is disabled?
 	stdhead(T_("ACCOUNT_ALREADY_CONFIRMED"));
 	begin_frame(T_("PLEASE_NOW_LOGIN"));
 	print(T_("PLEASE_NOW_LOGIN_REST"));
@@ -65,4 +63,3 @@ else
 	die();
 
 stdfoot();
-?>

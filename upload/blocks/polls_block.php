@@ -1,5 +1,8 @@
 <?php
+
+if ($CURUSER){
 begin_block(T_("POLL"));
+
 
 if (!function_exists("srt")) {
 	function srt($a,$b){
@@ -12,21 +15,21 @@ if (!function_exists("srt")) {
 if ($_SERVER["REQUEST_METHOD"] == "POST" && $CURUSER && $_POST["act"] == "takepoll"){
 	$choice = $_POST["choice"];
 	if ($choice != "" && $choice < 256 && $choice == floor($choice)){
-		$res = SQL_Query_exec("SELECT * FROM polls ORDER BY added DESC LIMIT 1");
-		$arr = mysqli_fetch_assoc($res) or show_error_msg(T_("ERROR"), "No Poll", 1);
+		$res = DB::run("SELECT * FROM polls ORDER BY added DESC LIMIT 1");
+		$arr = $res->fetch(PDO::FETCH_ASSOC) or show_error_msg(T_("ERROR"), "No Poll", 1);
 
 		$pollid = $arr["id"];
 		$userid = $CURUSER["id"];
 
-		$res = SQL_Query_exec("SELECT * FROM pollanswers WHERE pollid=$pollid && userid=$userid");
-		$arr = mysqli_fetch_assoc($res);
+		$res = DB::run("SELECT * FROM pollanswers WHERE pollid=? && userid=?", [$pollid, $userid]);
+		$arr = $res->fetch(PDO::FETCH_ASSOC);
 
 		if ($arr){
 			show_error_msg(T_("ERROR"), "You have already voted!", 0);
 		}else{
 
-			SQL_Query_exec("INSERT INTO pollanswers VALUES(0, $pollid, $userid, $choice)");
-			if (mysqli_affected_rows($GLOBALS["DBconnector"]) != 1)
+			$ins = DB::run("INSERT INTO pollanswers VALUES(?, ?, ?, ?)", [0, $pollid, $userid, $choice]);
+			if (!$ins)
 					show_error_msg(T_("ERROR"), "An error occured. Your vote has not been counted.", 0);
 		}
 	}else{
@@ -36,10 +39,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $CURUSER && $_POST["act"] == "takepo
 
 // Get current poll
 if ($CURUSER){
-	$res = SQL_Query_exec("SELECT * FROM polls ORDER BY added DESC LIMIT 1");
+	$res = DB::run("SELECT * FROM polls ORDER BY added DESC LIMIT 1");
 
-	if($pollok=(mysqli_num_rows($res))) {
-		$arr = mysqli_fetch_assoc($res);
+	if($pollok=($res->rowCount())) {
+		$arr = $res->fetch(PDO::FETCH_ASSOC);
 		$pollid = $arr["id"];
 		$userid = $CURUSER["id"];
 		$question = $arr["question"];
@@ -50,8 +53,8 @@ if ($CURUSER){
     	$arr["option15"], $arr["option16"], $arr["option17"], $arr["option18"], $arr["option19"]);
 
 		// Check if user has already voted
-  		$res = SQL_Query_exec("SELECT * FROM pollanswers WHERE pollid=$pollid AND userid=$userid");
-  		$arr2 = mysqli_fetch_assoc($res);
+  		$res = DB::run("SELECT * FROM pollanswers WHERE pollid=? AND userid=?", [$pollid, $userid]);
+  		$arr2 = $res->fetch(PDO::FETCH_ASSOC);
 	}
 
 	//Display Current Poll
@@ -67,15 +70,15 @@ if ($CURUSER){
       			$uservote = -1;
 
 			// we reserve 255 for blank vote.
-    		$res = SQL_Query_exec("SELECT selection FROM pollanswers WHERE pollid=$pollid AND selection < 20");
+    		$res = DB::run("SELECT selection FROM pollanswers WHERE pollid=$pollid AND selection < 20");
 
-    		$tvotes = mysqli_num_rows($res);
+    		$tvotes = $res->rowCount();
 
     		$vs = array(); // array of
     		$os = array();
 
     		// Count votes
-    		while ($arr2 = mysqli_fetch_row($res))
+    		while ($arr2 = $res->fetch(PDO::FETCH_LAZY))
       		$vs[$arr2[0]] += 1;
 
     		reset($o);
@@ -85,7 +88,7 @@ if ($CURUSER){
 
     		// now os is an array like this: array(array(123, "Option 1"), array(45, "Option 2"))
     		if ($arr["sort"] == "yes")
-    			usort($os, srt);
+    			usort($os, 'srt');
 
     		print("<table width='100%' border='0' cellspacing='0' cellpadding='0'>\n");
     		$i = 0;
@@ -133,4 +136,5 @@ if ($CURUSER){
 }
 
 end_block();
+}
 ?>

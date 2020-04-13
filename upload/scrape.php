@@ -13,24 +13,22 @@ if (stristr($_SERVER["HTTP_ACCEPT_ENCODING"],"gzip") && extension_loaded('zlib')
 }
 // end gzip controll
 
-require_once("backend/mysql.php");
-require_once("backend/mysql.class.php");
+require_once("backend/config.php");
 
 function dbconn() {
-    global $mysql_host, $mysql_user, $mysql_pass, $mysql_db;
-
-    if (!($GLOBALS["DBconnector"] = mysqli_connect($mysql_host,  $mysql_user,  $mysql_pass)))
-    {
-      die('DATABASE: mysqli_connect: ' . mysqli_connect_error());
+    global $conn, $site_config;
+    try {
+        $conn = new PDO('mysql:host='.$site_config['mysql_host'].';dbname='.$site_config['mysql_db'], $site_config['mysql_user'], $site_config['mysql_pass']);
+        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }
-     mysqli_select_db($GLOBALS["DBconnector"],$mysql_db)
-        or die('DATABASE: mysqli_select_db: ' + mysqli_error($GLOBALS["DBconnector"]));
-
-    unset($mysql_pass); //security
+    catch(PDOException $e) {
+        echo "Error: " . $e->getMessage();
+    }
+    unset($site_config['mysql_pass']); //security
 }
 
 function sqlesc($x) {
-    return "'".mysqli_real_escape_string($GLOBALS["DBconnector"],$x)."'";
+    return "'".$x."'";
 }
 
 dbconn();
@@ -40,11 +38,8 @@ $infohash = array();
 foreach (explode("&", $_SERVER["QUERY_STRING"]) as $item) {
     if (preg_match("#^info_hash=(.+)\$#", $item, $m)) {
         $hash = urldecode($m[1]);
-
-        if (get_magic_quotes_gpc())
             $info_hash = stripslashes($hash);
-        else
-            $info_hash = $hash;
+  //        $info_hash = $hash;
         if (strlen($info_hash) == 20)
             $info_hash = bin2hex($info_hash);
         else if (strlen($info_hash) != 40)
@@ -54,24 +49,23 @@ foreach (explode("&", $_SERVER["QUERY_STRING"]) as $item) {
 }
 
 if (!count($infohash)) die("Invalid infohash.");
-    $query = SQL_Query_exec("SELECT info_hash, seeders, leechers, times_completed, filename FROM torrents WHERE info_hash IN (".join(",", $infohash).")");
+    $query = $conn->prepare("SELECT info_hash, seeders, leechers, times_completed, filename FROM torrents WHERE info_hash IN (".join(",", $infohash).")");
+    $result="d5:filesd";
 
-$result="d5:filesd";
+    while ($row = $query->fetch())
+    {
+        $hash = pack("H*", $row[0]);
+        $result.="20:".$hash."d";
+        $result.="8:completei".$row[1]."e";
+        $result.="10:downloadedi".$row[3]."e";
+        $result.="10:incompletei".$row[2]."e";
+        $result.="4:name".strlen($row[4]).":".$row[4]."e";
+        $result.="e";
+    }
 
-while ($row = mysqli_fetch_row($query))
-{
-    $hash = pack("H*", $row[0]);
-    $result.="20:".$hash."d";
-    $result.="8:completei".$row[1]."e";
-    $result.="10:downloadedi".$row[3]."e";
-    $result.="10:incompletei".$row[2]."e";
-    $result.="4:name".strlen($row[4]).":".$row[4]."e";
-    $result.="e";
-}
+    $result.="ee";
 
-$result.="ee";
-
-echo $result;
-ob_end_flush();
-mysqli_close($GLOBALS["DBconnector"]);
+    echo $result;
+    ob_end_flush();
+    $conn = null;
 ?>

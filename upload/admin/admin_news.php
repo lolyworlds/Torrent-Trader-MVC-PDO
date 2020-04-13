@@ -1,5 +1,6 @@
 <?php
 
+
 /////////////////////// NEWS ///////////////////////
 if ($action=="news" && $do=="view"){
 	stdhead(T_("NEWS_MANAGEMENT"));
@@ -8,19 +9,17 @@ if ($action=="news" && $do=="view"){
 	begin_frame(T_("NEWS"));
 	echo "<center><a href='admincp.php?action=news&amp;do=add'><b>".T_("CP_NEWS_ADD_ITEM")."</b></a></center><br />";
 
-	$res = SQL_Query_exec("SELECT * FROM news ORDER BY added DESC");
-	if (mysqli_num_rows($res) > 0){
+	$res = DB::run("SELECT * FROM news ORDER BY added DESC");
+	if ($res->rowCount() > 0){
 		
-		while ($arr = mysqli_fetch_assoc($res)) {
+		while ($arr = $res->fetch(PDO::FETCH_ASSOC)) {
 			$newsid = $arr["id"];
 			$body = format_comment($arr["body"]);
 			$title = $arr["title"];
 			$userid = $arr["userid"];
 			$added = $arr["added"] . " GMT (" . (get_elapsed_time(sql_timestamp_to_unix_timestamp($arr["added"]))) . " ago)";
 
-			$res2 = SQL_Query_exec("SELECT username FROM users WHERE id = $userid");
-			$arr2 = mysqli_fetch_assoc($res2);
-			
+			$arr2 = DB::run("SELECT username FROM users WHERE id =?", [$userid])->fetch();
 			$postername = $arr2["username"];
 			
 			if ($postername == "")
@@ -59,14 +58,11 @@ if ($action=="news" && $do=="takeadd"){
 	$added = $_POST["added"];
 
 	if (!$added)
-		$added = sqlesc(get_date_time());
+		$added = get_date_time();
 
-	SQL_Query_exec("INSERT INTO news (userid, added, body, title) VALUES (".
-
-	$CURUSER['id'] . ", $added, " . sqlesc($body) . ", " . sqlesc($title) . ")");
-
-	if (mysqli_affected_rows($GLOBALS["DBconnector"]) == 1)
-		show_error_msg(T_("COMPLETED"),T_("CP_NEWS_ITEM_ADDED_SUCCESS"),1);
+	$afr = DB::run("INSERT INTO news (userid, added, body, title) VALUES (?,?,?,?)", [$CURUSER['id'], $added, $body, $title]);
+	if ($afr)
+		autolink("admincp.php?action=news&do=view", T_("CP_NEWS_ITEM_ADDED_SUCCESS"));
 	else
 		show_error_msg(T_("ERROR"),T_("CP_NEWS_UNABLE_TO_ADD"),1);
 }
@@ -100,12 +96,10 @@ if ($action=="news" && $do=="edit"){
 	if (!is_valid_id($newsid))
 		show_error_msg(T_("ERROR"),sprintf(T_("CP_NEWS_INVAILD_ITEM_ID"), $newsid),1);
                                                                                             
-	$res = SQL_Query_exec("SELECT * FROM news WHERE id=$newsid");
-
-	if (mysqli_num_rows($res) != 1)
+	$res = DB::run("SELECT * FROM news WHERE id=?", [$newsid]);
+	if ($res->rowCount() != 1)
 		show_error_msg(T_("ERROR"), sprintf(T_("CP_NEWS_NO_ITEM_WITH_ID"), $newsid),1);
-
-	$arr = mysqli_fetch_assoc($res);
+	$arr = $res->fetch(PDO::FETCH_ASSOC);
 
 	if ($_SERVER['REQUEST_METHOD'] == 'POST'){
   		$body = $_POST['body'];
@@ -118,11 +112,11 @@ if ($action=="news" && $do=="edit"){
 		if ($title == "")
 			show_error_msg(T_("ERROR"), T_("ERR_NEWS_TITLE_CAN_NOT_BE_EMPTY"),1);
 
-		$body = sqlesc($body);
+		$body = $body;
 
-		$editedat = sqlesc(get_date_time());
+		$editedat = get_date_time();
 
-		SQL_Query_exec("UPDATE news SET body=$body, title='$title' WHERE id=$newsid");
+		DB::run("UPDATE news SET body=?, title=? WHERE id=?", [$body, $title, $newsid]);
 
 		$returnto = $_POST['returnto'];
 
@@ -153,8 +147,9 @@ if ($action=="news" && $do=="delete"){
 	if (!is_valid_id($newsid))
 		show_error_msg(T_("ERROR"),sprintf(T_("CP_NEWS_INVAILD_ITEM_ID"), $newsid),1);
 
-	SQL_Query_exec("DELETE FROM news WHERE id=$newsid");
-    SQL_Query_exec("DELETE FROM comments WHERE news = $newsid");
+	DB::run("DELETE FROM news WHERE id=?", [$newsid]);
+    DB::run("DELETE FROM comments WHERE news =?", [$newsid]);
 	
-	show_error_msg(T_("COMPLETED"),T_("CP_NEWS_ITEM_DEL_SUCCESS"),1);
+	autolink("admincp.php?action=news&do=view", T_("CP_NEWS_ITEM_DEL_SUCCESS"));
 }
+

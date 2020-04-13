@@ -3,7 +3,7 @@ require_once("backend/functions.php");
 dbconn();
 
 if ($_GET["passkey"]) {
-	$CURUSER = mysqli_fetch_assoc(SQL_Query_exec("SELECT * FROM users INNER JOIN groups ON users.class=groups.group_id WHERE passkey=".sqlesc($_GET["passkey"])." AND enabled='yes' AND status='confirmed'"));
+	$CURUSER = DB::run("SELECT * FROM users INNER JOIN groups ON users.class=groups.group_id WHERE passkey=? AND enabled=? AND status=?", [$_GET["passkey"], 'yes', 'confirmed'])->fetch();
 }
 
 //check permissions
@@ -19,8 +19,8 @@ $id = (int)$_GET["id"];
 if (!$id)
 	show_error_msg(T_("ID_NOT_FOUND"), T_("ID_NOT_FOUND_MSG_DL"), 1);
 
-$res = SQL_Query_exec("SELECT filename, banned, external, announce FROM torrents WHERE id =".intval($id));
-$row = mysqli_fetch_assoc($res);
+$res = DB::run("SELECT filename, banned, external, announce FROM torrents WHERE id =".intval($id));
+$row = $res->fetch(PDO::FETCH_ASSOC);
 
 $torrent_dir = $site_config["torrent_dir"];
 
@@ -41,7 +41,7 @@ $friendlyname = str_replace(".torrent","",$name);
 $friendlyext = ".torrent";
 $name = $friendlyname ."[". $friendlyurl ."]". $friendlyext;
 
-SQL_Query_exec("UPDATE torrents SET hits = hits + 1 WHERE id = $id");
+DB::run("UPDATE torrents SET hits = hits + 1 WHERE id = $id");
 
 require_once("backend/BEncode.php");
 require_once("backend/BDecode.php");
@@ -51,7 +51,7 @@ if ($site_config["MEMBERSONLY"]){
 	if (strlen($CURUSER['passkey']) != 32) {
 		$rand = array_sum(explode(" ", microtime()));
 		$CURUSER['passkey'] = md5($CURUSER['username'].$rand.$CURUSER['secret'].($rand*mt_rand()));
-		SQL_Query_exec("UPDATE users SET passkey='$CURUSER[passkey]' WHERE id=$CURUSER[id]");
+		DB::run("UPDATE users SET passkey=? WHERE id=?", [$CURUSER[passkey], $CURUSER['id']]);
 	}
 }
 
@@ -80,6 +80,3 @@ if ($row["external"]!='yes' && $site_config["MEMBERSONLY"]){// local torrent so 
 
 	readfile($fn); 
 }
-
-mysqli_close($GLOBALS["DBconnector"]);
-?>

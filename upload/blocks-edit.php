@@ -45,8 +45,8 @@ if(@count($_POST["addnew"])){
 		$name = sqlesc(str_replace("_block.php","",cleanstr($addblock)));
 		$description = sqlesc($_POST["wanteddescription_".$i]);
 
-		SQL_Query_exec("INSERT INTO blocks (named, name, description, position, enabled, sort) VALUES ($wantedname, $name, $description, 'left', 0, 0)")  or ((mysqli_errno($GLOBALS["DBconnector"]) == 1062) ? show_error_msg(T_("ERROR"),"Sorry, this block is in database already!",1) : show_error_msg(T_("ERROR"),"Database Query failed: " . mysqli_error($GLOBALS["DBconnector"])));
-		if(mysqli_affected_rows($GLOBALS["DBconnector"]) != 0){
+        $bins = DB::run("INSERT INTO blocks (named, name, description, position, enabled, sort) VALUES ($wantedname, $name, $description, 'left', 0, 0)")  or ((mysqli_errno($GLOBALS["DBconnector"]) == 1062) ? show_error_msg(T_("ERROR"),"Sorry, this block is in database already!",1) : show_error_msg(T_("ERROR"),"Database Query failed: " . mysqli_error($GLOBALS["DBconnector"])));
+		if($bins){
 			$success = "<center><font size=\"3\"><b>".T_("_SUCCESS_ADD_")."</b></font></center><br />";
 		}else{
 			$success = "<center><font size=\"3\"><b>".T_("_FAIL_ADD_")."</b></font></center><br />";
@@ -67,9 +67,9 @@ if(@count($_POST["deletepermanent"])){
 	echo $delmessage;
 }// end addnew
 
-$nextleft=(mysqli_num_rows(SQL_Query_exec("SELECT position FROM blocks WHERE position='left' AND enabled=1"))+1);
-$nextmiddle=(mysqli_num_rows(SQL_Query_exec("SELECT position FROM blocks WHERE position='middle' AND enabled=1"))+1);
-$nextright=(mysqli_num_rows(SQL_Query_exec("SELECT position FROM blocks WHERE position='right' AND enabled=1"))+1);
+$nextleft=DB::run("SELECT position FROM blocks WHERE position='left' AND enabled=1")->rowCount()+1;
+$nextmiddle=DB::run("SELECT position FROM blocks WHERE position='middle' AND enabled=1")->rowCount()+1;
+$nextright=DB::run("SELECT position FROM blocks WHERE position='right' AND enabled=1")->rowCount()+1;
 
 // upload block
 if($_POST["upload"] == "true"){    
@@ -125,10 +125,10 @@ if($_POST["upload"] == "true"){
 					$sort = ($_POST["enabledyes"] ? $uplsort : 0);
 					$enabled = ($_POST["enabledyes"] ? 1 : 0);
 					
-                    SQL_Query_exec("INSERT INTO blocks (named, name, description, position, sort, enabled) VALUES (
+                    $blins = DB::run("INSERT INTO blocks (named, name, description, position, sort, enabled) VALUES (
                     ".sqlesc($named).", ".sqlesc($name).", ".sqlesc($description).", ".sqlesc($position).", ".sqlesc($sort).", ".sqlesc($enabled).")");
 
-					if(mysqli_affected_rows($GLOBALS["DBconnector"]) != 0){
+					if($blins){
 						$uplsuccessmessage .= "<center><font size='3'><b>".T_("_SUCCESS_UPL_ADD_")."</b></font></center><br />";
 					}else{
 						$uplfailmessage .= "<center><font size='3'><b>".T_("_FAIL_UPL_ADD_")."</b></font></center><br />";
@@ -150,28 +150,28 @@ if ($_REQUEST["edit"] == "true")
     
 	//resort left blocks
 	function resortleft(){
-		$sortleft = SQL_Query_exec("SELECT sort, id FROM blocks WHERE position='left' AND enabled=1 ORDER BY sort ASC");
+		$sortleft = DB::run("SELECT sort, id FROM blocks WHERE position='left' AND enabled=1 ORDER BY sort ASC");
 		$i=1;
-		while($sort = mysqli_fetch_assoc($sortleft)){
-			SQL_Query_exec("UPDATE blocks SET sort = $i WHERE id=".$sort["id"]);
+		while($sort = $sortleft->fetch(PDO::FETCH_ASSOC)){
+            DB::run("UPDATE blocks SET sort = $i WHERE id=".$sort["id"]);
 			$i++;
 		}
 	}
 	//resort middle blocks
 	function resortmiddle(){
-		$sortmiddle = SQL_Query_exec("SELECT sort, id FROM blocks WHERE position='middle' AND enabled=1 ORDER BY sort ASC");
+		$sortmiddle = DB::run("SELECT sort, id FROM blocks WHERE position='middle' AND enabled=1 ORDER BY sort ASC");
 		$i=1;
-		while($sort = mysqli_fetch_assoc($sortmiddle)){
-			SQL_Query_exec("UPDATE blocks SET sort = $i WHERE id=".$sort["id"]);
+		while($sort = $sortmiddle->fetch(PDO::FETCH_ASSOC)){
+            DB::run("UPDATE blocks SET sort = $i WHERE id=".$sort["id"]);
 			$i++;
 		}
 	}
 	//resort right blocks
 	function resortright(){
-		$sortright = SQL_Query_exec("SELECT sort, id FROM blocks WHERE position='right' AND enabled=1 ORDER BY sort ASC");
+		$sortright = DB::run("SELECT sort, id FROM blocks WHERE position='right' AND enabled=1 ORDER BY sort ASC");
 		$i=1;
-		while($sort = mysqli_fetch_assoc($sortright)){
-			SQL_Query_exec("UPDATE blocks SET sort = $i WHERE id=".$sort["id"]);
+		while($sort = $sortright->fetch(PDO::FETCH_ASSOC)){
+            DB::run("UPDATE blocks SET sort = $i WHERE id=".$sort["id"]);
 			$i++;
 		}
 	}
@@ -180,7 +180,7 @@ if ($_REQUEST["edit"] == "true")
 
 	if(@count($_POST["delete"])){
 		foreach($_POST["delete"] as $delthis){
-			SQL_Query_exec("DELETE FROM blocks WHERE id=".sqlesc($delthis));
+            DB::run("DELETE FROM blocks WHERE id=".sqlesc($delthis));
 		}
 			resortleft();
 			resortmiddle();
@@ -189,59 +189,59 @@ if ($_REQUEST["edit"] == "true")
 
 	// == move to left
 	if(is_valid_id($_GET["left"])){
-		SQL_Query_exec("UPDATE blocks SET position = 'left', sort = $nextleft WHERE id = " . $_GET["left"]);
+        DB::run("UPDATE blocks SET position = 'left', sort = $nextleft WHERE id = " . $_GET["left"]);
 		resortmiddle();
 		resortright();
 	}// end move to left
 	
 	// == move to center
 	if(is_valid_id($_GET["middle"])){
-		SQL_Query_exec("UPDATE blocks SET position = 'middle', sort = $nextmiddle WHERE id = " . $_GET["middle"]);
+        DB::run("UPDATE blocks SET position = 'middle', sort = $nextmiddle WHERE id = " . $_GET["middle"]);
 		resortleft();
 		resortright();
 	}// end move to center
 	
 	// == move to right
 	if(is_valid_id($_GET["right"])){
-		SQL_Query_exec("UPDATE blocks SET position = 'right', sort = $nextright WHERE enabled=1 AND id = " . $_GET["right"]);
+        DB::run("UPDATE blocks SET position = 'right', sort = $nextright WHERE enabled=1 AND id = " . $_GET["right"]);
 		resortleft();
 		resortmiddle();
 	}// end move to right
 	
 	// == move upper
 	if(is_valid_id($_GET["up"])){
-		$cur = SQL_Query_exec("SELECT position, sort, id FROM blocks WHERE id = " . $_GET["up"]);
-		$curent = mysqli_fetch_assoc($cur);
+		$cur = DB::run("SELECT position, sort, id FROM blocks WHERE id = " . $_GET["up"]);
+		$curent = $cur->fetch(PDO::FETCH_ASSOC);
 
         $sort = ( int ) $_GET["sort"];
         
-		SQL_Query_exec("UPDATE blocks SET sort = ".$sort." WHERE sort = ".($sort-1)." AND id != " . $_GET["up"] . " AND position = " . sqlesc($_GET["position"]) . "");
-		SQL_Query_exec("UPDATE blocks SET sort = ".($sort-1)." WHERE id = " . $_GET["up"]);
+		DB::run("UPDATE blocks SET sort = ".$sort." WHERE sort = ".($sort-1)." AND id != " . $_GET["up"] . " AND position = " . sqlesc($_GET["position"]) . "");
+		DB::run("UPDATE blocks SET sort = ".($sort-1)." WHERE id = " . $_GET["up"]);
 	}// end move to upper
 	
 	// == move lower
 	if(is_valid_id($_GET["down"])){
-		$cur = SQL_Query_exec("SELECT position, sort, id FROM blocks WHERE id = " . $_GET["down"]);
-		$curent = mysqli_fetch_assoc($cur);
+		$cur = DB::run("SELECT position, sort, id FROM blocks WHERE id = " . $_GET["down"]);
+		$curent = $cur->fetch(PDO::FETCH_ASSOC);
 
         $sort = ( int ) $_GET["sort"];
-        
-		SQL_Query_exec("UPDATE blocks SET sort = ".($sort+1)." WHERE id = " . $_GET["down"]);
-		SQL_Query_exec("UPDATE blocks SET sort = ".$sort." WHERE sort = ".($sort+1)." AND id != " . $_GET["down"] . " AND position = " . sqlesc($_GET["position"]) ."");
+
+        DB::run("UPDATE blocks SET sort = ".($sort+1)." WHERE id = " . $_GET["down"]);
+        DB::run("UPDATE blocks SET sort = ".$sort." WHERE sort = ".($sort+1)." AND id != " . $_GET["down"] . " AND position = " . sqlesc($_GET["position"]) ."");
 	}// end move lower
 	
 	// == update
-	$res=SQL_Query_exec("SELECT * FROM blocks ORDER BY id");
+	$res=DB::run("SELECT * FROM blocks ORDER BY id");
 
 	if(!$_GET["up"] && !$_GET["down"] && !$_GET["right"] && !$_GET["left"] && !$_GET["middle"]){
          
         $update = array();
         
-		while($upd = mysqli_fetch_assoc($res)){
+		while($upd = $res->fetch(PDO::FETCH_ASSOC)){
 			$id = $upd["id"];
 			$update[] = "enabled = ".$_POST["enable_".$upd["id"]];
-			$update[] = "named = '".mysqli_real_escape_string($GLOBALS["DBconnector"],$_POST["named_".$upd["id"]])."'";
-			$update[] = "description = '".mysqli_real_escape_string($GLOBALS["DBconnector"],$_POST["description_".$upd["id"]])."'";
+			$update[] = "named = '".$_POST["named_".$upd["id"]]."'";
+			$update[] = "description = '".$_POST["description_".$upd["id"]]."'";
 			
 			if(($upd["enabled"] == 0) && ($upd["position"] == "left") && ($_POST["enable_".$upd["id"]] == 1))
 				$update[] = "sort = ".$nextleft;
@@ -258,8 +258,8 @@ if ($_REQUEST["edit"] == "true")
 				$update[] = "sort = 0";
 			else
 				$update[] = "sort = ".$upd["sort"];
-				
-			SQL_Query_exec("UPDATE blocks SET ". implode(", ", $update). " WHERE id=$id") or show_error_msg(T_("ERROR"), "".T_("_FAIL_DB_QUERY_").": ".mysqli_error($GLOBALS["DBconnector"]));
+
+            DB::run("UPDATE blocks SET ". implode(", ", $update). " WHERE id=$id") or show_error_msg(T_("ERROR"), "".T_("_FAIL_DB_QUERY_").": ".mysqli_error($GLOBALS["DBconnector"]));
 		}
 	}
 	resortleft();
@@ -271,7 +271,7 @@ echo "<center><a href=\"index.php\">".T_("HOME")."</a>&nbsp;&#8226;&nbsp;<a href
 
 // ---- <table> for blocks in database -----------------------------------------
 print("<hr />");
-$res = SQL_Query_exec("SELECT * FROM blocks ORDER BY enabled DESC, position, sort");
+$res = DB::run("SELECT * FROM blocks ORDER BY enabled DESC, position, sort");
 
 print("<table align=\"center\"><tr><td>".
 	"<form name=\"blocks\" method=\"post\" action=\"blocks-edit.php\">".
@@ -296,8 +296,9 @@ print("<table align=\"center\"><tr><td>".
 			"<th class=\"table_head\">".T_("NO")."</th>".
 		"</tr>");
 
-while($blocks2 = mysqli_fetch_assoc($res)){
-	$down=$blocks["id"];
+while($blocks2 = $res->fetch(PDO::FETCH_ASSOC)){
+    
+	$down=$blocks["id"]??'';
 	if(!$setclass){
 		$class="table_col2";$setclass=true;}
 	else{
@@ -340,8 +341,8 @@ print("<tr>".
 // ---- </table> for blocks in database -----------------------------------------
 	
 // ---- <table> for blocks exist but not in database ----------------------------
-$exist=SQL_Query_exec("SELECT name FROM blocks");
-while($fileexist = mysqli_fetch_assoc($exist)){
+$exist=DB::run("SELECT name FROM blocks");
+while($fileexist = $exist->fetch(PDO::FETCH_ASSOC)){
 	$indb[] = $fileexist["name"]."_block.php";
 }
 
@@ -477,5 +478,3 @@ print("</td></tr></table>");
 	
 end_frame();
 stdfoot();
-
-?>

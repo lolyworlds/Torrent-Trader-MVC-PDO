@@ -1,9 +1,9 @@
 <?php
-
+if ($CURUSER){
 if ($site_config['NEWSON']){ //check news is turned on first   
 	begin_block(T_("LATEST_NEWS"));
 
-	$res = SQL_Query_exec("SELECT * FROM news ORDER BY added DESC LIMIT 10");
+	$res = DB::run("SELECT * FROM news ORDER BY added DESC LIMIT 10");
 
 	?>
 	<style type="text/css">
@@ -59,7 +59,7 @@ if ($site_config['NEWSON']){ //check news is turned on first
 	setTimeout('lefttime=setInterval("scrollmarquee()",30)', delayb4scroll)
 	}
 
-<?php if (mysqli_num_rows($res) > 3) {?>
+<?php if ($res->rowCount() > 3) {?>
 	if (window.addEventListener)
 	window.addEventListener("load", initializemarquee, false)
 	else if (window.attachEvent)
@@ -75,8 +75,8 @@ if ($site_config['NEWSON']){ //check news is turned on first
 
 	<!--YOUR SCROLL CONTENT HERE-->
 	<?php
-	if (mysqli_num_rows($res)){
-		while($array = mysqli_fetch_assoc($res)){
+	if ($res->rowCount()){
+		while($array = $res->fetch(PDO::FETCH_ASSOC)){
 			print("<a href='comments.php?type=news&amp;id=". $array['id'] . "'><b>". $array['title'] . "</b></a><br /><b>".T_("POSTED").":</b> " . gmdate("d-M-y", utc_to_tz_time($array["added"])) . "<br /><br />");
 		}
 	}else{
@@ -89,4 +89,5 @@ if ($site_config['NEWSON']){ //check news is turned on first
 
 	end_block();
 }//end newson check
+}
 ?>

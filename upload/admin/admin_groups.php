@@ -24,8 +24,8 @@ if ($action=="groups" && $do=="view"){
 	print("<th class='table_head'>".T_("DEL")."</th>\n");
 	print("</tr>\n");
 
-	$getlevel=SQL_Query_exec("SELECT * from groups ORDER BY group_id");
-	while ($level=mysqli_fetch_assoc($getlevel)) {
+	$getlevel=DB::run("SELECT * from groups ORDER BY group_id");
+	while ($level=$getlevel->fetch(PDO::FETCH_LAZY)) {
 		 print("<tr>\n");
 		 print("<td class='table_col1'><a href='admincp.php?action=groups&amp;do=edit&amp;group_id=".$level["group_id"]."'>".htmlspecialchars($level["level"])."</a></td>\n");
 		 print("<td class='table_col2'>".$level["view_torrents"]."/".$level["edit_torrents"]."/".$level["delete_torrents"]."</td>\n");
@@ -50,11 +50,11 @@ if ($action=="groups" && $do=="view"){
 
 if ($action=="groups" && $do=="edit"){
 	$group_id=intval($_GET["group_id"]);
-	$rlevel=SQL_Query_exec("SELECT * FROM groups WHERE group_id=$group_id");
+	$rlevel=DB::run("SELECT * FROM groups WHERE group_id=?", [$group_id]);
 	if (!$rlevel)
 		show_error_msg(T_("ERROR"),T_("CP_NO_GROUP_ID_FOUND"),1);
 
-	$level=mysqli_fetch_assoc($rlevel);
+	$level=$rlevel->fetch(PDO::FETCH_ASSOC);
 
 	stdhead(T_("GROUPS_MANAGEMENT"));
 	navmenu();
@@ -119,9 +119,9 @@ if ($action=="groups" && $do=="update"){
      $strupdate = implode(",", $update);
 
      $group_id=intval($_GET["group_id"]);
-     SQL_Query_exec("UPDATE groups SET $strupdate WHERE group_id=$group_id");
+     DB::run("UPDATE groups SET $strupdate WHERE group_id=?", [$group_id]);
                  
-		echo "<br /><center><b>".T_("CP_UPDATED_OK")."</b></center><br />";
+		autolink("admincp.php?action=groups&do=view", T_("SUCCESS"),"Groups Updated!");
 		end_frame();
 		stdfoot();	
 }
@@ -132,8 +132,8 @@ if ($action=="groups" && $do=="delete"){
 		if (($group_id=="1") || ($group_id=="7"))
 			show_error_msg(T_("ERROR"),T_("CP_YOU_CANT_DEL_THIS_GRP"),1);
  
-		SQL_Query_exec("DELETE FROM groups WHERE group_id=$group_id");
-        show_error_msg(T_("_DEL_"), T_("CP_DEL_OK"), 1);
+		DB::run("DELETE FROM groups WHERE group_id=?", [$group_id]);
+        autolink("admincp.php?action=groups&do=view", T_("CP_DEL_OK"));
 }
 
 
@@ -149,9 +149,9 @@ if ($action=="groups" && $do=="add") {
 	<tr><td>Group Name:</td><td><input type="text" name="gname" value="" size="40" /></td></tr>
 	<tr><td>Copy Settings From: </td><td><select name="getlevel" size="1">
 	<?php
-	$rlevel=SQL_Query_exec("SELECT DISTINCT group_id, level FROM groups ORDER BY group_id");
+	$rlevel=DB::run("SELECT DISTINCT group_id, level FROM groups ORDER BY group_id");
 
-	while($level=mysqli_fetch_assoc($rlevel)) {
+	while($level=$rlevel->fetch(PDO::FETCH_ASSOC)) {
 		print("\n<option value='".$level["group_id"]."'>".htmlspecialchars($level["level"])."</option>");
 	}
 	print("\n</select></td></tr>");
@@ -171,8 +171,8 @@ if ($action=="groups" && $do=="addnew") {
 
 	$group_id=intval($_POST["getlevel"]);
 
-	$rlevel=SQL_Query_exec("SELECT * FROM groups WHERE group_id=$group_id");
-	$level=mysqli_fetch_assoc($rlevel);
+	$rlevel = DB::run("SELECT * FROM groups WHERE group_id=?", [$group_id]);
+	$level = $rlevel->fetch(PDO::FETCH_ASSOC);
 	if (!$level)
 	   show_error_msg(T_("ERROR"),T_("CP_INVALID_ID"),1);
 
@@ -197,9 +197,8 @@ if ($action=="groups" && $do=="addnew") {
     $update[] = "staff_public = " . sqlesc($level["staff_public"]);
     $update[] = "staff_sort = " . intval($level["staff_sort"]);
 	$strupdate = implode(",", $update);
-	SQL_Query_exec("INSERT INTO groups SET $strupdate");
-
-	echo "<br /><center><b>Added OK</b></center><br />";
+	DB::run("INSERT INTO groups SET $strupdate");
+	autolink("admincp.php?action=groups&do=view", T_("SUCCESS"),"Groups Updated!");
 	end_frame();
 	stdfoot();	
 }

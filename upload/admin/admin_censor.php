@@ -9,13 +9,13 @@ if($site_config["OLD_CENSOR"])
 {
 //Output
 if ($_POST['submit'] == 'Add Censor'){
-$query = "INSERT INTO censor (word, censor) VALUES (" . sqlesc($_POST['word']) . "," . sqlesc($_POST['censor']) . ");";
-             SQL_Query_exec($query);
-             }
+
+    DB::run("INSERT INTO censor (word, censor) VALUES (?,?)", [$_POST['word'], $_POST['censor']]);
+}
 if ($_POST['submit'] == 'Delete Censor'){
-  $aquery = "DELETE FROM censor WHERE word = " . sqlesc($_POST['censor']) . " LIMIT 1";
-  SQL_Query_exec($aquery);
-  }
+     
+      DB::run("DELETE FROM censor WHERE word =? LIMIT 1", [$_POST['censor']]);
+}
 
 begin_frame(T_("WORD_CENSOR"));  
 /*------------------
@@ -43,9 +43,8 @@ begin_frame(T_("WORD_CENSOR"));
 |Get the words currently censored
 -------------*/
 
-$select = "SELECT word FROM censor ORDER BY word";
-$sres = SQL_Query_exec($select);
-while ($srow = mysqli_fetch_array($sres))
+$sres = DB::run("SELECT word FROM censor ORDER BY word");
+while ($srow = $sres->fetch())
 {
         echo "<option>" . $srow[0] . "</option>\n";
         }
@@ -66,7 +65,7 @@ switch ($to)
             @fwrite($f,$_POST["badwords"]);
             fclose($f);
             }
-			show_error_msg(T_("SUCCESS"),"Censor Updated!",0);
+			autolink("admincp.php?action=censor", T_("SUCCESS"),"Censor Updated!");
          break;
 
 

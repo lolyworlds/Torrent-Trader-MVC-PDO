@@ -1,49 +1,42 @@
 <?php
 require_once("backend/functions.php");
 dbconn();
-
+loggedinonly ();
 if ($site_config['SHOUTBOX']){
 
 //DELETE MESSAGES
 if (isset($_GET['del'])){
 
 	if (is_numeric($_GET['del'])){
-		$query = "SELECT * FROM shoutbox WHERE msgid=".$_GET['del'] ;
-		$result = SQL_Query_exec($query);
+		$result = DB::run("SELECT * FROM shoutbox WHERE msgid=?", [$_GET['del']]);
 	}else{
 		echo "invalid msg id STOP TRYING TO INJECT SQL";
 		exit;
 	}
-
-	$row = mysqli_fetch_row($result);
-		
+	$row = $result->fetch(PDO::FETCH_LAZY);
 	if ($row && ($CURUSER["edit_users"]=="yes" || $CURUSER['username'] == $row[1])) {
-		$query = "DELETE FROM shoutbox WHERE msgid=".$_GET['del'] ;
-		write_log("<b><font color='orange'>Shout Deleted: </font> Deleted by   ".$CURUSER['username']."</b>");
-		SQL_Query_exec($query);	
+		write_log("<b><font color='orange'>Shout Deleted:</font> Deleted by   ".$CURUSER['username']."</b>");
+		DB::run("DELETE FROM shoutbox WHERE msgid=?", [$_GET['del']]);
 	}
 }
 
 //INSERT MESSAGE
 if (!empty($_POST['message']) && $CURUSER) {	
-	$_POST['message'] = sqlesc($_POST['message']);
-	$query = "SELECT COUNT(*) FROM shoutbox WHERE message=".$_POST['message']." AND user='".$CURUSER['username']."' AND UNIX_TIMESTAMP('".get_date_time()."')-UNIX_TIMESTAMP(date) < 30";
-	$result = SQL_Query_exec($query);
-	$row = mysqli_fetch_row($result);
-
-	if ($row[0] == '0') {
-		$query = "INSERT INTO shoutbox (msgid, user, message, date, userid) VALUES (NULL, '".$CURUSER['username']."', ".$_POST['message'].", '".get_date_time()."', '".$CURUSER['id']."')";
-		SQL_Query_exec($query);
+	$_POST['message'] = $_POST['message'];
+    $result = DB::run("SELECT COUNT(*) FROM shoutbox WHERE message=? AND user=? AND UNIX_TIMESTAMP(?)-UNIX_TIMESTAMP(date) < ?", [$_POST['message'], $CURUSER['username'], get_date_time(), 30]);
+    $row = $result->fetch(PDO::FETCH_LAZY);
+    if ($row[0] == '0') {
+		$qry = DB::run("INSERT INTO shoutbox (msgid, user, message, date, userid) VALUES (?, ?, ?, ?, ?)", [NULL,$CURUSER['username'], $_POST['message'], get_date_time(), $CURUSER['id']]);
 	}
 }
 
 //GET CURRENT USERS THEME AND LANGUAGE
 if ($CURUSER){
-	$ss_a = @mysqli_fetch_assoc(@SQL_Query_exec("select uri from stylesheets where id=" . $CURUSER["stylesheet"]));
+    $ss_a = DB::run("SELECT uri FROM stylesheets WHERE id=?", [$CURUSER["stylesheet"]])->fetch();
 	if ($ss_a)
 		$THEME = $ss_a["uri"];
 }else{//not logged in so get default theme/language
-	$ss_a = mysqli_fetch_assoc(SQL_Query_exec("select uri from stylesheets where id='" . $site_config['default_theme'] . "'"));
+    $ss_a = DB::run("SELECT uri FROM stylesheets WHERE id=?", [$site_config["default_theme"]])->fetch();
 	if ($ss_a)
 		$THEME = $ss_a["uri"];
 }
@@ -51,7 +44,7 @@ if ($CURUSER){
 if(!isset($_GET['history'])){ 
 ?>
 <html>
-<head>
+<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title><?php echo $site_config['SITENAME'] . T_("SHOUTBOX"); ?></title>
 <?php /* If you do change the refresh interval, you should also change index.php printf(T_("SHOUTBOX_REFRESH"), 5) the 5 is in minutes */ ?>
 <meta http-equiv="refresh" content="300" />
@@ -60,7 +53,8 @@ if(!isset($_GET['history'])){
 </head>
 <body class="shoutbox_body">
 <?php
-	echo '<div class="shoutbox_contain"><table border="0" style="width: 99%; table-layout:fixed">';
+echo '<div class="shoutbox_contain">
+<table border="0" style="width: 99%; table-layout:fixed">';
 }else{
     
     if ($site_config["MEMBERSONLY"]) {
@@ -70,10 +64,8 @@ if(!isset($_GET['history'])){
 	stdhead();
 	begin_frame(T_("SHOUTBOX_HISTORY"));
 	echo '<div class="shoutbox_history">';
-
-	$query = 'SELECT COUNT(*) FROM shoutbox';
-	$result = SQL_Query_exec($query);
-	$row = mysqli_fetch_row($result);
+    $result = DB::run('SELECT COUNT(*) FROM shoutbox');
+    $row = $result->fetch(PDO::FETCH_LAZY);
 	echo '<div align="center">Pages: ';
 	$pages = round($row[0] / 100) + 1;
 	$i = 1;
@@ -105,10 +97,10 @@ if (isset($_GET['history'])) {
 }
 
 
-$result = SQL_Query_exec($query);
+$result = DB::run($query);
 $alt = false;
 
-while ($row = mysqli_fetch_assoc($result)) {
+while ($row = $result->fetch(PDO::FETCH_LAZY)) {
 	if ($alt){	
 		echo '<tr class="shoutbox_noalt">';
 		$alt = false;
@@ -136,7 +128,7 @@ while ($row = mysqli_fetch_assoc($result)) {
 
 </table>
 </div>
-<br />
+<br/>
 
 <?php
 
@@ -180,3 +172,4 @@ else{
 	echo T_("SHOUTBOX_DISABLED");
 }
 ?>
+</body>

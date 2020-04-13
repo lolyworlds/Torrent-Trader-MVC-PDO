@@ -4,7 +4,6 @@ if ($action == "usersearch") {
 	if ($do == "warndisable") {
 		if (empty($_POST["warndisable"]))
 			show_error_msg(T_("ERROR"), "You must select a user to edit.", 1);
-
 		if (!empty($_POST["warndisable"])){
 			$enable = $_POST["enable"];
 			$disable = $_POST["disable"];
@@ -13,57 +12,53 @@ if ($action == "usersearch") {
 			$warnpm = $_POST["warnpm"];
 			$_POST['warndisable'] = array_map("intval", $_POST['warndisable']);
 			$userid = implode(", ", $_POST['warndisable']);
-
 			if ($disable != '') {
-				SQL_Query_exec("UPDATE users SET enabled='no' WHERE id IN (" . implode(", ", $_POST['warndisable']) . ")");
+				DB::run("UPDATE users SET enabled='no' WHERE id IN (" . implode(", ", $_POST['warndisable']) . ")");
 			}
-
 			if ($enable != '') {
-				SQL_Query_exec("UPDATE users SET enabled='yes' WHERE id IN (" . implode(", ", $_POST['warndisable']) . ")");
+				DB::run("UPDATE users SET enabled='yes' WHERE id IN (" . implode(", ", $_POST['warndisable']) . ")");
 			}
-
 			if ($unwarn != '') {
 				$msg = "Your Warning Has Been Removed";
 				foreach ($_POST["warndisable"] as $userid) {
-					SQL_Query_exec("INSERT INTO messages (poster, sender, receiver, added, msg) VALUES ('0', '0', '".$userid."', '" . get_date_time() . "', " . sqlesc($msg) . ")") or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\n".T_("ERROR").": (" . mysqli_errno($GLOBALS["DBconnector"]) . ") " . mysqli_error($GLOBALS["DBconnector"]));
+				    $query = "INSERT INTO messages (poster, sender, receiver, added, msg) VALUES ('0', '0', '".$userid."', '" . get_date_time() . "', " . sqlesc($msg) . ")";
+					$qry = DB::run($query);
+					if(!$qry){
+                        die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\n".T_("ERROR").": (" . $qry->errorCode() . ") " . $qry->errorInfo());
+					}
 				}
-
-				$r = SQL_Query_exec("SELECT modcomment FROM users WHERE id IN (" . implode(", ", $_POST['warndisable']) . ")")or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\n".T_("ERROR").": (" . mysqli_errno($GLOBALS["DBconnector"]) . ") " . mysqli_error($GLOBALS["DBconnector"]));
-				$user = mysqli_fetch_array($r);
+				$r = DB::run("SELECT modcomment FROM users WHERE id IN (" . implode(", ", $_POST['warndisable']) . ")")or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\n".T_("ERROR").": (" . $r->errorCode() . ") " . $r->errorInfo());
+				$user = $r->fetch(PDO::FETCH_LAZY);
 				$exmodcomment = $user["modcomment"];
 				$modcomment = gmdate("Y-m-d") . " - Warning Removed By " . $CURUSER['username'] . ".\n". $modcomment . $exmodcomment;
-				SQL_Query_exec("UPDATE users SET modcomment=" . sqlesc($modcomment) . " WHERE id IN (" . implode(", ", $_POST['warndisable']) . ")") or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\n".T_("ERROR").": (" . mysqli_errno($GLOBALS["DBconnector"]) . ") " . mysqli_error($GLOBALS["DBconnector"]));
-
-				SQL_Query_exec("UPDATE users SET warned='no' WHERE id IN (" . implode(", ", $_POST['warndisable']) . ")");
+				$query = "UPDATE users SET modcomment=" . sqlesc($modcomment) . " WHERE id IN (" . implode(", ", $_POST['warndisable']) . ")";
+				$q = DB::run($query);
+				if(!$q) die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\n".T_("ERROR").": (" . $q->errorCode() . ") " . $q->errorInfo());
+				DB::run("UPDATE users SET warned='no' WHERE id IN (" . implode(", ", $_POST['warndisable']) . ")");
 			}
-
 			if ($warn != '') {
 				if (empty($_POST["warnpm"]))
 					show_error_msg(T_("ERROR"), "You must type a reason/mod comment.", 1);
-
 					$msg = "You have received a warning, Reason: $warnpm";
-
-					$r = SQL_Query_exec("SELECT modcomment FROM users WHERE id IN (" . implode(", ", $_POST['warndisable']) . ")")or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\n".T_("ERROR").": (" . mysqli_errno($GLOBALS["DBconnector"]) . ") " . mysqli_error($GLOBALS["DBconnector"]));
-					$user = mysqli_fetch_array($r);
+					$user = DB::run("SELECT modcomment FROM users WHERE id IN (" . implode(", ", $_POST['warndisable']) . ")")->fetch();
 					$exmodcomment = $user["modcomment"];
 					$modcomment = gmdate("Y-m-d") . " - Warned by " . $CURUSER['username'] . ".\nReason: $warnpm\n" . $modcomment . $exmodcomment;
-					SQL_Query_exec("UPDATE users SET modcomment=" . sqlesc($modcomment) . " WHERE id IN (" . implode(", ", $_POST['warndisable']) . ")") or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\n".T_("ERROR").": (" . mysqli_errno($GLOBALS["DBconnector"]) . ") " . mysqli_error($GLOBALS["DBconnector"]));
-
-					SQL_Query_exec("UPDATE users SET warned='yes' WHERE id IN (" . implode(", ", $_POST['warndisable']) . ")");
+					$query = "UPDATE users SET modcomment=" . sqlesc($modcomment) . " WHERE id IN (" . implode(", ", $_POST['warndisable']) . ")";
+					$upd = DB::run($query);
+					if(!$upd)  die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\n".T_("ERROR").": (" . $upd->errorCode() . ") " . $upd->errorInfo());
+					DB::run("UPDATE users SET warned='yes' WHERE id IN (" . implode(", ", $_POST['warndisable']) . ")");
 					foreach ($_POST["warndisable"] as $userid) {
-						SQL_Query_exec("INSERT INTO messages (poster, sender, receiver, added, msg) VALUES ('0', '0', '".$userid."', '" . get_date_time() . "', " . sqlesc($msg) . ")") or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\n".T_("ERROR").": (" . mysqli_errno($GLOBALS["DBconnector"]) . ") " . mysqli_error($GLOBALS["DBconnector"]));
+						$ins = DB::run("INSERT INTO messages (poster, sender, receiver, added, msg) VALUES ('0', '0', '".$userid."', '" . get_date_time() . "', " . sqlesc($msg) . ")");
+						if(!$ins) die("<b>A fatal MySQL error occured</b>.\n <br />\n".T_("ERROR").": (" . $ins->errorCode() . ") " . $ins->errorInfo());
 					}
 			}
-
 		}
-
 		autolink("$_POST[referer]", "Redirecting back");
 		die;
 	}
 	stdhead(T_("ADVANCED_USER_SEARCH"));
 	navmenu();
 	begin_frame("Search");
-
 	if ($_GET['h']) {
 		echo "<table width='65%' border='0' align='center'><tr><td align='left'>\n
 			Fields left blank will be ignored;\n
@@ -85,7 +80,6 @@ if ($action == "usersearch") {
 		echo "<p align='center'>[<a href='admincp.php?action=usersearch&amp;h=1'>Instructions</a>]";
 		echo "&nbsp;-&nbsp;[<a href='admincp.php?action=usersearch'>Reset</a>]</p>\n";
 	}
-
 ?>
     <br />
 	<form method="get" action="admincp.php">
@@ -236,7 +230,6 @@ if ($action == "usersearch") {
 	</form>
 
 <?php
-
 	// Validates date in the form [yy]yy-mm-dd;
 	// Returns date if valid, 0 otherwise.
 	function mkdate($date) {
@@ -255,7 +248,6 @@ if ($action == "usersearch") {
 		else
 			return 0;
 	}
-
 	// ratio as a string
 	function ratios ($up, $down, $color = true) {
 		if ($down > 0) {
@@ -268,7 +260,6 @@ if ($action == "usersearch") {
 			$r = "---";
 		return $r;
 	}
-
 	// checks for the usual wildcards *, ? plus mySQL ones
 	function haswildcard ($text){
 		if (strpos($text, '*') === false && strpos($text, '?') === false && strpos($text,'%') === False && strpos($text,'_') === False)
@@ -276,9 +267,7 @@ if ($action == "usersearch") {
 		else
 			return True;
 	}
-
 	///////////////////////////////////////////////////////////////////////////////
-
 	if (count($_GET) > 0 && !$_GET['h']) {
 		// name
 		$names = explode(' ',trim($_GET['n']));
@@ -290,7 +279,6 @@ if ($action == "usersearch") {
 				} else
 					$names_inc[] = $name;
 			}
-
 			if (is_array($names_inc)) {
 				$where_is .= isset($where_is)?" AND (":"(";
 				foreach($names_inc as $name) {
@@ -304,7 +292,6 @@ if ($action == "usersearch") {
 				$where_is .= $name_is.")";
 				unset($name_is);
 			}
-
 			if (is_array($names_exc)) {
 				$where_is .= isset($where_is)?" AND NOT (":" NOT (";
 				foreach($names_exc as $name) {
@@ -319,7 +306,6 @@ if ($action == "usersearch") {
 			}
 			$q .= ($q ? "&amp;" : "") . "n=".urlencode(trim($_GET['n']));
 		}
-
 		// email
 		$emaila = explode(' ', trim($_GET['em']));
 		if ($emaila[0] !== "") {
@@ -338,7 +324,6 @@ if ($action == "usersearch") {
 			$where_is .= $email_is.")";
 			$q .= ($q ? "&amp;" : "") . "em=".urlencode(trim($_GET['em']));
 		}
-
 		//class
 		// NB: the c parameter is passed as two units above the real one
 		$class = $_GET['c'] - 2;
@@ -346,7 +331,6 @@ if ($action == "usersearch") {
 			$where_is .= (isset($where_is)?" AND ":"")."u.class=$class";
 			$q .= ($q ? "&amp;" : "") . "c=".($class+2);
 		}
-
 		// IP
 		$ip = trim($_GET['ip']);
 		if ($ip) {
@@ -354,7 +338,6 @@ if ($action == "usersearch") {
 			if (!preg_match($regex, $ip)) {
 				show_error_msg(T_("ERROR"), "Bad IP.");
 			}
-
 			$mask = trim($_GET['ma']);
 			if ($mask == "" || $mask == "255.255.255.255") {
 				$where_is .= (isset($where_is)?" AND ":"")."u.ip = '$ip'";
@@ -374,7 +357,6 @@ if ($action == "usersearch") {
 			}
 			$q .= ($q ? "&amp;" : "") . "ip=$ip";
 		}
-
 		// ratio
 		$ratio = trim($_GET['r']);
 		if ($ratio) {
@@ -414,7 +396,6 @@ if ($action == "usersearch") {
 			}
 			$q .= ($q ? "&amp;" : "") . "r=$ratio";
 		}
-
 		// comment
 		$comments = explode(' ',trim($_GET['co']));
 		if ($comments[0] !== "") {
@@ -425,7 +406,6 @@ if ($action == "usersearch") {
 				} else {
 					$comments_inc[] = $comment;
 				}
-
 				if (is_array($comments_inc)) {
 					$where_is .= isset($where_is)?" AND (":"(";
 					foreach($comments_inc as $comment) {
@@ -439,7 +419,6 @@ if ($action == "usersearch") {
 					$where_is .= $comment_is.")";
 					unset($comment_is);
 				}
-
 				if (is_array($comments_exc)) {
 					$where_is .= isset($where_is)?" AND NOT (":" NOT (";
 					foreach($comments_exc as $comment) {
@@ -455,9 +434,7 @@ if ($action == "usersearch") {
 			}
 				$q .= ($q ? "&amp;" : "") . "co=".urlencode(trim($_GET['co']));
 		}
-
 		$unit = 1073741824; // 1GB
-
 		// uploaded
 		$ul = trim($_GET['ul']);
 		if ($ul) {
@@ -487,7 +464,6 @@ if ($action == "usersearch") {
 			}
 			$q .= ($q ? "&amp;" : "") . "ul=$ul";
 		}
-
 		// downloaded
 		$dl = trim($_GET['dl']);
 		if ($dl) {
@@ -517,7 +493,6 @@ if ($action == "usersearch") {
 			}
 			$q .= ($q ? "&amp;" : "") . "dl=$dl";
 		}
-
 		// date joined
 		$date = trim($_GET['d']);
 		if ($date) {
@@ -551,7 +526,6 @@ if ($action == "usersearch") {
 				}
 			}
 		}
-
 		// date last seen
 		$last = trim($_GET['ls']);
 		if ($last) {
@@ -582,7 +556,6 @@ if ($action == "usersearch") {
 				}
 			}
 		}
-
 		// status
 		$status = $_GET['st'];
 		if ($status) {
@@ -594,7 +567,6 @@ if ($action == "usersearch") {
 			}
 			$q .= ($q ? "&amp;" : "") . "st=$status";
 		} 
-
 		// account status
 		$accountstatus = $_GET['as'];
 		if ($accountstatus) {
@@ -606,7 +578,6 @@ if ($action == "usersearch") {
 			}
 			$q .= ($q ? "&amp;" : "") . "as=$accountstatus";
 		}
-
 		//donor
 		$donor = $_GET['do'];
 		if ($donor) {
@@ -618,7 +589,6 @@ if ($action == "usersearch") {
 			}
 			$q .= ($q ? "&amp;" : "") . "do=$donor";
 		}
-
 		//warned
 		$warned = $_GET['w'];
 		if ($warned) {
@@ -630,7 +600,6 @@ if ($action == "usersearch") {
 			}
 			$q .= ($q ? "&amp;" : "") . "w=$warned";
 		}
-
 		// disabled IP
 		$disabled = $_GET['dip'];
 		if ($disabled) {
@@ -639,7 +608,6 @@ if ($action == "usersearch") {
 			$where_is .= ((isset($where_is))?" AND ":"")."u2.enabled = 'no'";
 			$q .= ($q ? "&amp;" : "") . "dip=$disabled";
 		}
-
 		// active
 		$active = $_GET['ac'];
 		if ($active == "1") {
@@ -647,39 +615,27 @@ if ($action == "usersearch") {
 			$join_is .= " LEFT JOIN peers AS p ON u.id = p.userid";
 			$q .= ($q ? "&amp;" : "") . "ac=$active";
 		}
-
 		$from_is = "users AS u".$join_is;
 		$distinct = isset($distinct)?$distinct:"";
-
         # To Avoid Confusion we skip invite_* which are invited users which haven't confirmed yet, visit admincp.php?action=pendinginvited
         $where_is .= (isset($where_is))?" AND ":"";   
         $where_is .= "u.username NOT LIKE '%invite_%'";
         
 		$queryc = "SELECT COUNT(".$distinct."u.id) FROM ".$from_is.
 		(($where_is == "")?"":" WHERE $where_is ");
-
 		$querypm = "FROM ".$from_is.(($where_is == "")?" ":" WHERE $where_is ");
-
 		$select_is = "u.id, u.username, u.email, u.status, u.added, u.last_access, u.ip,
 		u.class, u.uploaded, u.downloaded, u.donated, u.modcomment, u.enabled, u.warned, u.invited_by";
-
 		$query = "SELECT ".$distinct." ".$select_is." ".$querypm;
-
-		$res = SQL_Query_exec($queryc);
-		$arr = mysqli_fetch_row($res);
+		$res = DB::run($queryc);
+		$arr = $res->fetch();
 		$count = $arr[0];
-
 		$q = isset($q)?($q."&amp;"):"";
-
 		$perpage = 25;
-
 		list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, "admincp.php?action=usersearch&amp;$q");
-
 		$query .= $limit;
-
-		$res = SQL_Query_exec($query);
-
-		if (mysqli_num_rows($res) == 0) {
+		$res = DB::run($query);
+		if ($res->rowCount() <= 0) {
 		show_error_msg("Warning","No user was found.", 0);
 		} else {
 			if ($count > $perpage) {
@@ -699,35 +655,26 @@ if ($action == "usersearch") {
 			"<th class='table_head'>Downloaded</th>".
 			"<th class='table_head'>History</th>".
 			"<th class='table_head' colspan='2'>Status</th></tr>\n";
-
-			while ($user = mysqli_fetch_array($res)) {
-                
+			while ($user = $res->fetch(PDO::FETCH_LAZY)) {
 				if ($user['added'] == '0000-00-00 00:00:00')
 					$user['added'] = '---';
 				if ($user['last_access'] == '0000-00-00 00:00:00')
 					$user['last_access'] = '---';
-
 			if ($user['ip']) {
 				$ipstr = $user['ip'];
 			} else {
 				$ipstr = "---";
 			}
-
 			$pul = $user['uploaded'];
 			$pdl = $user['downloaded'];
-
-
-			$auxres = SQL_Query_exec("SELECT COUNT(DISTINCT p.id) FROM forum_posts AS p LEFT JOIN forum_topics as t ON p.topicid = t.id
+			$auxres = DB::run("SELECT COUNT(DISTINCT p.id) FROM forum_posts AS p LEFT JOIN forum_topics as t ON p.topicid = t.id
 			LEFT JOIN forum_forums AS f ON t.forumid = f.id WHERE p.userid = " . $user['id'] . " AND f.minclassread <= " .
 			$CURUSER['class']);
-
-			$n = mysqli_fetch_row($auxres);
+			$n = $auxres->fetch(PDO::FETCH_LAZY);
 			$n_posts = $n[0];
-
-			$auxres = SQL_Query_exec("SELECT COUNT(id) FROM comments WHERE user = ".$user['id']);
-			$n = mysqli_fetch_row($auxres);
+			$auxres = DB::run("SELECT COUNT(id) FROM comments WHERE user = ".$user['id']);
+			$n = $auxres->fetch();
 			$n_comments = $n[0];
-
 			echo "<tr><td class='table_col1' align='center'><b><a href='account-details.php?id=$user[id]'>$user[username]</a></b></td>" .
 				"<td class='table_col2' align='center'>" . $ipstr . "</td><td class='table_col1' align='center'>" . $user['email'] . "</td>".
 				"<td class='table_col2' align='center'>" . utc_to_tz($user['added']) . "</td>".
@@ -756,7 +703,6 @@ if ($action == "usersearch") {
 			}
 		}
 	}
-
 	end_frame();
 	stdfoot();
 }

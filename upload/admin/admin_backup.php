@@ -1,13 +1,12 @@
 <?php
 
-//////////////////////////////////////////show admin CP sql backup files
 if ($action=="backups" && $do=="delete"){
    $filename = $_GET["filename"];
 //   stdhead("Delete Backup");
 //   begin_frame("Delete Backup");
    $delete_error = false;
    if (!unlink('backups/'.$filename)) { $delete_error = true; }
-   if (!unlink('backups/'.$filename.'.gz')) { $delete_error = true; }
+//   if (!unlink('backups/'.$filename.'.gz')) { $delete_error = true; }
    header("Refresh: 3 ;url=admincp.php?action=backups");
 //   end_frame();
 stdhead();
@@ -45,7 +44,7 @@ if ($action=="backups"){
   // OPEN TABLE
   echo ("<br/><br/><table style='text-align:center;' width='100%'>");
   // TABLE HEADER
-  echo ("<tr bgcolor='#333333'>"); // Start table row
+  echo ("<tr bgcolor='#3895D3'>"); // Start table row
   echo ("<th scope='colgroup'><b>Date</b></th>"); // Date
   echo ("<th scope='colgroup'><b>Time</b></th>"); // Time
   echo ("<th scope='colgroup'><b>Size</b></th>"); // Size
@@ -73,12 +72,3 @@ if ($action=="backups"){
   end_frame();
   stdfoot();
 }
-
-if ($action=="backups"){
-	stdhead("Backups");
-	navmenu();
-	begin_frame("Backups");
-	echo "<a href='backup-database.php'>Backup Database</a> (or create a CRON task on ".$site_config["SITEURL"]."/backup-database.php)";
-	end_frame();
-	stdfoot();
-} 

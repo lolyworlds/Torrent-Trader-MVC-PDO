@@ -39,9 +39,9 @@ if (!$action){
 
 	navmenu();
 	?>
-	<table class="f-border comment" cellpadding="10" border="0" width="100%">
+	<table class="f-border comment" cellpadding="10" border="0" max-width="100%">
 	<tr>
-    <td width="50%" valign="top">
+    <td width="10%" valign="top">
 	<b><?php echo T_("USERNAME"); ?>:</b> <?php echo $CURUSER["username"]; ?><br />
 	<b><?php echo T_("CLASS"); ?>:</b> <?php echo $CURUSER["level"]; ?><br />
 	<b><?php echo T_("EMAIL"); ?>:</b> <?php echo $CURUSER["email"]; ?><br />
@@ -56,16 +56,15 @@ if (!$action){
 	<b><?php echo T_("PASSKEY"); ?>:</b> <?php echo $CURUSER["passkey"]; ?><br />
 	<?php
 		if ($CURUSER["invited_by"]) {
-			$res = SQL_Query_exec("SELECT username FROM users WHERE id=$CURUSER[invited_by]");
-			$row = mysqli_fetch_assoc($res);
+			$row = DB::run("SELECT username FROM users WHERE id= ?", [$CURUSER[invited_by]])->fetch();
 			echo "<b>".T_("INVITED_BY").":</b> <a href=\"account-details.php?id=$CURUSER[invited_by]\">$row[username]</a><br />";
 		}
 		echo "<b>".T_("INVITES").":</b> " . number_format($CURUSER["invites"]) . "<br />";
 		$invitees = array_reverse(explode(" ", $CURUSER["invitees"]));
 		$rows = array();
 		foreach ($invitees as $invitee) {
-			$res = SQL_Query_exec("SELECT id, username FROM users WHERE id='$invitee' and status='confirmed'");
-			if ($row = mysqli_fetch_assoc($res)) {
+			$res = DB::run("SELECT id, username FROM users WHERE id=? and status=?", [$invitee, 'confirmed']);
+			if ($row = $res->fetch(PDO::FETCH_LAZY)) {
 				$rows[] = "<a href=\"account-details.php?id=$row[id]\">$row[username]</a>";
 			}
 		}
@@ -86,11 +85,11 @@ if ($action=="mytorrents"){
 begin_frame(T_("YOUR_TORRENTS"));
 navmenu();
 //page numbers
-$page = (int) $_GET['page'];
+$page = (int) ($_GET['page'] ?? 0);
 $perpage = 200;
 
-$res = SQL_Query_exec("SELECT COUNT(*) FROM torrents WHERE torrents.owner = " . $CURUSER["id"] ."");
-$arr = mysqli_fetch_row($res);
+
+$arr = DB::run("SELECT COUNT(*) FROM torrents WHERE torrents.owner = " . $CURUSER["id"] ."")->fetch();
 $pages = floor($arr[0] / $perpage);
 if ($pages * $perpage < $arr[0])
   ++$pages;
@@ -126,9 +125,8 @@ $offset = ($page * $perpage) - $perpage;
 $where = "WHERE torrents.owner = " . $CURUSER["id"] ."";
 $orderby = "ORDER BY added DESC";
 
-$query = SQL_Query_exec("SELECT torrents.id, torrents.category, torrents.name, torrents.added, torrents.hits, torrents.banned, torrents.comments, torrents.seeders, torrents.leechers, torrents.times_completed, categories.name AS cat_name, categories.parent_cat AS cat_parent FROM torrents LEFT JOIN categories ON category = categories.id $where $orderby LIMIT $offset,$perpage");
-
-$allcats = mysqli_num_rows($query);
+$query = DB::run("SELECT torrents.id, torrents.category, torrents.name, torrents.added, torrents.hits, torrents.banned, torrents.comments, torrents.seeders, torrents.leechers, torrents.times_completed, categories.name AS cat_name, categories.parent_cat AS cat_parent FROM torrents LEFT JOIN categories ON category = categories.id $where $orderby LIMIT $offset,$perpage");
+$allcats = $query->rowCount();
 	if($allcats == 0) {
 		echo '<div class="f-border comment"><br /><b>'.T_("NO_UPLOADS").'</b></div>';
 	}else{
@@ -148,8 +146,7 @@ $allcats = mysqli_num_rows($query);
     </tr>
     
 <?php
-  
-		while($row = mysqli_fetch_assoc($query))
+		while($row = $query->fetch(PDO::FETCH_LAZY))
 			{
 			$char1 = 35; //cut length 
 			$smallname = CutName(htmlspecialchars($row["name"]), $char1);
@@ -174,12 +171,12 @@ if ($action=="edit_settings"){
 	<form enctype="multipart/form-data" method="post" action="account.php">
 	<input type="hidden" name="action" value="edit_settings" />
 	<input type="hidden" name="do" value="save_settings" />
-	<table class="f-border" cellspacing="0" cellpadding="5" width="100%" align="center">
+	<table class="f-border" cellspacing="0" cellpadding="5" max-width="100%" align="center">
 	<?php
 
-	$ss_r = SQL_Query_exec("SELECT * from stylesheets");
+	$ss_r = DB::run("SELECT * from stylesheets");
 	$ss_sa = array();
-	while ($ss_a = mysqli_fetch_assoc($ss_r))
+	while ($ss_a = $ss_r->fetch(PDO::FETCH_LAZY))
 	{
 	  $ss_id = $ss_a["id"];
 	  $ss_name = $ss_a["name"];
@@ -194,13 +191,13 @@ if ($action=="edit_settings"){
 	}
 
 	$countries = "<option value='0'>----</option>\n";
-	$ct_r = SQL_Query_exec("SELECT id,name from countries ORDER BY name");
-	while ($ct_a = mysqli_fetch_assoc($ct_r))
+	$ct_r = DB::run("SELECT id,name from countries ORDER BY name");
+	while ($ct_a = $ct_r->fetch(PDO::FETCH_LAZY))
 	  $countries .= "<option value='$ct_a[id]'" . ($CURUSER["country"] == $ct_a['id'] ? " selected='selected'" : "") . ">$ct_a[name]</option>\n";
 
 	$teams = "<option value='0'>--- ".T_("NONE_SELECTED")." ----</option>\n";
-	$sashok = SQL_Query_exec("SELECT id,name FROM teams ORDER BY name");
-	while ($sasha = mysqli_fetch_assoc($sashok))
+	$sashok = DB::run("SELECT id,name FROM teams ORDER BY name");
+	while ($sasha = $sashok->fetch(PDO::FETCH_LAZY))
 		$teams .= "<option value='$sasha[id]'" . ($CURUSER["team"] == $sasha['id'] ? " selected='selected'" : "") . ">$sasha[name]</option>\n"; 
 
 
@@ -213,12 +210,12 @@ if ($action=="edit_settings"){
 		 ."<option value='Female'" . ($CURUSER["gender"] == "Female" ? " selected='selected'" : "") . ">" . T_("FEMALE") . "</option>\n";
 
 	// START CAT LIST SQL
-	$r = SQL_Query_exec("SELECT id,name,parent_cat FROM categories ORDER BY parent_cat ASC, sort_index ASC");
-	if (mysqli_num_rows($r) > 0)
+	$r = DB::run("SELECT id,name,parent_cat FROM categories ORDER BY parent_cat ASC, sort_index ASC");
+	if ($r->rowCount() > 0)
 	{
 		$categories .= "<table><tr>\n";
 		$i = 0;
-		while ($a = mysqli_fetch_assoc($r))
+		while ($a = $r->fetch(PDO::FETCH_LAZY))
 		{
 		  $categories .=  ($i && $i % 2 == 0) ? "</tr><tr>" : "";
 		  $categories .= "<td class='bottom' style='padding-right: 5px'><input name='cat$a[id]' type=\"checkbox\" " . (strpos($CURUSER['notifs'], "[cat$a[id]]") !== false ? " checked='checked'" : "") . " value='yes' />&nbsp;" .htmlspecialchars($a["parent_cat"]).": " . htmlspecialchars($a["name"]) . "</td>\n";
@@ -260,7 +257,7 @@ if ($action=="edit_settings"){
 	print("<tr><td align='right' class='alt2'><b>".T_("RESET_PASSKEY").":</b> </td><td align='left' class='alt2'><input type='checkbox' name='resetpasskey' value='1' />&nbsp;<i>".T_("RESET_PASSKEY_MSG").".</i></td></tr>");
 
     if ($site_config["SHOUTBOX"])
-        print("<tr><td align='right' class='table_col3'><b>".T_("HIDE_SHOUT").":</b></td><td align='left' class='table_col3'><input type='checkbox' name='hideshoutbox' value='yes' ".($CURUSER['hideshoutbox'] == 'yes' ? 'checked="checked"' : '')." />&nbsp;<i>".T_("HIDE_SHOUT_TEXT")."</i></td></tr> ");
+        print("<tr><td align='right' class='table_col3'><b>".T_("HIDE_SHOUT").":</b></td><td align='left' class='table_col3'><input type='checkbox' name='hideshoutbox' value='yes' ".($CURUSER['hideshoutbox'] == 'yes' ? 'checked="checked"' : '')." />&nbsp;<i>".T_("HIDE_SHOUT")."</i></td></tr> ");
 	
     print("<tr><td align='right' class='alt2'><b>" . T_("EMAIL") . ":</b> </td><td align='left' class='alt2'><input type=\"text\" name=\"email\" size=\"50\" value=\"" . htmlspecialchars($CURUSER["email"]) .
 	  "\" /><br />\n<i>".T_("REPLY_TO_CONFIRM_EMAIL")."</i><br /></td></tr>");
@@ -304,10 +301,10 @@ if ($action=="edit_settings"){
 		  $pmnotif = $_POST["pmnotif"];
 		  $privacy = $_POST["privacy"];
 		  $notifs = ($pmnotif == 'yes' ? "[pm]" : "");
-		  $r = SQL_Query_exec("SELECT id FROM categories");
-		  $rows = mysqli_num_rows($r);
+		  $r = DB::run("SELECT id FROM categories");
+		  $rows = $r->rowCount();
 		  for ($i = 0; $i < $rows; ++$i) {
-				$a = mysqli_fetch_assoc($r);
+				$a = $r->fetch();
 				if ($_POST["cat$a[id]"] == 'yes')
 				  $notifs .= "[cat$a[id]]";
 		  }
@@ -408,7 +405,7 @@ EOD;
 				$mailsent = 1;
 			} //changedemail
 
-			SQL_Query_exec("UPDATE users SET " . implode(",", $updateset) . " WHERE id = " . $CURUSER["id"]."");
+			DB::run("UPDATE users SET " . implode(",", $updateset) . " WHERE id = " . $CURUSER["id"]."");
 			$edited=1;
 			echo "<br /><br /><center><b><font class='error'>Updated OK</font></b></center><br /><br />";
 			if ($changedemail) {
@@ -437,7 +434,7 @@ if ($action=="changepw"){
 						$message = T_("PASS_TOO_SHORT");
 					if ($chpassword != $passagain)
 						$message = T_("PASSWORDS_NOT_MATCH");
-					$chpassword = passhash($chpassword);
+					$chpassword = password_hash($chpassword, PASSWORD_BCRYPT);
                     $secret = mksecret();
 		}
 
@@ -448,7 +445,7 @@ if ($action=="changepw"){
 		navmenu();
 
 		if (!$message){
-			SQL_Query_exec("UPDATE users SET password = " . sqlesc($chpassword) . ", secret = " . sqlesc($secret) . "  WHERE id = " . $CURUSER["id"]);
+			DB::run("UPDATE users SET password = " . sqlesc($chpassword) . ", secret = " . sqlesc($secret) . "  WHERE id = " . $CURUSER["id"]);
 			echo "<br /><br /><center><b>".T_("PASSWORD_CHANGED_OK")."</b></center>";
 			logoutcookie();
 		}else{
@@ -494,4 +491,3 @@ if ($action=="changepw"){
 }
 
 stdfoot();
-?>

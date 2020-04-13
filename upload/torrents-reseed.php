@@ -11,23 +11,23 @@
   if (isset($_COOKIE["reseed$id"]))
       show_error_msg(T_("ERROR"), T_("RESEED_ALREADY_ASK"), 1);
       
-  $res = SQL_Query_exec("SELECT `owner`, `banned`, `external` FROM `torrents` WHERE `id` = $id");
-  $row = mysqli_fetch_assoc($res);
+  $res = DB::run("SELECT `owner`, `banned`, `external` FROM `torrents` WHERE `id` = $id");
+  $row = $res->fetch(PDO::FETCH_ASSOC);
   
   if (!$row || $row["banned"] == "yes" || $row["external"] == "yes")
        show_error_msg(T_("ERROR"), T_("TORRENT_NOT_FOUND"), 1);  
   
-  $res2 = SQL_Query_exec("SELECT users.id FROM completed LEFT JOIN users ON completed.userid = users.id WHERE users.enabled = 'yes' AND users.status = 'confirmed' AND completed.torrentid = $id");
+  $res2 = DB::run("SELECT users.id FROM completed LEFT JOIN users ON completed.userid = users.id WHERE users.enabled = 'yes' AND users.status = 'confirmed' AND completed.torrentid = $id");
 
   $message = sprintf(T_('RESEED_MESSAGE'), $CURUSER['username'], $site_config['SITEURL'], $id);
   
-  while ( $row2 = mysqli_fetch_assoc($res2) )
+  while ( $row2 = $res2->fetch(PDO::FETCH_ASSOC) )
   {
-      SQL_Query_exec("INSERT INTO `messages` (`subject`, `sender`, `receiver`, `added`, `msg`) VALUES ('".T_("RESEED_MES_SUBJECT")."', '".$CURUSER['id']."', '".$row2['id']."', '".get_date_time()."', ".sqlesc($message).")");
+      DB::run("INSERT INTO `messages` (`subject`, `sender`, `receiver`, `added`, `msg`) VALUES ('".T_("RESEED_MES_SUBJECT")."', '".$CURUSER['id']."', '".$row2['id']."', '".get_date_time()."', ".sqlesc($message).")");
   }
   
   if ($row["owner"] && $row["owner"] != $CURUSER["id"])
-      SQL_Query_exec("INSERT INTO `messages` (`subject`, `sender`, `receiver`, `added`, `msg`) VALUES ('Torrent Reseed Request', '".$CURUSER['id']."', '".$row['owner']."', '".get_date_time()."', ".sqlesc($message).")"); 
+      DB::run("INSERT INTO `messages` (`subject`, `sender`, `receiver`, `added`, `msg`) VALUES ('Torrent Reseed Request', '".$CURUSER['id']."', '".$row['owner']."', '".get_date_time()."', ".sqlesc($message).")");
       
   setcookie("reseed$id", $id, time() + 86400, '/');
   

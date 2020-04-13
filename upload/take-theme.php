@@ -14,7 +14,7 @@
      $updateset[] = "language = '$language'";
 
  if (count($updateset))
-     SQL_Query_exec("UPDATE `users` SET " . implode(', ', $updateset) . " WHERE `id` = " . $CURUSER["id"]);
+     DB::run("UPDATE `users` SET " . implode(', ', $updateset) . " WHERE `id` =?", [$CURUSER["id"]]);
  
  if (empty($_SERVER["HTTP_REFERER"]))
  {
@@ -22,6 +22,4 @@
      return;
  }     
  
- header("Location: " . $_SERVER["HTTP_REFERER"]); 
- 
-?>
+ header("Location: " . $_SERVER["HTTP_REFERER"]);

@@ -171,8 +171,7 @@ if ($_POST["takeupload"] == "yes") {
 			if (!array_key_exists($im['mime'], $allowed_types))
 				show_error_msg(T_("ERROR"), T_("INVALID_FILETYPE_IMAGE"), 1);
 
-			$ret = SQL_Query_exec("SHOW TABLE STATUS LIKE 'torrents'");
-			$row = mysqli_fetch_array($ret);
+			$row = DB::run("SHOW TABLE STATUS LIKE 'torrents'")->fetch();
 			$next_id = $row['Auto_increment'];
 
 			$ifilename = $next_id . $x . $allowed_types[$im['mime']];
@@ -196,17 +195,17 @@ if ($_POST["takeupload"] == "yes") {
 	}else{
 		$anon = "no";
 	}
-
-	$ret = SQL_Query_exec("INSERT INTO torrents (filename, owner, name, descr, image1, image2, category, added, info_hash, size, numfiles, save_as, announce, external, nfo, torrentlang, anon, last_action) VALUES (".sqlesc($fname).", '".$CURUSER['id']."', ".sqlesc($name).", ".sqlesc($descr).", '".$inames[0]."', '".$inames[1]."', '".$catid."', '" . get_date_time() . "', '".$infohash."', '".$torrentsize."', '".$filecount."', ".sqlesc($fname).", '".$announce."', '".$external."', '".$nfo."', '".$langid."','$anon', '".get_date_time()."')");
-
-	$id = mysqli_insert_id($GLOBALS["DBconnector"]);
 	
-	if (mysqli_errno($GLOBALS["DBconnector"]) == 1062)
+	$ret = DB::run("INSERT INTO torrents (filename, owner, name, descr, image1, image2, category, added, info_hash, size, numfiles, save_as, announce, external, nfo, torrentlang, anon, last_action) VALUES (".sqlesc($fname).", '".$CURUSER['id']."', ".sqlesc($name).", ".sqlesc($descr).", '".$inames[0]."', '".$inames[1]."', '".$catid."', '" . get_date_time() . "', '".$infohash."', '".$torrentsize."', '".$filecount."', ".sqlesc($fname).", '".$announce."', '".$external."', '".$nfo."', '".$langid."','$anon', '".get_date_time()."')");
+	/*
+    $ret = DB::run("INSERT INTO torrents (filename, owner, name, descr, image1, image2, category, added, info_hash, size, numfiles, save_as, announce, external, nfo, torrentlang, anon, last_action) 
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+	[$fname, $CURUSER['id'], $name, $descr, $inames[0], $inames[1], $catid, get_date_time(), $infohash, $torrentsize, $filecount, $fname, $announce, $external, $nfo, $langid, $anon, get_date_time()]);
+	*/
+	$id = DB::lastInsertId();
+	
+	if ($ret->errorCode() == 1062)
 		show_error_msg(T_("UPLOAD_FAILED"), T_("UPLOAD_ALREADY_UPLOADED"), 1);
-
-	//Update the members uploaded torrent count
-	/*if ($ret){
-		SQL_Query_exec("UPDATE users SET torrents = torrents + 1 WHERE id = $userid");*/
         
 	if($id == 0){
 		unlink("$torrent_dir/$fname");
@@ -227,10 +226,10 @@ if ($_POST["takeupload"] == "yes") {
 				else
 					$dir .= $file["path"][$i]."/";
 			}
-			SQL_Query_exec("INSERT INTO `files` (`torrent`, `path`, `filesize`) VALUES($id, ".sqlesc($fname).", $size)");
+            DB::run("INSERT INTO `files` (`torrent`, `path`, `filesize`) VALUES (?, ?, ?)", [$id, $fname, $size]);
 		}
 	} else {
-		SQL_Query_exec("INSERT INTO `files` (`torrent`, `path`, `filesize`) VALUES($id, ".sqlesc($TorrentInfo[3]).", $torrentsize)");
+        DB::run("INSERT INTO `files` (`torrent`, `path`, `filesize`) VALUES (?, ?, ?)", [$id, $TorrentInfo[3], $torrentsize]);
 	}
 
 	if (!is_array($annlist)) {
@@ -239,7 +238,7 @@ if ($_POST["takeupload"] == "yes") {
 	foreach ($annlist as $ann) {
 		foreach ($ann as $val) {
 			if (strtolower(substr($val, 0, 4)) != "udp:") {
-				SQL_Query_exec("INSERT INTO `announce` (`torrent`, `url`) VALUES($id, ".sqlesc($val).")");
+                DB::run("INSERT INTO `announce` (`torrent`, `url`) VALUES (?, ?)", [$id, $val]);
 			}
 		}
 	}
@@ -256,7 +255,7 @@ if ($_POST["takeupload"] == "yes") {
 		$leechers 		= (int) strip_tags($stats['peers']);
 		$downloaded 	= (int) strip_tags($stats['downloaded']);
 
-		SQL_Query_exec("UPDATE torrents SET leechers='".$leechers."', seeders='".$seeders."',times_completed='".$downloaded."',last_action= '".get_date_time()."',visible='yes' WHERE id='".$id."'"); 
+        DB::run("UPDATE torrents SET leechers='".$leechers."', seeders='".$seeders."',times_completed='".$downloaded."',last_action= '".get_date_time()."',visible='yes' WHERE id='".$id."'");
 	}
 	//END SCRAPE
 
@@ -297,6 +296,7 @@ while (list($key,$value) = thisEach($announce_urls)) {
 if ($site_config["ALLOWEXTERNAL"]){
 	echo "<br /><b>".T_("THIS_SITE_ACCEPTS_EXTERNAL")."</b>";
 }
+
 print ("</td></tr>");
 print ("<tr><td align='right'>" . T_("TORRENT_FILE") . ": </td><td align='left'> <input type='file' name='torrent' size='50' value='" . $_FILES['torrent']['name'] . "' />\n</td></tr>");
 print ("<tr><td align='right'>" .T_("NFO"). ": </td><td align='left'> <input type='file' name='nfo' size='50' value='" . $_FILES['nfo']['name'] . "' /><br />\n</td></tr>");

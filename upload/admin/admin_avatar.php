@@ -6,8 +6,8 @@ if ($action=="avatars"){
 
 	begin_frame("Avatar Log");
 
-	$query = SQL_Query_exec("SELECT count(*) FROM users WHERE enabled='yes' AND avatar !=''");
-	$count = mysqli_fetch_row($query);
+	$query = DB::run("SELECT count(*) FROM users WHERE enabled=? AND avatar !=?", ['yes', '']);
+	$count = $query->fetch(PDO::FETCH_LAZY);
 	$count = $count[0];
 
 	list($pagertop, $pagerbottom, $limit) = pager(50, $count, 'admincp.php?action=avatars&amp;');
@@ -20,9 +20,9 @@ if ($action=="avatars"){
 	</tr><?php
 
 	$query = "SELECT username, id, avatar FROM users WHERE enabled='yes' AND avatar !='' $limit";
-	$res = SQL_Query_exec($query);
+	$res = DB::run($query);
 
-	while($arr = mysqli_fetch_assoc($res)){
+	while($arr = $res->fetch(PDO::FETCH_ASSOC)){
 			echo("<tr><td class='table_col1'><b><a href=\"account-details.php?id=" . $arr['id'] . "\">" . $arr['username'] . "</a></b></td><td class='table_col2'>");
 
 			if (!$arr['avatar'])

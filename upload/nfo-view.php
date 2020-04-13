@@ -59,8 +59,8 @@ if (!$id)
 
 stdhead(T_('NFO_VIEW'));
 
-$query = SQL_Query_exec("SELECT name, nfo FROM torrents WHERE id=$id");
-$res = mysqli_fetch_assoc($query);
+$query = DB::run("SELECT name, nfo FROM torrents WHERE id=?", [$id]);
+$res = $query->fetch(PDO::FETCH_ASSOC);
 
 if ($res["nfo"] != "yes")
   show_error_msg(T_("ERROR"), T_("NO_NFO"), 1);

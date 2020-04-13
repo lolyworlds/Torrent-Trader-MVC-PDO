@@ -10,7 +10,7 @@
           $ids = array_map('intval', $_POST['ids']);
           $ids = implode(',', $ids);
           
-          SQL_Query_exec("DELETE FROM `sqlerr` WHERE `id` IN ($ids)");
+          DB::run("DELETE FROM `sqlerr` WHERE `id` IN ($ids)");
           autolink("admincp.php?action=sqlerr", "Entries deleted.");
       }
       
@@ -19,7 +19,7 @@
       
       list($pagertop, $pagerbottom, $limit) = pager(25, $count, 'admincp.php?action=sqlerr&amp;');
       
-      $res = SQL_Query_exec("SELECT * FROM `sqlerr` ORDER BY `time` DESC $limit");
+      $res = DB::run("SELECT * FROM `sqlerr` ORDER BY `time` DESC $limit");
       
       stdhead('SQL Error');
       navmenu();
@@ -35,7 +35,7 @@
           <th class="table_head">Message</th>
           <th class="table_head">Added</th>
       </tr>
-      <?php while ($row = mysqli_fetch_assoc($res)): ?>
+      <?php while ($row = $res->fetch(PDO::FETCH_ASSOC)): ?>
       <tr>
           <td class="table_col1"><input type="checkbox" name="ids[]" value="<?php echo $row['id']; ?>" /></td>
           <td class="table_col2"><?php echo $row['txt']; ?></td>

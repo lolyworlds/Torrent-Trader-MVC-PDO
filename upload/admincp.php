@@ -15,15 +15,15 @@ function navmenu(){
 global $site_config;
 
 //Get Last Cleanup
-$res = SQL_Query_exec("SELECT last_time FROM tasks WHERE task = 'cleanup'");
-$row = mysqli_fetch_row($res);
+$row = DB::run("SELECT last_time FROM tasks WHERE task =?", ['cleanup'])->fetchColumn();
 if (!$row){
 		$lastclean="never done...";
 }else{
-	$row[0]=gmtime()-$row[0]; $days=intval($row[0] / 86400);$row[0]-=$days*86400;
+/*	$row[0]=gmtime()-$row[0]; $days=intval($row[0] / 86400);$row[0]-=$days*86400;
 	$hours=intval($row[0] / 3600); $row[0]-=$hours*3600; $mins=intval($row[0] / 60);
 	$secs=$row[0]-($mins*60);
-	$lastclean = "$days days, $hours hrs, $mins minutes, $secs seconds ago.";
+	$lastclean = "$days days, $hours hrs, $mins minutes, $secs seconds ago.";*/
+	$lastclean = get_elapsed_time($row);
 }
 
 	begin_frame(T_("MENU"));
@@ -37,9 +37,8 @@ if (!$row){
 //		}
 //	}
 
-	$res = SQL_Query_exec("SELECT VERSION() AS mysqli_version");
-    $row = mysqli_fetch_assoc($res);
-    $mysqlver = $row['mysqli_version']; 
+	$row = DB::run("SELECT VERSION() AS version")->fetch();
+    $mysqlver = $row['version'];
 	function apache_version()
     {
 $ver = explode(" ",$_SERVER["SERVER_SOFTWARE"],3);
@@ -114,7 +113,7 @@ return ($ver[0] . " " . $ver[1]);
     <td align="center"><a href="admincp.php?action=privacylevel"><img src="images/admin/privacy_level.png" border="0" width="32" height="32" alt="" /><br />Privacy Level<br /></a></td>     
     <td align="center"><a href="admincp.php?action=pendinginvite"><img src="images/admin/pending_invited_user.png" border="0" width="32" height="32" alt="" /><br />Pending Invited Users<br /></a></td>    
     <td align="center"><a href="admincp.php?action=invited"><img src="images/admin/invited_user.png" border="0" width="32" height="32" alt="" /><br />Invited Users<br /></a></td>    
-    <td align="center"><a href="admincp.php?action=sqlerr"><img src="images/admin/sql_error.png" border="0" width="32" height="32" alt="" /><br />SQL Error<br /></a></td>  
+    <td align="center"><a href="exception-view.php"><img src="images/admin/sql_error.png" border="0" width="32" height="32" alt="" /><br />SQL Error<br /></a></td>  
    </a></td>  
 </tr>
 </table>
@@ -134,7 +133,8 @@ if (!$action){
 
 if ($action=="forceclean"){
 	$now = gmtime();
-	SQL_Query_exec("UPDATE tasks SET last_time=$now WHERE task='cleanup'");
+	DB::run("UPDATE tasks SET last_time=$now WHERE task='cleanup'");
+    
 	require_once("backend/cleanup.php");
 	do_cleanup();
     
@@ -149,13 +149,13 @@ if ($action == "confirmreg")
     if ($do == "confirm") 
     {
         if ($_POST["confirmall"])
-            SQL_Query_exec("UPDATE `users` SET `status` = 'confirmed' WHERE `status` = 'pending' AND `invited_by` = '0'");
+            DB::run("UPDATE `users` SET `status` = 'confirmed' WHERE `status` = 'pending' AND `invited_by` = '0'");
         else
         {
             if (!@count($_POST["users"])) show_error_msg(T_("ERROR"), T_("NOTHING_SELECTED"), 1); 
             $ids = array_map("intval", $_POST["users"]);
             $ids = implode(", ", $ids);
-            SQL_Query_exec("UPDATE `users` SET `status` = 'confirmed' WHERE `status` = 'pending' AND `invited_by` = '0' AND `id` IN ($ids)");  
+            DB::run("UPDATE `users` SET `status` = 'confirmed' WHERE `status` = 'pending' AND `invited_by` = '0' AND `id` IN ($ids)");
         }
         
         autolink("admincp.php?action=confirmreg", "Entries Confirmed");
@@ -165,7 +165,7 @@ if ($action == "confirmreg")
     
     list($pagertop, $pagerbottom, $limit) = pager(25, $count, 'admincp.php?action=confirmreg&amp;'); 
     
-    $res = SQL_Query_exec("SELECT `id`, `username`, `email`, `added`, `ip` FROM `users` WHERE `status` = 'pending' AND `invited_by` = '0' ORDER BY `added` DESC $limit");
+    $res = DB::run("SELECT `id`, `username`, `email`, `added`, `ip` FROM `users` WHERE `status` = 'pending' AND `invited_by` = '0' ORDER BY `added` DESC $limit");
 
     stdhead("Manual Registration Confirm");
     navmenu();
@@ -188,7 +188,7 @@ if ($action == "confirmreg")
         <th class="table_head">IP</th>
         <th class="table_head"><input type="checkbox" name="checkall" onclick="checkAll(this.form.id);" /></th>
     </tr>
-    <?php while ($row = mysqli_fetch_assoc($res)): ?>
+    <?php while ($row = $res->fetch(PDO::FETCH_LAZY)): ?>
     <tr>
         <td class="table_col1" align="center"><?php echo $row["username"]; ?></td>
         <td class="table_col2" align="center"><?php echo $row["email"]; ?></td>

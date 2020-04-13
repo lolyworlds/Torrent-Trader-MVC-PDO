@@ -6,11 +6,9 @@ if ($action=="rules" && $do=="view"){
 
 	begin_frame(T_("SITE_RULES_EDITOR"));
 
-	$res = SQL_Query_exec("SELECT * FROM rules ORDER BY id");
-
-	print("<center><a href='admincp.php?action=rules&amp;do=addsect'>Add New Rules Section</a></center><br />\n");	
-
-	while ($arr=mysqli_fetch_assoc($res)){
+	$res = DB::run("SELECT * FROM rules ORDER BY id");
+	print("<center><a href='admincp.php?action=rules&amp;do=addsect'>Add New Rules Section</a></center><br />\n");
+	while ($arr=$res->fetch(PDO::FETCH_LAZY)){
 		
 		print("<table width='100%' cellspacing='0' class='table_table'><tr>");
         print("<th class='table_head'>".$arr["title"]."</th>");
@@ -30,11 +28,11 @@ if ($action=="rules" && $do=="edit"){
 
 	if ($_GET["save"]=="1"){
 		$id = (int)$_POST["id"];
-		$title = sqlesc($_POST["title"]);
-		$text = sqlesc($_POST["text"]);
-		$public = sqlesc($_POST["public"]);
-		$class = sqlesc($_POST["class"]);
-		SQL_Query_exec("update rules set title=$title, text=$text, public=$public, class=$class where id=$id");
+		$title = $_POST["title"];
+		$text = $_POST["text"];
+		$public = $_POST["public"];
+		$class = $_POST["class"];
+		DB::run("update rules set title=?, text=?, public=?, class=? where id=?", [$title, $text, $public, $class, $id]);
 		write_log("Rules have been changed by ($CURUSER[username])");
 		show_error_msg(T_("COMPLETE"), "Rules edited ok<br /><br /><a href='admincp.php?action=rules&amp;do=view'>Back To Rules</a>",1);
 		die;
@@ -46,7 +44,7 @@ if ($action=="rules" && $do=="edit"){
 	
 	begin_frame("Edit Rule Section");
 	$id = (int)$_POST["id"];
-	$res = @mysqli_fetch_array(@SQL_Query_exec("select * from rules where id='$id'"));
+	$res = DB::run("select * from rules where id='$id'")->fetch();
 
 	print("<form method=\"post\" action=\"admincp.php?action=rules&amp;do=edit&amp;save=1\">");
 	print("<table border=\"0\" cellspacing=\"0\" cellpadding=\"10\" align=\"center\">\n");
@@ -63,11 +61,11 @@ if ($action=="rules" && $do=="edit"){
 if ($action=="rules" && $do=="addsect"){
 
 	if ($_GET["save"]=="1"){
-		$title = sqlesc($_POST["title"]);
-		$text = sqlesc($_POST["text"]);
-		$public = sqlesc($_POST["public"]);
-		$class = sqlesc($_POST["class"]);
-		SQL_Query_exec("insert into rules (title, text, public, class) values($title, $text, $public, $class)");
+		$title = $_POST["title"];
+		$text = $_POST["text"];
+		$public = $_POST["public"];
+		$class = $_POST["class"];
+		DB::run("insert into rules (title, text, public, class) values(?,?,?,?)", [$title, $text, $public, $class]);
 		show_error_msg(T_("COMPLETE"), "New Section Added<br /><br /><a href='admincp.php?action=rules&amp;do=view'>Back To Rules</a>",1);
 		die();
 	}

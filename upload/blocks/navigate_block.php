@@ -1,4 +1,6 @@
 <?php
+
+if ($CURUSER){
 begin_block(T_("NAVIGATION"));
 echo "<div id='navigate' class='bMenu'><ul>";
 echo "<li><a href='index.php'>".T_("HOME")."</a></li>";
@@ -27,4 +29,5 @@ echo "<li><a href='staff.php'>".T_("STAFF")."</a></li>";
 }
 echo "</ul></div>";
 end_block();
+}
 ?>

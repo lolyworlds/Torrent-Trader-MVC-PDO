@@ -1,85 +1,176 @@
 <?php
-//# For Security Purposes if you wish to use it.
-//if ( $_SERVER['PHP_AUTH_USER'] != 'username' && $_SERVER['PHP_AUTH_PASS'] != 'password' )
-//{
-//	  header('WWW-Authenticate: Basic realm="your_site"');
-//	  header('HTTP/1.1 401 Unauthorized');
-//	  die;
-//}
-  require_once("backend/functions.php");
+require_once("backend/functions.php");
 
-  // CONNECT TO THE DATABASE
-  dbconn();
+dbconn();
 
-  // CHECK THE ADMIN PRIVILEGES
-  if (!$CURUSER || $CURUSER["control_panel"]!="yes"){
-        show_error_msg(T_("ERROR"), T_("SORRY_NO_RIGHTS_TO_ACCESS"), 1);
-  }
+// CHECK THE ADMIN PRIVILEGES
+if (!$CURUSER || $CURUSER["control_panel"]!="yes"){
+    show_error_msg(T_("ERROR"), T_("SORRY_NO_RIGHTS_TO_ACCESS"), 1);
+}
+  
+ 
+$DBH = DB::instance ();
+ 
+//put table names you want backed up in this array.
+//leave empty to do all
+$tables = array();
 
-  // CREATE THE RANDOM HASH
-  $RandomString=chr(rand(97,122)).chr(rand(97,122)).chr(rand(97,122)).chr(rand(97,122)).chr(rand(97,122)).chr(rand(97,122)).chr(rand(97,122)).chr(rand(97,122)).chr(rand(97,122)).chr(rand(97,122));
-  $md5string = md5($RandomString);
+backup_tables($DBH, $tables);
 
-  // COMPOSE THE FILENAME
-  $curdate = str_replace (" ", "_",  utc_to_tz());
-  $filename = 'backups/db-backup_'.$curdate.'_'.$md5string.'.sql';
+function backup_tables($DBH, $tables) {
 
-  // COMPOSE THE HEADER OF THE SQL FILE
-  $return = "//\n";
-  $return .= "//  TorrentTrader v3.0\n";
-  $return .= "//  Database BackUp\n";
-  $return .= "//  ".date("y-m-d H:i:s")."\n";
-  $return .= "//\n\n";
+$DBH->setAttribute(PDO::ATTR_ORACLE_NULLS, PDO::NULL_NATURAL );
 
-  // LIST ALL TABLES ON THE DATABASE
-  $tables = array();
-  $res = SQL_Query('SHOW TABLES');
-  $result = $res->execute();
-  while($row = mysqli_fetch_row($result))
-  {
-        $tables[] = $row[0];
-  }
+// CREATE THE RANDOM HASH
+$RandomString=chr(rand(97,122)).chr(rand(97,122)).chr(rand(97,122)).chr(rand(97,122)).chr(rand(97,122)).chr(rand(97,122)).chr(rand(97,122)).chr(rand(97,122)).chr(rand(97,122)).chr(rand(97,122));
+$md5string = md5($RandomString);
 
-  // RETRIEVE THE TABLES
-  foreach($tables as $table)
-  {
-        $result = SQL_Query_exec('SELECT * FROM '.$table);
-        $num_fields = mysqli_num_fields($result);
-        $return.= 'DROP TABLE IF EXISTS '.$table.';';
-        $row2 = mysqli_fetch_row(SQL_Query_exec('SHOW CREATE TABLE '.$table));
-        $return.= "\n\n".$row2[1].";\n\n";
-        for ($i = 0; $i < $num_fields; $i++)
-        {
-          while($row = mysqli_fetch_row($result))
-          {
-                $return.= 'INSERT INTO '.$table.' VALUES(';
+// COMPOSE THE FILENAME
+$curdate = str_replace (" ", "_",  utc_to_tz());
+$filename = 'backups/db-backup_'.$curdate.'_'.$md5string.'';
 
-                for($j=0; $j<$num_fields; $j++)
-                {
-                  $row[$j] = addslashes($row[$j]);
-                  $row[$j] = preg_replace("/\n/","/\\n/",$row[$j]);
-                  if (isset($row[$j])) { $return.= '"'.$row[$j].'"' ; } else { $return.= '""'; }
-                  if ($j<($num_fields-1)) { $return.= ','; }
-                }
-                $return.= ");\n";
-          }
-        }
-        $return.="\n\n\n";
-  }
+//Script Variables
+$compression = false;
 
-  // OLD FOPEN/FWRITE/FCLOSE METHOD
-  //$handle = fopen($filename,'w+');
-  //fwrite($handle,$return);
-  //fclose($handle);
 
-  // NEW METHOD TO STORE THE RESULT ON FILES
-  $create_error = true;
-  if ( file_put_contents($filename, $return) >=  1) { $create_error = false; }
-  if ( file_put_contents($filename.'.gz', gzencode( $return,9)) >= 1 ) { $create_error = false; }
+//create/open files
+if ($compression) {
+$zp = gzopen($filename.'.sql.gz', "a9");
+} else {
+$handle = fopen($filename.'.sql','a+');
+}
 
-  if ($create_error) {
-        autolink("admincp.php?action=backups", "Has encountered a error during the backup.<br><br>");
-  } else {
-        autolink("admincp.php?action=backups", "BackUp Complete.<br><br>");
-  }
+//array of all database field types which just take numbers 
+$numtypes=array('tinyint','smallint','mediumint','int','bigint','float','double','decimal','real');
+
+//get all of the tables
+if(empty($tables)) {
+$pstm1 = $DBH->query('SHOW TABLES');
+while ($row = $pstm1->fetch(PDO::FETCH_NUM)) {
+$tables[] = $row[0];
+}
+} else {
+$tables = is_array($tables) ? $tables : explode(',',$tables);
+}
+
+//cycle through the table(s)
+
+foreach($tables as $table) {
+$result = $DBH->query("SELECT * FROM $table");
+$num_fields = $result->columnCount();
+$num_rows = $result->rowCount();
+
+$return="";
+//uncomment below if you want 'DROP TABLE IF EXISTS' displayed
+//$return.= 'DROP TABLE IF EXISTS `'.$table.'`;'; 
+
+
+//table structure
+$pstm2 = $DBH->query("SHOW CREATE TABLE $table");
+$row2 = $pstm2->fetch(PDO::FETCH_NUM);
+$ifnotexists = str_replace('CREATE TABLE', 'CREATE TABLE IF NOT EXISTS', $row2[1]);
+$return.= "\n\n".$ifnotexists.";\n\n";
+
+
+if ($compression) {
+gzwrite($zp, $return);
+} else {
+fwrite($handle,$return);
+}
+$return = "";
+
+//insert values
+if ($num_rows){
+$return= 'INSERT INTO `'."$table"."` (";
+$pstm3 = $DBH->query("SHOW COLUMNS FROM $table");
+$count = 0;
+$type = array();
+
+while ($rows = $pstm3->fetch(PDO::FETCH_NUM)) {
+
+if (stripos($rows[1], '(')) {$type[$table][] = stristr($rows[1], '(', true);
+} else $type[$table][] = $rows[1];
+
+$return.= "`".$rows[0]."`";
+$count++;
+if ($count < ($pstm3->rowCount())) {
+$return.= ", ";
+}
+}
+
+$return.= ")".' VALUES';
+
+if ($compression) {
+gzwrite($zp, $return);
+} else {
+fwrite($handle,$return);
+}
+$return = "";
+}
+$count =0;
+while($row = $result->fetch(PDO::FETCH_NUM)) {
+$return= "\n\t(";
+
+for($j=0; $j<$num_fields; $j++) {
+
+//$row[$j] = preg_replace("\n","\\n",$row[$j]);
+
+
+if (isset($row[$j])) {
+
+//if number, take away "". else leave as string
+if ((in_array($type[$table][$j], $numtypes)) && (!empty($row[$j]))) $return.= $row[$j] ; else $return.= $DBH->quote($row[$j]); 
+
+} else {
+$return.= 'NULL';
+}
+if ($j<($num_fields-1)) {
+$return.= ',';
+}
+}
+$count++;
+if ($count < ($result->rowCount())) {
+$return.= "),";
+} else {
+$return.= ");";
+
+}
+if ($compression) {
+gzwrite($zp, $return);
+} else {
+fwrite($handle,$return);
+}
+$return = "";
+}
+$return="\n\n-- ------------------------------------------------ \n\n";
+if ($compression) {
+gzwrite($zp, $return);
+} else {
+fwrite($handle,$return);
+}
+$return = "";
+}
+
+// lets redirect still
+if ($compression) {
+    autolink("admincp.php?action=backups", "Has encountered a error during the backup.<br><br>");
+} else {
+    autolink("admincp.php?action=backups", "BackUp Complete.<br><br>");
+}
+
+
+$error1= $pstm2->errorInfo();
+$error2= $pstm3->errorInfo();
+$error3= $result->errorInfo();
+echo $error1[2];
+echo $error2[2];
+echo $error3[2];
+
+if ($compression) {
+gzclose($zp);
+} else {
+fclose($handle);
+}
+
+}
 ?>

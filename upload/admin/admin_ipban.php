@@ -8,9 +8,9 @@ if ($action == "ipbans") {
         if (!@count($_POST["delids"])) show_error_msg(T_("ERROR"), T_("NONE_SELECTED"), 1);
         $delids = array_map('intval', $_POST["delids"]);
         $delids = implode(', ', $delids);
-        $res = SQL_Query_exec("SELECT * FROM bans WHERE id IN ($delids)");
-        while ($row = mysqli_fetch_assoc($res)) {
-            SQL_Query_exec("DELETE FROM bans WHERE id=$row[id]");
+        $res = DB::run("SELECT * FROM bans WHERE id IN ($delids)");
+        while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
+            DB::run("DELETE FROM bans WHERE id=$row[id]");
             
             # Needs to be tested...
             if (is_ipv6($row["first"]) && is_ipv6($row["last"])) {
@@ -35,10 +35,11 @@ if ($action == "ipbans") {
 
 	if (!validip($first) || !validip($last))
             show_error_msg(T_("ERROR"), "Bad IP address.");
-        $comment = sqlesc($comment);
-        $added = sqlesc(get_date_time());
-        SQL_Query_exec("INSERT INTO bans (added, addedby, first, last, comment) VALUES($added, $CURUSER[id], '$first', '$last', $comment)");
-        switch (mysqli_errno($GLOBALS["DBconnector"])) {
+        $comment = $comment;
+        $added = get_date_time();
+        $bins = DB::run("INSERT INTO bans (added, addedby, first, last, comment) VALUES(?,?,?,?,?)", [$added, $CURUSER['id'], $first, $last, $comment]);
+        $err = $bins->errorCode();
+        switch ($err) {
             case 1062:
                 show_error_msg(T_("ERROR"), "Duplicate ban.", 0);
             break;
@@ -46,7 +47,7 @@ if ($action == "ipbans") {
                 show_error_msg(T_("SUCCESS"), "Ban added.", 0);
             break;
             default:
-                show_error_msg(T_("ERROR"), T_("THEME_DATEBASE_ERROR")." ".htmlspecialchars(mysqli_error($GLOBALS["DBconnector"])), 0);
+                show_error_msg(T_("ERROR"), T_("THEME_DATEBASE_ERROR")." ".htmlspecialchars($bins->errorInfo()), 0);
         }
     }
 
@@ -71,8 +72,8 @@ if ($action == "ipbans") {
             <th class='table_head'><input type='checkbox' name='checkall' onclick='checkAll(this.form.id);' /></th>
         </tr>";
 
-        $res = SQL_Query_exec("SELECT bans.*, users.username FROM bans LEFT JOIN users ON bans.addedby=users.id ORDER BY added $limit");
-        while ($arr = mysqli_fetch_assoc($res)) {
+        $res = DB::run("SELECT bans.*, users.username FROM bans LEFT JOIN users ON bans.addedby=users.id ORDER BY added $limit");
+        while ($arr = $res->fetch(PDO::FETCH_ASSOC)) {
             echo "<tr>
                 <td align='center' class='table_col1'>".date('d/m/Y H:i:s', utc_to_tz_time($arr["added"]))."</td>
                 <td align='center' class='table_col2'>$arr[first]</td>

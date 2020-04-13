@@ -24,11 +24,11 @@ if ($_GET["take"]) {
 
 	//check email isnt banned
 	$maildomain = (substr($email, strpos($email, "@") + 1));
-	$a = (@mysqli_fetch_row(@SQL_Query_exec("select count(*) from email_bans where mail_domain='$email'")));
+	$a = DB::run("select count(*) from email_bans where mail_domain=?", [$email])->fetch();
 	if ($a[0] != 0)
 		$message = sprintf(T_("EMAIL_ADDRESS_BANNED"), $email);
 
-	$a = (@mysqli_fetch_row(@SQL_Query_exec("select count(*) from email_bans where mail_domain='$maildomain'")));
+	$a = DB::run("select count(*) from email_bans where mail_domain=?", [$maildomain])->fetch();
 	if ($a[0] != 0)
 		$message = sprintf(T_("EMAIL_ADDRESS_BANNED"), $email);
 
@@ -41,22 +41,22 @@ if ($_GET["take"]) {
 
 	$secret = mksecret();
 	$username = "invite_".mksecret(20);
-	$ret = SQL_Query_exec("INSERT INTO users (username, secret, email, status, invited_by, added, stylesheet, language) VALUES (".
+	$ret = DB::run("INSERT INTO users (username, secret, email, status, invited_by, added, stylesheet, language) VALUES (".
 	implode(",", array_map("sqlesc", array($username, $secret, $email, 'pending', $CURUSER["id"]))) . ",'" . get_date_time() . "', $site_config[default_theme], $site_config[default_language])");
 
 	if (!$ret) {
 		// If username is somehow taken, keep trying
-		while (mysqli_errno($GLOBALS["DBconnector"]) == 1062) {
+		while ($ret->errorCode() == 1062) {
 			$username = "invite_".mksecret(20);
-			$ret = SQL_Query_exec("INSERT INTO users (username, secret, email, status, invited_by, added, stylesheet, language) VALUES (".
+			$ret = DB::run("INSERT INTO users (username, secret, email, status, invited_by, added, stylesheet, language) VALUES (".
 			implode(",", array_map("sqlesc", array($username, $secret, $email, 'pending', $CURUSER["id"]))) . ",'" . get_date_time() . "', $site_config[default_theme], $site_config[default_language])");
 		}
 		show_error_msg(T_("ERROR"), T_("DATABASE_ERROR"), 1);
 	}
 
-	$id = mysqli_insert_id($GLOBALS["DBconnector"]);
+	$id = DB::lastInsertId();
 	$invitees = "$id $CURUSER[invitees]";
-	SQL_Query_exec("UPDATE users SET invites = invites - 1, invitees='$invitees' WHERE id = $CURUSER[id]");
+    DB::run("UPDATE users SET invites = invites - 1, invitees='$invitees' WHERE id = $CURUSER[id]");
 
 	$psecret = md5($secret);
 
@@ -107,5 +107,3 @@ begin_frame(T_("INVITE"));
 <?php
 end_frame();
 stdfoot();
-
-?>

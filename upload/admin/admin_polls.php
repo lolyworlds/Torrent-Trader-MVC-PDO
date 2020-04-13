@@ -10,9 +10,9 @@ if ($action=="polls" && $do=="view"){
 
 	echo "<br /><br /><b>Polls</b> (Top poll is current)<br />";
 
-	$query = SQL_Query_exec("SELECT id,question,added FROM polls ORDER BY added DESC");
+	$query = DB::run("SELECT id,question,added FROM polls ORDER BY added DESC");
 
-	while($row = mysqli_fetch_assoc($query)){
+	while($row = $query->fetch(PDO::FETCH_ASSOC)){
 		echo "<a href='admincp.php?action=polls&amp;do=add&amp;subact=edit&amp;pollid=$row[id]'>".stripslashes($row["question"])."</a> - ".utc_to_tz($row['added'])." - <a href='admincp.php?action=polls&amp;do=delete&amp;id=$row[id]'>Delete</a><br />\n\n";
 	}
 
@@ -34,17 +34,16 @@ if ($action=="polls" && $do=="results"){
 	echo '<th class="table_head">Voted</th>';
 	echo '</tr>';
 
-	$poll = SQL_Query_exec("SELECT * FROM pollanswers ORDER BY pollid DESC");
-
-	while ($res = mysqli_fetch_assoc($poll)) {
-		$user = mysqli_fetch_assoc(SQL_Query_exec("SELECT username,id FROM users WHERE id = '".$res['userid']."'"));
+	$poll = DB::run("SELECT * FROM pollanswers ORDER BY pollid DESC");
+	while ($res = $poll->fetch(PDO::FETCH_LAZY)) {
+		$user = DB::run("SELECT username,id FROM users WHERE id =?", [$res['userid']])->fetch();
 		$option = "option".$res["selection"];
 		if ($res["selection"] < 255) {
-			$vote = mysqli_fetch_assoc(SQL_Query_exec("SELECT ".$option." FROM polls WHERE id = '".$res['pollid']."'"));
+			$vote = DB::run("SELECT ".$option." FROM polls WHERE id =?", [$res['pollid']])->fetch();
 		} else {
 			$vote["option255"] = "Blank vote";
 		}
-		$sond = mysqli_fetch_assoc(SQL_Query_exec("SELECT question FROM polls WHERE id = '".$res['pollid']."'"));
+		$sond = DB::run("SELECT question FROM polls WHERE id =?", [$res['pollid']])->fetch();
 		
 		echo '<tr>';
 		echo '<td class="table_col1" align="left"><b>';
@@ -73,10 +72,10 @@ if ($action=="polls" && $do=="delete"){
 	if (!is_valid_id($id))
 		show_error_msg(T_("ERROR"),sprintf(T_("CP_NEWS_INVAILD_ITEM_ID"), $newsid),1);
 
-	SQL_Query_exec("DELETE FROM polls WHERE id=$id");
-	SQL_Query_exec("DELETE FROM pollanswers WHERE  pollid=$id");
+	DB::run("DELETE FROM polls WHERE id=?", [$id]);
+	DB::run("DELETE FROM pollanswers WHERE  pollid=?", [$id]);
 	
-	show_error_msg(T_("COMPLETED"),"Poll and answers deleted",1);
+	autolink("admincp.php?action=polls&do=view", T_("Poll and answers deleted"));
 }
 
 if ($action=="polls" && $do=="add"){
@@ -86,8 +85,8 @@ if ($action=="polls" && $do=="add"){
 	$pollid = (int)$_GET["pollid"];
 
 	if ($_GET["subact"] == "edit"){
-		$res = SQL_Query_exec("SELECT * FROM polls WHERE id = $pollid");
-		$poll = mysqli_fetch_array($res);
+		$res = DB::run("SELECT * FROM polls WHERE id =?", [$pollid]);
+		$poll = $res->fetch(PDO::FETCH_LAZY);
 	}
                                 
 	begin_frame("Polls");
@@ -166,7 +165,7 @@ if ($action=="polls" && $do=="save"){
 		if (!is_valid_id($pollid))
 			show_error_msg(T_("ERROR"),T_("INVALID_ID"),1);
 
-		SQL_Query_exec("UPDATE polls SET " .
+		DB::run("UPDATE polls SET " .
 		"question = " . sqlesc($question) . ", " .
 		"option0 = " . sqlesc($option0) . ", " .
 		"option1 = " . sqlesc($option1) . ", " .
@@ -191,7 +190,7 @@ if ($action=="polls" && $do=="save"){
 		"sort = " . sqlesc($sort) . " " .
     "WHERE id = $pollid");
 	}else{
-  	SQL_Query_exec("INSERT INTO polls VALUES(0" .
+  	DB::run("INSERT INTO polls VALUES(0" .
 		", '" . get_date_time() . "'" .
     ", " . sqlesc($question) .
     ", " . sqlesc($option0) .
@@ -218,5 +217,5 @@ if ($action=="polls" && $do=="save"){
   	")");
 	}
 
-	show_error_msg("OK","Poll Updates ".T_("COMPLETE"), 1);
+	autolink("admincp.php?action=polls&do=view", T_("COMPLETE"));
 }

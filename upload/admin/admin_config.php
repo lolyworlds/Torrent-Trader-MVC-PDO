@@ -1,4 +1,5 @@
 <?php
+
 #======================================================================#
 # Configuration Panel by djhowarth 
 #======================================================================#
@@ -149,8 +150,8 @@ jQuery(document).ready(function() {
          <td>Default Theme:</td>
          <td>
          <select name="site_config[default_theme]">
-         <?php $res = SQL_Query_exec("SELECT * FROM `stylesheets`");
-               while ($row = mysqli_fetch_assoc($res)): ?>
+         <?php $res = DB::run("SELECT * FROM `stylesheets`");
+               while ($row = $res->fetch()): ?>
          <option value="<?php echo $row["id"]; ?>" <?php echo ( $row["id"] == $site_config["default_theme"] ? 'selected="selected"' : null ); ?>><?php echo $row["name"]; ?></option>
          <?php endwhile; ?>
          </select>
@@ -160,8 +161,8 @@ jQuery(document).ready(function() {
          <td>Default Language:</td>
          <td>
          <select name="site_config[default_language]">
-         <?php $res = SQL_Query_exec("SELECT * FROM `languages`");
-               while ($row = mysqli_fetch_assoc($res)): ?>
+         <?php $res = DB::run("SELECT * FROM `languages`");
+               while ($row = $res->fetch()): ?>
          <option value="<?php echo $row["id"]; ?>" <?php echo ( $row["id"] == $site_config["default_language"] ? 'selected="selected"' : null ); ?>><?php echo $row["name"]; ?></option>
          <?php endwhile; ?>
          </select>
@@ -411,3 +412,4 @@ jQuery(document).ready(function() {
      end_frame();
      stdfoot();
  }
+ 

@@ -7,7 +7,7 @@ $id = (int) $_REQUEST["id"];
 if (!is_valid_id($id)) show_error_msg(T_("ERROR"), T_("INVALID_ID"), 1);
 $action = $_REQUEST["action"];
 
-$row = mysqli_fetch_assoc(SQL_Query_exec("SELECT `owner` FROM `torrents` WHERE id=$id"));
+$row = DB::run("SELECT `owner` FROM `torrents` WHERE id=?", [$id])->fetch();
 if($CURUSER["edit_torrents"]=="no" && $CURUSER['id'] != $row['owner'])
     show_error_msg(T_("ERROR"), T_("NO_TORRENT_EDIT_PERMISSION"), 1);
 
@@ -53,8 +53,7 @@ function uploadimage($x, $imgname, $tid) {
 
 
 //GET DATA FROM DB
-$res = SQL_Query_exec("SELECT * FROM torrents WHERE id = $id");
-$row = mysqli_fetch_array($res);
+$row = DB::run("SELECT * FROM torrents WHERE id =?", [$id])->fetch();
 if (!$row){
     show_error_msg(T_("ERROR"), T_("TORRENT_ID_GONE"), 1);
 }
@@ -80,7 +79,7 @@ if ($action=="deleteit"){
     write_log($CURUSER['username']." has deleted torrent: ID:$torrentid - ".htmlspecialchars($torrentname)." - Reason: ".htmlspecialchars($delreason));
     if ($CURUSER['id'] != $row['owner']) {
 	$delreason = $_POST["delreason"];
-	SQL_Query_exec("INSERT INTO messages (sender, receiver, added, subject, msg, unread, location) VALUES(0, ".$row['owner'].", '".get_date_time()."', 'Your torrent \'$torrentname\' has been deleted by ".$CURUSER['username']."', ".sqlesc("'$torrentname' was deleted by ".$CURUSER['username']."\n\nReason: $delreason").", 'yes', 'in')");
+	    DB::run("INSERT INTO messages (sender, receiver, added, subject, msg, unread, location) VALUES(0, ".$row['owner'].", '".get_date_time()."', 'Your torrent \'$torrentname\' has been deleted by ".$CURUSER['username']."', ".sqlesc("'$torrentname' was deleted by ".$CURUSER['username']."\n\nReason: $delreason").", 'yes', 'in')");
     }
 
     show_error_msg(T_("COMPLETED"), htmlspecialchars($torrentname)." ".T_("HAS_BEEN_DEL_DB"),1);
@@ -132,7 +131,7 @@ if ($action=="doedit"){
     if ($img1action == "update")
         $updateset[] = "image1 = " .sqlesc(uploadimage(0, $row["image1"], $id));
     if ($img1action == "delete") {
-        if ($row[image1]) {
+        if ($row['image1']) {
             $del = unlink($site_config["torrent_dir"]."/images/$row[image1]");
             $updateset[] = "image1 = ''";
         }
@@ -142,14 +141,14 @@ if ($action=="doedit"){
     if ($img2action == "update")
         $updateset[] = "image2 = " .sqlesc(uploadimage(1, $row["image2"], $id));
     if ($img2action == "delete") {
-        if ($row[image2]) {
+        if ($row['image2']) {
             $del = unlink($site_config["torrent_dir"]."/images/$row[image2]");
             $updateset[] = "image2 = ''";
         }
     }
 
 
-    SQL_Query_exec("UPDATE torrents SET " . join(",", $updateset) . " WHERE id = $id");
+    DB::run("UPDATE torrents SET " . join(",", $updateset) . " WHERE id = $id");
 
     $returl = "torrents-edit.php?id=$id&edited=1";
     if (isset($_POST["returnto"])){

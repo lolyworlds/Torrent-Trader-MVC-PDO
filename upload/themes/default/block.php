@@ -10,12 +10,11 @@ function begin_frame($caption = "-", $align = "justify"){
         <div class='slidingDiv$blockId'>");
 }
 
-
 //END FRAME
 function end_frame() {
     global $THEME, $site_config;
     print("</div></div>
-        <div class='myFrame-foot'></div>
+
       </div>
 	  <br />");
 }
@@ -36,7 +35,7 @@ function begin_block($caption = "-", $align = "justify"){
 function end_block(){
     global $THEME, $site_config;
     print("</div></div>
-        <div class='myBlock-foot'></div>
+
       </div>
 	  <br />");
 }

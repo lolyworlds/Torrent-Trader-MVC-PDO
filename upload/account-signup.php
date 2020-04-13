@@ -1,10 +1,10 @@
 <?php
+error_reporting(0);
 require_once("backend/functions.php");
 dbconn();
-
 $username_length = 15; // Max username length. You shouldn't set this higher without editing the database first
 $password_minlength = 6;
-$password_maxlength = 40;
+$password_maxlength = 60;
 
 // Disable checks if we're signing up with an invite
 if (!is_valid_id($_REQUEST["invite"]) || strlen($_REQUEST["secret"]) != 32) {
@@ -18,11 +18,12 @@ if (!is_valid_id($_REQUEST["invite"]) || strlen($_REQUEST["secret"]) != 32) {
 	if ($numsitemembers >= $site_config["maxusers"])
 		show_error_msg(T_("SORRY")."...", T_("SITE_FULL_LIMIT_MSG") . number_format($site_config["maxusers"])." ".T_("SITE_FULL_LIMIT_REACHED_MSG")." ".number_format($numsitemembers)." members",1);
 } else {
-	$res = SQL_Query_exec("SELECT id FROM users WHERE id = $_REQUEST[invite] AND MD5(secret) = ".sqlesc($_REQUEST["secret"]));
-	$invite_row = mysqli_fetch_assoc($res);
-	if (!$invite_row) {
-		show_error_msg(T_("ERROR"), T_("INVITE_ONLY_NOT_FOUND")." ".($site_config['signup_timeout']/86400)." days.", 1);
-	}
+	    $stmt = DB::run("SELECT id FROM users WHERE id = $_REQUEST[invite] AND secret = ".sqlesc($_REQUEST["secret"]));
+        $invite_row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$invite_row) {
+            show_error_msg(T_("ERROR"), T_("INVITE_ONLY_NOT_FOUND")." ".($site_config['signup_timeout']/86400)." days.", 1);
+        }
 }
 
 if ($_GET["takesignup"] == "1") {
@@ -68,28 +69,28 @@ function validusername($username) {
 		if (!$invite_row) {
 			//check email isnt banned
 			$maildomain = (substr($email, strpos($email, "@") + 1));
-			$a = (@mysqli_fetch_row(@SQL_Query_exec("select count(*) from email_bans where mail_domain='$email'")));
+            $a = DB::run("SELECT count(*) FROM email_bans where mail_domain=?",[$email])->fetch();
 			if ($a[0] != 0)
 				$message = sprintf(T_("EMAIL_ADDRESS_BANNED_S"), $email);
 
-			$a = (@mysqli_fetch_row(@SQL_Query_exec("select count(*) from email_bans where mail_domain LIKE '%$maildomain%'")));
+            $a = DB::run("SELECT count(*) FROM email_bans where mail_domain LIKE '%$maildomain%'")->fetch();
 			if ($a[0] != 0)
 				$message = sprintf(T_("EMAIL_ADDRESS_BANNED_S"), $email);
 
 		  // check if email addy is already in use
-		  $a = (@mysqli_fetch_row(@SQL_Query_exec("select count(*) from users where email='$email'")));
+            $a = DB::run("SELECT count(*) FROM users where email=?",[$email])->fetch();
 		  if ($a[0] != 0)
 			$message = sprintf(T_("EMAIL_ADDRESS_INUSE_S"), $email);
 		}
 
 	   //check username isnt in use
-	  $a = (@mysqli_fetch_row(@SQL_Query_exec("select count(*) from users where username='$wantusername'")));
+        $a = DB::run("SELECT count(*) FROM users where username=?",[$wantusername])->fetch();
 	  if ($a[0] != 0)
 		$message = sprintf(T_("USERNAME_INUSE_S"), $wantusername); 
 
 	  $secret = mksecret(); //generate secret field
 
-	  $wantpassword = passhash($wantpassword);// hash the password
+	  $wantpassword = password_hash($wantpassword, PASSWORD_BCRYPT); // hash the password
 	}
 
 	if ($message != "")
@@ -97,12 +98,13 @@ function validusername($username) {
 
   if ($message == "") {
 		if ($invite_row) {
-			SQL_Query_exec("UPDATE users SET username=".sqlesc($wantusername).", password=".sqlesc($wantpassword).", secret=".sqlesc($secret).", status='confirmed', added='".get_date_time()."' WHERE id=$invite_row[id]");
+            $upd = DB::run("UPDATE users SET username=".sqlesc($wantusername).", password=".sqlesc($wantpassword).", secret=".sqlesc($secret).", status='confirmed', added='".get_date_time()."' WHERE id=$invite_row[id]");
 			//send pm to new user
 			if ($site_config["WELCOMEPMON"]){
 				$dt = sqlesc(get_date_time());
 				$msg = sqlesc($site_config["WELCOMEPMMSG"]);
-				SQL_Query_exec("INSERT INTO messages (sender, receiver, added, msg, poster) VALUES(0, $invite_row[id], $dt, $msg, 0)");
+                $ins =  DB::prepare("INSERT INTO messages (sender, receiver, added, msg, poster) VALUES(0, $invite_row[id], $dt, $msg, 0)");
+                $ins->execute();
 			}
 			header("Refresh: 0; url=account-confirm-ok.php?type=confirm");
 			die;
@@ -120,10 +122,11 @@ function validusername($username) {
 	else
 		$signupclass = '1';
 
-    SQL_Query_exec("INSERT INTO users (username, password, secret, email, status, added, last_access, age, country, gender, client, stylesheet, language, class, ip) VALUES (" .
-	  implode(",", array_map("sqlesc", array($wantusername, $wantpassword, $secret, $email, $status, get_date_time(), get_date_time(), $age, $country, $gender, $client, $site_config["default_theme"], $site_config["default_language"], $signupclass, getip()))).")");
 
-    $id = mysqli_insert_id($GLOBALS["DBconnector"]);
+	$sql = "INSERT INTO users (username, password, secret, email, status, added, last_access, age, country, gender, client, stylesheet, language, class, ip) VALUES (" . implode(",", array_map("sqlesc", array($wantusername, $wantpassword, $secret, $email, $status, get_date_time(), get_date_time(), $age, $country, $gender, $client, $site_config["default_theme"], $site_config["default_language"], $signupclass, getip()))).")";
+    $ins_user =  DB::prepare($sql);
+    $ins_user->execute();
+    $id = DB::lastInsertId();
 
     $psecret = md5($secret);
     $thishost = $_SERVER["HTTP_HOST"];
@@ -146,7 +149,8 @@ function validusername($username) {
 	if ($site_config["WELCOMEPMON"]){
 		$dt = sqlesc(get_date_time());
 		$msg = sqlesc($site_config["WELCOMEPMMSG"]);
-		SQL_Query_exec("INSERT INTO messages (sender, receiver, added, msg, poster) VALUES(0, $id, $dt, $msg, 0)");
+        $qry = DB::prepare("INSERT INTO messages (sender, receiver, added, msg, poster) VALUES(0, $id, $dt, $msg, 0)");
+        $qry->execute();
 	}
 
     die;
@@ -195,8 +199,8 @@ begin_frame(T_("SIGNUP"));
 					<select name="country" size="1">
 						<?php
 						$countries = "<option value=\"0\">---- ".T_("NONE_SELECTED")." ----</option>\n";
-						$ct_r = SQL_Query_exec("SELECT id,name,domain from countries ORDER BY name");
-						while ($ct_a = mysqli_fetch_assoc($ct_r)) {
+                        $ct_r = DB::run("SELECT id,name,domain from countries ORDER BY name");
+                        while ($ct_a = $ct_r->fetch(PDO::FETCH_LAZY)){
 							$countries .= "<option value=\"$ct_a[id]\">$ct_a[name]</option>\n";
 						}
 						?>

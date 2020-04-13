@@ -12,8 +12,8 @@ if ($action=="categories" && $do=="view"){
 	echo("<center><table width='95%' class='table_table'>");
 	echo("<tr><th width='10' class='table_head'>Sort</th><th class='table_head'>Parent Cat</th><th class='table_head'>Sub Cat</th><th class='table_head'>Image</th><th width='30' class='table_head'></th></tr>");
 	$query = "SELECT * FROM categories ORDER BY parent_cat ASC, sort_index ASC";
-	$sql = SQL_Query_exec($query);
-	while ($row = mysqli_fetch_assoc($sql)) {
+	$sql = DB::run($query);
+	while ($row = $sql->fetch(PDO::FETCH_ASSOC)) {
 		$id = $row['id'];
 		$name = $row['name'];
 		$priority = $row['sort_index'];
@@ -41,13 +41,11 @@ if ($action=="categories" && $do=="edit"){
 	if (!is_valid_id($id))
 		show_error_msg(T_("ERROR"),T_("INVALID_ID"),1);
 
-	$res = SQL_Query_exec("SELECT * FROM categories WHERE id=$id");
-
-	if (mysqli_num_rows($res) != 1)
+	$res = DB::run("SELECT * FROM categories WHERE id=?", [$id]);
+	if ($res->rowCount() != 1)
 		show_error_msg(T_("ERROR"), "No category with ID $id.",1);
 
-	$arr = mysqli_fetch_assoc($res);
-
+	$arr = $res->fetch(PDO::FETCH_ASSOC);
 	if ($_GET["save"] == '1'){
   		$parent_cat = $_POST['parent_cat'];
 		if ($parent_cat == "")
@@ -60,14 +58,13 @@ if ($action=="categories" && $do=="edit"){
 		$sort_index = $_POST['sort_index'];
 		$image = $_POST['image'];
 
-		$parent_cat = sqlesc($parent_cat);
-		$name = sqlesc($name);
-		$sort_index = sqlesc($sort_index);
-		$image = sqlesc($image);
+		$parent_cat = $parent_cat;
+		$name = $name;
+		$sort_index = $sort_index;
+		$image = $image;
 
-		SQL_Query_exec("UPDATE categories SET parent_cat=$parent_cat, name=$name, sort_index=$sort_index, image=$image WHERE id=$id");
-
-		show_error_msg(T_("COMPLETED"),"category was edited successfully.",0);
+		DB::run("UPDATE categories SET parent_cat=?, name=?, sort_index=?, image=? WHERE id=?", [$parent_cat, $name, $sort_index, $image, $id]);
+		autolink("admincp.php?action=categories&do=view", T_("SUCCESS"),"category was edited successfully!");
 
 	} else {
 		begin_frame(T_("CP_CATEGORY_EDIT"));
@@ -98,11 +95,11 @@ if ($action=="categories" && $do=="delete"){
 
 		$newcatid = (int) $_POST["newcat"];
 
-		SQL_Query_exec("UPDATE torrents SET category=$newcatid WHERE category=$id"); //move torrents to a new cat
+		DB::run("UPDATE torrents SET category=$newcatid WHERE category=$id"); //move torrents to a new cat
 
-		SQL_Query_exec("DELETE FROM categories WHERE id=$id"); //delete old cat
+		DB::run("DELETE FROM categories WHERE id=?", [$id]); //delete old cat
 		
-		show_error_msg(T_("COMPLETED"),"Category Deleted OK",1);
+		autolink("admincp.php?action=categories&do=view", T_("Category Deleted OK."));
 
 	}else{
 		begin_frame(T_("CATEGORY_DEL"));
@@ -129,15 +126,15 @@ if ($action=="categories" && $do=="takeadd"){
 		$sort_index = $_POST['sort_index'];
 		$image = $_POST['image'];
 
-		$parent_cat = sqlesc($parent_cat);
-		$name = sqlesc($name);
-		$sort_index = sqlesc($sort_index);
-		$image = sqlesc($image);
+		$parent_cat = $parent_cat;
+		$name = $name;
+		$sort_index = $sort_index;
+		$image = $image;
 
-	SQL_Query_exec("INSERT INTO categories (name, parent_cat, sort_index, image) VALUES ($name, $parent_cat, $sort_index, $image)");
+	$ins = DB::run("INSERT INTO categories (name, parent_cat, sort_index, image) VALUES (?,?,?,?)", [$name, $parent_cat, $sort_index, $image]);
 
-	if (mysqli_affected_rows($GLOBALS["DBconnector"]) == 1)
-		show_error_msg(T_("COMPLETED"),"Category was added successfully.",1);
+	if ($ins)
+		autolink("admincp.php?action=categories&do=view", T_("Category was added successfully."));
 	else
 		show_error_msg(T_("ERROR"),"Unable to add category",1);
 }

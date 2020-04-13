@@ -11,7 +11,7 @@ if ($site_config["MEMBERSONLY"]){
 }
 
 function sqlwildcardesc($x){
-    return str_replace(array("%","_"), array("\\%","\\_"), mysqli_real_escape_string($GLOBALS["DBconnector"],$x));
+    return str_replace(array("%","_"), array("\\%","\\_"), $x);
 }
 
 //GET SEARCH STRING
@@ -29,10 +29,10 @@ $wherea[] = "banned = 'no'";
 
 $wherecatina = array();
 $wherecatin = "";
-$res = SQL_Query_exec("SELECT id FROM categories");
-while($row = mysqli_fetch_assoc($res)){
-    if ($_GET["c$row[id]"]) {
-        $wherecatina[] = $row[id];
+$res = DB::run("SELECT id FROM categories");
+while($row = $res->fetch(PDO::FETCH_LAZY)){
+    if (isset($_GET["c$row[id]"])) {
+        $wherecatina[] = $row['id'];
         $addparam .= "c$row[id]=1&amp;";
         $addparam .= "c$row[id]=1&amp;";
         $thisurl .= "c$row[id]=1&amp;";
@@ -104,7 +104,7 @@ $parent_cat = $_GET["parent_cat"];
 $wherebase = $wherea;
 
 if (isset($cleansearchstr)) {
-	$wherea[] = "MATCH (torrents.name) AGAINST ('".mysqli_real_escape_string($GLOBALS["DBconnector"],$searchstr)."' IN BOOLEAN MODE)";
+	$wherea[] = "MATCH (torrents.name) AGAINST ('".$searchstr."' IN BOOLEAN MODE)";
 
 	$addparam .= "search=" . urlencode($searchstr) . "&amp;";
 	$thisurl .= "search=".urlencode($searchstr)."&amp;";
@@ -157,9 +157,8 @@ if ($parent_cat){
 
 
 //GET NUMBER FOUND FOR PAGER
-$res = SQL_Query_exec("SELECT COUNT(*) FROM torrents $where $parent_check");
-$row = mysqli_fetch_array($res);
-$count = $row[0];
+$count = DB::run("SELECT COUNT(*) FROM torrents $where $parent_check")->fetchColumn();
+// $count = $row[0];
 
 
 if (!$count && isset($cleansearchstr)) {
@@ -181,8 +180,7 @@ if (!$count && isset($cleansearchstr)) {
 		$where = implode(" AND ", $wherea);
 		if ($where != "")
 		$where = "WHERE $where";
-		$res = SQL_Query_exec("SELECT COUNT(*) FROM torrents $where $parent_check");
-		$row = mysqli_fetch_array($res);
+        $row = DB::run("SELECT COUNT(*) FROM torrents $where $parent_check")->fetch();
 		$count = $row[0];
 	}
 }
@@ -207,7 +205,7 @@ if ($count) {
 	//SEARCH QUERIES! 
 	list($pagertop, $pagerbottom, $limit) = pager(20, $count, "torrents-search.php?" . $addparam);
 	$query = "SELECT torrents.id, torrents.anon, torrents.announce, torrents.category, torrents.leechers, torrents.nfo, torrents.seeders, torrents.name, torrents.times_completed, torrents.size, torrents.added, torrents.comments, torrents.numfiles, torrents.filename, torrents.owner, torrents.external, torrents.freeleech, categories.name AS cat_name, categories.parent_cat AS cat_parent, categories.image AS cat_pic, users.username, users.privacy, IF(torrents.numratings < 2, NULL, ROUND(torrents.ratingsum / torrents.numratings, 1)) AS rating FROM torrents LEFT JOIN categories ON category = categories.id LEFT JOIN users ON torrents.owner = users.id $where $parent_check $orderby $limit";
-	$res = SQL_Query_exec($query);
+	$res = DB::run($query);
 
 	}else{
 		unset($res);
@@ -222,9 +220,9 @@ begin_frame(T_("SEARCH_TORRENTS"));
 
 // get all parent cats
 echo "<center><b>".T_("CATEGORIES").":</b> ";
-$catsquery = SQL_Query_exec("SELECT distinct parent_cat FROM categories ORDER BY parent_cat");
+$catsquery = DB::run("SELECT distinct parent_cat FROM categories ORDER BY parent_cat");
 echo " - <a href='torrents.php'>".T_("SHOWALL")."</a>";
-while($catsrow = mysqli_fetch_assoc($catsquery)){
+while($catsrow = $catsquery->fetch(PDO::FETCH_ASSOC)){
 		echo " - <a href='torrents.php?parent_cat=".urlencode($catsrow['parent_cat'])."'>$catsrow[parent_cat]</a>";
 }
 echo "</center>";
@@ -238,8 +236,8 @@ echo "</center>";
 <tr align='right'>
 <?php
 $i = 0;
-$cats = SQL_Query_exec("SELECT * FROM categories ORDER BY parent_cat, name");
-while ($cat = mysqli_fetch_assoc($cats)) {
+$cats = DB::run("SELECT * FROM categories ORDER BY parent_cat, name");
+while ($cat = $cats->fetch(PDO::FETCH_ASSOC)) {
     $catsperrow = 5;
     print(($i && $i % $catsperrow == 0) ? "</tr><tr align='right'>" : "");
     print("<td style=\"padding-bottom: 2px;padding-left: 2px\"><a href='torrents.php?cat={$cat["id"]}'>".htmlspecialchars($cat["parent_cat"])." - " . htmlspecialchars($cat["name"]) . "</a> <input name='c{$cat["id"]}' type=\"checkbox\" " . (in_array($cat["id"], $wherecatina) || $_GET["cat"] == $cat["id"]  ? "checked='checked' " : "") . "value='1' /></td>\n");
@@ -250,8 +248,8 @@ echo "</tr></table>";
 //if we are browsing, display all subcats that are in same cat
 if ($parent_cat){
     echo "<br /><br /><b>".T_("YOU_ARE_IN").":</b> <a href='torrents.php?parent_cat=$parent_cat'>$parent_cat</a><br /><b>".T_("SUB_CATS").":</b> ";
-	$subcatsquery = SQL_Query_exec("SELECT id, name, parent_cat FROM categories WHERE parent_cat='$parent_cat' ORDER BY name");
-	while($subcatsrow = mysqli_fetch_assoc($subcatsquery)){
+	$subcatsquery = DB::run("SELECT id, name, parent_cat FROM categories WHERE parent_cat='$parent_cat' ORDER BY name");
+	while($subcatsrow = $subcatsquery->fetch(PDo::FETCH_ASSOC)){
 		$name = $subcatsrow['name'];
 		echo " - <a href='torrents.php?cat=$subcatsrow[id]'>$name</a>";
 	}
@@ -273,11 +271,13 @@ echo "<br /><br />";//some spacing
 	$cats = genrelist();
 	$catdropdown = "";
 	foreach ($cats as $cat) {
+    
 		$catdropdown .= "<option value=\"" . $cat["id"] . "\"";
 		if ($cat["id"] == $_GET["cat"])
 			$catdropdown .= " selected=\"selected\"";
 		$catdropdown .= ">" . htmlspecialchars($cat["parent_cat"]) . ": " . htmlspecialchars($cat["name"]) . "</option>\n";
-	}	
+	}
+
 	?>
 	<?php echo  $catdropdown ?>
 	</select>
@@ -358,9 +358,7 @@ if ($count) {
 }
 
 if ($CURUSER)
-	SQL_Query_exec("UPDATE users SET last_browse=".gmtime()." WHERE id=$CURUSER[id]");
-
-
+    DB::run("UPDATE users SET last_browse=".gmtime()." WHERE id=$CURUSER[id]");
 end_frame();
 stdfoot();
 

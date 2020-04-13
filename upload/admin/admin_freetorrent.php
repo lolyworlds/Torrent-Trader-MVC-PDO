@@ -1,4 +1,5 @@
 <?php
+
 if ($action=="freetorrents"){
     
     /*
@@ -12,11 +13,11 @@ if ($action=="freetorrents"){
 	$search = trim($_GET['search']);
 
 	if ($search != '' ){
-		$whereand = "AND name LIKE " . sqlesc("%$search%") . "";
+		$whereand = "AND name LIKE '%$search%";
 	}
 
-	$res2 = SQL_Query_exec("SELECT COUNT(*) FROM torrents WHERE freeleech='1' $whereand");
-	$row = mysqli_fetch_array($res2);
+	$res2 = DB::run("SELECT COUNT(*) FROM torrents WHERE freeleech='1' $whereand");
+	$row = $res2->fetch(PDO::FETCH_LAZY);
 	$count = $row[0];
 
 	$perpage = 50;
@@ -44,9 +45,9 @@ if ($action=="freetorrents"){
 	</tr>
 	<?php
 	$rqq = "SELECT id, name, seeders, leechers, visible, banned FROM torrents WHERE freeleech='1' $whereand ORDER BY name $limit";
-	$resqq = SQL_Query_exec($rqq);
+	$resqq = DB::run($rqq);
 
-	while ($row = mysqli_fetch_array($resqq)){
+	while ($row = $resqq->fetch(PDO::FETCH_LAZY)){
 		
 		$char1 = 35; //cut name length 
 		$smallname = CutName(htmlspecialchars($row["name"]), $char1);

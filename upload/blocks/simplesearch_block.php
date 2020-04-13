@@ -1,4 +1,5 @@
 <?php
+if ($CURUSER){
 begin_block(T_("SEARCH"));
 ?>
 	<center>
@@ -10,4 +11,5 @@ begin_block(T_("SEARCH"));
 	</center><br />
 	<?php
 end_block();
+}
 ?>

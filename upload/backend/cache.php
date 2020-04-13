@@ -102,8 +102,7 @@ function get_row_count_cached ($table, $suffix = "") {
 	$query = "SELECT COUNT(*) FROM $table $suffix";
 	$cache = "get_row_count/".sha1($query);
 	if (($ret = $TTCache->Get($cache, 300)) === false) {
-		$res = SQL_Query_exec($query);
-		$row = mysqli_fetch_row($res);
+        $row = DB::run($query)->fetch();
 		$ret = $row[0];
 		$TTCache->Set($cache, $ret, 300);
 	}
@@ -115,9 +114,9 @@ function SQL_Query_exec_cached ($query, $cache_time = 300, $cache_blank = 1) {
 
 	$cache = "queries/".sha1($query);
 	if (($rows = $TTCache->Get($cache, $cache_time)) === false) {
-		$res = SQL_Query_exec($query);
+		$res = DB::run($query);
 		$rows = array();
-		while ($row = mysqli_fetch_assoc($res))
+		while ($row = $res->fetch(PDO::FETCH_ASSOC))
 			$rows[] = $row;
 		if (count($rows) || $cache_blank)
 			$TTCache->Set($cache, $rows, $cache_time);

@@ -55,50 +55,50 @@ function catch_up(){
 		 return;
     
 	$userid = $CURUSER["id"];
-	$res = SQL_Query_exec("SELECT id, lastpost FROM forum_topics");
-	while ($arr = mysqli_fetch_assoc($res)) {
+	$res = DB::run("SELECT id, lastpost FROM forum_topics");
+	while ($arr = $res->fetch(PDO::FETCH_ASSOC)) {
 		$topicid = $arr["id"];
 		$postid = $arr["lastpost"];
-		$r = SQL_Query_exec("SELECT id,lastpostread FROM forum_readposts WHERE userid=$userid and topicid=$topicid");
-		if (mysqli_num_rows($r) == 0){
-			SQL_Query_exec("INSERT INTO forum_readposts (userid, topicid, lastpostread) VALUES($userid, $topicid, $postid)");
+		$r = DB::run("SELECT id,lastpostread FROM forum_readposts WHERE userid=? and topicid=?", [$userid, $topicid]);
+		if ($r->rowCount() == 0){
+            DB::run("INSERT INTO forum_readposts (userid, topicid, lastpostread) VALUES(?, ?, ?), [$userid, $topicid, $postid]");
 		}else{
-			$a = mysqli_fetch_assoc($r);
+			$a = $r->fetch(PDO::FETCH_ASSOC);
 			if ($a["lastpostread"] < $postid)
-			SQL_Query_exec("UPDATE forum_readposts SET lastpostread=$postid WHERE id=" . $a["id"]);
+                DB::run("UPDATE forum_readposts SET lastpostread=$postid WHERE id=?", [$a["id"]]);
 		}
 	}
 }
 
 // Returns the minimum read/write class levels of a forum
 function get_forum_access_levels($forumid){ 
-	$res = SQL_Query_exec("SELECT minclassread, minclasswrite FROM forum_forums WHERE id=$forumid");
-	if (mysqli_num_rows($res) != 1)
+	$res = DB::run("SELECT minclassread, minclasswrite FROM forum_forums WHERE id=?", [$forumid]);
+	if ($res->rowCount() != 1)
 		return false;
-	$arr = mysqli_fetch_assoc($res);
+	$arr = $res->fetch(PDO::FETCH_ASSOC);
 		return array("read" => $arr["minclassread"], "write" => $arr["minclasswrite"]);
 }
 
 // Returns the forum ID of a topic, or false on error
 function get_topic_forum($topicid) {
-    $res = SQL_Query_exec("SELECT forumid FROM forum_topics WHERE id=$topicid");
-    if (mysqli_num_rows($res) != 1)
+    $res = DB::run("SELECT forumid FROM forum_topics WHERE id=?", [$topicid]);
+    if ($res->rowCount() != 1)
       return false;
-    $arr = mysqli_fetch_row($res);
+    $arr = $res->fetch(PDO::FETCH_LAZY);
     return $arr[0];
 }
 
 // Returns the ID of the last post of a forum
 function update_topic_last_post($topicid) {
-    $res = SQL_Query_exec("SELECT id FROM forum_posts WHERE topicid=$topicid ORDER BY id DESC LIMIT 1");
-    $arr = mysqli_fetch_row($res) or showerror(T_("FORUM_ERROR"), "No post found");
+    $res = DB::run("SELECT id FROM forum_posts WHERE topicid=? ORDER BY id DESC LIMIT 1", [$topicid]);
+    $arr = $res->fetch(PDO::FETCH_LAZY) or showerror(T_("FORUM_ERROR"), "No post found");
     $postid = $arr[0];
-    SQL_Query_exec("UPDATE forum_topics SET lastpost=$postid WHERE id=$topicid");
+    DB::run("UPDATE forum_topics SET lastpost=? WHERE id=?", [$postid, $topicid]);
 }
 
 function get_forum_last_post($forumid)  {
-    $res = SQL_Query_exec("SELECT lastpost FROM forum_topics WHERE forumid=$forumid ORDER BY lastpost DESC LIMIT 1");
-    $arr = mysqli_fetch_row($res);
+    $res = DB::run("SELECT lastpost FROM forum_topics WHERE forumid=? ORDER BY lastpost DESC LIMIT 1", [$forumid]);
+    $arr = $res->fetch(PDO::FETCH_LAZY);
     $postid = $arr[0];
     if ($postid)
       return $postid;
@@ -130,7 +130,7 @@ function forumpostertable($res) {
     <?php
 
     $num = 0;
-    while ($a = mysqli_fetch_assoc($res))
+    while ($a = $res->fetch(PDO::FETCH_ASSOC))
     {
       ++$num;
       print("<tr class='t-row'><td align='center' class='ttable_col1'>$num</td><td class='ttable_col2' style='text-align: justify'><a href='account-details.php?id=$a[id]'><b>$a[username]</b></a></td><td align='center' class='ttable_col1'>$a[num]</td></tr>\n");
@@ -147,14 +147,14 @@ function forumpostertable($res) {
 function insert_quick_jump_menu($currentforum = 0) {
     print("<div style='text-align:right'><form method='get' action='?' name='jump'>\n");
     print("<input type='hidden' name='action' value='viewforum' />\n");
-    $res = SQL_Query_exec("SELECT * FROM forum_forums ORDER BY name");
+    $res = DB::run("SELECT * FROM forum_forums ORDER BY name");
    
-    if ( mysqli_num_rows($res) > 0 ) 
+    if ( $res->rowCount() > 0 )
     {
          print( T_("FORUM_JUMP") . ": ");
          print("<select class='styled' name='forumid' onchange='if(this.options[this.selectedIndex].value != -1){ forms[jump].submit() }'>\n");
    
-         while ($arr = mysqli_fetch_assoc($res))
+         while ($arr = $res->fetch(PDO::FETCH_ASSOC))
          {
              if (get_user_class() >= $arr["minclassread"] || (!$CURUSER && $arr["guest_read"] == "yes"))
                  print("<option value='" . $arr["id"] . "'" . ($currentforum == $arr["id"] ? " selected='selected'>" : ">") . $arr["name"] . "</option>\n");
@@ -173,14 +173,14 @@ function insert_compose_frame($id, $newtopic = true) {
     global $maxsubjectlength;
 
 	if ($newtopic) {
-		$res = SQL_Query_exec("SELECT name FROM forum_forums WHERE id=$id");
-		$arr = mysqli_fetch_assoc($res) or showerror(T_("FORUM_ERROR"), T_("FORUM_BAD_FORUM_ID"));
+		$res = DB::run("SELECT name FROM forum_forums WHERE id=$id");
+		$arr = $res->fetch(PDO::FETCH_ASSOC) or showerror(T_("FORUM_ERROR"), T_("FORUM_BAD_FORUM_ID"));
 		$forumname = stripslashes($arr["name"]);
 
 		print("<p align='center'><b>".T_("FORUM_NEW_TOPIC")." <a href='forums.php?action=viewforum&amp;forumid=$id'>$forumname</a></b></p>\n");
 	}else{
-		$res = SQL_Query_exec("SELECT * FROM forum_topics WHERE id=$id");
-		$arr = mysqli_fetch_assoc($res) or showerror(T_("FORUM_ERROR"), T_("FORUMS_NOT_FOUND_TOPIC"));
+		$res = DB::run("SELECT * FROM forum_topics WHERE id=$id");
+		$arr = $res->fetch(PDO::FETCH_ASSOC) or showerror(T_("FORUM_ERROR"), T_("FORUMS_NOT_FOUND_TOPIC"));
 		$subject = stripslashes($arr["subject"]);
 		print("<p align='center'>".T_("FORUM_REPLY_TOPIC").": <a href='forums.php?action=viewtopic&amp;topicid=$id'>$subject</a></p>");
 	}
@@ -229,15 +229,15 @@ print("<div class='f-border f-latestpost'><table width='100%' cellspacing='0'><t
 
 
 /// HERE GOES THE QUERY TO RETRIEVE DATA FROM THE DATABASE AND WE START LOOPING ///
-$for = SQL_Query_exec("SELECT * FROM forum_topics ORDER BY lastpost DESC LIMIT 5");
+$for = DB::run("SELECT * FROM forum_topics ORDER BY lastpost DESC LIMIT 5");
 
-if (mysqli_num_rows($for) == 0)
+if ($for->rowCount() == 0)
     print("<tr class='f-row'><td class='alt1' align='center' colspan='5'><b>No Latest Topics</b></td></tr>");
 
-while ($topicarr = mysqli_fetch_assoc($for)) {
+while ($topicarr = $for->fetch(PDO::FETCH_ASSOC)) {
 // Set minclass
-$res = SQL_Query_exec("SELECT name,minclassread,guest_read FROM forum_forums WHERE id=$topicarr[forumid]");
-$forum = mysqli_fetch_assoc($res);
+$res = DB::run("SELECT name,minclassread,guest_read FROM forum_forums WHERE id=$topicarr[forumid]");
+$forum = $res->fetch(PDO::FETCH_ASSOC);
 
 if ($forum && get_user_class() >= $forum["minclassread"] || $forum["guest_read"] == "yes") {
 $forumname = "<a href='?action=viewforum&amp;forumid=$topicarr[forumid]'><b>" . htmlspecialchars($forum["name"]) . "</b></a>";
@@ -250,39 +250,39 @@ $views = $topicarr["views"];
 // End
 
 /// GETTING TOTAL NUMBER OF POSTS ///
-$res = SQL_Query_exec("SELECT COUNT(*) FROM forum_posts WHERE topicid=$topicid");
-$arr = mysqli_fetch_row($res);
+$res = DB::run("SELECT COUNT(*) FROM forum_posts WHERE topicid=?", [$topicid]);
+$arr = $res->fetch(PDO::FETCH_LAZY);
 $posts = $arr[0];
 $replies = max(0, $posts - 1);
 
 /// GETTING USERID AND DATE OF LAST POST ///   
-$res = SQL_Query_exec("SELECT * FROM forum_posts WHERE topicid=$topicid ORDER BY id DESC LIMIT 1");
-$arr = mysqli_fetch_assoc($res);
+$res = DB::run("SELECT * FROM forum_posts WHERE topicid=? ORDER BY id DESC LIMIT 1", [$topicid]);
+$arr = $res->fetch(PDO::FETCH_ASSOC);
 $postid = 0 + $arr["id"];
 $userid = 0 + $arr["userid"];
 $added = utc_to_tz($arr["added"]);
 
 /// GET NAME OF LAST POSTER ///
-$res = SQL_Query_exec("SELECT id, username FROM users WHERE id=$userid");
-if (mysqli_num_rows($res) == 1) {
-$arr = mysqli_fetch_assoc($res);
+$res = DB::run("SELECT id, username FROM users WHERE id=$userid");
+if ($res->rowCount() == 1) {
+$arr = $res->fetch(PDO::FETCH_ASSOC);
 $username = "<a href='account-details.php?id=$userid'>$arr[username]</a>";
 }
 else
 $username = "Unknown[$topic_userid]";
 
 /// GET NAME OF THE AUTHOR ///
-$res = SQL_Query_exec("SELECT username FROM users WHERE id=$topic_userid");
-if (mysqli_num_rows($res) == 1) {
-$arr = mysqli_fetch_assoc($res);
+$res = DB::run("SELECT username FROM users WHERE id=?", [$topic_userid]);
+if ($res->rowCount() == 1) {
+$arr = $res->fetch(PDO::FETCH_ASSOC);
 $author = "<a href='account-details.php?id=$topic_userid'>$arr[username]</a>";
 }
 else
 $author = "Unknown[$topic_userid]";
 
 /// GETTING THE LAST INFO AND MAKE THE TABLE ROWS ///
-$r = SQL_Query_exec("SELECT lastpostread FROM forum_readposts WHERE userid=$userid AND topicid=$topicid");
-$a = mysqli_fetch_row($r);
+$r = DB::run("SELECT lastpostread FROM forum_readposts WHERE userid=$userid AND topicid=$topicid");
+$a = $r->fetch(PDO::FETCH_LAZY);
 $new = !$a || $postid > $a[0];
 $subject = "<a href='forums.php?action=viewtopic&amp;topicid=$topicid'><b>" . stripslashes(encodehtml($topicarr["subject"])) . "</b></a>";
 
@@ -349,14 +349,14 @@ if ($action == "post") {
 	$userid = $CURUSER["id"];
 
 	if ($newtopic) { //Create topic
-		$subject = sqlesc($subject);
-		SQL_Query_exec("INSERT INTO forum_topics (userid, forumid, subject) VALUES($userid, $forumid, $subject)");
-		$topicid = mysqli_insert_id($GLOBALS["DBconnector"]) or showerror(T_("FORUM_ERROR"),"No topic ID returned");
+		$subject = $subject;
+        DB::run("INSERT INTO forum_topics (userid, forumid, subject) VALUES(?,?,?)", [$userid, $forumid, $subject]);
+		$topicid = DB::lastInsertId()or showerror(T_("FORUM_ERROR"),"Topics id n/a");
 
 	}else{
 		//Make sure topic exists and is unlocked
-		$res = SQL_Query_exec("SELECT * FROM forum_topics WHERE id=$topicid");
-		$arr = mysqli_fetch_assoc($res) or showerror(T_("FORUM_ERROR"),"Topic id n/a");
+		$res = DB::run("SELECT * FROM forum_topics WHERE id=?", [$topicid]);
+		$arr = $res->fetch(PDO::FETCH_ASSOC) or showerror(T_("FORUM_ERROR"),"Topic id n/a");
 		if ($arr["locked"] == 'yes')
         showerror(T_("FORUM_ERROR"),"Topic locked");
 		//Get forum ID
@@ -365,9 +365,9 @@ if ($action == "post") {
 
     //Insert the new post
     $added = "'" . get_date_time() . "'";
-    $body = sqlesc($body);
-    SQL_Query_exec("INSERT INTO forum_posts (topicid, userid, added, body) VALUES($topicid, $userid, $added, $body)");
-    $postid = mysqli_insert_id($GLOBALS["DBconnector"]) or showerror(T_("FORUM_ERROR"),"Post id n/a");
+    $body = $body;
+    DB::run("INSERT INTO forum_posts (topicid, userid, added, body) VALUES(?, ?, ?, ?)", [$topicid, $userid, $added, $body]);
+    $postid = DB::lastInsertId() or showerror(T_("FORUM_ERROR"),"Post id n/a");
 
     //Update topic last post
     update_topic_last_post($topicid);
@@ -391,35 +391,35 @@ if ($action == "viewtopic") {
 	$userid = $CURUSER["id"];
 
     //------ Get topic info
-    $res = SQL_Query_exec("SELECT * FROM forum_topics WHERE id=$topicid");
-    $arr = mysqli_fetch_assoc($res) or showerror(T_("FORUM_ERROR"), "Topic not found");
+    $res = DB::run("SELECT * FROM forum_topics WHERE id=?", [$topicid]);
+    $arr = $res->fetch(PDO::FETCH_ASSOC) or showerror(T_("FORUM_ERROR"), "Topic not found");
     $locked = ($arr["locked"] == 'yes');
     $subject = stripslashes($arr["subject"]);
 	$sticky = $arr["sticky"] == "yes";
     $forumid = $arr["forumid"];
 	
 	// Check if user has access to this forum
-	$res2 = SQL_Query_exec("SELECT minclassread, guest_read FROM forum_forums WHERE id=$forumid");
-    $arr2 = mysqli_fetch_assoc($res2);
+	$res2 = DB::run("SELECT minclassread, guest_read FROM forum_forums WHERE id=?", [$forumid]);
+    $arr2 = $res2->fetch(PDO::FETCH_ASSOC);
     if (!$arr2 || get_user_class() < $arr2["minclassread"] && $arr2["guest_read"] == "no")
         show_error_msg("Error: Access Denied","You do not have access to the forum this topic is in.");
 
 	// Update Topic Views
-	$viewsq = SQL_Query_exec("SELECT views FROM forum_topics WHERE id=$topicid");
-	$viewsa = mysqli_fetch_array($viewsq);
+	$viewsq = DB::run("SELECT views FROM forum_topics WHERE id=$topicid");
+	$viewsa = $viewsq->fetch(PDO::FETCH_LAZY);
 	$views = $viewsa[0];
 	$new_views = $views+1;
-	$uviews = SQL_Query_exec("UPDATE forum_topics SET views = $new_views WHERE id=$topicid");
+	$uviews = DB::run("UPDATE forum_topics SET views = $new_views WHERE id=$topicid");
 	// End
 
     //------ Get forum
-    $res = SQL_Query_exec("SELECT * FROM forum_forums WHERE id=$forumid");
-    $arr = mysqli_fetch_assoc($res) or showerror(T_("FORUM_ERROR"), "Forum is empty");
+    $res = DB::run("SELECT * FROM forum_forums WHERE id=?", [$forumid]);
+    $arr = $res->fetch(PDO::FETCH_ASSOC) or showerror(T_("FORUM_ERROR"), "Forum is empty");
     $forum = stripslashes($arr["name"]);
 
     //------ Get post count
-    $res = SQL_Query_exec("SELECT COUNT(*) FROM forum_posts WHERE topicid=$topicid");
-    $arr = mysqli_fetch_row($res);
+    $res = DB::run("SELECT COUNT(*) FROM forum_posts WHERE topicid=?", [$topicid]);
+    $arr = $res->fetch(PDO::FETCH_LAZY);
     $postcount = $arr[0];         
 
     //------ Make page menu
@@ -460,8 +460,7 @@ if ($action == "viewtopic") {
     $pagemenu .= "</small>";
       
 //Get topic posts
-    $res = SQL_Query_exec("SELECT * FROM forum_posts WHERE topicid=$topicid ORDER BY id LIMIT $offset,$perpage");
-
+    $res = DB::run("SELECT * FROM forum_posts WHERE topicid=$topicid ORDER BY id LIMIT $offset,$perpage");
     stdhead("View Topic: $subject");
     begin_frame("$forum &gt; $subject");
 	forumheader("<a href='forums.php?action=viewforum&amp;forumid=$forumid'>$forum</a> <b style='font-size:16px; vertical-align:middle'>/</b> $subject");
@@ -482,29 +481,29 @@ if ($action == "viewtopic") {
 	print ("</div>");
 
 //------ Print table of posts
-    $pc = mysqli_num_rows($res);
+    $pc = $res->rowCount();
     $pn = 0;
 	if ($CURUSER) {
-	    $r = SQL_Query_exec("SELECT lastpostread FROM forum_readposts WHERE userid=$CURUSER[id] AND topicid=$topicid");
-	    $a = mysqli_fetch_row($r);
+	    $r = DB::run("SELECT lastpostread FROM forum_readposts WHERE userid=? AND topicid=?", [$CURUSER['id'], $topicid]);
+	    $a = $r->fetch(PDO::FETCH_LAZY);
 	    $lpr = $a[0];
 	    if (!$lpr)
-			SQL_Query_exec("INSERT INTO forum_readposts (userid, topicid) VALUES($userid, $topicid)");
+            DB::run("INSERT INTO forum_readposts (userid, topicid) VALUES($userid, $topicid)");
 	}
 	
-    while ($arr = mysqli_fetch_assoc($res)) {
+    while ($arr = $res->fetch(PDO::FETCH_ASSOC)) {
 		++$pn;
 		$postid = $arr["id"];
 		$posterid = $arr["userid"];
 		$added = utc_to_tz($arr["added"])."(" . (get_elapsed_time(sql_timestamp_to_unix_timestamp($arr["added"]))) . " ago)";
 
 		//---- Get poster details
-		$res4 = SQL_Query_exec("SELECT COUNT(*) FROM forum_posts WHERE userid=$posterid");
-		$arr33 = mysqli_fetch_row($res4);
+		$res4 = DB::run("SELECT COUNT(*) FROM forum_posts WHERE userid=?", [$posterid]);
+		$arr33 = $res4->fetch(PDO::FETCH_LAZY);
 		$forumposts = $arr33[0];
 
-		$res2 = SQL_Query_exec("SELECT * FROM users WHERE id=$posterid");
-		$arr2 = mysqli_fetch_assoc($res2);
+		$res2 = DB::run("SELECT * FROM users WHERE id=?", [$posterid]);
+		$arr2 = $res2->fetch(PDO::FETCH_ASSOC);
 		$postername = $arr2["username"];
 
 			if ($postername == "") {
@@ -534,8 +533,8 @@ if ($action == "viewtopic") {
 					if(!$arr2["country"]){
 						$usercountry = "unknown";
 					}else{
-						$res4 = SQL_Query_exec("SELECT name,flagpic FROM countries WHERE id=$arr2[country] LIMIT 1");
-						$arr4 = mysqli_fetch_assoc($res4);
+						$res4 = DB::run("SELECT name,flagpic FROM countries WHERE id=? LIMIT 1", [$arr2['country']]);
+						$arr4 = $res4->fetch(PDO::FETCH_ASSOC);
 						$usercountry = $arr4["name"];
 					}
 
@@ -551,7 +550,7 @@ if ($action == "viewtopic") {
         if ($pn == $pc) {
             print("<a name='last'></a>\n");
             if ($postid > $lpr && $CURUSER)
-                SQL_Query_exec("UPDATE forum_readposts SET lastpostread=$postid WHERE userid=$userid AND topicid=$topicid");
+                DB::run("UPDATE forum_readposts SET lastpostread=$postid WHERE userid=? AND topicid=?", [$userid, $topicid]);
         }
 //working here
 //Post Top
@@ -563,10 +562,10 @@ if ($action == "viewtopic") {
 		$body = stripslashes(format_comment($arr["body"]));
 
 		if (is_valid_id($arr['editedby'])) {
-			$res2 = SQL_Query_exec("SELECT username FROM users WHERE id=$arr[editedby]");
+			$res2 = DB::run("SELECT username FROM users WHERE id=?", [$arr['editedby']]);
 
-			if (mysqli_num_rows($res2) == 1) {
-				$arr2 = mysqli_fetch_assoc($res2);
+			if ($res2->rowCount() == 1) {
+				$arr2 = $res2->fetch(PDO::FETCH_ASSOC);
 				//edited by comment out if needed
 				$body .= "<br /><br /><small><i>Last edited by <a href='account-details.php?id=$arr[editedby]'>$arr2[username]</b></a> on ".utc_to_tz($arr["editedat"])."</i></small><br />\n";
 				$body .= "\n";
@@ -575,9 +574,9 @@ if ($action == "viewtopic") {
 
 		$quote = htmlspecialchars($arr["body"]);
 
-		$postcount1 = SQL_Query_exec("SELECT COUNT(forum_posts.userid) FROM forum_posts WHERE id=$posterid") or forumsqlerr();
+		$postcount1 = DB::run("SELECT COUNT(forum_posts.userid) FROM forum_posts WHERE id=$posterid") or forumsqlerr();
 
-		while($row = mysqli_fetch_array($postcount1)) {
+		while($row = $postcount1->fetch(PDO::FETCH_LAZY)) {
 
 			if  ($privacylevel == "strong" && $CURUSER["control_panel"] != "yes"){//hide stats, but not from staff
 				$useruploaded = "---";
@@ -658,7 +657,7 @@ if ($action == "viewtopic") {
 	// MODERATOR OPTIONS
      if ($CURUSER["delete_forum"] == "yes" || $CURUSER["edit_forum"] == "yes") {
       print("<br /><div class='f-border f-mod_options' align='center'><table width='100%' cellspacing='0'><tr class='f-title'><th>".T_("FORUMS_MOD_OPTIONS")."</th></tr>\n");
-     $res = SQL_Query_exec("SELECT id,name,minclasswrite FROM forum_forums ORDER BY name");
+     $res = DB::run("SELECT id,name,minclasswrite FROM forum_forums ORDER BY name");
       print("<tr><td class='ttable_col2'>\n");
       print("<form method='post' action='forums.php?action=renametopic'>\n");
       print("<input type='hidden' name='topicid' value='$topicid' />\n");
@@ -669,7 +668,7 @@ if ($action == "viewtopic") {
       print("<form method='post' action='forums.php?action=movetopic&amp;topicid=$topicid'>\n");
       print("<div align='center' style='padding:3px'>");
       print("Move this thread to: <select name='forumid'>");
-      while ($arr = mysqli_fetch_assoc($res))
+      while ($arr = $res->fetch(PDO::FETCH_ASSOC))
         if ($arr["id"] != $forumid && get_user_class() >= $arr["minclasswrite"])
           print("<option value='" . $arr["id"] . "'>" . $arr["name"] . "</option>\n");
       print("</select> <input type='submit' value='Apply' /></div></form>\n");
@@ -713,18 +712,18 @@ if ($action == "movetopic") {
          showerror(T_("FORUM_ERROR"), sprintf(T_("FORUMS_NO_ID_FORUM"),$forumid,$topicid));
 
     // Make sure topic and forum is valid
-    $res = @SQL_Query_exec("SELECT minclasswrite FROM forum_forums WHERE id=$forumid");
-    if (mysqli_num_rows($res) != 1)
+    $res = DB::run("SELECT minclasswrite FROM forum_forums WHERE id=?", [$forumid]);
+    if ($res->rowCount() != 1)
       showerror(T_("ERROR"), T_("FORUMS_NOT_FOUND"));
-    $arr = mysqli_fetch_row($res);
+    $arr = $res->fetch(PDO::FETCH_LAZY);
     if (get_user_class() < $arr[0])
     showerror(T_("FORUM_ERROR"), T_("FORUMS_NOT_ALLOWED"));
-    $res = @SQL_Query_exec("SELECT subject,forumid FROM forum_topics WHERE id=$topicid");
-    if (mysqli_num_rows($res) != 1)
+    $res = DB::run("SELECT subject,forumid FROM forum_topics WHERE id=?", [$topicid]);
+    if ($res->rowCount() != 1)
       showerror(T_("ERROR"), T_("FORUMS_NOT_FOUND_TOPIC"));
-    $arr = mysqli_fetch_assoc($res);
+    $arr = $res->fetch(PDO::FETCH_ASSOC);
     if ($arr["forumid"] != $forumid)
-      @SQL_Query_exec("UPDATE forum_topics SET forumid=$forumid, moved='yes' WHERE id=$topicid");
+        DB::run("UPDATE forum_topics SET forumid=$forumid, moved='yes' WHERE id=$topicid");
 
     // Redirect to forum page
     header("Location: $site_config[SITEURL]/forums.php?action=viewforum&forumid=$forumid");
@@ -741,9 +740,9 @@ if ($action == "deletetopic") {
 	if ($sure == "0") 
 		showerror(T_("FORUMS_DEL_TOPIC"), sprintf(T_("FORUMS_DEL_TOPIC_SANITY_CHK"), $topicid));
 
-	SQL_Query_exec("DELETE FROM forum_topics WHERE id=$topicid");
-	SQL_Query_exec("DELETE FROM forum_posts WHERE topicid=$topicid");
-    SQL_Query_exec("DELETE FROM forum_readposts WHERE topicid=$topicid");
+	DB::run("DELETE FROM forum_topics WHERE id=?", [$topicid]);
+	DB::run("DELETE FROM forum_posts WHERE topicid=?", [$topicid]);
+    DB::run("DELETE FROM forum_readposts WHERE topicid=?", [$topicid]);
 	header("Location: $site_config[SITEURL]/forums.php");
 	die;
 }
@@ -753,10 +752,10 @@ if ($action == "editpost") {
 	$postid = $_GET["postid"];
 	if (!is_valid_id($postid))
         showerror(T_("ERROR"), T_("FORUMS_DENIED"));
-    $res = SQL_Query_exec("SELECT * FROM forum_posts WHERE id=$postid");
-	if (mysqli_num_rows($res) != 1)
+    $res = DB::run("SELECT * FROM forum_posts WHERE id=?", [$postid]);
+	if ($res->rowCount() != 1)
 		showerror(T_("ERROR"), sprintf(T_("FORUMS_NO_ID_POST"), $postid));
-	$arr = mysqli_fetch_assoc($res);
+	$arr = $res->fetch(PDO::FETCH_ASSOC);
     if ($CURUSER["id"] != $arr["userid"] && $CURUSER["delete_forum"] != "yes" && $CURUSER["edit_forum"] != "yes")
 		showerror(T_("ERROR"), T_("FORUMS_DENIED"));
 
@@ -764,9 +763,9 @@ if ($action == "editpost") {
 		$body = $_POST['body'];
 			if ($body == "")
 				showerror(T_("ERROR"), "Body cannot be empty!");
-		$body = sqlesc($body);
-		$editedat = sqlesc(get_date_time());
-		SQL_Query_exec("UPDATE forum_posts SET body=$body, editedat=$editedat, editedby=$CURUSER[id] WHERE id=$postid");
+		$body = $body;
+		$editedat = get_date_time();
+        DB::run("UPDATE forum_posts SET body=?, editedat=?, editedby=? WHERE id=?", [$body, $editedat, $CURUSER['id'], $postid]);
 		$returnto = $_POST["returnto"];
 			if ($returnto != "")
 				header("Location: $returnto");
@@ -806,18 +805,18 @@ if ($action == "deletepost") {
     }
 
 	//------- Get topic id
-    $res = SQL_Query_exec("SELECT topicid FROM forum_posts WHERE id=$postid");
-    $arr = mysqli_fetch_row($res) or showerror(T_("ERROR"), T_("FORUMS_NOT_FOUND_POST"));
+    $res = DB::run("SELECT topicid FROM forum_posts WHERE id=?", [$postid]);
+    $arr = $res->fetch(PDO::FETCH_LAZY) or showerror(T_("ERROR"), T_("FORUMS_NOT_FOUND_POST"));
     $topicid = $arr[0];
 
     //------- We can not delete the post if it is the only one of the topic
-    $res = SQL_Query_exec("SELECT COUNT(*) FROM forum_posts WHERE topicid=$topicid");
-    $arr = mysqli_fetch_row($res);
+    $res = DB::run("SELECT COUNT(*) FROM forum_posts WHERE topicid=?", [$topicid]);
+    $arr =$res->fetch(PDO::FETCH_LAZY);
     if ($arr[0] < 2)
 		showerror(T_("ERROR"), sprintf(T_("FORUMS_DEL_POST_ONLY_POST"), $topicid));
 
     //------- Delete post
-    SQL_Query_exec("DELETE FROM forum_posts WHERE id=$postid");
+    DB::run("DELETE FROM forum_posts WHERE id=?", [$postid]);
 
     //------- Update topic
     update_topic_last_post($topicid);
@@ -832,8 +831,8 @@ if ($action == "locktopic") {
 	$page = $_GET["page"];
 	if (!is_valid_id($topicid) || $CURUSER["delete_forum"] != "yes" || $CURUSER["edit_forum"] != "yes")
         showerror(T_("ERROR"), T_("FORUMS_DENIED"));
-	SQL_Query_exec("UPDATE forum_topics SET locked='yes' WHERE id=$topicid");
-	header("Location: $site_config[SITEURL]/forums.php?action=viewforum&forumid=$forumid&page=$page");
+        DB::run("UPDATE forum_topics SET locked='yes' WHERE id=$topicid");
+        header("Location: $site_config[SITEURL]/forums.php?action=viewforum&forumid=$forumid&page=$page");
 	die;
 }
 
@@ -844,8 +843,8 @@ if ($action == "unlocktopic") {
     $page = $_GET["page"];
     if (!is_valid_id($topicid) || $CURUSER["delete_forum"] != "yes" || $CURUSER["edit_forum"] != "yes")
         showerror(T_("ERROR"), T_("FORUMS_DENIED"));
-    SQL_Query_exec("UPDATE forum_topics SET locked='no' WHERE id=$topicid");
-    header("Location: $site_config[SITEURL]/forums.php?action=viewforum&forumid=$forumid&page=$page");
+        DB::run("UPDATE forum_topics SET locked='no' WHERE id=$topicid");
+        header("Location: $site_config[SITEURL]/forums.php?action=viewforum&forumid=$forumid&page=$page");
     die;
 }
 
@@ -856,8 +855,8 @@ if ($action == "setsticky") {
    $page = $_GET["page"];
    if (!is_valid_id($topicid) || ($CURUSER["delete_forum"] != "yes" && $CURUSER["edit_forum"] != "yes"))
         showerror(T_("ERROR"), T_("FORUMS_DENIED"));
-   SQL_Query_exec("UPDATE forum_topics SET sticky='yes' WHERE id=$topicid");
-   header("Location: $site_config[SITEURL]/forums.php?action=viewforum&forumid=$forumid&page=$page");
+        DB::run("UPDATE forum_topics SET sticky='yes' WHERE id=$topicid");
+        header("Location: $site_config[SITEURL]/forums.php?action=viewforum&forumid=$forumid&page=$page");
    die;
 }
 
@@ -868,8 +867,8 @@ if ($action == "unsetsticky") {
    $page = $_GET["page"];
    if (!is_valid_id($topicid) || ($CURUSER["delete_forum"] != "yes" && $CURUSER["edit_forum"] != "yes"))
         showerror(T_("ERROR"), T_("FORUMS_DENIED"));
-   SQL_Query_exec("UPDATE forum_topics SET sticky='no' WHERE id=$topicid");
-   header("Location: $site_config[SITEURL]/forums.php?action=viewforum&forumid=$forumid&page=$page");
+        DB::run("UPDATE forum_topics SET sticky='no' WHERE id=$topicid");
+        header("Location: $site_config[SITEURL]/forums.php?action=viewforum&forumid=$forumid&page=$page");
    die;
 }
 
@@ -883,8 +882,8 @@ if ($action == 'renametopic') {
   	$subject = $_POST['subject'];
  	if ($subject == '')
 		showerror(T_("ERROR"), T_("FORUMS_YOU_MUST_ENTER_NEW_TITLE"));
-  	$subject = sqlesc($subject);
-  	SQL_Query_exec("UPDATE forum_topics SET subject=$subject WHERE id=$topicid");
+  	$subject = $subject;
+    DB::run("UPDATE forum_topics SET subject=$subject WHERE id=$topicid");
   	$returnto = $_POST['returnto'];
   	if ($returnto)
 		header("Location: $returnto");
@@ -896,21 +895,24 @@ if ($action == "viewforum") {
 	$forumid = $_GET["forumid"];
 	if (!is_valid_id($forumid))
         showerror(T_("ERROR"), T_("FORUMS_DENIED"));
-    $page = $_GET["page"];
-    $userid = $CURUSER["id"];
+        $page = $_GET["page"];
+        $userid = $CURUSER["id"];
 
     //------ Get forum name
-    $res = SQL_Query_exec("SELECT name, minclassread, guest_read FROM forum_forums WHERE id=$forumid");
-    $arr = mysqli_fetch_assoc($res);
+    $res = DB::run("SELECT name, minclassread, guest_read FROM forum_forums WHERE id=?", [$forumid]);
+    $arr = $res->fetch(PDO::FETCH_ASSOC);
     $forumname = $arr["name"];
     if (!$forumname || get_user_class() < $arr["minclassread"] && $arr["guest_read"] == "no")
 		showerror(T_("ERROR"), T_("FORUMS_NOT_PERMIT"));
 
     //------ Get topic count
     $perpage = 20;
-    $res = SQL_Query_exec("SELECT COUNT(*) FROM forum_topics WHERE forumid=$forumid");
-    $arr = mysqli_fetch_row($res);
+    $res = DB::run("SELECT COUNT(*) FROM forum_topics WHERE forumid=$forumid");
+    $arr = $res->fetch(PDO::FETCH_LAZY);
     $num = $arr[0];
+    
+//    $num = DB::run("SELECT COUNT(*) FROM forum_topics WHERE forumid=$forumid")->fetchColumn();
+    
     if ($page == 0)
       $page = 1;
     $first = ($page * $perpage) - $perpage + 1;
@@ -954,32 +956,32 @@ if ($action == "viewforum") {
     $offset = $first - 1;
 
     //------ Get topics data and display category
-    $topicsres = SQL_Query_exec("SELECT * FROM forum_topics WHERE forumid=$forumid ORDER BY sticky, lastpost DESC LIMIT $offset,$perpage");
+    $topicsres = DB::run("SELECT * FROM forum_topics WHERE forumid=$forumid ORDER BY sticky, lastpost DESC LIMIT $offset,$perpage")->fetchAll();
 
     stdhead("Forum : $forumname");
-    $numtopics = mysqli_num_rows($topicsres);
+  //  $numtopics = $topicsres->fetch(PDO::FETCH_LAZY);
     begin_frame("$forumname");
 	forumheader("<a href='forums.php?action=viewforum&amp;forumid=$forumid'>$forumname</a>");
 	
 	if ($CURUSER)
 		print ("<table cellpadding='0' cellspacing='5' width='100%'><tr><td><div align='right'><a href='forums.php?action=newtopic&amp;forumid=$forumid'><img src='". $themedir. "button_new_post.png' alt='' /></a></div></td></tr></table>");
 
-    if ($numtopics > 0) {
+    if ($topicsres > 0) {
 	print("<div class='f-border f-sub_forum'> <table width='100%' cellspacing='0'>");
 
 	print("<tr class='f-title'><th align='left' colspan='2' width='100%'>Topic</th><th>Replies</th><th>Views</th><th>Author</th><th align='right'>Last post</th>\n");
 		if ($CURUSER["edit_forum"] == "yes" || $CURUSER["delete_forum"] == "yes")
 			print("<th>Moderator</th>");
       print("</tr>\n");
-      while ($topicarr = mysqli_fetch_assoc($topicsres)) {
+      foreach ($topicsres as $topicarr) {
 			$topicid = $topicarr["id"];
 			$topic_userid = $topicarr["userid"];
 			$locked = $topicarr["locked"] == "yes";
 			$moved = $topicarr["moved"] == "yes";
 			$sticky = $topicarr["sticky"] == "yes";
 			//---- Get reply count
-			$res = SQL_Query_exec("SELECT COUNT(*) FROM forum_posts WHERE topicid=$topicid");
-			$arr = mysqli_fetch_row($res);
+			$res = DB::run("SELECT COUNT(*) FROM forum_posts WHERE topicid=$topicid");
+			$arr = $res->fetch(PDO::FETCH_LAZY);
 			$posts = $arr[0];
 			$replies = max(0, $posts - 1);
 			$tpages = floor($posts / $postsperpage);
@@ -995,17 +997,17 @@ if ($action == "viewforum") {
           $topicpages = "";
 
         //---- Get userID and date of last post
-        $res = SQL_Query_exec("SELECT * FROM forum_posts WHERE topicid=$topicid ORDER BY id DESC LIMIT 1");
-        $arr = mysqli_fetch_assoc($res);
+        $res = DB::run("SELECT * FROM forum_posts WHERE topicid=$topicid ORDER BY id DESC LIMIT 1");
+        $arr = $res->fetch(PDO::FETCH_ASSOC);
         $lppostid = $arr["id"];
         $lpuserid = ( int ) $arr["userid"];
         $lpadded = utc_to_tz($arr["added"]);
 
         //------ Get name of last poster
         if ($lpuserid > 0) {
-        $res = SQL_Query_exec("SELECT * FROM users WHERE id=$lpuserid");
-        if (mysqli_num_rows($res) == 1) {
-          $arr = mysqli_fetch_assoc($res);
+        $res = DB::run("SELECT * FROM users WHERE id=$lpuserid");
+        if ($res->rowCount() == 1) {
+          $arr = $res->fetch(PDO::FETCH_ASSOC);
           $lpusername = "<a href='account-details.php?id=$lpuserid'>$arr[username]</a>";
         }
         else
@@ -1016,9 +1018,9 @@ if ($action == "viewforum") {
 
         //------ Get author
         if ($topic_userid > 0) {
-        $res = SQL_Query_exec("SELECT username FROM users WHERE id=$topic_userid");
-        if (mysqli_num_rows($res) == 1) {
-          $arr = mysqli_fetch_assoc($res);
+        $res = DB::run("SELECT username FROM users WHERE id=$topic_userid");
+        if ($res->rowCount() == 1) {
+          $arr = $res->fetch(PDO::FETCH_ASSOC);
           $lpauthor = "<a href='account-details.php?id=$topic_userid'>$arr[username]</a>";
         }
         else
@@ -1028,15 +1030,15 @@ if ($action == "viewforum") {
           $lpauthor = "Deluser";
 
 		// Topic Views
-		$viewsq = SQL_Query_exec("SELECT views FROM forum_topics WHERE id=$topicid");
-		$viewsa = mysqli_fetch_array($viewsq);
+		$viewsq = DB::run("SELECT views FROM forum_topics WHERE id=$topicid");
+		$viewsa = $viewsq->fetch(PDO::FETCH_LAZY);
 		$views = $viewsa[0];
 		// End
 
         //---- Print row
 		if ($CURUSER) {
-			$r = SQL_Query_exec("SELECT lastpostread FROM forum_readposts WHERE userid=$userid AND topicid=$topicid");
-			$a = mysqli_fetch_row($r);
+			$r = DB::run("SELECT lastpostread FROM forum_readposts WHERE userid=$userid AND topicid=$topicid");
+			$a = $r->fetch(PDO::FETCH_LAZY);
 		}
         $new = !$a || $lppostid > $a[0];
         $topicpic = ($locked ? ($new ? "folder_locked_new" : "folder_locked") : ($new ? "folder_new" : "folder"));
@@ -1094,28 +1096,26 @@ if ($action == "viewforum") {
 if ($action == "viewunread") {
 	$userid = $CURUSER['id'];
 	$maxresults = 25;
-	$res = SQL_Query_exec("SELECT id, forumid, subject, lastpost FROM forum_topics ORDER BY lastpost");
+	$res = DB::run("SELECT id, forumid, subject, lastpost FROM forum_topics ORDER BY lastpost");
     stdhead();
 	begin_frame("Topics with unread posts");
 	forumheader("New Topics");
 
     $n = 0;
     $uc = get_user_class();
-    while ($arr = mysqli_fetch_assoc($res)) {
+    while ($arr = $res->fetch(PDO::FETCH_ASSOC)) {
       $topicid = $arr['id'];
       $forumid = $arr['forumid'];
 
       //---- Check if post is read
 	  if ($CURUSER) {
-		$r = SQL_Query_exec("SELECT lastpostread FROM forum_readposts WHERE userid=$userid AND topicid=$topicid");
-		$a = mysqli_fetch_row($r);
+		$a = DB::run("SELECT lastpostread FROM forum_readposts WHERE userid=$userid AND topicid=$topicid")->fetch();
 	  }
       if ($a && $a[0] == $arr['lastpost'])
         continue;
 
       //---- Check access & get forum name
-      $r = SQL_Query_exec("SELECT name, minclassread, guest_read FROM forum_forums WHERE id=$forumid");
-      $a = mysqli_fetch_assoc($r);
+      $a = DB::run("SELECT name, minclassread, guest_read FROM forum_forums WHERE id=$forumid")->fetch();
       if ($uc < $a['minclassread'] && $a["guest_read"] == "no")
         continue;
       ++$n;
@@ -1154,7 +1154,7 @@ if ($action == "search") {
 	if ($keywords != ""){
 		print("<p>Search Phrase: <b>" . htmlspecialchars($keywords) . "</b></p>\n");
 		$maxresults = 50;
-		$ekeywords = sqlesc($keywords);
+		$ekeywords = $keywords;
 
         $res = "SELECT forum_posts.topicid, forum_posts.userid, forum_posts.id, forum_posts.added,
                 MATCH ( forum_posts.body ) AGAINST ( ". $ekeywords ." ) AS relevancy
@@ -1162,9 +1162,9 @@ if ($action == "search") {
                 WHERE MATCH ( forum_posts.body ) AGAINST ( ". $ekeywords ." IN BOOLEAN MODE )
                 ORDER BY relevancy DESC";
         
-		$res = SQL_Query_exec($res);
+		$res = DB::run($res);
 		// search and display results...
-		$num = mysqli_num_rows($res);
+		$num = $res->rowCount();
 
 		if ($num > $maxresults) {
 			$num = $maxresults;
@@ -1178,19 +1178,19 @@ if ($action == "search") {
 			print("<tr class='f-title'><th>Post ID</th><th align='left'>Topic</th><th align='left'>Forum</th><th align='left'>Posted by</th></tr>\n");
 
 			for ($i = 0; $i < $num; ++$i){
-				$post = mysqli_fetch_assoc($res);
+				$post = $res->fetch(PDO::FETCH_ASSOC);
 
-				$res2 = SQL_Query_exec("SELECT forumid, subject FROM forum_topics WHERE id=$post[topicid]");
-				$topic = mysqli_fetch_assoc($res2);
+				$res2 = DB::run("SELECT forumid, subject FROM forum_topics WHERE id=$post[topicid]");
+				$topic = $res2->fetch(PDO::FETCH_ASSOC);
 
-				$res2 = SQL_Query_exec("SELECT name,minclassread, guest_read FROM forum_forums WHERE id=$topic[forumid]");
-				$forum = mysqli_fetch_assoc($res2);
+				$res2 = DB::run("SELECT name,minclassread, guest_read FROM forum_forums WHERE id=$topic[forumid]");
+				$forum = $res2->fetch(PDO::FETCH_ASSOC);
 
 				if ($forum["name"] == "" || ($forum["minclassread"] > $CURUSER["class"] && $forum["guest_read"] == "no"))
 					continue;
 				
-				$res2 = SQL_Query_exec("SELECT username FROM users WHERE id=$post[userid]");
-				$user = mysqli_fetch_assoc($res2);
+				$res2 = DB::run("SELECT username FROM users WHERE id=$post[userid]");
+				$user = $res2->fetch(PDO::FETCH_ASSOC);
 				if ($user["username"] == "")
 					$user["username"] = "Deluser";
 				print("<tr class='f-row'><td>$post[id]</td><td align='left'><a href='forums.php?action=viewtopic&amp;topicid=$post[topicid]#post$post[id]'><b>" . htmlspecialchars($topic["subject"]) . "</b></a></td><td align='left'><a href='forums.php?action=viewforum&amp;forumid=$topic[forumid]'><b>" . htmlspecialchars($forum["name"]) . "</b></a></td><td align='left'><a href='account-details.php?id=$post[userid]'><b>$user[username]</b></a><br />at ".utc_to_tz($post["added"])."</td></tr>\n");
@@ -1220,7 +1220,7 @@ if (isset($_GET["catchup"]))
 	catch_up();
 
 ///////////////////////////////////////////////////////// Action: SHOW MAIN FORUM INDEX
-$forums_res = SQL_Query_exec("SELECT forumcats.id AS fcid, forumcats.name AS fcname, forum_forums.* FROM forum_forums LEFT JOIN forumcats ON forumcats.id = forum_forums.category ORDER BY forumcats.sort, forum_forums.sort, forum_forums.name");
+$forums_res = DB::run("SELECT forumcats.id AS fcid, forumcats.name AS fcname, forum_forums.* FROM forum_forums LEFT JOIN forumcats ON forumcats.id = forum_forums.category ORDER BY forumcats.sort, forum_forums.sort, forum_forums.name");
 
 stdhead("Forums");
 begin_frame("Forum Home");
@@ -1231,12 +1231,12 @@ print("<div class='f-border f-forums'><table width='100%' cellspacing='0'>");// 
 
 print("<tr class='f-title'><th align='left' colspan='2'>Forum</th><th width='37' align='right'>Topics</th><th width='47' align='right'>Posts</th><th align='right' width='180'>Last post</th></tr>\n");// head of forum index
   
-if (mysqli_num_rows($forums_res) == 0)
+if ($forums_res->rowCount() == 0)
     print("<tr class='f-cat'><td colspan='5' align='center'>No Forum Categories</td></tr>\n");  
   
 $fcid = 0;
  
-while ($forums_arr = mysqli_fetch_assoc($forums_res)){
+while ($forums_arr = $forums_res->fetch(PDO::FETCH_ASSOC)){
 	
     if (get_user_class() < $forums_arr["minclassread"] && $forums_arr["guest_read"] == "no")
         continue;
@@ -1260,17 +1260,17 @@ while ($forums_arr = mysqli_fetch_assoc($forums_res)){
     $lastpostid = get_forum_last_post($forumid);
 
     // Get last post info
-    $post_res = SQL_Query_exec("SELECT added,topicid,userid FROM forum_posts WHERE id=$lastpostid");
-    if (mysqli_num_rows($post_res) == 1) {
-		$post_arr = mysqli_fetch_assoc($post_res) or showerror(T_("ERROR"), "Bad forum last_post");
+    $post_res = DB::run("SELECT added,topicid,userid FROM forum_posts WHERE id=$lastpostid");
+    if ($post_res->rowCount() == 1) {
+		$post_arr = $post_res->fetch(PDO::FETCH_ASSOC) or showerror(T_("ERROR"), "Bad forum last_post");
 		$lastposterid = $post_arr["userid"];
 		$lastpostdate = utc_to_tz($post_arr["added"]);
 		$lasttopicid = $post_arr["topicid"];
-		$user_res = SQL_Query_exec("SELECT username FROM users WHERE id=$lastposterid");
-		$user_arr = mysqli_fetch_assoc($user_res);
+		$user_res = DB::run("SELECT username FROM users WHERE id=$lastposterid");
+		$user_arr = $user_res->fetch(PDO::FETCH_ASSOC);
 		$lastposter = htmlspecialchars($user_arr['username']);
-		$topic_res = SQL_Query_exec("SELECT subject FROM forum_topics WHERE id=$lasttopicid");
-		$topic_arr = mysqli_fetch_assoc($topic_res);
+		$topic_res = DB::run("SELECT subject FROM forum_topics WHERE id=$lasttopicid");
+		$topic_arr = $topic_res->fetch(PDO::FETCH_ASSOC);
 		$lasttopic = stripslashes(htmlspecialchars($topic_arr['subject']));
 		
 		//cut last topic
@@ -1280,8 +1280,7 @@ while ($forums_arr = mysqli_fetch_assoc($forums_res)){
 
 
 		if ($CURUSER) {
-			$r = SQL_Query_exec("SELECT lastpostread FROM forum_readposts WHERE userid=$CURUSER[id] AND topicid=$lasttopicid");
-			$a = mysqli_fetch_row($r);
+            $a = DB::run("SELECT lastpostread FROM forum_readposts WHERE userid=$CURUSER[id] AND topicid=$lasttopicid")->fetch();
 		}
 
 		//define the images for new posts or not on index
@@ -1308,7 +1307,7 @@ print("<td><img src='". $themedir ."folder_sticky.png' style='margin: 5px' alt='
 print("</tr></table>\n");
 
 //Top posters
-$r = SQL_Query_exec("SELECT users.id, users.username, COUNT(forum_posts.userid) as num FROM forum_posts LEFT JOIN users ON users.id = forum_posts.userid GROUP BY userid ORDER BY num DESC LIMIT 10");
+$r = DB::run("SELECT users.id, users.username, COUNT(forum_posts.userid) as num FROM forum_posts LEFT JOIN users ON users.id = forum_posts.userid GROUP BY userid ORDER BY num DESC LIMIT 10");
 forumpostertable($r);
 
 //topic count and post counts

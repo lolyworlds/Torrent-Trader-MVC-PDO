@@ -8,8 +8,8 @@ if ($action=="blocks" && $do=="view") {
 
     begin_frame(T_("BLC_VIEW"));
 
-    $enabled = SQL_Query_exec("SELECT named, name, description, position, sort FROM blocks WHERE enabled=1 ORDER BY position, sort");
-    $disabled = SQL_Query_exec("SELECT named, name, description, position, sort FROM blocks WHERE enabled=0 ORDER BY position, sort");
+    $enabled = DB::run("SELECT named, name, description, position, sort FROM blocks WHERE enabled=1 ORDER BY position, sort");
+    $disabled = DB::run("SELECT named, name, description, position, sort FROM blocks WHERE enabled=0 ORDER BY position, sort");
     
     print("<table align=\"center\" width=\"600\"><tr><td>");
     print("<table class=\"table_table\" cellspacing=\"1\" align=\"center\" width=\"100%\">".
@@ -25,7 +25,7 @@ if ($action=="blocks" && $do=="view") {
                 "<th class=\"table_head\">Sort<br />Order</th>".
                 "<th class=\"table_head\">Preview</th>".
             "</tr>");
-        while($blocks = mysqli_fetch_assoc($enabled)){
+        while($blocks = $enabled->fetch(PDO::FETCH_LAZY)){
         if(!$setclass){
             $class="table_col2";$setclass=true;}
         else{
@@ -59,7 +59,7 @@ if ($action=="blocks" && $do=="view") {
                 "<th class=\"table_head\">Sort<br />Order</th>".
                 "<th class=\"table_head\">Preview</th>".
             "</tr>");
-        while($blocks = mysqli_fetch_assoc($disabled)){
+        while($blocks = $disabled->fetch(PDO::FETCH_LAZY)){
         if(!$setclass){
             $class="table_col2";$setclass=true;}
         else{
