@@ -88,9 +88,13 @@ $shortname = CutName(htmlspecialchars($row["name"]), $char1);
 
 begin_frame(T_("TORRENT_DETAILS_FOR"). " \"" . $shortname . "\"");
 
-echo "<div align='right'>[<a href='report.php?torrent=$id'><b>" .T_("REPORT_TORRENT"). "</b></a>]&nbsp;";
+echo "<div align='right'><a href='report.php?torrent=$id'><button type='button' class='btn btn-sm btn-danger'><b>" .T_("REPORT_TORRENT"). "</b></button></a>";
 if ($owned)
-	echo "[<a href='torrents-edit.php?id=$row[id]&amp;returnto=" . urlencode($_SERVER["REQUEST_URI"]) . "'><b>".T_("EDIT_TORRENT")."</b></a>]";
+	echo "<a href='torrents-edit.php?id=$row[id]&amp;returnto=" . urlencode($_SERVER["REQUEST_URI"]) . "'><button type='button' class='btn btn-sm btn-success'><b>".T_("EDIT_TORRENT")."</b></button></a>";
+
+// snatch
+echo "<a href=snatched.php?tid=$row[id]><button type='button' class='btn btn-sm btn-warning'><b>".T_("SNATCHLIST")."</b></button></a>";
+
 echo "</div>";
 
 echo "<center><h1>" . $shortname . "</h1></center>";
@@ -109,8 +113,16 @@ echo "<center><table border='0' width='100%'><tr><td><div id='downloadbox'>";
 if ($row["banned"] == "yes"){
 	print ("<center><b>" .T_("DOWNLOAD"). ": </b>BANNED!</center>");
 }else{
-	print ("<table border='0' cellpadding='0' width='100%'><tr><td align='center' valign='middle' width='54'><a href=\"download.php?id=$id&amp;name=" . rawurlencode($row["filename"]) . "\"><img src=\"".$site_config["SITEURL"]."/images/download_torrent.png\" border=\"0\" alt='' /></a></td>");
-	print ("<td valign='top'><a href=\"download.php?id=$id&amp;name=" . rawurlencode($row["filename"]) . "\">".T_("DOWNLOAD_TORRENT")."</a><br />");
+		print ("<table border='0' width='100%'><tr>");
+	
+	// Magnet
+	if ($row["external"] == 'yes'){
+    print ("<a href=\"magnet:?xt=urn:btih:".$row["info_hash"]."&dn=".$row["filename"]."&tr=udp://tracker.openbittorrent.com&tr=udp://tracker.publicbt.com\"><button type='button' class='btn btn-sm btn-danger'>Magnet Download</button></a>");
+    }else{
+    print ("<a href=\"magnet:?xt=urn:btih:".$row["info_hash"]."&dn=".$row["filename"]."&tr=".$site_config['SITEURL']."/announce.php/?passkey=".$CURUSER["passkey"]."\"><button type='button' class='btn btn-sm btn-danger'>Magnet Download</button></a>");
+    }
+	
+	print ("<a href=\"download.php?id=$id&amp;name=" . rawurlencode($row["filename"]) . "\"><button type='button' class='btn btn-sm btn-success'>".T_("DOWNLOAD_TORRENT")."</button></a></br>");
 	print ("<b>" .T_("HEALTH"). ": </b><img src='".$site_config["SITEURL"]."/images/health/health_".health($row["leechers"], $row["seeders"]).".gif' alt='' /><br />");
 	print ("<b>" .T_("SEEDS"). ": </b><font color='green'>" . number_format($row["seeders"]) . "</font><br />");
 	print ("<b>".T_("LEECHERS").": </b><font color='#ff0000'>" .  number_format($row["leechers"]) . "</font><br />");

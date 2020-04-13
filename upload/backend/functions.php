@@ -440,6 +440,8 @@ function deletetorrent($id) {
 
     DB::run("DELETE FROM torrents WHERE id = $id");
     DB::run("DELETE FROM reports WHERE votedfor = $id AND type = 'torrent'");
+	// snatch
+	DB::run("DELETE FROM `snatched` WHERE `tid` = '$id'");
 }
 
 function deleteaccount($userid) 
@@ -453,6 +455,8 @@ function deleteaccount($userid)
     DB::run("DELETE FROM reports WHERE votedfor = $userid AND type = 'user'");
     DB::run("DELETE FROM forum_readposts WHERE userid = $userid");
     DB::run("DELETE FROM pollanswers WHERE userid = $userid");
+	// snatch
+	DB::run("DELETE FROM `snatched` WHERE `uid` = '$userid'");
 }
 
 function genrelist() {
@@ -793,6 +797,9 @@ $wait = '';
             case 'dl':
                 echo "<th>".T_("DL")."</th>";
                 break;
+			case 'magnet':
+                echo "<th>".T_("MAGNET2")."</th>";
+                break;
             case 'uploader':
                 echo "<th>".T_("UPLOADER")."</th>";
                 break;
@@ -882,6 +889,10 @@ $wait = '';
                 case 'dl':
                     print("<td class='ttable_col$x' align='center'><a href=\"download.php?id=$id&amp;name=" . rawurlencode($row["filename"]) . "\"><img src='" . $site_config['SITEURL'] . "/images/icon_download.gif' border='0' alt=\"Download .torrent\" /></a></td>");
                     break;
+					case 'magnet':
+					$magnet = DB::run("SELECT info_hash FROM torrents WHERE id=?", [$id])->fetch();
+					print ("<td class='ttable_col$x' align='center'><a href=\"magnet:?xt=urn:btih:" . $magnet["info_hash"] . "&dn=" . rawurlencode($row['name']) . "&tr=" . $row['announce'] . "?passkey=". $CURUSER ['passkey']. "\"><img src='" . $site_config['SITEURL'] . "/images/magnetique.png' border='0' title='Download via Magnet' /></a></td>");
+					break;
                 case 'uploader':
                     echo "<td class='ttable_col$x' align='center'>";
                     if (($row["anon"] == "yes" || $row["privacy"] == "strong") && $CURUSER["id"] != $row["owner"] && $CURUSER["edit_torrents"] != "yes")
@@ -1373,6 +1384,16 @@ function class_user($name)
    }
  
     return unesc("<font color='" . $gcolor . "'>" . $name . "" . $star . "" . $warn . "" . $disabled . "</font>");
+}
+
+// snatch
+function seedtime($ts = 0)
+{                                                                                                   
+    $days = floor($ts / 86400);
+    $hours = floor($ts / 3600 ) % 24;   
+    $mins = floor($ts / 60) % 60;
+    $secs = $ts % 60;
+    return sprintf( '%d days, %d hours, %d minutes, %d seconds...', $days, $hours, $mins, $secs);
 }
 
 ?>

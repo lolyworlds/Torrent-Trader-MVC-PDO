@@ -74,18 +74,19 @@ document.getElementById("id1").style.display="none";
  document.getElementById("id2").style.display="none";
  document.getElementById("id3").style.display="none";
  document.getElementById("id4").style.display="none";
+ document.getElementById("id5").style.display="none";
  document.getElementById(elementId).style.display="block";
 }
 
 </script>
 
 
-<button type="button" onclick="show('id1');">DETAILS</button>
-<button type="button" onclick="show('id2');">SHARING</button>
-<button type="button" onclick="show('id3');">UPLOADED</button>
+<button type="button" class="btn btn-sm btn-primary" onclick="show('id1');">DETAILS</button>
+<button type="button" class="btn btn-sm btn-primary" onclick="show('id2');">SHARING</button>
+<button type="button" class="btn btn-sm btn-primary" onclick="show('id3');">UPLOADED</button>
 <?php if($CURUSER["edit_users"]=="yes"){ ?>
-<button type="button" onclick="show('id4');">EDIT</button>
-<button type="button" onclick="show('id5');">WARNINGS</button>
+<button type="button" class="btn btn-sm btn-primary" onclick="show('id4');">EDIT</button>
+<button type="button" class="btn btn-sm btn-primary" onclick="show('id5');">WARNINGS</button>
 <?php } ?>
 <?php
 
@@ -137,10 +138,13 @@ document.getElementById("id1").style.display="none";
 
 		<td align="left">
 		<img src="<?php echo $avatar; ?>" alt="" title="<?php echo class_user($user["username"]); ?>" height="80" width="80" /><br />
-		<a href="mailbox.php?compose&amp;id=<?php echo $user["id"]?>"><?php echo T_("SEND_PM"); ?></a><br />
+		<a href="mailbox.php?compose&amp;id=<?php echo $user["id"]?>"><button type='button' class='btn btn-sm btn-success'><?php echo T_("SEND_PM") ?></button></a><br />
 		<!-- <a href=#>View Forum Posts</a><br />
 		<a href=#>View Comments</a><br /> -->
-		<a href="report.php?user=<?php echo $user["id"]?>"><?php echo T_("REPORT_MEMBER"); ?></a><br />
+		<a href="report.php?user=<?php echo $user["id"]?>"><button type='button' class='btn btn-sm btn-danger'><?php echo T_("REPORT_MEMBER") ?></button></a><br />
+	<?php if ($CURUSER["edit_users"]=="yes") { ?>
+  <div style="margin-bottom:3px"><a href="snatched.php?uid=<?php echo $user["id"]?>"><button type='button' class='btn btn-sm btn-warning'><?php echo T_("SNATCHLIST") ?></button></a></div>
+<?php } ?>
 		</td>
 	</tr>
 	<?php if ($CURUSER["edit_users"] == "yes") { ?>
@@ -154,7 +158,7 @@ document.getElementById("id1").style.display="none";
 				if ($user["invited_by"]) {
 					$invited = $user['invited_by'];
                     $row = DB::run("SELECT username FROM users WHERE id=?", [$invited])->fetch();
-					echo "<b>".T_("INVITED_BY").":</b> <a href=\"account-details.php?id=$user[invited_by]\">$row[username]</a><br />";
+					echo "<b>".T_("INVITED_BY").":</b> <a href=\"account-details.php?id=$user[invited_by]\">".class_user($row['username'])."</a><br />";
 				}
 				echo "<b>".T_("INVITES").":</b> ".number_format($user["invites"])."<br />";
 				$invitees = array_reverse(explode(" ", $user["invitees"]));
@@ -162,7 +166,7 @@ document.getElementById("id1").style.display="none";
 				foreach ($invitees as $invitee) {
 					$res = DB::run("SELECT id, username FROM users WHERE id=? and status=?", [$invitee, 'confirmed']);
 					if ($row = $res->fetch()) {
-						$rows[] = "<a href=\"account-details.php?id=$row[id]\">$row[username]</a>";
+						$rows[] = "<a href=\"account-details.php?id=$row[id]\">".class_user($row['username'])."</a>";
 					}
 				}
 				if ($rows)
@@ -340,15 +344,15 @@ document.getElementById("id1").style.display="none";
 	echo "<br /><br /><center><table border='0'><tr><td align='right'><b>".T_("REASON").":</b> </td><td align='left'><textarea cols='40' rows='5' name='reason'></textarea></td></tr>";
 	echo "<tr><td align='right'><b>".T_("EXPIRE").":</b> </td><td align='left'><input type='text' size='4' name='expiry' />(days)</td></tr>";
 	echo "<tr><td align='right'><b>".T_("TYPE").":</b> </td><td align='left'><input type='text' size='10' name='type' /></td></tr>";
-	echo "<tr><td colspan='2' align='center'><input type='submit' value='".T_("ADD_WARNING")."' /></td></tr></table></center></form>";
+	echo "<tr><td colspan='2' align='center'><button type='button' class='btn btn-sm btn-success'><b>" .T_("ADD_WARNING"). "</b></button></td></tr></table></center></form>";
 
 	if($CURUSER["delete_users"] == "yes"){
 		print("<hr /><center><form method='post' action='admin-modtasks.php'>\n");
 		print("<input type='hidden' name='action' value='deleteaccount' />\n");
 		print("<input type='hidden' name='userid' value='$id' />\n");
-		print("<input type='hidden' name='username' value='".class_user($user["username"])."' />\n");
+		print("<input type='hidden' name='username' value='".$user["username"]."' />\n");
 		echo "<b>".T_("REASON").":</b><input type='text' size='30' name='delreason' />";
-		echo "&nbsp;<input type='submit' value='".T_("DELETE_ACCOUNT")."' /></form></center>";
+		echo "<button type='button' class='btn btn-sm btn-danger'><b>" .T_("DELETE_ACCOUNT"). "</b></button></form></center>";
 	}
 
 

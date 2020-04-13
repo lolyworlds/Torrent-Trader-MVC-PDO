@@ -1079,5 +1079,28 @@ $LANG["YOUR_SETTINGS"] = "Your Settings";
 $LANG["SYSTEM"] = "System";
 $LANG["CANCEL"] = "Cancel";
 $LANG["SENDER"] = "Sender";
- 
+
+// magnet
+$LANG["MAGNET"] = "Magnet Torrent";
+$LANG["MAGNET2"] = "Magnet";
+
+// Snatchlist
+$LANG["SNATCHLIST"] = "Snatchlist";
+$LANG["YOUR_SNATCHLIST"] = "Your Snatchlist";
+$LANG["SNATCHLIST_FOR"] = "Snatchlist For:";
+$LANG["LAST_ACTION"] = "Last Action";
+$LANG["SEED_TIME"] = "Seed Time";
+$LANG["GO_TO_YOUR_PROFILE"] = "Go to Your Profile";
+$LANG["GO_TO_USER_ACCOUNT"] = "Go to User Account";
+$LANG["HNR"] = "<font color=#FF1200><b>H</b><small>&</small><b>R</b></font>";
+$LANG["SNATCHED_MESSAGE"] = "This page displays the details to all downloaded torrents, completed or not.";
+$LANG["NO_USER_WITH_ID"] = "There is no user with ID: ";
+$LANG["NO_TORRENT_WITH_ID"] = "There is no torrent with ID: ";
+$LANG["REGISTERED_MEMBERS_TO_TORRENT"] = "Registered Members To Torrent:";
+$LANG["NO_PERMISSION"] = "You don't have permission for this action!";
+$LANG["T_L_OR_E"] = "Local or External";
+$LANG["LOCAL_TORRENT"] = "Local Torrent";
+$LANG["EXTERNAL_TORRENT"] = "External Torrent";
+$LANG["FREE"] = "Free";
+
 ?>

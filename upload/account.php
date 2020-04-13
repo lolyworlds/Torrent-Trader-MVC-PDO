@@ -21,6 +21,8 @@ function navmenu(){
 		<?php print("<a href='account.php?action=mytorrents'><b>".T_("YOUR_TORRENTS")."</b></a>");?>
 		&nbsp;|&nbsp;
 		<?php print("<a href='mailbox.php'><b>".T_("YOUR_MESSAGES")."</b></a>");?>
+		 &nbsp;|&nbsp;
+        <?php print("<a href='snatched.php'><b>".T_("YOUR_SNATCHLIST")."</b></a>");?>
 		</th>
         </tr>
 		</table>

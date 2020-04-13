@@ -61,7 +61,7 @@ if ($delete=='1'){
 	}
 
 	DB::run("DELETE FROM comments WHERE id =?", [$id]);
-	write_log(clas_user($CURUSER['username'])." has deleted comment: ID: $id");
+	write_log(class_user($CURUSER['username'])." has deleted comment: ID: $id");
 	show_error_msg(T_("COMPLETE"), "Comment deleted OK", 1);
 }
 

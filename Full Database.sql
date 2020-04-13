@@ -543,6 +543,24 @@ CREATE TABLE `shoutbox` (
   PRIMARY KEY  (`msgid`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 ;
 
+CREATE TABLE IF NOT EXISTS `snatched` (
+  `sid` int(11) unsigned NOT NULL auto_increment,
+  `tid` int(11) unsigned NOT NULL default '0',
+  `uid` int(11) unsigned NOT NULL default '0',
+  `stime` int(11) unsigned NOT NULL default '0',
+  `utime` int(11) unsigned NOT NULL default '0',
+  `ltime` int(11) unsigned NOT NULL default '0',
+  `uload` bigint(20) unsigned NOT NULL default '0',
+  `dload` bigint(20) unsigned NOT NULL default '0',
+  `completed` enum('0','1') NOT NULL default '0',
+  `hnr` enum('no','yes') NOT NULL default 'no',
+  PRIMARY KEY  (`sid`),
+  UNIQUE KEY `tid_uid` (`tid`,`uid`),
+  KEY `completed` (`completed`),
+  KEY `tid` (`tid`),
+  KEY `uid` (`uid`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
 DROP TABLE IF EXISTS `stylesheets`;
 CREATE TABLE `stylesheets` (
   `id` int(10) unsigned NOT NULL auto_increment,

@@ -9,6 +9,27 @@ require_once("backend/dbclass.php");
 $MEMBERSONLY = $site_config["MEMBERSONLY"];
 $MEMBERSONLY_WAIT = $site_config["MEMBERSONLY_WAIT"];
 
+$_GET = array_map_recursive("unesc", $_GET);
+
+//START FUNCTIONS
+function array_map_recursive ($callback, $array) {
+	$ret = array();
+
+	if (!is_array($array))
+		return $callback($array);
+
+	foreach ($array as $key => $val) {
+		$ret[$key] = array_map_recursive($callback, $val);
+	}
+	return $ret;
+}
+
+
+function unesc($x) {
+		return stripslashes($x);
+	return $x;
+}
+
 function is_valid_id($id) {
 	return is_numeric($id) && ($id > 0) && (floor($id) == $id);
 }
@@ -257,14 +278,18 @@ if (!isset($self)){ //IF PEER IS NOT IN PEERS TABLE DO THE WAIT TIME CHECK
 	@fclose($sockres);
 
 }else{
+	// snatch
+	$elapsed = ($self['seeder'] == 'yes') ? $site_config['announce_interval'] - floor(($self['ez'] - time()) / 60) : 0; //
     $upthis = max(0, $uploaded - $self["uploaded"]);
     $downthis = max(0, $downloaded - $self["downloaded"]);
 
-    if (($upthis > 0 || $downthis > 0) && is_valid_id($userid)){ // LIVE STATS!)
+    if (($upthis > 0 || $downthis > 0 || $elapsed > 0) && is_valid_id($userid)){ // LIVE STATS!)
 		if ($torrent["freeleech"] == 1){
             DB::run("UPDATE users SET uploaded = uploaded + $upthis WHERE id=$userid") or err("Tracker error: Unable to update stats");
 		}else{
             DB::run("UPDATE users SET uploaded = uploaded + $upthis, downloaded = downloaded + $downthis WHERE id=$userid") or err("Tracker error: Unable to update stats");
+			// snatch
+			DB::run("UPDATE LOW_PRIORITY `snatched` SET `uload` = `uload` + '$upthis', `dload` = `dload` + '$downthis', `utime` = '".gmtime()."', `ltime` = `ltime` + '$elapsed' WHERE `tid` = '$torrentid' AND `uid` = '$userid'");
 		}
     }
 }//END WAIT AND STATS UPDATE
@@ -288,6 +313,8 @@ if ($event == "completed") { // UPDATE "COMPLETED" EVENT
 
 	if ($MEMBERSONLY)
         DB::run("INSERT INTO completed (userid, torrentid, date) VALUES ($userid, $torrentid, '".get_date_time()."')");
+	    // snatch
+		DB::run("UPDATE LOW_PRIORITY `snatched` SET `completed` = '1' WHERE `tid` = '$torrentid' AND `uid` = '$userid' AND `utime` = '" . gmtime() . "'");
 }//END COMPLETED
 
 if (isset($self)){// NO EVENT? THEN WE MUST BE A NEW PEER OR ARE NOW SEEDING A COMPLETED TORRENT
@@ -308,6 +335,11 @@ if (isset($self)){// NO EVENT? THEN WE MUST BE A NEW PEER OR ARE NOW SEEDING A C
 
     $ret = DB::run("INSERT INTO peers (connectable, torrent, peer_id, ip, passkey, port, uploaded, downloaded, to_go, started, last_action, seeder, userid, client) VALUES ('$connectable', $torrentid, " . sqlesc($peer_id) . ", " . sqlesc($ip) . ", " . sqlesc($passkey) . ", $port, $uploaded, $downloaded, $left, '".get_date_time()."', '".get_date_time()."', '$seeder', '$userid', " . sqlesc($agent) . ")");
     
+	// snatch
+	if ( ($MEMBERSONLY) && (($seeder == 'no' && $torrent['freeleech'] == 0)) ) {
+    DB::run("INSERT INTO `snatched` (`uid`, `tid`, `stime`, `utime`) VALUES ('$userid', '$torrentid', '".gmtime()."', '".gmtime()."') ON DUPLICATE KEY UPDATE `utime` = '" . gmtime() . "'");
+    }
+	
     if ($ret){
         if ($seeder == "yes")
             $updateset[] = "seeders = seeders + 1";
