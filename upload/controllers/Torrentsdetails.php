@@ -260,7 +260,7 @@ echo "</table></fieldset><br /><br />";
 		}
 		$srating .= "\n";
 		if (!isset($CURUSER))
-			$srating .= "(<a href=\"/accountlogin?returnto=" . urlencode($_SERVER["REQUEST_URI"]) . "&amp;nowarn=1\">Log in</a> to rate it)";
+			$srating .= "(<a href='/accountlogin'>Log in</a> to rate it)";
 		else {
 			$ratings = array(
 					5 => T_("COOL"),

@@ -40,7 +40,8 @@
                     echo "[<a href=\"/accountlogin\"><font color='#fff'>".T_("LOGIN")."</font></a>]<b> ";
                 }else{
                     print (T_("LOGGED_IN_AS").": ".class_user($CURUSER["username"]).""); 
-                    echo " [<a href=\"/accountlogout\"><font color='#fff'>".T_("LOGOUT")."</font></a>] ";
+                    // call controller/method
+					echo " [<a href='/accountlogin/logout'><font color='#fff'>".T_("LOGOUT")."</font></a>] ";
                     if ($CURUSER["control_panel"]=="yes") {
                         print("[<a href='/admincp'><font color='#fff'>".T_("STAFFCP")."</font></a>] ");
                     }

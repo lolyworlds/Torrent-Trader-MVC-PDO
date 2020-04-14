@@ -1,85 +1,74 @@
 <?php
-  class Accountlogin extends Controller {
-    
-    public function __construct(){
-        // $this->userModel = $this->model('User');
+class Accountlogin extends Controller
+{
+    // autoload model with constructor
+    public function __construct()
+    {
+        $this->userModel = $this->model('User');
     }
-    
-    public function index(){
-		// Set Current User
-		// $curuser = $this->userModel->setCurrentUser();
-		// Set Current User
-		// $db = new Database;
-dbconn();
-global $site_config, $CURUSER;
 
-if (!empty($_REQUEST["returnto"])) {
-	if (!$_GET["nowarn"]) {    
-		 $nowarn = T_("MEMBERS_ONLY");
-	}
-}
+    public function index()
+    {
+		dbconn();
+		// add globals
+        global $site_config, $CURUSER;
 
-if ($_POST["username"] && $_POST["password"]) {
+        $username = $_POST['username'] ?? false;
+        $user_password = $_POST['password'] ?? false;
+        $message = '';
 
-	$password = $_POST["password"];
+        if ($username && $user_password) {
 
-	if (!empty($_POST["username"]) && !empty($_POST["password"])) {
-        $row = DB::run("SELECT id, password, secret, status, enabled FROM users WHERE username =? ", [$_POST["username"]])->fetch();
+            $password = $user_password;
+            // called model method/function
+			$row = $this->userModel->getUserByUsername($username);
 
-		if ( !$row || !password_verify($password,$row["password"]))
-			$message = T_("LOGIN_INCORRECT");
-		elseif ($row["status"] == "pending")
-			$message = T_("ACCOUNT_PENDING");
-		elseif ($row["enabled"] == "no")
-			$message = T_("ACCOUNT_DISABLED");
-	} else
-		$message = T_("NO_EMPTY_FIELDS");
+            if (!$row || !password_verify($password, $row["password"])) {
+                $message = T_("LOGIN_INCORRECT");
+            } elseif ($row["status"] == "pending") {
+                $message = T_("ACCOUNT_PENDING");
+            } elseif ($row["enabled"] == "no") {
+                $message = T_("ACCOUNT_DISABLED");
+            }
 
-	if (!$message){
-		logincookie($row["id"], $row["password"], $row["secret"]);
-		if (!empty($_POST["returnto"])) {
-			header("Refresh: 0; url=" . $_POST["returnto"]);
-			die();
-		}
-		else {
-			header("Refresh: 0; url=index.php");
-			die();
-		}
-	}else{
-		show_error_msg(T_("ACCESS_DENIED"), $message, 1);
-	}
-}
+            if (!$message) {
 
-logoutcookie();
+                logincookie($row["id"], $row["password"], $row["secret"]);
+                if (!empty($_POST)) {
+                    header("Refresh: 0; url=index.php");
+                    die();
+                }
+            } else {
+                show_error_msg(T_("ACCESS_DENIED"), $message, 1);
+            }
+        }
 
-stdhead(T_("LOGIN"));
- 
- if ($nowarn)
-      show_error_msg(T_("ERROR"), $nowarn, 0);
-      
-begin_frame(T_("LOGIN"));
+        logoutcookie();
 
-?>
+        stdhead(T_("LOGIN"));
 
-<form method="post" action="/accountlogin">
-  <table border="0" cellpadding="3" align="center">
-		<tr><td align="center"><b><?php echo T_("USERNAME"); ?>:</b> <input type="text" size="40" name="username" /></td></tr>
-		<tr><td align="center"><b><?php echo T_("PASSWORD"); ?>:</b> <input type="password" size="40" name="password" /></td></tr>
-		<tr><td colspan="2" align="center"><input type="submit" value="<?php echo T_("LOGIN"); ?>" /><br /><br /><i><?php echo T_("COOKIES");?></i></td></tr>
-	</table>
-<?php
+        begin_frame(T_("LOGIN"));
 
-if ( ! empty($_REQUEST["returnto"]) )
-{ 
-      print("<input type=\"hidden\" name=\"returnto\" value=\"" . cleanstr($_REQUEST["returnto"]) . "\" />\n");
-}
-?>
+        if ($site_config["MEMBERSONLY"]) {
+            $message = T_("MEMBERS_ONLY");
+            print("<center><b>" . $message . "</b></center>\n");
+        }
 
-</form>
-<p align="center"><a href="/accountsignup"><?php echo T_("SIGNUP"); ?></a> | <a href="/accountrecover"><?php echo T_("RECOVER_ACCOUNT"); ?></a></p>
+		// add view
+		$data = [
+		  //  we can add data to view 'posts' => $posts
+		  ];
+		  // load view
+		  $this->view('account/login', $data);
 
-<?php
-end_frame();
-stdfoot();
-	}
+        end_frame();
+        stdfoot();
+    }
+	
+	public function logout()
+    {
+        dbconn();
+        logoutcookie();
+        header("Location: /index.php");
+    }
 }

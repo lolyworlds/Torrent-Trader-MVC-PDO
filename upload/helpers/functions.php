@@ -390,7 +390,7 @@ function gmtime() {
 function loggedinonly() {
 	global $CURUSER;
 	if (!$CURUSER) {
-		header("Refresh: 0; url=/accountlogin?returnto=" . urlencode($_SERVER["REQUEST_URI"]));
+		header("Refresh: 0; url=/accountlogin");
 		exit();
 	}
 }
