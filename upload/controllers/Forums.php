@@ -35,7 +35,7 @@ if ($CURUSER["forumbanned"] == "yes" || $CURUSER["view_forum"] == "no")
 
 //Here we decide if the forums is on or off
 if ($site_config["FORUMS"]) {
-$themedir = "/themes/".$THEME."/forums/";
+$themedir = "views/themes/".$THEME."/forums/";
 
 //setup the forum head aread
 function forumheader($location){
@@ -155,7 +155,8 @@ function forumpostertable($res) {
 
 // Inserts a quick jump menu
 function insert_quick_jump_menu($currentforum = 0) {
-    print("<div style='text-align:right'><form method='get' action='?' name='jump'>\n");
+    global $CURUSER;
+  print("<div style='text-align:right'><form method='get' action='?' name='jump'>\n");
     print("<input type='hidden' name='action' value='viewforum' />\n");
     $res = DB::run("SELECT * FROM forum_forums ORDER BY name");
    

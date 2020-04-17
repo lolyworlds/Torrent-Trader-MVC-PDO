@@ -16,12 +16,12 @@ loggedinonly ();
 stdhead(T_("HOME"));
 
 //check
-if (file_exists("/check") && $CURUSER["class"] == 7){
-	show_error_msg("WARNING", "/check still exists, please delete or rename the file as it could pose a security risk<br /><br /><a href='/check'>View /check</a> - Use to check your config!<br /><br />",0);
+if (file_exists("check.php") && $CURUSER["class"] == 7){
+	show_error_msg("WARNING", "check still exists, please delete or rename the file as it could pose a security risk<br /><br /><a href='".$site_config["SITEURL"]."/check.php'>View /check</a> - Use to check your config!<br /><br />",0);
 }
 //intro
-if (file_exists("pdointro.php") && $CURUSER["class"] == 7){
-	show_error_msg("UPDATE", "Any mods must be PDO to work here is a page to assist<br /><br /><a href='pdointro.php'>Guide to update old mods!</a> - !<br /><br />",0);
+if (file_exists("controllers/Ttintro.php") && $CURUSER["class"] == 7){
+	show_error_msg("UPDATE", "Any mods must be PDO to work here is a page to assist<br /><br /><a href='".$site_config["SITEURL"]."/ttintro'>Guide to update old mods!</a> - !<br /><br />",0);
 }
 
 //Site Notice

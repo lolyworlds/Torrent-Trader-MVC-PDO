@@ -1,16 +1,4 @@
 <?php
-  class Check extends Controller {
-    
-    public function __construct(){
-        // $this->userModel = $this->model('User');
-    }
-    
-    public function index(){
-		// Set Current User
-		// $curuser = $this->userModel->setCurrentUser();
-		// Set Current User
-		// $db = new Database;
-
 error_reporting(E_ALL ^ E_NOTICE);
 
 if ($_GET["phpinfo"] == 1){
@@ -278,8 +266,8 @@ echo "<b>Table Status Check:</b><br /><br />";
                 $res = $link->prepare("SELECT uri FROM stylesheets WHERE id=$site_config[default_theme]");
                 $res->execute();
                 if ($row = $res->fetch(PDO::FETCH_LAZY)) {
-                    if (file_exists("themes/$row[0]/header.php"))
-                        echo "<font color='green'><b>Valid.</b></font> (ID: $site_config[default_theme], Path: themes/$row[0]/)";
+                    if (file_exists("views/themes/$row[0]/header.php"))
+                        echo "<font color='green'><b>Valid.</b></font> (ID: $site_config[default_theme], Path: views/themes/$row[0]/)";
                     else
                         echo "<font color='#ff0000'><b>Invalid.</b></font> (No header.php found)";
                 } else
@@ -312,5 +300,3 @@ $link = null;
 </html>
 <?php
 }//end func
-}
-  }

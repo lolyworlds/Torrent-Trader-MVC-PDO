@@ -90,7 +90,7 @@ if ($action == "style") {
 		echo T_("THEME_CURRENT").":<form id='deltheme' method='post' action='/admincp?action=style&amp;do=del'><table width='60%' class='table_table' align='center'>".
 			"<tr><th class='table_head'>ID</th><th class='table_head'>".T_("NAME")."</th><th class='table_head'>".T_("THEME_FOLDER_NAME")."</th><th width='5%' class='table_head'><input type='checkbox' name='checkall' onclick='checkAll(this.form.id);' /></th></tr>";
 		while ($row=$res->fetch(PDO::FETCH_ASSOC)) {
-			if (!is_dir("themes/$row[uri]"))
+			if (!is_dir("views/themes/$row[uri]"))
 				$row['uri'] .= " <b>- ".T_("THEME_DIR_DONT_EXIST")."</b>";
 			echo "<tr><td class='table_col1' align='center'>$row[id]</td><td class='table_col2' align='center'>$row[name]</td><td class='table_col1' align='center'>$row[uri]</td><td class='table_col2' align='center'><input name='ids[]' type='checkbox' value='$row[id]' /></td></tr>";
 		}
@@ -98,12 +98,12 @@ if ($action == "style") {
 		
 		echo "<p>".T_("THEME_IN_THEMES_BUT_NOT_IN_DB")."</p><form id='addtheme' action='/admincp?action=style&amp;do=add2' method='post'><table width='60%' class='table_table' align='center'>".
 			"<tr><th class='table_head'>".T_("NAME")."</th><th class='table_head'>".T_("THEME_FOLDER_NAME")."</th><th width='5%' class='table_head'><input type='checkbox' name='checkall' onclick='checkAll(this.form.id);' /></th></tr>";
-		$dh = opendir("themes/");
+		$dh = opendir("views/themes/");
 		$i=0;
 		while (($file = readdir($dh)) !== false) {
-			if ($file == "." || $file == ".." || !is_dir("themes/$file"))
+			if ($file == "." || $file == ".." || !is_dir("views/themes/$file"))
 				continue;
-			if (is_file("themes/$file/header.php")) {
+			if (is_file("views/themes/$file/header.php")) {
 					$res = DB::run("SELECT id FROM stylesheets WHERE uri = '$file' ");
 					if ($res->rowCount() == 0) {
 						echo "<tr><td class='table_col1' align='center'><input type='text' name='add[$i][name]' value='$file' /></td><td class='table_col2' align='center'>$file<input type='hidden' name='add[$i][uri]' value='$file' /></td><td class='table_col1' align='center'><input type='checkbox' name='add[$i][add]' value='1' /></td></tr>";

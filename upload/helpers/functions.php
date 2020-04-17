@@ -193,13 +193,13 @@ function stdhead($title = "") {
     else
         $title = $site_config['SITENAME']. " : ". htmlspecialchars($title);
 
-	require_once(TTROOT."/themes/" . $THEME . "/block.php");
-	require_once(TTROOT."/themes/" . $THEME . "/header.php");
+	require_once("views/themes/" . $THEME . "/block.php");
+	require_once("views/themes/" . $THEME . "/header.php");
 }
 
 function stdfoot() {
 	global $site_config, $CURUSER, $THEME, $LANGUAGE;
-	require_once(TTROOT."/themes/" . $THEME . "/footer.php");
+	require_once("views/themes/" . $THEME . "/footer.php");
 }
 
 function leftblocks() {
@@ -215,7 +215,7 @@ function leftblocks() {
     }
 
     foreach ($blocks as $blockfilename){
-        include(TTROOT."/blocks/".$blockfilename."_block.php");
+        include("blocks/".$blockfilename."_block.php");
     }
 }
 
@@ -232,7 +232,7 @@ function rightblocks() {
     }
 
     foreach ($blocks as $blockfilename){
-        include(TTROOT."/blocks/".$blockfilename."_block.php");
+        include("blocks/".$blockfilename."_block.php");
     }
 }
 
@@ -249,7 +249,7 @@ function middleblocks() {
     }
 
     foreach ($blocks as $blockfilename){
-        include(TTROOT."/blocks/".$blockfilename."_block.php");
+        include("blocks/".$blockfilename."_block.php");
     }
 }
 
@@ -1157,9 +1157,9 @@ function commenttable($res, $type = null) {
         print('</tr>');
         print('<tr valign="top">');
         if ($CURUSER['edit_users'] == 'no' && $privacylevel == 'strong')
-            print('<td class="f-border comment-details" align="left" width="150"><center><b>'.$postername.'</b><br /><i>'.$title.'</i><br /><img width="80" height="80" src="'.$avatar.'" alt="" /><br /><br />Uploaded: ---<br />Downloaded: ---<br />Ratio: ---<br /><br /><a href="/accountdetails?id='.$row["user"].'"><img src="themes/'.$THEME.'/forums/icon_profile.png" border="" alt="" /></a> <a href="/mailbox?compose&amp;id='.$row["user"].'"><img src="themes/'.$THEME.'/forums/icon_pm.png" border="0" alt="" /></a></center></td>');
+            print('<td class="f-border comment-details" align="left" width="150"><center><b>'.$postername.'</b><br /><i>'.$title.'</i><br /><img width="80" height="80" src="'.$avatar.'" alt="" /><br /><br />Uploaded: ---<br />Downloaded: ---<br />Ratio: ---<br /><br /><a href="/accountdetails?id='.$row["user"].'"><img src="view/themes/'.$THEME.'/forums/icon_profile.png" border="" alt="" /></a> <a href="/mailbox?compose&amp;id='.$row["user"].'"><img src="views/themes/'.$THEME.'/forums/icon_pm.png" border="0" alt="" /></a></center></td>');
         else
-            print('<td class="f-border comment-details" align="left" width="150"><center><b>'.$postername.'</b><br /><i>'.$title.'</i><br /><img width="80" height="80" src="'.$avatar.'" alt="" /><br /><br />Uploaded: '.$useruploaded.'<br />Downloaded: '.$userdownloaded.'<br />Ratio: '.$userratio.'<br /><br /><a href="/accountdetails?id='.$row["user"].'"><img src="themes/'.$THEME.'/forums/icon_profile.png" border="0" alt="" /></a> <a href="/mailbox?compose&amp;id='.$row["user"].'"><img src="themes/'.$THEME.'/forums/icon_pm.png" border="0" alt="" /></a></center></td>');
+            print('<td class="f-border comment-details" align="left" width="150"><center><b>'.$postername.'</b><br /><i>'.$title.'</i><br /><img width="80" height="80" src="'.$avatar.'" alt="" /><br /><br />Uploaded: '.$useruploaded.'<br />Downloaded: '.$userdownloaded.'<br />Ratio: '.$userratio.'<br /><br /><a href="/accountdetails?id='.$row["user"].'"><img src="views/themes/'.$THEME.'/forums/icon_profile.png" border="0" alt="" /></a> <a href="/mailbox?compose&amp;id='.$row["user"].'"><img src="views/themes/'.$THEME.'/forums/icon_pm.png" border="0" alt="" /></a></center></td>');
         print('<td class="f-border comment">'.$commenttext.'<hr />'.$usersignature.'</td>');
         print('</tr>');
         print('</table></div>');

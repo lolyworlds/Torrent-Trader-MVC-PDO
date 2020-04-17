@@ -59,7 +59,7 @@ if(!isset($_GET['history'])){
 <title><?php echo $site_config['SITENAME'] . T_("SHOUTBOX"); ?></title>
 <?php /* If you do change the refresh interval, you should also change index.php printf(T_("SHOUTBOX_REFRESH"), 5) the 5 is in minutes */ ?>
 <meta http-equiv="refresh" content="300" />
-<link rel="stylesheet" type="text/css" href="<?php echo $site_config['SITEURL']?>/themes/<?php echo $THEME; ?>/theme.css" />
+<link rel="stylesheet" type="text/css" href="<?php echo $site_config['SITEURL']?>/views/themes/<?php echo $THEME; ?>/theme.css" />
 <script type="text/javascript" src="<?php echo $site_config['SITEURL']; ?>/helpers/java_klappe.js"></script>
 </head>
 <body class="shoutbox_body">

@@ -196,7 +196,7 @@ include("admin/admin_blocks.php");
 include("admin/admin_categories.php");
 include("admin/admin_censor.php");
 include("admin/admin_cheats.php");
-include("admin/admin_/comments");
+include("admin/admin_comments.php");
 include("admin/admin_config.php");
 include("admin/admin_emailban.php");
 include("admin/admin_exceptionlog.php");
@@ -218,7 +218,7 @@ include("admin/admin_simpleusersearch.php");
 include("admin/admin_sitelog.php");
 include("admin/admin_theme.php");
 include("admin/admin_torrentlang.php");
-include("admin/admin_torrentsmain");
+include("admin/admin_torrents.php");
 include("admin/admin_warnedusers.php");
 include("admin/admin_whoswhere.php");
 }
