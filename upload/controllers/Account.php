@@ -16,32 +16,6 @@ loggedinonly();
 
 stdhead(T_("USERCP"));
 
-function navmenu(){
-?>
-	<br />
-      <div class="f-border">
-		<table cellpadding='0' cellspacing='3' width='100%'>
-		<tr class="f-title">
-		<th width='100%' height="32" align='center'>
-		<?php print("<a href='/account'><b>".T_("YOUR_PROFILE")."</b></a>");?>
-		&nbsp;|&nbsp;
-		<?php print("<a href='/account?action=edit_settings&amp;do=edit'><b>".T_("YOUR_SETTINGS")."</b></a>");?>
-		&nbsp;|&nbsp;
-		<?php print("<a href='/account?action=changepw'><b>".T_("CHANGE_PASS")."</b></a>");?>
-		&nbsp;|&nbsp;
-		<?php print("<a href='/account?action=mytorrents'><b>".T_("YOUR_TORRENTS")."</b></a>");?>
-		&nbsp;|&nbsp;
-		<?php print("<a href='/mailbox'><b>".T_("YOUR_MESSAGES")."</b></a>");?>
-		 &nbsp;|&nbsp;
-        <?php print("<a href='/snatched'><b>".T_("YOUR_SNATCHLIST")."</b></a>");?>
-		</th>
-        </tr>
-		</table>
-	  </div>
-    <br />
-	<?php
-}//end func
-
 $action = $_REQUEST["action"];
 $do = $_REQUEST["do"];
 
@@ -238,12 +212,7 @@ if ($action=="edit_settings"){
 	}
 
 	// END CAT LIST SQL
-	function priv($name, $descr) {
-		global $CURUSER;
-		if ($CURUSER["privacy"] == $name)
-			return "<input type=\"radio\" name=\"privacy\" value=\"$name\" checked=\"checked\" /> $descr";
-		return "<input type=\"radio\" name=\"privacy\" value=\"$name\" /> $descr";
-	}
+
 
 	print("<tr><td align='right' class='alt3'><b>" . T_("ACCOUNT_PRIVACY_LVL") . ":</b> </td><td align='left' class='alt3'>". priv("normal", "<b>" . T_("NORMAL") . "</b>") . " " . priv("low", "<b>" . T_("LOW") . "</b>") . " " . priv("strong", "<b>" . T_("STRONG") . "</b>") . "<br /><i>".T_("ACCOUNT_PRIVACY_LVL_MSG")."</i></td></tr>");
 	print("<tr><td align='right' class='alt2'><b>" . T_("EMAIL_NOTIFICATION") . ":</b> </td><td align='left' class='alt2'><input type='checkbox' name='pmnotif' " . (strpos($CURUSER['notifs'], "[pm]") !== false ? " checked='checked'" : "") .
@@ -408,7 +377,7 @@ email address had the IP address {$_SERVER["REMOTE_ADDR"]}. Please do not reply.
 
 To complete the update of your user profile, please follow this link:
 
-{$site_config["SITEURL"]}//accountce?id={$CURUSER["id"]}&secret=$hash&email=$obemail
+{$site_config["SITEURL"]}/accountce?id={$CURUSER["id"]}&secret=$hash&email=$obemail
 
 Your new email address will appear in your profile after you do this. Otherwise
 your profile will remain unchanged.

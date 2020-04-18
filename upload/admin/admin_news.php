@@ -4,7 +4,7 @@
 /////////////////////// NEWS ///////////////////////
 if ($action=="news" && $do=="view"){
 	stdhead(T_("NEWS_MANAGEMENT"));
-	navmenu();
+	adminnavmenu();
 
 	begin_frame(T_("NEWS"));
 	echo "<center><a href='/admincp?action=news&amp;do=add'><b>".T_("CP_NEWS_ADD_ITEM")."</b></a></center><br />";
@@ -69,7 +69,7 @@ if ($action=="news" && $do=="takeadd"){
 
 if ($action=="news" && $do=="add"){
 	stdhead(T_("NEWS_MANAGEMENT"));
-	navmenu();
+	adminnavmenu();
 
 	begin_frame(T_("CP_NEWS_ADD"));
 	print("<center><form method='post' action='/admincp' name='news'>\n");
@@ -89,7 +89,7 @@ if ($action=="news" && $do=="add"){
 
 if ($action=="news" && $do=="edit"){
 	stdhead(T_("NEWS_MANAGEMENT"));
-	navmenu();
+	adminnavmenu();
 
 	$newsid = (int)$_GET["newsid"];
 	

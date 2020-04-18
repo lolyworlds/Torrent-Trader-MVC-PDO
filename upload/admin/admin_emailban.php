@@ -2,7 +2,7 @@
 
 if ($action=="emailbans"){
 	stdhead(T_("EMAIL_BANS"));
-	navmenu();
+	adminnavmenu();
 
 	$remove = (int) $_GET['remove'];
 

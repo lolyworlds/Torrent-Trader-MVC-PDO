@@ -1,6 +1,18 @@
 <?php
-require_once("core/init.php");
+  class Exceptionview extends Controller {
+    
+    public function __construct(){
+        // $this->userModel = $this->model('User');
+    }
+    
+    public function index(){
+		// Set Current User
+		// $curuser = $this->userModel->setCurrentUser();
+		// Set Current User
+		// $db = new Database;
+
 dbconn();
+global $site_config, $CURUSER;
 
 if (!$CURUSER || $CURUSER["control_panel"]!="yes"){
      show_error_msg(T_("ERROR"), T_("SORRY_NO_RIGHTS_TO_ACCESS"), 1);
@@ -41,4 +53,7 @@ stdhead(T_('EXCEPTION_VIEW'));
   end_frame();
 
 stdfoot();
+
+}
+}
 ?>

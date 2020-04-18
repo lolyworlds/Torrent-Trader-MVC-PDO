@@ -2,7 +2,7 @@
 
 if ($action=="bannedtorrents"){
 	stdhead("Banned Torrents");
-	navmenu();
+	adminnavmenu();
 		
 	$res2 = DB::run("SELECT COUNT(*) FROM torrents WHERE banned=?", ['yes']);
 	$row = $res2->fetch(PDO::FETCH_LAZY);

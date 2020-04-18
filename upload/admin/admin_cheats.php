@@ -2,7 +2,7 @@
 
 if ($action == "cheats") {
 	stdhead("Possible Cheater Detection");
-	navmenu();
+	adminnavmenu();
 
     $megabts = (int) $_POST['megabts'];
     $daysago = (int) $_POST['daysago'];

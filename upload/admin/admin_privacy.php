@@ -31,7 +31,7 @@ if ($action == "privacylevel")
     $res = DB::run("SELECT id, username, class, email, ip, added, last_access FROM users WHERE $where ORDER BY username DESC $limit");
     
     stdhead("Privacy Level");
-    navmenu();
+    adminnavmenu();
     
     begin_frame("Privacy Level");
     ?>

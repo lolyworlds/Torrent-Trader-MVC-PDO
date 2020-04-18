@@ -51,7 +51,7 @@ if ($action == "users")
     $res = DB::run("SELECT id, username, class, email, ip, added, last_access FROM users WHERE enabled = 'yes' AND status = 'confirmed' $where ORDER BY username DESC $limit");
     
     stdhead(T_("USERS_SEARCH_SIMPLE"));
-    navmenu();
+    adminnavmenu();
     
     begin_frame(T_("USERS_SEARCH_SIMPLE"));
     ?>

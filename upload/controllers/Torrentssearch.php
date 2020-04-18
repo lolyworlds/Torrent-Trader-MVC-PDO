@@ -20,9 +20,6 @@ if ($site_config["MEMBERSONLY"]){
 		show_error_msg(T_("ERROR"), T_("NO_TORRENT_VIEW"), 1);
 }
 
-function sqlwildcardesc($x){
-    return str_replace(array("%","_"), array("\\%","\\_"), $x);
-}
 
 //GET SEARCH STRING
 $searchstr = trim($_GET["search"]);
@@ -198,7 +195,7 @@ if (!$count && isset($cleansearchstr)) {
 //Sort by
 if ($addparam != "") { 
 	if ($pagerlink != "") {
-		if ($addparam{strlen($addparam)-1} != ";") { // & = &amp;
+		if ($addparam[strlen($addparam)-1] != ";") { // & = &amp;
 			$addparam = $addparam . "&amp;" . $pagerlink;
 		} else {
 			$addparam = $addparam . $pagerlink;

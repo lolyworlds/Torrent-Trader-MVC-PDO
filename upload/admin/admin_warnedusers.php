@@ -37,7 +37,7 @@ if ($action == "warned")
     $res = DB::run("SELECT `id`, `username`, `class`, `added`, `last_access` FROM `users` WHERE `enabled` = 'yes' AND `status` = 'confirmed' AND `warned` = 'yes' ORDER BY `added` DESC $limit");
 
     stdhead("Warned Users");
-    navmenu();
+    adminnavmenu();
     
     begin_frame("Warned Users");
     ?>

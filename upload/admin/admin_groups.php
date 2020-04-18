@@ -2,7 +2,7 @@
 /////////////////////// GROUPS MANAGEMENT ///////////////////////
 if ($action=="groups" && $do=="view"){
 	stdhead(T_("GROUPS_MANAGEMENT"));
-	navmenu();
+	adminnavmenu();
 
 	begin_frame(T_("USER_GROUPS"));
 	
@@ -57,7 +57,7 @@ if ($action=="groups" && $do=="edit"){
 	$level=$rlevel->fetch(PDO::FETCH_ASSOC);
 
 	stdhead(T_("GROUPS_MANAGEMENT"));
-	navmenu();
+	adminnavmenu();
 
 
 	begin_frame(T_("CP_EDIT_GROUP"));
@@ -93,7 +93,7 @@ if ($action=="groups" && $do=="edit"){
 
 if ($action=="groups" && $do=="update"){
 		stdhead(T_("GROUPS_MANAGEMENT"));
-		navmenu();
+		adminnavmenu();
 
 		begin_frame(T_("_BTN_UPDT_"));
 
@@ -142,7 +142,7 @@ if ($action=="groups" && $do=="delete"){
 if ($action=="groups" && $do=="add") {
 	stdhead(T_("GROUPS_MANAGEMENT"));
 
-	navmenu();
+	adminnavmenu();
 
 	begin_frame(T_("GROUPS_ADD_NEW"));
 	?>
@@ -168,7 +168,7 @@ if ($action=="groups" && $do=="addnew") {
 	
 	stdhead(T_("GROUPS_MANAGEMENT"));
 
-	navmenu();
+	adminnavmenu();
 
 	begin_frame(T_("GROUPS_ADD_NEW"));
 

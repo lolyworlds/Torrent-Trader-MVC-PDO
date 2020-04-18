@@ -2,7 +2,7 @@
 ////////// categories /////////////////////
 if ($action=="categories" && $do=="view"){
 	stdhead(T_("Categories Management"));
-	navmenu();
+	adminnavmenu();
 
 	begin_frame(T_("TORRENT_CATEGORIES"));
 	echo "<center><a href='/admincp?action=categories&amp;do=add'><b>Add New Category</b></a></center><br />";
@@ -34,7 +34,7 @@ if ($action=="categories" && $do=="view"){
 
 if ($action=="categories" && $do=="edit"){
 	stdhead(T_("Categories Management"));
-	navmenu();
+	adminnavmenu();
 
 	$id = (int)$_GET["id"];
 	
@@ -84,7 +84,7 @@ if ($action=="categories" && $do=="edit"){
 
 if ($action=="categories" && $do=="delete"){
 	stdhead(T_("Categories Management"));
-	navmenu();
+	adminnavmenu();
 
 	$id = (int)$_GET["id"];
 
@@ -141,7 +141,7 @@ if ($action=="categories" && $do=="takeadd"){
 
 if ($action=="categories" && $do=="add"){
 	stdhead(T_("CATEGORY_MANAGEMENT"));
-	navmenu();
+	adminnavmenu();
 
 	begin_frame(T_("CATEGORY_ADD"));
 	print("<center><form method='post' action='/admincp'>\n");

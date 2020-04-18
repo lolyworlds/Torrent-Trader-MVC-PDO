@@ -21,7 +21,7 @@ show_error_msg(T_("SUCCESS"), "Selected Backup Files deleted", 0);
 }
 if ($action=="backups"){
   stdhead("Backups");
-  navmenu();
+  adminnavmenu();
   begin_frame("Backups");
   $Namebk = array();
   $Sizebk = array();

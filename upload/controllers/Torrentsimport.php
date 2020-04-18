@@ -33,7 +33,6 @@ $announce_urls = explode(",", strtolower($site_config["announce_list"]));  //gen
 
 if ($_POST["takeupload"] == "yes") {
 	set_time_limit(0);
-	require_once("helpers/parse.php");
 	stdhead(T_("UPLOAD_COMPLETE"));
 	begin_frame(T_("UPLOAD_COMPLETE"));
 	echo "<center>";

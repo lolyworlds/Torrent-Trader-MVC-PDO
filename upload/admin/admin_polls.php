@@ -2,7 +2,7 @@
 
 if ($action=="polls" && $do=="view"){
 	stdhead(T_("POLLS_MANAGEMENT"));
-	navmenu();
+	adminnavmenu();
 	begin_frame(T_("POLLS_MANAGEMENT"));
 
 	echo "<center><a href='/admincp?action=polls&amp;do=add'>Add New Poll</a>";
@@ -25,7 +25,7 @@ if ($action=="polls" && $do=="view"){
 /////////////
 if ($action=="polls" && $do=="results"){
 	stdhead("Polls");
-	navmenu();
+	adminnavmenu();
 	begin_frame("Results");
 	echo "<table class=\"table_table\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\" width=\"95%\">";
 	echo '<tr>';
@@ -80,7 +80,7 @@ if ($action=="polls" && $do=="delete"){
 
 if ($action=="polls" && $do=="add"){
 	stdhead("Polls");
-	navmenu();
+	adminnavmenu();
 
 	$pollid = (int)$_GET["pollid"];
 

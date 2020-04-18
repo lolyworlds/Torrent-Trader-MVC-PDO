@@ -2,7 +2,7 @@
 
 if ($action=="avatars"){
 	stdhead("Avatar Log");
-	navmenu();
+	adminnavmenu();
 
 	begin_frame("Avatar Log");
 

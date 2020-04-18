@@ -2,7 +2,7 @@
 
 if ($action=="masspm"){
 	stdhead("Mass Private Message");
-	navmenu();
+	adminnavmenu();
 
     # Tidy Up...
     

@@ -18,7 +18,7 @@ if ($action=="messagespy"){
 
 
 	stdhead("Message Spy");
-	navmenu();
+	adminnavmenu();
 
 	$row = DB::run("SELECT COUNT(*) FROM messages WHERE location in ('in', 'both')")->fetch(PDO::FETCH_LAZY);
 	$count = $row[0];

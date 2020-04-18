@@ -2,7 +2,7 @@
 
 if ($action=="torrentlangs" && $do=="view"){
 	stdhead(T_("TORRENT_LANGUAGES"));
-	navmenu();
+	adminnavmenu();
 	begin_frame(T_("TORRENT_LANGUAGES"));
 	echo "<center><a href='/admincp?action=torrentlangs&amp;do=add'><b>Add New Language</b></a></center><br />";
 
@@ -31,7 +31,7 @@ if ($action=="torrentlangs" && $do=="view"){
 
 if ($action=="torrentlangs" && $do=="edit"){
 	stdhead(T_("TORRENT_LANG_MANAGEMENT"));
-	navmenu();
+	adminnavmenu();
 
 	$id = (int)$_GET["id"];
 	
@@ -79,7 +79,7 @@ if ($action=="torrentlangs" && $do=="edit"){
 
 if ($action=="torrentlangs" && $do=="delete"){
 	stdhead(T_("TORRENT_LANG_MANAGEMENT"));
-	navmenu();
+	adminnavmenu();
 
 	$id = (int)$_GET["id"];
 
@@ -131,7 +131,7 @@ if ($action=="torrentlangs" && $do=="takeadd"){
 
 if ($action=="torrentlangs" && $do=="add"){
 	stdhead(T_("TORRENT_LANG_MANAGEMENT"));
-	navmenu();
+	adminnavmenu();
 
 	begin_frame("Add Language");
 	print("<center><form method='post' action='/admincp'>\n");

@@ -18,7 +18,7 @@ if ($action == "sitelog") {
 	}
 
 	stdhead("Site Log");
-	navmenu();
+	adminnavmenu();
 
     $search = trim($_GET['search']);
 	

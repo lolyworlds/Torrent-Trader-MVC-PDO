@@ -3,7 +3,7 @@
 if ($action == "whoswhere")
 {
     stdhead("Where are members");
-    navmenu();
+    adminnavmenu();
     
     $res = DB::run("SELECT `id`, `username`, `page`, `last_access` FROM `users` WHERE `enabled` = 'yes' AND `status` = 'confirmed' AND `page` != '' ORDER BY `last_access` DESC LIMIT 100");
     begin_frame("Last 100 Page Views");

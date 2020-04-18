@@ -159,34 +159,6 @@ if ($_REQUEST["edit"] == "true")
 	$TTCache->Delete("blocks_left");
 	$TTCache->Delete("blocks_middle");
 	$TTCache->Delete("blocks_right");
-    
-	//resort left blocks
-	function resortleft(){
-		$sortleft = DB::run("SELECT sort, id FROM blocks WHERE position='left' AND enabled=1 ORDER BY sort ASC");
-		$i=1;
-		while($sort = $sortleft->fetch(PDO::FETCH_ASSOC)){
-            DB::run("UPDATE blocks SET sort = $i WHERE id=".$sort["id"]);
-			$i++;
-		}
-	}
-	//resort middle blocks
-	function resortmiddle(){
-		$sortmiddle = DB::run("SELECT sort, id FROM blocks WHERE position='middle' AND enabled=1 ORDER BY sort ASC");
-		$i=1;
-		while($sort = $sortmiddle->fetch(PDO::FETCH_ASSOC)){
-            DB::run("UPDATE blocks SET sort = $i WHERE id=".$sort["id"]);
-			$i++;
-		}
-	}
-	//resort right blocks
-	function resortright(){
-		$sortright = DB::run("SELECT sort, id FROM blocks WHERE position='right' AND enabled=1 ORDER BY sort ASC");
-		$i=1;
-		while($sort = $sortright->fetch(PDO::FETCH_ASSOC)){
-            DB::run("UPDATE blocks SET sort = $i WHERE id=".$sort["id"]);
-			$i++;
-		}
-	}
 
 	// == delete
 

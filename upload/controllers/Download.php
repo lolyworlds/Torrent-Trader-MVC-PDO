@@ -53,15 +53,14 @@ $name = $friendlyname ."[". $friendlyurl ."]". $friendlyext;
 
 DB::run("UPDATE torrents SET hits = hits + 1 WHERE id = $id");
 
-require_once("helpers/BEncode.php");
-require_once("helpers/BDecode.php");
+require_once("classes/BEcode.php");
 
 //if user dont have a passkey generate one, only if tracker is set to members only
 if ($site_config["MEMBERSONLY"]){
 	if (strlen($CURUSER['passkey']) != 32) {
 		$rand = array_sum(explode(" ", microtime()));
 		$CURUSER['passkey'] = md5($CURUSER['username'].$rand.$CURUSER['secret'].($rand*mt_rand()));
-		DB::run("UPDATE users SET passkey=? WHERE id=?", [$CURUSER[passkey], $CURUSER['id']]);
+		DB::run("UPDATE users SET passkey=? WHERE id=?", [$CURUSER['passkey'], $CURUSER['id']]);
 	}
 }
 

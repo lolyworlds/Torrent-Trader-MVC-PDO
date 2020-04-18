@@ -4,7 +4,7 @@
 #======================================================================#
 if($action == "censor") {
 stdhead("Censor");
-navmenu();
+adminnavmenu();
 if($site_config["OLD_CENSOR"])
 {
 //Output

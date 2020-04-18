@@ -58,22 +58,6 @@ $avatar = htmlspecialchars($user["avatar"]);
 		$avatar = $site_config["SITEURL"]."/images/default_avatar.png";
 	}
 
-function peerstable($res){
-	$ret = "<table align='center' cellpadding=\"3\" cellspacing=\"0\" class=\"table_table\" width=\"100%\" border=\"1\"><tr><th class='table_head'>".T_("NAME")."</th><th class='table_head'>".T_("SIZE")."</th><th class='table_head'>" .T_("UPLOADED"). "</th>\n<th class='table_head'>" .T_("DOWNLOADED"). "</th><th class='table_head'>" .T_("RATIO"). "</th></tr>\n";
-
-	while ($arr = $res->fetch(PDO::FETCH_LAZY)){
-		$res2 = DB::run("SELECT name,size FROM torrents WHERE id=? ORDER BY name", [$arr['torrent']]);
-		$arr2 = $res2->fetch(PDO::FETCH_LAZY);
-		if ($arr["downloaded"] > 0){
-			$ratio = number_format($arr["uploaded"] / $arr["downloaded"], 2);
-		}else{
-			$ratio = "---";
-		}
-		$ret .= "<tr><td class='table_col1'><a href='torrentsdetails?id=$arr[torrent]&amp;hit=1'><b>" . htmlspecialchars($arr2["name"]) . "</b></a></td><td align='center' class='table_col2'>" . mksize($arr2["size"]) . "</td><td align='center' class='table_col1'>" . mksize($arr["uploaded"]) . "</td><td align='center' class='table_col2'>" . mksize($arr["downloaded"]) . "</td><td align='center' class='table_col1'>$ratio</td></tr>\n";
-  }
-  $ret .= "</table>\n";
-  return $ret;
-}
 
 //Layout		
 begin_frame(sprintf(T_("USER_DETAILS_FOR"), class_user($user["username"])));
@@ -269,7 +253,7 @@ document.getElementById("id1").style.display="none";
 	$forumbanned = $user["forumbanned"] == 'yes';
 	$modcomment = htmlspecialchars($user["modcomment"]);
 
-	print("<form method='post' action='admin-modtasks.php'>\n");
+	print("<form method='post' action='adminmodtasks'>\n");
 	print("<input type='hidden' name='action' value='edituser' />\n");
 	print("<input type='hidden' name='userid' value='$id' />\n");
 	print("<table border='0' cellspacing='0' cellpadding='3'>\n");
@@ -349,7 +333,7 @@ document.getElementById("id1").style.display="none";
 	}
 
 
-	print("<form method='post' action='admin-modtasks.php'>\n");
+	print("<form method='post' action='adminmodtasks'>\n");
 	print("<input type='hidden' name='action' value='addwarning' />\n");
 	print("<input type='hidden' name='userid' value='$id' />\n");
 	echo "<br /><br /><center><table border='0'><tr><td align='right'><b>".T_("REASON").":</b> </td><td align='left'><textarea cols='40' rows='5' name='reason'></textarea></td></tr>";
@@ -358,7 +342,7 @@ document.getElementById("id1").style.display="none";
 	echo "<tr><td colspan='2' align='center'><button type='button' class='btn btn-sm btn-success'><b>" .T_("ADD_WARNING"). "</b></button></td></tr></table></center></form>";
 
 	if($CURUSER["delete_users"] == "yes"){
-		print("<hr /><center><form method='post' action='admin-modtasks.php'>\n");
+		print("<hr /><center><form method='post' action='adminmodtasks'>\n");
 		print("<input type='hidden' name='action' value='deleteaccount' />\n");
 		print("<input type='hidden' name='userid' value='$id' />\n");
 		print("<input type='hidden' name='username' value='".$user["username"]."' />\n");

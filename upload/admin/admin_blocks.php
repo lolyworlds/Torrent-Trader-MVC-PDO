@@ -4,7 +4,7 @@
 if ($action=="blocks" && $do=="view") {
     stdhead(T_("_BLC_MAN_"));
 
-    navmenu();
+    adminnavmenu();
 
     begin_frame(T_("BLC_VIEW"));
 

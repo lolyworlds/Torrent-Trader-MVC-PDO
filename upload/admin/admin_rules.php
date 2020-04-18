@@ -2,7 +2,7 @@
 
 if ($action=="rules" && $do=="view"){
 	stdhead(T_("SITE_RULES_EDITOR"));
-	navmenu();
+	adminnavmenu();
 
 	begin_frame(T_("SITE_RULES_EDITOR"));
 
@@ -40,7 +40,7 @@ if ($action=="rules" && $do=="edit"){
 
 
 	stdhead(T_("SITE_RULES_EDITOR"));
-	navmenu();
+	adminnavmenu();
 	
 	begin_frame("Edit Rule Section");
 	$id = (int)$_POST["id"];
@@ -70,7 +70,7 @@ if ($action=="rules" && $do=="addsect"){
 		die();
 	}
 	stdhead(T_("SITE_RULES_EDITOR"));
-	navmenu();
+	adminnavmenu();
 	begin_frame(T_("ADD_NEW_RULES_SECTION"));
 	print("<form method=\"post\" action=\"/admincp?action=rules&amp;do=addsect&amp;save=1\">");
 	print("<table border=\"0\" cellspacing=\"0\" cellpadding=\"10\" align=\"center\">\n");

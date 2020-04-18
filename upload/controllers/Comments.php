@@ -10,7 +10,7 @@
 		// $curuser = $this->userModel->setCurrentUser();
 		// Set Current User
 		// $db = new Database;
-require_once("helpers/bbcode.php");
+require_once("helpers/bbcode_helper.php");
 dbconn();
 global $site_config, $CURUSER;
 if ($site_config["MEMBERSONLY"]) {

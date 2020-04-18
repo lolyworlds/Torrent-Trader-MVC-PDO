@@ -22,7 +22,7 @@
       $res = DB::run("SELECT * FROM `sqlerr` ORDER BY `time` DESC $limit");
       
       stdhead('SQL Error');
-      navmenu();
+      adminnavmenu();
       
       begin_frame('SQL Error');
       

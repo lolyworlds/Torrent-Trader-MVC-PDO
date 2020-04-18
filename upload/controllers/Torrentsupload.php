@@ -25,7 +25,6 @@ if ($site_config["MEMBERSONLY"]){
 $announce_urls = explode(",", strtolower($site_config["announce_list"]));  //generate announce_urls[] from config.php
 
 if ($_POST["takeupload"] == "yes") {
-	require_once("helpers/parse.php");
 
     // Check form data.
     if ( ! isset($_POST['type'], $_POST['name'], $_FILES['torrent']) )
@@ -341,7 +340,7 @@ if ($site_config['ANONYMOUSUPLOAD'] && $site_config["MEMBERSONLY"] ){ ?>
 
 print ("<tr><td align='center' colspan='2'>" . T_("DESCRIPTION") . "</td></tr></table>");
 
-require_once("helpers/bbcode.php");
+require_once("helpers/bbcode_helper.php");
 print textbbcode("upload","descr","$descr");
 ?>
 

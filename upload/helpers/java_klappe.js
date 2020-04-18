@@ -146,7 +146,7 @@ function klappe_torrent(id)
 
   function PopMoreSmiles(form,name) 
   {
-      link = 'helpers/smilies.php?action=display&form='+form+'&text='+name
+      link = '/helpers/smilies_helper.php?action=display&form='+form+'&text='+name
       newWin = window.open(link,'moresmile','height=500,width=450,resizable=no,scrollbars=yes,location=no');
       if (window.focus) {newWin.focus()}
   }

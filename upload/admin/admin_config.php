@@ -14,7 +14,7 @@
      }                               
      
      stdhead("Site Configuration");
-     navmenu();
+     adminnavmenu();
      
      begin_frame("Site Configuration - Incompleted!");
      ?>

@@ -2,7 +2,7 @@
 
 if ($action=="peers"){
 	stdhead("Peers List");
-	navmenu();
+	adminnavmenu();
 
 	begin_frame("Peers List");
 

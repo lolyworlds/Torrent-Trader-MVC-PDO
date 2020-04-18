@@ -10,7 +10,7 @@
 		// $curuser = $this->userModel->setCurrentUser();
 		// Set Current User
 		// $db = new Database;
-require_once("helpers/bbcode.php");
+require_once("helpers/bbcode_helper.php");
 dbconn();
 global $site_config, $CURUSER;
 loggedinonly();
@@ -22,7 +22,7 @@ if (!$CURUSER || $CURUSER["control_panel"]!="yes"){
  $action = $_REQUEST["action"];
  $do = $_REQUEST["do"];
  
-function navmenu(){
+function adminnavmenu(){
 global $site_config;
 
 //Get Last Cleanup
@@ -93,7 +93,7 @@ return ($ver[0] . " " . $ver[1]);
     <div class="col"><td><a href="/admincp?action=privacylevel"><img src="images/admin/privacy_level.png" border="0" width="32" height="32" alt="" /><br />Privacy Level<br /></a><td></div>     
     <div class="col"><td><a href="/admincp?action=pendinginvite"><img src="images/admin/pending_invited_user.png" border="0" width="32" height="32" alt="" /><br />Pending Invited Users<br /></a><td></div>    
     <div class="col"><td><a href="/admincp?action=invited"><img src="images/admin/invited_user.png" border="0" width="32" height="32" alt="" /><br />Invited Users<br /></a><td></div>    
-    <div class="col"><td><a href="exception-view.php"><img src="images/admin/sql_error.png" border="0" width="32" height="32" alt="" /><br />SQL Error<br /></a><td></div>  
+    <div class="col"><td><a href="exceptionview"><img src="images/admin/sql_error.png" border="0" width="32" height="32" alt="" /><br />SQL Error<br /></a><td></div>  
 </div>
 <?php
 	end_frame();
@@ -101,7 +101,7 @@ return ($ver[0] . " " . $ver[1]);
 
 if (!$action){
 	stdhead(T_("ADMIN_CP"));
-	navmenu();
+	adminnavmenu();
 	stdfoot();
 }
 
@@ -109,7 +109,7 @@ if ($action=="forceclean"){
 	$now = gmtime();
 	DB::run("UPDATE tasks SET last_time=$now WHERE task='cleanup'");
     
-	require_once("helpers/cleanup.php");
+	require_once("helpers/cleanup_helper.php");
 	do_cleanup();
     
     autolink('/admincp', T_("FORCE_CLEAN_COMPLETED"));
@@ -142,7 +142,7 @@ if ($action == "confirmreg")
     $res = DB::run("SELECT `id`, `username`, `email`, `added`, `ip` FROM `users` WHERE `status` = 'pending' AND `invited_by` = '0' ORDER BY `added` DESC $limit");
 
     stdhead("Manual Registration Confirm");
-    navmenu();
+    adminnavmenu();
     
     begin_frame("Manual Registration Confirm");
     ?>

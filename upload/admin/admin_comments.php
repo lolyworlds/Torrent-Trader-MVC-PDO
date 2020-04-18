@@ -4,7 +4,7 @@ if ($action=="lastcomm"){
     $count = get_row_count("comments");
     list($pagertop, $pagerbottom, $limit) = pager(10, $count, "/admincp?action=lastcomm&amp;");
 	stdhead("Latest Comments");
-	navmenu();
+	adminnavmenu();
 
 	begin_frame("Last Comments");
 

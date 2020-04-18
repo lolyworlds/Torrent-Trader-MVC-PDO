@@ -1,6 +1,17 @@
 <?php
-require_once("core/init.php");
+  class Adminmodtasks extends Controller {
+    
+    public function __construct(){
+        // $this->userModel = $this->model('User');
+    }
+    
+    public function index(){
+		// Set Current User
+		// $curuser = $this->userModel->setCurrentUser();
+		// Set Current User
+		// $db = new Database;
 dbconn();
+global $site_config, $CURUSER;
 loggedinonly();
 
 if($CURUSER["edit_users"]!="yes")
@@ -159,4 +170,7 @@ if ($action == "deleteaccount"){
 
 	show_error_msg(T_("COMPLETED"), T_("USER_DELETE"), 1);
 	die;
+}
+
+}
 }

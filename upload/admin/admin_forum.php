@@ -258,7 +258,7 @@ if ($_GET["do"] == "edit_forumcat") {
 }
     
     if (!$do) {
-        navmenu();
+        adminnavmenu();
         begin_frame(T_("FORUM_MANAGEMENT"));
         $query = DB::run("SELECT * FROM forumcats ORDER BY sort, name");
         $allcat = $query->rowCount();

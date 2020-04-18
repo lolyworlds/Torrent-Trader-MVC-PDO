@@ -23,7 +23,7 @@
         $res = DB::run("SELECT id, name, seeders, leechers, visible, banned, external FROM torrents $where ORDER BY name $limit");
         
         stdhead("Torrent Management");
-        navmenu();
+        adminnavmenu();
         
         begin_frame("Torrent Management");
 

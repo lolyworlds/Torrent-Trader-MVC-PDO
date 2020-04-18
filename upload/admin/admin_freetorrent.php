@@ -8,7 +8,7 @@ if ($action=="freetorrents"){
     */
     
 	stdhead("Free Leech ".T_("TORRENT_MANAGEMENT"));
-	navmenu();
+	adminnavmenu();
 
 	$search = trim($_GET['search']);
 

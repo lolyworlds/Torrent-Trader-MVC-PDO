@@ -23,44 +23,6 @@ if($CURUSER["edit_torrents"]=="no" && $CURUSER['id'] != $row['owner'])
     show_error_msg(T_("ERROR"), T_("NO_TORRENT_EDIT_PERMISSION"), 1);
 
 
-function uploadimage($x, $imgname, $tid) {
-    global $site_config;
-
-    $imagesdir = $site_config["torrent_dir"]."/images";
-
-    $allowed_types = &$site_config["allowed_image_types"];  
-
-    if ( !( $_FILES["image$x"]["name"] == "" ) ) {
-        if ($imgname != "") {
-            $img = "$imagesdir/$imgname";
-            $del = unlink($img);
-        }
-
-        $y = $x + 1;
- 
-	$im = getimagesize($_FILES["image$x"]["tmp_name"]);
-
-	if (!$im[2])
-		show_error_msg(T_("ERROR"), "Invalid Image $y.", 1);
-
-	if (!array_key_exists($im['mime'], $allowed_types))
-		show_error_msg(T_("ERROR"), T_("INVALID_FILETYPE_IMAGE"), 1);
-
-        if ($_FILES["image$x"]["size"] > $site_config['image_max_filesize'])
-            show_error_msg(T_("ERROR"), sprintf(T_("INVAILD_FILE_SIZE_IMAGE"), $y), 1);
-
-        $uploaddir = "$imagesdir/";
-
-	    $ifilename = $tid . $x . $allowed_types[$im['mime']];
-                                              
-        $copy = copy($_FILES["image$x"]["tmp_name"], $uploaddir.$ifilename);
-
-        if (!$copy)
-            show_error_msg(T_("ERROR"), sprintf(T_("ERROR_UPLOADING_IMAGE"), $y), 1);
-
-        return $ifilename;
-    }
-}//end func
 
 
 //GET DATA FROM DB
@@ -241,7 +203,7 @@ if ($site_config['ANONYMOUSUPLOAD']) {
 	echo "<tr><td class='table_col1' align='right'><b>".T_("ANONYMOUS_UPLOAD").": </b></td><td class='table_col2'><input type=\"checkbox\" name=\"anon\"" . (($row["anon"] == "yes") ? " checked=\"checked\"" : "" ) . " value=\"1\" />(".T_("ANONYMOUS_UPLOAD_MSG").")<br /></td></tr>";
 }
 print ("<tr><td class='table_head' align='center' colspan='2'><b>" .T_("DESCRIPTION"). ":</b></td></tr></table>");
-require_once("helpers/bbcode.php");
+require_once("helpers/bbcode_helper.php");
 print textbbcode("bbform","descr", htmlspecialchars($row["descr"]));
 
     

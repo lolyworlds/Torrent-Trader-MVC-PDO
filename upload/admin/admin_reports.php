@@ -72,7 +72,7 @@ if ($action == "reports" && $do == "view") {
       $res = DB::run("SELECT reports.id, reports.dealtwith, reports.dealtby, reports.addedby, reports.votedfor, reports.votedfor_xtra, reports.reason, reports.type, users.username, reports.complete FROM `reports` INNER JOIN users ON reports.addedby = users.id WHERE $where ORDER BY reports.id DESC $limit");
       
       stdhead("Reported Items");
-      navmenu();    
+      adminnavmenu();    
 
       begin_frame("Reported Items");
       ?>

@@ -2,7 +2,7 @@
 // IP Bans (TorrentialStorm)
 if ($action == "ipbans") {
     stdhead(T_("BANNED_IPS"));
-    navmenu();
+    adminnavmenu();
 
     if ($do == "del") {
         if (!@count($_POST["delids"])) show_error_msg(T_("ERROR"), T_("NONE_SELECTED"), 1);

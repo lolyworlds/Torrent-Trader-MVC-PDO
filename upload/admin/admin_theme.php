@@ -7,7 +7,7 @@
 if ($action == "style") {
 	if ($do == "add") {
 		stdhead();
-		navmenu();
+		adminnavmenu();
 		if ($_POST) {
 			if (empty($_POST['name']))
 				$error .= T_("THEME_NAME_WAS_EMPTY")."<br />";
@@ -83,7 +83,7 @@ if ($action == "style") {
         
 	}else{
 		stdhead(T_("THEME_MANAGEMENT"));
-		navmenu();
+		adminnavmenu();
 		begin_frame(T_("THEME_MANAGEMENT"));
 		$res = DB::run("SELECT * FROM stylesheets");
 		echo "<center><a href='/admincp?action=style&amp;do=add'>".T_("THEME_ADD")."</a><!-- - <b>".T_("THEME_CLICK_A_THEME_TO_EDIT")."</b>--></center><br />";

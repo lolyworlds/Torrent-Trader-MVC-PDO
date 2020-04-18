@@ -57,7 +57,7 @@ if ($action == "usersearch") {
 		die;
 	}
 	stdhead(T_("ADVANCED_USER_SEARCH"));
-	navmenu();
+	adminnavmenu();
 	begin_frame("Search");
 	if ($_GET['h']) {
 		echo "<table width='65%' border='0' align='center'><tr><td align='left'>\n

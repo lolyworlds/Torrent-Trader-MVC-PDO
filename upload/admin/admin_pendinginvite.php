@@ -31,7 +31,7 @@ if ($action == "pendinginvite")
     $res = DB::run("SELECT u.id, u.username, u.email, u.added, u.invited_by, i.username as inviter FROM users u LEFT JOIN users i ON u.invited_by = i.id WHERE u.status = 'pending' AND u.invited_by != '0' ORDER BY u.added DESC $limit");
     
     stdhead("Invited Pending Users");
-    navmenu();
+    adminnavmenu();
     
     begin_frame("Invited Pending Users");
     ?>

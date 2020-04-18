@@ -1,22 +1,5 @@
 <?php
-require_once("core/init.php");
-
-dbconn();
-
-// CHECK THE ADMIN PRIVILEGES
-if (!$CURUSER || $CURUSER["control_panel"]!="yes"){
-    show_error_msg(T_("ERROR"), T_("SORRY_NO_RIGHTS_TO_ACCESS"), 1);
-}
-  
- 
-$DBH = DB::instance ();
- 
-//put table names you want backed up in this array.
-//leave empty to do all
-$tables = array();
-
-backup_tables($DBH, $tables);
-
+// Function tobackup database
 function backup_tables($DBH, $tables) {
 
 $DBH->setAttribute(PDO::ATTR_ORACLE_NULLS, PDO::NULL_NATURAL );
@@ -173,4 +156,3 @@ fclose($handle);
 }
 
 }
-?>

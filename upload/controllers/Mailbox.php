@@ -10,7 +10,7 @@
 		// $curuser = $this->userModel->setCurrentUser();
 		// Set Current User
 		// $db = new Database;
-require_once("mailbox-functions.php");
+require_once("helpers/mailbox_helper.php");
 dbconn();
 global $site_config, $CURUSER;
 loggedinonly();
@@ -141,35 +141,13 @@ if (isset($_POST['mark']) && (isset($_POST['msgs']) || is_array($_POST['mark']))
 
 stdhead($pagename, false);
 
-function navmenu(){
-?>
-	<br />
-      <div class="f-border">
-		<table cellpadding='0' cellspacing='3' width='100%'>
-		<tr class="f-title">
-		<th width='100%' height="32" align='center'>
-		<?php print("<a href='/account'><b>".T_("YOUR_PROFILE")."</b></a>");?>
-		&nbsp;|&nbsp;
-		<?php print("<a href='/account?action=edit_settings&amp;do=edit'><b>".T_("YOUR_SETTINGS")."</b></a>");?>
-		&nbsp;|&nbsp;
-		<?php print("<a href='/account?action=changepw'><b>".T_("CHANGE_PASS")."</b></a>");?>
-		&nbsp;|&nbsp;
-		<?php print("<a href='/account?action=mytorrents'><b>".T_("YOUR_TORRENTS")."</b></a>");?>
-		&nbsp;|&nbsp;
-		<?php print("<a href='/mailbox'><b>".T_("YOUR_MESSAGES")."</b></a>");?>
-   		</th>
-        </tr>
-		</table>
-	  </div>
-    <!--<br />-->
-	<?php
-}//end func
+
 
 
 if (isset($_REQUEST['compose']))
 {
     begin_frame("Compose");
-    navmenu ();
+    navmenuu ();
     $userid = @$_REQUEST['id'];
     $subject = ''; $msg = ''; $to = ''; $hidden = ''; $output = ''; $reply = false;
 	$sreplay = T_("REPLY");//bugfix
@@ -285,7 +263,7 @@ if (isset($_REQUEST['compose']))
         echo "<tr><td align='right'><b>".T_("SUBJECT")."&nbsp;:&nbsp;</b></td><td><input name=\"subject\" type=\"text\" size=\"40\" value=\"$subject\"></td></tr>";
 //
 //   tr2("Message","<textarea name=\"msg\" cols=\"50\" rows=\"15\">$msg</textarea>", 1);
-        require_once("helpers/bbcode.php");
+        require_once("helpers/bbcode_helper.php");
         echo "</table>";
         print textbbcode("compose","msg","$msg");
         echo "<table width='600px' border='0' align='center' cellpadding='4' cellspacing='0'>";
@@ -302,7 +280,7 @@ if (isset($_REQUEST['compose']))
 }
 
 begin_frame($pagename);
-navmenu ();
+navmenuu ();
 echo "<center>";
 ?>
 <style>
