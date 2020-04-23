@@ -57,6 +57,7 @@ function ip2long6($ipv6)
         $ipv6long = $bin . $ipv6long;
         $bits--;
     }
+    // Causes error on xampp
     return gmp_strval(gmp_init($ipv6long, 2), 10);
 }
 // Function To Convert An IP Address (IPv6) To A Digital IP Address

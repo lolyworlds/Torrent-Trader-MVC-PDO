@@ -5,7 +5,7 @@
    * Create & chain prepared statements
    * Return rows and results
    */
-include (TTROOT.'/config/config.php');
+include ('config/config.php');
 define('DB_HOSTT', $site_config['mysql_host']);
 define('DB_NAMET', $site_config['mysql_db']);
 define('DB_USERT', $site_config['mysql_user']);

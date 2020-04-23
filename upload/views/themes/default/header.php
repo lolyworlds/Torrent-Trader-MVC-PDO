@@ -15,7 +15,7 @@
 </head>
 
 <body>
-<?php require TTROOT."/views/themes/" . $THEME . "/topnavbar.php";?>
+<?php require "views/themes/" . $THEME . "/topnavbar.php";?>
   <div class="container-fluid">
   <div class="row content">
   <!-- START LEFT COLUMN -->

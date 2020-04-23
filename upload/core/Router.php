@@ -15,7 +15,7 @@
       $url = $this->getUrl();
 
       // Look in controllers for first value
-      if(file_exists(TTROOT.'/controllers/' . ucwords($url[0]). '.php')){
+      if(file_exists('controllers/' . ucwords($url[0]). '.php')){
         // If exists, set as controller
         $this->currentController = ucwords($url[0]);
         // Unset 0 Index
@@ -23,7 +23,7 @@
       }
 
       // Require the controller
-      require_once TTROOT.'/controllers/'. $this->currentController . '.php';
+      require_once 'controllers/'. $this->currentController . '.php';
 
       // Instantiate controller class
       $this->currentController = new $this->currentController;
