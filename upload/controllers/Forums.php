@@ -2,41 +2,22 @@
   class Forums extends Controller {
     
     public function __construct(){
-        // $this->userModel = $this->model('User');
+       
     }
     
-    public function index(){
-		// Set Current User
-		// $curuser = $this->userModel->setCurrentUser();
-		// Set Current User
-		// $db = new Database;
+    public function newtopic(){
 require_once("helpers/bbcode_helper.php");
 dbconn();
 global $site_config, $CURUSER, $THEME;
 if (!$site_config["FORUMS_GUESTREAD"])
 	loggedinonly();
 
-
-
-$action = strip_tags($_REQUEST["action"]);
-    
-if (!$CURUSER && ($action == "newtopic" || $action == "post")) 
-    showerror(T_("FORUM_ERROR"), T_("FORUM_NO_ID"));
-
 if ($CURUSER["forumbanned"] == "yes" || $CURUSER["view_forum"] == "no")
     showerror(T_("FORUM_BANNED"), T_("FORUM_BANNED"));
 
 //Here we decide if the forums is on or off
 if ($site_config["FORUMS"]) {
-$themedir = "views/themes/".$THEME."/forums/";
-
-
-//Global variables
-$postsperpage = 20;
-$maxsubjectlength = 50;
-
-//Action: New topic
-if ($action == "newtopic") {
+$themedir = $site_config['SITEURL']."/views/themes/".$THEME."/forums/";
     $forumid = $_GET["forumid"];
     if (!is_valid_id($forumid))
     showerror(T_("FORUM_ERROR"), "No Forum ID $forumid");
@@ -51,9 +32,22 @@ if ($action == "newtopic") {
     stdfoot();
     die;
 }
+	}
 
-///////////////////////////////////////////////////////// Action: POST
-if ($action == "post") {
+public function post(){
+    require_once("helpers/bbcode_helper.php");
+dbconn();
+global $site_config, $CURUSER, $THEME;
+if (!$site_config["FORUMS_GUESTREAD"])
+	loggedinonly();
+
+if ($CURUSER["forumbanned"] == "yes" || $CURUSER["view_forum"] == "no")
+    showerror(T_("FORUM_BANNED"), T_("FORUM_BANNED"));
+
+//Here we decide if the forums is on or off
+if ($site_config["FORUMS"]) {
+$themedir = $site_config['SITEURL']."/views/themes/".$THEME."/forums/";
+}
 	$forumid = $_POST["forumid"];
 	$topicid = $_POST["topicid"];
 
@@ -106,7 +100,7 @@ if ($action == "post") {
     update_topic_last_post($topicid);
 
     //All done, redirect user to the post
-    $headerstr = "Location: $site_config[SITEURL]/forums?action=viewtopic&topicid=$topicid&page=last";
+    $headerstr = "Location: $site_config[SITEURL]/forums/viewtopic&topicid=$topicid&page=last";
     if ($newtopic)
 		header($headerstr);
     else
@@ -114,8 +108,23 @@ if ($action == "post") {
     die;
 }
 
-///////////////////////////////////////////////////////// Action: VIEW TOPIC
-if ($action == "viewtopic") {
+public function viewtopic(){
+    require_once("helpers/bbcode_helper.php");
+dbconn();
+global $site_config, $CURUSER, $THEME;
+if (!$site_config["FORUMS_GUESTREAD"])
+	loggedinonly();
+
+if ($CURUSER["forumbanned"] == "yes" || $CURUSER["view_forum"] == "no")
+    showerror(T_("FORUM_BANNED"), T_("FORUM_BANNED"));
+
+//Here we decide if the forums is on or off
+if ($site_config["FORUMS"]) {
+$themedir = $site_config['SITEURL']."/views/themes/".$THEME."/forums/";
+}
+//Global variables
+$postsperpage = 20;
+$maxsubjectlength = 50;
 	$topicid = $_GET["topicid"];
 	$page = $_GET["page"];
 
@@ -175,28 +184,28 @@ if ($action == "viewtopic") {
     if ($page == 1)
       $pagemenu .= "<b>&lt;&lt; Prev</b>";
     else
-      $pagemenu .= "<a href='/forums?action=viewtopic&amp;topicid=$topicid&amp;page=" . ($page - 1) . "'><b>&lt;&lt; Prev</b></a>";
+      $pagemenu .= "<a href='/forums/viewtopic&amp;topicid=$topicid&amp;page=" . ($page - 1) . "'><b>&lt;&lt; Prev</b></a>";
 	//
 	$pagemenu .= "&nbsp;&nbsp;";
 	    for ($i = 1; $i <= $pages; ++$i) {
       if ($i == $page)
         $pagemenu .= "<b>$i</b>\n";
       else
-        $pagemenu .= "<a href='/forums?action=viewtopic&amp;topicid=$topicid&amp;page=$i'><b>$i</b></a>\n";
+        $pagemenu .= "<a href='/forums/viewtopic&amp;topicid=$topicid&amp;page=$i'><b>$i</b></a>\n";
     }
 	//
     $pagemenu .= "&nbsp;&nbsp;";
     if ($page == $pages)
       $pagemenu .= "<b>Next &gt;&gt;</b><br /><br />\n";
     else
-      $pagemenu .= "<a href='/forums?action=viewtopic&amp;topicid=$topicid&amp;page=" . ($page + 1) . "'><b>Next &gt;&gt;</b></a><br /><br />\n";
+      $pagemenu .= "<a href='/forums/viewtopic&amp;topicid=$topicid&amp;page=" . ($page + 1) . "'><b>Next &gt;&gt;</b></a><br /><br />\n";
     $pagemenu .= "</small>";
       
 //Get topic posts
     $res = DB::run("SELECT * FROM forum_posts WHERE topicid=$topicid ORDER BY id LIMIT $offset,$perpage");
     stdhead("View Topic: $subject");
     begin_frame("$forum &gt; $subject");
-	forumheader("<a href='/forums?action=viewforum&amp;forumid=$forumid'>$forum</a> <b style='font-size:16px; vertical-align:middle'>/</b> $subject");
+	forumheader("<a href='/forums/viewforum&amp;forumid=$forumid'>$forum</a> <b style='font-size:16px; vertical-align:middle'>/</b> $subject");
 	
 	print ("<div style='padding: 6px'>");
 	
@@ -337,10 +346,10 @@ if ($action == "viewtopic") {
 	
 	//define buttons and who can use them
 	if ($CURUSER["id"] == $posterid || $CURUSER["edit_forum"] == "yes" || $CURUSER["delete_forum"] == "yes"){
-		print ("<a href='/forums?action=editpost&amp;postid=$postid'><img src='".$themedir."p_edit.png' border='0' alt='' /></a>&nbsp;");
+		print ("<a href='/forums/editpost&amp;postid=$postid'><img src='".$themedir."p_edit.png' border='0' alt='' /></a>&nbsp;");
 	}
 	if ($CURUSER["delete_forum"] == "yes"){
-		print ("<a href='/forums?action=deletepost&amp;postid=$postid&amp;sure=0'><img src='".$themedir."p_delete.png' border='0' alt='' /></a>&nbsp;");
+		print ("<a href='/forums/deletepost&amp;postid=$postid&amp;sure=0'><img src='".$themedir."p_delete.png' border='0' alt='' /></a>&nbsp;");
 	}
 	if (!$locked && $maypost) {
 		print ("<a href=\"javascript:SmileIT('[quote=$postername] $quote [/quote]', 'Form', 'body');\"><img src='".$themedir."p_quote.png' border='0' alt='' /></a>&nbsp;");
@@ -357,7 +366,7 @@ if ($action == "viewtopic") {
 	print ("<fieldset class='download'><legend><b>".T_("FORUMS_POST_REPLY")."</b></legend>");
 	$newtopic = false;
 	print("<a name='bottom'></a>");
-    print("<form name='Form' method='post' action='?action=post'>\n");
+    print("<form name='Form' method='post' action='/forum/post'>\n");
     if ($newtopic)
 		print("<input type='hidden' name='forumid' value='$id' />\n");
     else
@@ -392,13 +401,13 @@ if ($action == "viewtopic") {
       print("<br /><div class='f-border f-mod_options' align='center'><table width='100%' cellspacing='0'><tr class='f-title'><th>".T_("FORUMS_MOD_OPTIONS")."</th></tr>\n");
      $res = DB::run("SELECT id,name,minclasswrite FROM forum_forums ORDER BY name");
       print("<tr><td class='ttable_col2'>\n");
-      print("<form method='post' action='/forums?action=renametopic'>\n");
+      print("<form method='post' action='/forums/renametopic'>\n");
       print("<input type='hidden' name='topicid' value='$topicid' />\n");
-      print("<input type='hidden' name='returnto' value='/forums?action=viewtopic&amp;topicid=$topicid' />\n");
+      print("<input type='hidden' name='returnto' value='/forums/viewtopic&amp;topicid=$topicid' />\n");
 	  print("<div align='center'  style='padding:3px'>Rename topic: <input type='text' name='subject' size='60' maxlength='$maxsubjectlength' value='" . stripslashes(htmlspecialchars($subject)) . "' />\n");
       print("<input type='submit' value='Apply' />");
       print("</div></form>\n");
-      print("<form method='post' action='/forums?action=movetopic&amp;topicid=$topicid'>\n");
+      print("<form method='post' action='/forums/movetopic&amp;topicid=$topicid'>\n");
       print("<div align='center' style='padding:3px'>");
       print("Move this thread to: <select name='forumid'>");
       while ($arr = $res->fetch(PDO::FETCH_ASSOC))
@@ -407,14 +416,14 @@ if ($action == "viewtopic") {
       print("</select> <input type='submit' value='Apply' /></div></form>\n");
  print("<div align='center'>\n");
 			if ($locked)
-				print(T_("FORUMS_LOCKED").": <a href='/forums?action=unlocktopic&amp;forumid=$forumid&amp;topicid=$topicid&amp;page=$page' title='Unlock'><img src='". $themedir ."topic_unlock.png' alt='UnLock Topic' /></a>\n");
+				print(T_("FORUMS_LOCKED").": <a href='/forums/unlocktopic&amp;forumid=$forumid&amp;topicid=$topicid&amp;page=$page' title='Unlock'><img src='". $themedir ."topic_unlock.png' alt='UnLock Topic' /></a>\n");
 			else
-				print(T_("FORUMS_LOCKED").": <a href='/forums?action=locktopic&amp;forumid=$forumid&amp;topicid=$topicid&amp;page=$page' title='Lock'><img src='". $themedir ."topic_lock.png' alt='Lock Topic' /></a>\n");
-			print("Delete Entire Topic: <a href='/forums?action=deletetopic&amp;topicid=$topicid&amp;sure=0' title='Delete'><img src='". $themedir ."topic_delete.png' alt='Delete Topic' /></a>\n");
+				print(T_("FORUMS_LOCKED").": <a href='/forums/locktopic&amp;forumid=$forumid&amp;topicid=$topicid&amp;page=$page' title='Lock'><img src='". $themedir ."topic_lock.png' alt='Lock Topic' /></a>\n");
+			print("Delete Entire Topic: <a href='/forums/deletetopic&amp;topicid=$topicid&amp;sure=0' title='Delete'><img src='". $themedir ."topic_delete.png' alt='Delete Topic' /></a>\n");
 			if ($sticky)
-			   print(T_("FORUMS_STICKY").": <a href='/forums?action=unsetsticky&amp;forumid=$forumid&amp;topicid=$topicid&amp;page=$page' title='UnStick'><img src='". $themedir ."folder_sticky_new.png' alt='UnStick Topic' /></a>\n");
+			   print(T_("FORUMS_STICKY").": <a href='/forums/unsetsticky&amp;forumid=$forumid&amp;topicid=$topicid&amp;page=$page' title='UnStick'><img src='". $themedir ."folder_sticky_new.png' alt='UnStick Topic' /></a>\n");
 			else
-			   print(T_("FORUMS_STICKY").": <a href='/forums?action=setsticky&amp;forumid=$forumid&amp;topicid=$topicid&amp;page=$page' title='Stick'><img src='". $themedir ."folder_sticky.png' alt='Stick Topic' /></a>\n");
+			   print(T_("FORUMS_STICKY").": <a href='/forums/setsticky&amp;forumid=$forumid&amp;topicid=$topicid&amp;page=$page' title='Stick'><img src='". $themedir ."folder_sticky.png' alt='Stick Topic' /></a>\n");
 			print("</div><br /></td></tr></table></div>\n");
 
     }
@@ -424,8 +433,22 @@ if ($action == "viewtopic") {
     die;
 }
 
-///////////////////////////////////////////////////////// Action: REPLY
-if ($action == "reply") {
+
+
+public function reply(){
+    require_once("helpers/bbcode_helper.php");
+dbconn();
+global $site_config, $CURUSER, $THEME;
+if (!$site_config["FORUMS_GUESTREAD"])
+	loggedinonly();
+
+if ($CURUSER["forumbanned"] == "yes" || $CURUSER["view_forum"] == "no")
+    showerror(T_("FORUM_BANNED"), T_("FORUM_BANNED"));
+
+//Here we decide if the forums is on or off
+if ($site_config["FORUMS"]) {
+$themedir = $site_config['SITEURL']."/views/themes/".$THEME."/forums/";
+}
 	$topicid = $_GET["topicid"];
 	if (!is_valid_id($topicid))
     showerror(T_("FORUM_ERROR"), sprintf(T_("FORUMS_NO_ID_FORUM"), $topicid));
@@ -437,8 +460,21 @@ if ($action == "reply") {
 	die;
 }
 
-///////////////////////////////////////////////////////// Action: MOVE TOPIC
-if ($action == "movetopic") {
+
+public function movetopic(){
+    require_once("helpers/bbcode_helper.php");
+dbconn();
+global $site_config, $CURUSER, $THEME;
+if (!$site_config["FORUMS_GUESTREAD"])
+	loggedinonly();
+
+if ($CURUSER["forumbanned"] == "yes" || $CURUSER["view_forum"] == "no")
+    showerror(T_("FORUM_BANNED"), T_("FORUM_BANNED"));
+
+//Here we decide if the forums is on or off
+if ($site_config["FORUMS"]) {
+$themedir = $site_config['SITEURL']."/views/themes/".$THEME."/forums/";
+}
     $forumid = $_POST["forumid"];
     $topicid = $_GET["topicid"];
     if (!is_valid_id($forumid) || !is_valid_id($topicid) || $CURUSER["delete_forum"] != "yes" || $CURUSER["edit_forum"] != "yes")
@@ -459,12 +495,26 @@ if ($action == "movetopic") {
         DB::run("UPDATE forum_topics SET forumid=$forumid, moved='yes' WHERE id=$topicid");
 
     // Redirect to forum page
-    header("Location: $site_config[SITEURL]/forums?action=viewforum&forumid=$forumid");
+    header("Location: $site_config[SITEURL]/forums/viewforum&forumid=$forumid");
     die;
 }
 
+
 ///////////////////////////////////////////////////////// Action: DELETE TOPIC
-if ($action == "deletetopic") {
+public function deletetopic(){
+    require_once("helpers/bbcode_helper.php");
+dbconn();
+global $site_config, $CURUSER, $THEME;
+if (!$site_config["FORUMS_GUESTREAD"])
+	loggedinonly();
+
+if ($CURUSER["forumbanned"] == "yes" || $CURUSER["view_forum"] == "no")
+    showerror(T_("FORUM_BANNED"), T_("FORUM_BANNED"));
+
+//Here we decide if the forums is on or off
+if ($site_config["FORUMS"]) {
+$themedir = $site_config['SITEURL']."/views/themes/".$THEME."/forums/";
+}
 	$topicid = $_GET["topicid"];
 	if (!is_valid_id($topicid) || $CURUSER["delete_forum"] != "yes")
         showerror(T_("ERROR"), T_("FORUMS_DENIED"));
@@ -480,8 +530,21 @@ if ($action == "deletetopic") {
 	die;
 }
 
-///////////////////////////////////////////////////////// Action: EDIT TOPIC
-if ($action == "editpost") {
+
+public function editpost(){
+    require_once("helpers/bbcode_helper.php");
+dbconn();
+global $site_config, $CURUSER, $THEME;
+if (!$site_config["FORUMS_GUESTREAD"])
+	loggedinonly();
+
+if ($CURUSER["forumbanned"] == "yes" || $CURUSER["view_forum"] == "no")
+    showerror(T_("FORUM_BANNED"), T_("FORUM_BANNED"));
+
+//Here we decide if the forums is on or off
+if ($site_config["FORUMS"]) {
+$themedir = $site_config['SITEURL']."/views/themes/".$THEME."/forums/";
+}
 	$postid = $_GET["postid"];
 	if (!is_valid_id($postid))
         showerror(T_("ERROR"), T_("FORUMS_DENIED"));
@@ -509,7 +572,7 @@ if ($action == "editpost") {
     stdhead();
 
     begin_frame(T_("FORUMS_EDIT_POST"));
-    print("<form name='Form' method='post' action='?action=editpost&amp;postid=$postid'>\n");
+    print("<form name='Form' method='post' action='forum/editpost&amp;postid=$postid'>\n");
     print("<input type='hidden' name='returnto' value='" . htmlspecialchars($_SERVER["HTTP_REFERER"]) . "' />\n");
     print("<center><table  cellspacing='0' cellpadding='5'>\n");
     print("<tr><td colspan='2'>\n");
@@ -525,8 +588,22 @@ if ($action == "editpost") {
     die;
 }
 
-///////////////////////////////////////////////////////// Action: DELETE POST
-if ($action == "deletepost") {
+
+public function deletepost(){
+    require_once("helpers/bbcode_helper.php");
+dbconn();
+global $site_config, $CURUSER, $THEME;
+if (!$site_config["FORUMS_GUESTREAD"])
+	loggedinonly();
+
+if ($CURUSER["forumbanned"] == "yes" || $CURUSER["view_forum"] == "no")
+    showerror(T_("FORUM_BANNED"), T_("FORUM_BANNED"));
+
+//Here we decide if the forums is on or off
+if ($site_config["FORUMS"]) {
+$themedir = $site_config['SITEURL']."/views/themes/".$THEME."/forums/";
+}
+
 	$postid = $_GET["postid"];
 	$sure = $_GET["sure"];
 	if ($CURUSER["delete_forum"] != "yes" || !is_valid_id($postid))
@@ -553,60 +630,128 @@ if ($action == "deletepost") {
 
     //------- Update topic
     update_topic_last_post($topicid);
-    header("Location: $site_config[SITEURL]/forums?action=viewtopic&topicid=$topicid");
+    header("Location: $site_config[SITEURL]/forums/viewtopic&topicid=$topicid");
     die;
 }
 
-///////////////////////////////////////////////////////// Action: LOCK TOPIC
-if ($action == "locktopic") {
+
+public function locktopic(){
+    require_once("helpers/bbcode_helper.php");
+dbconn();
+global $site_config, $CURUSER, $THEME;
+if (!$site_config["FORUMS_GUESTREAD"])
+	loggedinonly();
+
+if ($CURUSER["forumbanned"] == "yes" || $CURUSER["view_forum"] == "no")
+    showerror(T_("FORUM_BANNED"), T_("FORUM_BANNED"));
+
+//Here we decide if the forums is on or off
+if ($site_config["FORUMS"]) {
+$themedir = $site_config['SITEURL']."/views/themes/".$THEME."/forums/";
+}
 	$forumid = $_GET["forumid"];
 	$topicid = $_GET["topicid"];
 	$page = $_GET["page"];
 	if (!is_valid_id($topicid) || $CURUSER["delete_forum"] != "yes" || $CURUSER["edit_forum"] != "yes")
         showerror(T_("ERROR"), T_("FORUMS_DENIED"));
         DB::run("UPDATE forum_topics SET locked='yes' WHERE id=$topicid");
-        header("Location: $site_config[SITEURL]/forums?action=viewforum&forumid=$forumid&page=$page");
+        header("Location: $site_config[SITEURL]/forums/viewforum&forumid=$forumid&page=$page");
 	die;
 }
 
-///////////////////////////////////////////////////////// Action: UNLOCK TOPIC
-if ($action == "unlocktopic") {
+
+
+    
+ public function unlocktopic(){
+    require_once("helpers/bbcode_helper.php");
+dbconn();
+global $site_config, $CURUSER, $THEME;
+if (!$site_config["FORUMS_GUESTREAD"])
+	loggedinonly();
+
+
+if ($CURUSER["forumbanned"] == "yes" || $CURUSER["view_forum"] == "no")
+    showerror(T_("FORUM_BANNED"), T_("FORUM_BANNED"));
+
+//Here we decide if the forums is on or off
+if ($site_config["FORUMS"]) {
+$themedir = $site_config['SITEURL']."/views/themes/".$THEME."/forums/";
+}   
+
     $forumid = $_GET["forumid"];
     $topicid = $_GET["topicid"];
     $page = $_GET["page"];
     if (!is_valid_id($topicid) || $CURUSER["delete_forum"] != "yes" || $CURUSER["edit_forum"] != "yes")
         showerror(T_("ERROR"), T_("FORUMS_DENIED"));
         DB::run("UPDATE forum_topics SET locked='no' WHERE id=$topicid");
-        header("Location: $site_config[SITEURL]/forums?action=viewforum&forumid=$forumid&page=$page");
+        header("Location: $site_config[SITEURL]/forums/viewforum&forumid=$forumid&page=$page");
     die;
 }
 
 ///////////////////////////////////////////////////////// Action: STICK TOPIC
-if ($action == "setsticky") {
+public function setsticky(){	
+require_once("helpers/bbcode_helper.php");
+dbconn();
+global $site_config, $CURUSER, $THEME;
+if (!$site_config["FORUMS_GUESTREAD"])
+	loggedinonly();
+
+if ($CURUSER["forumbanned"] == "yes" || $CURUSER["view_forum"] == "no")
+    showerror(T_("FORUM_BANNED"), T_("FORUM_BANNED"));
+
+//Here we decide if the forums is on or off
+if ($site_config["FORUMS"]) {
+$themedir = $site_config['SITEURL']."/views/themes/".$THEME."/forums/";
+}
    $forumid = $_GET["forumid"];
    $topicid = $_GET["topicid"];
    $page = $_GET["page"];
    if (!is_valid_id($topicid) || ($CURUSER["delete_forum"] != "yes" && $CURUSER["edit_forum"] != "yes"))
         showerror(T_("ERROR"), T_("FORUMS_DENIED"));
         DB::run("UPDATE forum_topics SET sticky='yes' WHERE id=$topicid");
-        header("Location: $site_config[SITEURL]/forums?action=viewforum&forumid=$forumid&page=$page");
+        header("Location: $site_config[SITEURL]/forums/viewforum&forumid=$forumid&page=$page");
    die;
-}
+}	
 
-///////////////////////////////////////////////////////// Action: UNSTICK TOPIC
-if ($action == "unsetsticky") {
+public function unsetsticky(){
+    require_once("helpers/bbcode_helper.php");
+dbconn();
+global $site_config, $CURUSER, $THEME;
+if (!$site_config["FORUMS_GUESTREAD"])
+	loggedinonly();
+
+if ($CURUSER["forumbanned"] == "yes" || $CURUSER["view_forum"] == "no")
+    showerror(T_("FORUM_BANNED"), T_("FORUM_BANNED"));
+
+//Here we decide if the forums is on or off
+if ($site_config["FORUMS"]) {
+$themedir = $site_config['SITEURL']."/views/themes/".$THEME."/forums/";
+}   
    $forumid = $_GET["forumid"];
    $topicid = $_GET["topicid"];
    $page = $_GET["page"];
    if (!is_valid_id($topicid) || ($CURUSER["delete_forum"] != "yes" && $CURUSER["edit_forum"] != "yes"))
         showerror(T_("ERROR"), T_("FORUMS_DENIED"));
         DB::run("UPDATE forum_topics SET sticky='no' WHERE id=$topicid");
-        header("Location: $site_config[SITEURL]/forums?action=viewforum&forumid=$forumid&page=$page");
+        header("Location: $site_config[SITEURL]/forums/viewforum&forumid=$forumid&page=$page");
    die;
 }
 
 ///////////////////////////////////////////////////////// Action: RENAME TOPIC
-if ($action == 'renametopic') {
+public function renametopic(){
+    require_once("helpers/bbcode_helper.php");
+dbconn();
+global $site_config, $CURUSER, $THEME;
+if (!$site_config["FORUMS_GUESTREAD"])
+	loggedinonly();
+
+if ($CURUSER["forumbanned"] == "yes" || $CURUSER["view_forum"] == "no")
+    showerror(T_("FORUM_BANNED"), T_("FORUM_BANNED"));
+
+//Here we decide if the forums is on or off
+if ($site_config["FORUMS"]) {
+$themedir = $site_config['SITEURL']."/views/themes/".$THEME."/forums/";
+}
 	if ($CURUSER["delete_forum"] != "yes" && $CURUSER["edit_forum"] != "yes")
         showerror(T_("ERROR"), T_("FORUMS_DENIED"));
   	$topicid = $_POST['topicid'];
@@ -623,8 +768,23 @@ if ($action == 'renametopic') {
   	die;
 }
 
-///////////////////////////////////////////////////////// Action: VIEW FORUM
-if ($action == "viewforum") {
+		    public function viewforum(){
+require_once("helpers/bbcode_helper.php");
+dbconn();
+global $site_config, $CURUSER, $THEME;
+if (!$site_config["FORUMS_GUESTREAD"])
+	loggedinonly();
+
+if ($CURUSER["forumbanned"] == "yes" || $CURUSER["view_forum"] == "no")
+    showerror(T_("FORUM_BANNED"), T_("FORUM_BANNED"));
+
+//Here we decide if the forums is on or off
+if ($site_config["FORUMS"]) {
+$themedir = $site_config['SITEURL']."/views/themes/".$THEME."/forums/";
+}
+//Global variables
+$postsperpage = 20;
+$maxsubjectlength = 50;	
 	$forumid = $_GET["forumid"];
 	if (!is_valid_id($forumid))
         showerror(T_("ERROR"), T_("FORUMS_DENIED"));
@@ -669,7 +829,7 @@ if ($action == "viewforum") {
     	$lastspace = true;
       }
       else {
-        $menu .= "<a href='/forums?action=viewforum&amp;forumid=$forumid&amp;page=$i'>$i</a>\n";
+        $menu .= "<a href='/forums/viewforum&amp;forumid=$forumid&amp;page=$i'>$i</a>\n";
         $lastspace = false;
       }
       if ($i < $pages)
@@ -679,12 +839,12 @@ if ($action == "viewforum") {
     if ($page == 1)
       $menu .= "<span class='next-prev'>&lt;&lt; Prev</span>";
     else
-      $menu .= "<a href='/forums?action=viewforum&amp;forumid=$forumid&amp;page=" . ($page - 1) . "'>&lt;&lt; Prev</a>";
+      $menu .= "<a href='/forums/viewforum&amp;forumid=$forumid&amp;page=" . ($page - 1) . "'>&lt;&lt; Prev</a>";
     $menu .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
     if ($last == $num)
       $menu .= "<span class='next-prev'>Next &gt;&gt;</span>";
     else
-      $menu .= "<a href='/forums?action=viewforum&amp;forumid=$forumid&page=" . ($page + 1) . "'>Next &gt;&gt;</a>";
+      $menu .= "<a href='/forums/viewforum&amp;forumid=$forumid&page=" . ($page + 1) . "'>Next &gt;&gt;</a>";
     $menu .= "</b></p>\n";
     $offset = $first - 1;
 
@@ -694,10 +854,10 @@ if ($action == "viewforum") {
     stdhead("Forum : $forumname");
   //  $numtopics = $topicsres->fetch(PDO::FETCH_LAZY);
     begin_frame("$forumname");
-	forumheader("<a href='/forums?action=viewforum&amp;forumid=$forumid'>$forumname</a>");
+	forumheader("<a href='/forums/viewforum&amp;forumid=$forumid'>$forumname</a>");
 	
 	if ($CURUSER)
-		print ("<table cellpadding='0' cellspacing='5' width='100%'><tr><td><div align='right'><a href='/forums?action=newtopic&amp;forumid=$forumid'><img src='". $themedir. "button_new_post.png' alt='' /></a></div></td></tr></table>");
+		print ("<table cellpadding='0' cellspacing='5' width='100%'><tr><td><div align='right'><a href='/forums/newtopic&amp;forumid=$forumid'><img src='". $themedir. "button_new_post.png' alt='' /></a></div></td></tr></table>");
 
     if ($topicsres > 0) {
 	print("<div class='f-border f-sub_forum'> <table width='100%' cellspacing='0'>");
@@ -723,7 +883,7 @@ if ($action == "viewforum") {
 			if ($tpages > 1) {
 			  $topicpages = " (<img src='". $site_config['SITEURL'] ."/images/forum/multipage.png' alt='' />";
 			  for ($i = 1; $i <= $tpages; ++$i)
-				$topicpages .= " <a href='/forums?action=viewtopic&amp;topicid=$topicid&amp;page=$i'>$i</a>";
+				$topicpages .= " <a href='/forums/viewtopic&amp;topicid=$topicid&amp;page=$i'>$i</a>";
 			  $topicpages .= ")";
         }
         else
@@ -775,7 +935,7 @@ if ($action == "viewforum") {
 		}
         $new = !$a || $lppostid > $a[0];
         $topicpic = ($locked ? ($new ? "folder_locked_new" : "folder_locked") : ($new ? "folder_new" : "folder"));
-        $subject = ($sticky ? "<b>".T_("FORUMS_STICKY").": </b>" : "") . "<a href='/forums?action=viewtopic&amp;topicid=$topicid'><b>" .
+        $subject = ($sticky ? "<b>".T_("FORUMS_STICKY").": </b>" : "") . "<a href='/forums/viewtopic&amp;topicid=$topicid'><b>" .
         encodehtml(stripslashes($topicarr["subject"])) . "</b></a>$topicpages";
         print("<tr class='f-row'><td class='f-img' valign='middle'><img src='". $themedir ."$topicpic.png' alt='' />" .
          "</td><td class='alt1' align='left' width='100%'>\n" .
@@ -786,14 +946,14 @@ if ($action == "viewforum") {
 	     if ($CURUSER["edit_forum"] == "yes" || $CURUSER["delete_forum"] == "yes") {
 			  print("<td class='alt2' align='center'><span style='white-space: nowrap'>\n");
 			if ($locked)
-				print("<a href='/forums?action=unlocktopic&amp;forumid=$forumid&amp;topicid=$topicid&amp;page=$page' title='Unlock'><img src='". $themedir ."topic_unlock.png' alt='UnLock Topic' /></a>\n");
+				print("<a href='/forums/unlocktopic&amp;forumid=$forumid&amp;topicid=$topicid&amp;page=$page' title='Unlock'><img src='". $themedir ."topic_unlock.png' alt='UnLock Topic' /></a>\n");
 			else
-				print("<a href='/forums?action=locktopic&amp;forumid=$forumid&amp;topicid=$topicid&amp;page=$page' title='Lock'><img src='". $themedir ."topic_lock.png' alt='Lock Topic' /></a>\n");
-				print("<a href='/forums?action=deletetopic&amp;topicid=$topicid&amp;sure=0' title='Delete'><img src='". $themedir ."topic_delete.png' alt='Delete Topic' /></a>\n");
+				print("<a href='/forums/locktopic&amp;forumid=$forumid&amp;topicid=$topicid&amp;page=$page' title='Lock'><img src='". $themedir ."topic_lock.png' alt='Lock Topic' /></a>\n");
+				print("<a href='/forums/deletetopic&amp;topicid=$topicid&amp;sure=0' title='Delete'><img src='". $themedir ."topic_delete.png' alt='Delete Topic' /></a>\n");
 			if ($sticky)
-			   print("<a href='/forums?action=unsetsticky&amp;forumid=$forumid&amp;topicid=$topicid&amp;page=$page' title='UnStick'><img src='". $themedir ."folder_sticky_new.png' alt='Unstick Topic' /></a>\n");
+			   print("<a href='/forums/unsetsticky&amp;forumid=$forumid&amp;topicid=$topicid&amp;page=$page' title='UnStick'><img src='". $themedir ."folder_sticky_new.png' alt='Unstick Topic' /></a>\n");
 			else
-			   print("<a href='/forums?action=setsticky&amp;forumid=$forumid&amp;topicid=$topicid&amp;page=$page' title='Stick'><img src='". $themedir ."folder_sticky.png' alt='Stick Topic' /></a>\n");
+			   print("<a href='/forums/setsticky&amp;forumid=$forumid&amp;topicid=$topicid&amp;page=$page' title='Stick'><img src='". $themedir ."folder_sticky.png' alt='Stick Topic' /></a>\n");
 			  print("</span></td>\n");
         }
         print("</tr>\n");
@@ -808,7 +968,7 @@ if ($action == "viewforum") {
     print("<td><img src='". $themedir ."folder_new.png' style='margin-right: 5px' alt='' /></td><td >New posts</td>\n");
 	 print("<td><img src='". $themedir ."folder.png' style='margin-left: 10px; margin-right: 5px' alt='' />" .
      "</td><td>No New posts</td>\n");
-    print("<td><img src='". $themedir ."folder_locked.png' style='margin-left: 10px; margin-right: 5px' alt='' />" .
+    print("<td><img src='".$site_config['SITEURL']."/". $themedir ."folder_locked.png' style='margin-left: 10px; margin-right: 5px' alt='' />" .
      "</td><td>".T_("FORUMS_LOCKED")." topic</td></tr></table>\n");
     $arr = get_forum_access_levels($forumid) or die;
     $maypost = get_user_class() >= $arr["write"];
@@ -817,16 +977,29 @@ if ($action == "viewforum") {
     print("<table cellspacing='0' cellpadding='0'><tr>\n");
 
     if ($maypost)
-		print("<td><a href='/forums?action=newtopic&amp;forumid=$forumid'><img src='" . $themedir . "button_new_post.png' alt='' /></a></td>\n");
+		print("<td><a href='/forums/newtopic&amp;forumid=$forumid'><img src='" . $themedir . "button_new_post.png' alt='' /></a></td>\n");
     print("</tr></table>\n");
     insert_quick_jump_menu($forumid);
     end_frame();
     stdfoot();
     die;
-}
+}	
 
-///////////////////////////////////////////////////////// Action: VIEW NEW POSTS
-if ($action == "viewunread") {
+
+	    public function viewunread(){
+require_once("helpers/bbcode_helper.php");
+dbconn();
+global $site_config, $CURUSER, $THEME;
+if (!$site_config["FORUMS_GUESTREAD"])
+	loggedinonly();
+
+if ($CURUSER["forumbanned"] == "yes" || $CURUSER["view_forum"] == "no")
+    showerror(T_("FORUM_BANNED"), T_("FORUM_BANNED"));
+
+//Here we decide if the forums is on or off
+if ($site_config["FORUMS"]) {
+$themedir = $site_config['SITEURL']."/views/themes/".$THEME."/forums/";
+}
 	$userid = $CURUSER['id'];
 	$maxresults = 25;
 	$res = DB::run("SELECT id, forumid, subject, lastpost FROM forum_topics ORDER BY lastpost");
@@ -861,7 +1034,7 @@ if ($action == "viewunread") {
       }
       print("<tr class='f-row'><td class='f-img' valign='middle'>" .
        "<img src='". $themedir ."folder_unlocked_new.png' style='margin: 5px' alt='' /></td><td class='alt1'>" .
-       "<a href='/forums?action=viewtopic&amp;topicid=$topicid&amp;page=last#last'><b>" . stripslashes(htmlspecialchars($arr["subject"])) ."</b></a></td><td class='alt2' align='left'><a href='/forums?action=viewforum&amp;forumid=$forumid'><b>$forumname</b></a></td></tr>\n");
+       "<a href='/forums/viewtopic&amp;topicid=$topicid&amp;page=last#last'><b>" . stripslashes(htmlspecialchars($arr["subject"])) ."</b></a></td><td class='alt2' align='left'><a href='/forums/viewforum&amp;forumid=$forumid'><b>$forumname</b></a></td></tr>\n");
     }
     if ($n > 0) {
       print("</table></div><br />\n");
@@ -875,9 +1048,22 @@ if ($action == "viewunread") {
     stdfoot();
     die;
 }
+	
+	    public function search(){
+require_once("helpers/bbcode_helper.php");
+dbconn();
+global $site_config, $CURUSER, $THEME;
+if (!$site_config["FORUMS_GUESTREAD"])
+	loggedinonly();
 
-///////////////////////////////////////////////////////// Action: SEARCH
-if ($action == "search") {
+if ($CURUSER["forumbanned"] == "yes" || $CURUSER["view_forum"] == "no")
+    showerror(T_("FORUM_BANNED"), T_("FORUM_BANNED"));
+
+//Here we decide if the forums is on or off
+if ($site_config["FORUMS"]) {
+$themedir = $site_config['SITEURL']."/views/themes/".$THEME."/forums/";
+}
+
 	stdhead("Forum Search");
 	begin_frame("Search Forum");
 	forumheader("Search Forums");
@@ -926,7 +1112,7 @@ if ($action == "search") {
 				$user = $res2->fetch(PDO::FETCH_ASSOC);
 				if ($user["username"] == "")
 					$user["username"] = "Deluser";
-				print("<tr class='f-row'><td>$post[id]</td><td align='left'><a href='/forums?action=viewtopic&amp;topicid=$post[topicid]#post$post[id]'><b>" . htmlspecialchars($topic["subject"]) . "</b></a></td><td align='left'><a href='/forums?action=viewforum&amp;forumid=$topic[forumid]'><b>" . htmlspecialchars($forum["name"]) . "</b></a></td><td align='left'><a href='/accountdetails?id=$post[userid]'><b>$user[username]</b></a><br />at ".utc_to_tz($post["added"])."</td></tr>\n");
+				print("<tr class='f-row'><td>$post[id]</td><td align='left'><a href='/forums/viewtopic&amp;topicid=$post[topicid]#post$post[id]'><b>" . htmlspecialchars($topic["subject"]) . "</b></a></td><td align='left'><a href='/forums/viewforum&amp;forumid=$topic[forumid]'><b>" . htmlspecialchars($forum["name"]) . "</b></a></td><td align='left'><a href='/accountdetails?id=$post[userid]'><b>$user[username]</b></a><br />at ".utc_to_tz($post["added"])."</td></tr>\n");
 			}
 			print("</table></div></center></p>\n");
 			print("<p><b>Search again</b></p>\n");
@@ -942,11 +1128,35 @@ if ($action == "search") {
 	end_frame();
 	stdfoot();
 	die;
-}
+	}
 
-///////////////////////////////////////////////////////// Action: UNKNOWN
-if ($action != "")
-    showerror("Forum Error", "Unknown action '$action'.");
+
+    public function index(){
+require_once("helpers/bbcode_helper.php");
+dbconn();
+global $site_config, $CURUSER, $THEME;
+if (!$site_config["FORUMS_GUESTREAD"])
+	loggedinonly();
+
+
+
+$action = strip_tags($_REQUEST["action"]);
+    
+if (!$CURUSER && ($action == "newtopic" || $action == "post")) 
+    showerror(T_("FORUM_ERROR"), T_("FORUM_NO_ID"));
+
+if ($CURUSER["forumbanned"] == "yes" || $CURUSER["view_forum"] == "no")
+    showerror(T_("FORUM_BANNED"), T_("FORUM_BANNED"));
+
+//Here we decide if the forums is on or off
+if ($site_config["FORUMS"]) {
+$themedir = $site_config['SITEURL']."/views/themes/".$THEME."/forums/";
+
+
+//Global variables
+$postsperpage = 20;
+$maxsubjectlength = 50;
+
 
 ///////////////////////////////////////////////////////// Action: DEFAULT ACTION (VIEW FORUMS)
 if (isset($_GET["catchup"]))
@@ -1009,7 +1219,7 @@ while ($forums_arr = $forums_res->fetch(PDO::FETCH_ASSOC)){
 		//cut last topic
 		$latestleng = 10;
 
-		$lastpost = "<small><a href='/forums?action=viewtopic&amp;topicid=$lasttopicid&amp;page=last#last'>" . CutName($lasttopic, $latestleng) . "</a> by <a href='/accountdetails?id=$lastposterid'>$lastposter</a><br />$lastpostdate</small>";
+		$lastpost = "<small><a href='/forums/viewtopic&amp;topicid=$lasttopicid&amp;page=last#last'>" . CutName($lasttopic, $latestleng) . "</a> by <a href='/accountdetails?id=$lastposterid'>$lastposter</a><br />$lastpostdate</small>";
 
 
 		if ($CURUSER) {
@@ -1026,7 +1236,7 @@ while ($forums_arr = $forums_res->fetch(PDO::FETCH_ASSOC)){
 		$img = "folder";
     }
 	//following line is each forums display
-    print("<tr class='f-row'><td class='f-img'><img src='". $themedir ."$img.png' alt='' /></td><td align='left' width='100%' class='alt1'><a href='/forums?action=viewforum&amp;forumid=$forumid'><b>$forumname</b></a><br />\n" .
+    print("<tr class='f-row'><td class='f-img'><img src='". $themedir ."$img.png' alt='' /></td><td align='left' width='100%' class='alt1'><a href='/forums/viewforum&amp;forumid=$forumid'><b>$forumname</b></a><br />\n" .
     "<small>- $forumdescription</small></td><td class='alt2' align='center' width='40'>$topiccount</td><td class='alt3' align='center' width='40'>$postcount</td>" .
     "<td class='alt2' align='right' width='110'><small style='white-space: nowrap'>$lastpost</small></td></tr>\n");
 }
@@ -1056,4 +1266,5 @@ stdfoot();
     showerror("Notice", "Unfortunatley the forums are not currently available.");
 }
 }
+ 
   }

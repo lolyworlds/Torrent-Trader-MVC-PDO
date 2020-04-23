@@ -1,10 +1,187 @@
 <?php
-  class Account extends Controller {
-    
-    public function __construct(){
-        // $this->userModel = $this->model('User');
+class Accountlogin extends Controller
+{
+    // autoload model with constructor
+    public function __construct()
+    {
+        $this->userModel = $this->model('User');
     }
-    
+
+    public function index()
+    {
+		dbconn();
+		// add globals
+        global $site_config, $CURUSER;
+
+        $username = $_POST['username'] ?? false;
+        $user_password = $_POST['password'] ?? false;
+        $message = '';
+
+        if ($username && $user_password) {
+
+            $password = $user_password;
+            // called model method/function
+			$row = $this->userModel->getUserByUsername($username);
+
+            if (!$row || !password_verify($password, $row["password"])) {
+                $message = T_("LOGIN_INCORRECT");
+            } elseif ($row["status"] == "pending") {
+                $message = T_("ACCOUNT_PENDING");
+            } elseif ($row["enabled"] == "no") {
+                $message = T_("ACCOUNT_DISABLED");
+            }
+
+            if (!$message) {
+
+                logincookie($row["id"], $row["password"], $row["secret"]);
+                if (!empty($_POST)) {
+                    header("Refresh: 0; url=index.php");
+                    die();
+                }
+            } else {
+                show_error_msg(T_("ACCESS_DENIED"), $message, 1);
+            }
+        }
+
+        logoutcookie();
+
+        stdhead(T_("LOGIN"));
+
+        begin_frame(T_("LOGIN"));
+
+        if ($site_config["MEMBERSONLY"]) {
+            $message = T_("MEMBERS_ONLY");
+            print("<center><b>" . $message . "</b></center>\n");
+        }
+
+		// add view
+		$data = [
+		  //  we can add data to view 'posts' => $posts
+		  ];
+		  // load view
+		  $this->view('account/login', $data);
+
+        end_frame();
+        stdfoot();
+    }
+	
+	public function logout()
+    {
+        dbconn();
+        logoutcookie();
+        header("Location: /index.php");
+    }
+	
+	
+   public function index(){
+		// Set Current User
+		// $curuser = $this->userModel->setCurrentUser();
+		// Set Current User
+		// $db = new Database;
+dbconn();
+global $site_config, $CURUSER;
+$kind = '0';
+
+if (is_valid_id($_POST["id"]) && strlen($_POST["secret"]) == 32) {
+    $password = $_POST["password"];
+    $password1 = $_POST["password1"];
+    if (empty($password) || empty($password1)) {
+        $kind = T_("ERROR");
+        $msg =  T_("NO_EMPTY_FIELDS");
+    } elseif ($password != $password1) {
+        $kind = T_("ERROR");
+        $msg = T_("PASSWORD_NO_MATCH");
+    } else {
+	$n = get_row_count("users", "WHERE `id`=".intval($_POST["id"])." AND MD5(`secret`) = ".sqlesc($_POST["secret"]));
+	if ($n != 1)
+		show_error_msg(T_("ERROR"), T_("NO_SUCH_USER"));
+        $newsec = mksecret();
+        $wantpassword = password_hash($password, PASSWORD_BCRYPT);
+        DB::run("UPDATE `users` SET `password` =?, `secret` =? WHERE `id`=? AND secret =?", [$wantpassword, $newsec, $_POST['id'], $_POST["secret"]]);
+        $kind = T_("SUCCESS");
+        $msg =  T_("PASSWORD_CHANGED_OK");
+    }
+}
+
+if ($_SERVER["REQUEST_METHOD"] == "POST" && $_GET["take"] == 1) {
+    $email = trim($_POST["email"]);
+
+    if (!validemail($email)) {
+        $msg = T_("EMAIL_ADDRESS_NOT_VAILD");
+        $kind = T_("ERROR");
+    }else{
+        $arr = DB::run("SELECT id, username, email FROM users WHERE email=? LIMIT 1", [$email])->fetch();
+        if (!$arr) {
+            $msg = T_("EMAIL_ADDRESS_NOT_FOUND");
+            $kind = T_("ERROR");
+        }
+
+        if ($arr) {
+              $sec = mksecret();
+            $secmd5 = md5($sec);
+            $id = $arr['id'];
+
+            $body = T_("SOMEONE_FROM")." " . $_SERVER["REMOTE_ADDR"] . " ".T_("MAILED_BACK")." ($email) ".T_("BE_MAILED_BACK")." \r\n\r\n ".T_("ACCOUNT_INFO")." \r\n\r\n ".T_("USERNAME").": ".class_user($arr["username"])." \r\n ".T_("CHANGE_PSW")."\n\n$site_config[SITEURL]/accountrecover?id=$id&secret=$secmd5\n\n\n".$site_config["SITENAME"]."\r\n";
+            
+            @sendmail($arr["email"], T_("ACCOUNT_DETAILS"), $body, "", "-f".$site_config['SITEEMAIL']);
+            $res2 =DB::run("UPDATE `users` SET `secret` =? WHERE `email`=? LIMIT 1", [$sec, $email]);
+            $msg = sprintf(T_('MAIL_RECOVER'), htmlspecialchars($email));
+            $kind = T_("SUCCESS");
+        }
+    }
+}
+
+stdhead();
+
+begin_frame(T_("RECOVER_ACCOUNT"));
+if ($kind != "0") {
+    show_error_msg("Notice", "$kind: $msg", 0);
+}
+
+if (is_valid_id($_GET["id"]) && strlen($_GET["secret"]) == 32) {?>
+<form method="post" action="/accountrecover">
+<table border="0" cellspacing="0" cellpadding="5">
+    <tr>
+        <td>
+            <b><?php echo T_("NEW_PASSWORD"); ?></b>:
+        </td>
+        <td>
+            <input type="hidden" name="secret" value="<?php echo $_GET['secret']; ?>" />
+            <input type="hidden" name="id" value="<?php echo $_GET['id']; ?>" />
+            <input type="password" size="40" name="password" />
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <b><?php echo T_("REPEAT"); ?></b>:
+        </td>
+        <td>
+            <input type="password" size="40" name="password1" />
+        </td>
+    </tr>
+    <tr>
+        <td>&nbsp;</td>
+        <td><input type="submit" value="<?php echo T_("SUBMIT"); ?>" /></td>
+    </tr>
+</table>
+</form>
+<?php } else { echo T_("USE_FORM_FOR_ACCOUNT_DETAILS"); ?>
+
+<form method="post" action="/accountrecover?take=1">
+    <table border="0" cellspacing="0" cellpadding="5">
+        <tr>
+            <td><b><?php echo T_("EMAIL_ADDRESS"); ?>:</b></td>
+            <td><input type="text" size="40" name="email" />&nbsp;<input type="submit" value="<?php echo T_("SUBMIT");?>" /></td>
+        </tr>
+    </table>
+</form>
+
+<?php
+}
+end_frame();
+stdfoot();
+    }
+
     public function index(){
 		// Set Current User
 		// $curuser = $this->userModel->setCurrentUser();
@@ -12,466 +189,367 @@
 		// $db = new Database;
 dbconn();
 global $site_config, $CURUSER;
-loggedinonly();
+$id = (int) $_GET["id"];
+$md5 = $_GET["secret"];
+$email = $_GET["email"];
 
-stdhead(T_("USERCP"));
-
-$action = $_REQUEST["action"];
-$do = $_REQUEST["do"];
-
-if (!$action){
-	begin_frame(T_("USER").": $CURUSER[username] (".T_("ACCOUNT_PROFILE").")");
-
-	$usersignature = stripslashes($CURUSER["signature"]);
-
-	navmenu();
-	?>
-	<table class="f-border comment" cellpadding="10" border="0" max-width="100%">
-	<tr>
-    <td width="10%" valign="top">
-	<b><?php echo T_("USERNAME"); ?>:</b> <?php echo class_user($CURUSER["username"]); ?><br />
-	<b><?php echo T_("CLASS"); ?>:</b> <?php echo $CURUSER["level"]; ?><br />
-	<b><?php echo T_("EMAIL"); ?>:</b> <?php echo $CURUSER["email"]; ?><br />
-	<b><?php echo T_("JOINED"); ?>:</b> <?php echo utc_to_tz($CURUSER["added"]); ?><br />
-	<b><?php echo T_("AGE"); ?>:</b> <?php echo $CURUSER["age"]; ?><br />
-	<b><?php echo T_("GENDER"); ?>:</b> <?php echo T_($CURUSER["gender"]); ?><br />
-	<b><?php echo T_("PREFERRED_CLIENT"); ?>:</b> <?php echo htmlspecialchars($CURUSER["client"]); ?><br />
-	<b><?php echo T_("DONATED"); ?>:</b> <?php echo $site_config['currency_symbol']; ?><?php echo number_format($CURUSER["donated"], 2); ?><br />
-	<b><?php echo T_("CUSTOM_TITLE"); ?>:</b> <?php echo format_comment($CURUSER["title"]); ?><br />
-	<b><?php echo T_("ACCOUNT_PRIVACY_LVL"); ?>:</b> <?php echo T_($CURUSER["privacy"]); ?><br />
-	<b><?php echo T_("SIGNATURE"); ?>:</b> <?php echo format_comment($usersignature); ?><br />
-	<b><?php echo T_("PASSKEY"); ?>:</b> <?php echo $CURUSER["passkey"]; ?><br />
-	<?php
-		if ($CURUSER["invited_by"]) {
-			$row = DB::run("SELECT username FROM users WHERE id= ?", [$CURUSER[invited_by]])->fetch();
-			echo "<b>".T_("INVITED_BY").":</b> <a href=\"/accountdetails?id=$CURUSER[invited_by]\">$row[username]</a><br />";
-		}
-		echo "<b>".T_("INVITES").":</b> " . number_format($CURUSER["invites"]) . "<br />";
-		$invitees = array_reverse(explode(" ", $CURUSER["invitees"]));
-		$rows = array();
-		foreach ($invitees as $invitee) {
-			$res = DB::run("SELECT id, username FROM users WHERE id=? and status=?", [$invitee, 'confirmed']);
-			if ($row = $res->fetch(PDO::FETCH_LAZY)) {
-				$rows[] = "<a href=\"/accountdetails?id=$row[id]\">$row[username]</a>";
-			}
-		}
-		if ($rows)
-			echo "<b>".T_("INVITED").":</b> ".implode(", ", $rows)."<br />";
-	?>
-	<?php print("<b>".T_("IP").":</b> " . $CURUSER["ip"] . "\n"); ?><br />
-	</td></tr>
-	</table>
-	<br /><br />
-	<?php
-	end_frame();
+if (!$id || !$md5 || !$email) {
+	show_error_msg(T_("ERROR"), T_("MISSING_FORM_DATA"), 1);
 }
 
-/////////////// MY TORRENTS ///////////////////
+$row = DB::run("SELECT `editsecret` FROM `users` WHERE `enabled` =? AND `status` =? AND `editsecret` !=?  AND `id` =?", ['yes', 'confirmed', '', $id])->fetch();
 
-if ($action=="mytorrents"){
-begin_frame(T_("YOUR_TORRENTS"));
-navmenu();
-//page numbers
-$page = (int) ($_GET['page'] ?? 0);
-$perpage = 200;
-
-
-$arr = DB::run("SELECT COUNT(*) FROM torrents WHERE torrents.owner = " . $CURUSER["id"] ."")->fetch();
-$pages = floor($arr[0] / $perpage);
-if ($pages * $perpage < $arr[0])
-  ++$pages;
-
-if ($page < 1)
-  $page = 1;
-else
-  if ($page > $pages)
-    $page = $pages;
-
-for ($i = 1; $i <= $pages; ++$i)
-  if ($i == $page)
-    $pagemenu .= "$i\n";
-  else
-    $pagemenu .= "<a href='/account?action=mytorrents&amp;page=$i'>$i</a>\n";
-
-if ($page == 1)
-  $browsemenu .= "";
-else
-  $browsemenu .= "<a href='/account?action=mytorrents&amp;page=" . ($page - 1) . "'>[Prev]</a>";
-
-$browsemenu .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-
-if ($page == $pages)
-  $browsemenu .= "";
-else
-  $browsemenu .= "<a href='/account?action=mytorrents&amp;page=" . ($page + 1) . "'>[Next]</a>";
-
-$offset = ($page * $perpage) - $perpage;
-//end page numbers
-
-
-$where = "WHERE torrents.owner = " . $CURUSER["id"] ."";
-$orderby = "ORDER BY added DESC";
-
-$query = DB::run("SELECT torrents.id, torrents.category, torrents.name, torrents.added, torrents.hits, torrents.banned, torrents.comments, torrents.seeders, torrents.leechers, torrents.times_completed, categories.name AS cat_name, categories.parent_cat AS cat_parent FROM torrents LEFT JOIN categories ON category = categories.id $where $orderby LIMIT $offset,$perpage");
-$allcats = $query->rowCount();
-	if($allcats == 0) {
-		echo '<div class="f-border comment"><br /><b>'.T_("NO_UPLOADS").'</b></div>';
-	}else{
-		print("<p align='center'>$pagemenu<br />$browsemenu</p>");
-?>
-    <table align="center" cellpadding="5" cellspacing="3" class="table_table" width="100%">
-    <tr class="table_head">
-        <th><?php echo T_("TYPE"); ?></th>
-        <th><?php echo T_("NAME"); ?></th>
-        <th><?php echo T_("COMMENTS"); ?></th>
-        <th><?php echo T_("HITS"); ?></th>
-        <th><?php echo T_("SEEDS"); ?></th>
-        <th><?php echo T_("LEECHERS"); ?></th>
-        <th><?php echo T_("COMPLETED"); ?></th>
-        <th><?php echo T_("ADDED"); ?></th>
-        <th><?php echo T_("EDIT"); ?></th>
-    </tr>
-    
-<?php
-		while($row = $query->fetch(PDO::FETCH_LAZY))
-			{
-			$char1 = 35; //cut length 
-			$smallname = CutName(htmlspecialchars($row["name"]), $char1);
-			echo "<tr><td class='table_col2' align='center'>$row[cat_parent]: $row[cat_name]</td><td class='table_col1' align='left'><a href='torrentsdetails?id=$row[id]'>$smallname</a></td><td class='table_col2' align='center'><a href='/comments?type=torrent&amp;id=$row[id]'>".number_format($row["comments"])."</a></td><td class='table_col1' align='center'>".number_format($row["hits"])."</td><td class='table_col2' align='center'>".number_format($row["seeders"])."</td><td class='table_col1' align='center'>".number_format($row["leechers"])."</td><td class='table_col2' align='center'>".number_format($row["times_completed"])."</td><td class='table_col1' align='center'>".get_elapsed_time(sql_timestamp_to_unix_timestamp($row["added"]))."</td><td class='table_col2'><a href='torrentsedit?id=$row[id]'>EDIT</a></td></tr>\n";
-			}
-		echo "</table><br />";
-		print("<p align='center'>$pagemenu<br />$browsemenu</p>");
-	}
-
-end_frame();
+if (!$row) {
+	show_error_msg(T_("ERROR"), T_("NOTHING_FOUND"), 1);
 }
 
+$sec = $row["editsecret"];
 
-/////////////////////// EDIT SETTINGS ////////////////
-if ($action=="edit_settings"){
+if ($md5 != md5($sec . $email . $sec))
+    show_error_msg(T_("ERROR"), T_("NOTHING_FOUND"), 1);
 
-	if ($do=="edit"){
-	begin_frame(T_("EDIT_ACCOUNT_SETTINGS"));
+DB::run("UPDATE `users` SET `editsecret` =?, `email` =? WHERE `id` =? AND `editsecret` =?", ['', $email, $id, $row["editsecret"]]);
 
-	navmenu();
-	?>
-	<form enctype="multipart/form-data" method="post" action="/account">
-	<input type="hidden" name="action" value="edit_settings" />
-	<input type="hidden" name="do" value="save_settings" />
-	<table class="f-border" cellspacing="0" cellpadding="5" max-width="100%" align="center">
-	<?php
-
-	$ss_r = DB::run("SELECT * from stylesheets");
-	$ss_sa = array();
-	while ($ss_a = $ss_r->fetch(PDO::FETCH_LAZY))
-	{
-	  $ss_id = $ss_a["id"];
-	  $ss_name = $ss_a["name"];
-	  $ss_sa[$ss_name] = $ss_id;
+header("Refresh: 0; url=/account");
+header("Location: /account");
 	}
-	ksort($ss_sa);
-	reset($ss_sa);
-	while (list($ss_name, $ss_id) = thisEach($ss_sa))
-	{
-	  if ($ss_id == $CURUSER["stylesheet"]) $ss = " selected='selected'"; else $ss = "";
-	  $stylesheets .= "<option value='$ss_id'$ss>$ss_name</option>\n";
-	}
-
-	$countries = "<option value='0'>----</option>\n";
-	$ct_r = DB::run("SELECT id,name from countries ORDER BY name");
-	while ($ct_a = $ct_r->fetch(PDO::FETCH_LAZY))
-	  $countries .= "<option value='$ct_a[id]'" . ($CURUSER["country"] == $ct_a['id'] ? " selected='selected'" : "") . ">$ct_a[name]</option>\n";
-
-	$teams = "<option value='0'>--- ".T_("NONE_SELECTED")." ----</option>\n";
-	$sashok = DB::run("SELECT id,name FROM teams ORDER BY name");
-	while ($sasha = $sashok->fetch(PDO::FETCH_LAZY))
-		$teams .= "<option value='$sasha[id]'" . ($CURUSER["team"] == $sasha['id'] ? " selected='selected'" : "") . ">$sasha[name]</option>\n"; 
-
-
-	$acceptpms = $CURUSER["acceptpms"] == "yes";
-	print ("<tr><td align='right' class='alt2'><b>" . T_("ACCEPT_PMS") . ":</b> </td><td class='alt2'><input type='radio' name='acceptpms'" . ($acceptpms ? " checked='checked'" : "") .
-	  " value='yes' /><b>".T_("FROM_ALL")."</b> <input type='radio' name='acceptpms'" .
-	  ($acceptpms ? "" : " checked='checked'") . " value='no' /><b>" . T_("FROM_STAFF_ONLY") . "</b><br /><i>".T_("ACCEPTPM_WHICH_USERS")."</i></td></tr>");
-
-	$gender = "<option value='Male'" . ($CURUSER["gender"] == "Male" ? " selected='selected'" : "") . ">" . T_("MALE") . "</option>\n"
-		 ."<option value='Female'" . ($CURUSER["gender"] == "Female" ? " selected='selected'" : "") . ">" . T_("FEMALE") . "</option>\n";
-
-	// START CAT LIST SQL
-	$r = DB::run("SELECT id,name,parent_cat FROM categories ORDER BY parent_cat ASC, sort_index ASC");
-	if ($r->rowCount() > 0)
-	{
-		$categories .= "<table><tr>\n";
-		$i = 0;
-		while ($a = $r->fetch(PDO::FETCH_LAZY))
-		{
-		  $categories .=  ($i && $i % 2 == 0) ? "</tr><tr>" : "";
-		  $categories .= "<td class='bottom' style='padding-right: 5px'><input name='cat$a[id]' type=\"checkbox\" " . (strpos($CURUSER['notifs'], "[cat$a[id]]") !== false ? " checked='checked'" : "") . " value='yes' />&nbsp;" .htmlspecialchars($a["parent_cat"]).": " . htmlspecialchars($a["name"]) . "</td>\n";
-		  ++$i;
-		}
-		$categories .= "</tr></table>\n";
-	}
-
-	// END CAT LIST SQL
-
-
-	print("<tr><td align='right' class='alt3'><b>" . T_("ACCOUNT_PRIVACY_LVL") . ":</b> </td><td align='left' class='alt3'>". priv("normal", "<b>" . T_("NORMAL") . "</b>") . " " . priv("low", "<b>" . T_("LOW") . "</b>") . " " . priv("strong", "<b>" . T_("STRONG") . "</b>") . "<br /><i>".T_("ACCOUNT_PRIVACY_LVL_MSG")."</i></td></tr>");
-	print("<tr><td align='right' class='alt2'><b>" . T_("EMAIL_NOTIFICATION") . ":</b> </td><td align='left' class='alt2'><input type='checkbox' name='pmnotif' " . (strpos($CURUSER['notifs'], "[pm]") !== false ? " checked='checked'" : "") .
-	   " value='yes' /><b>" . T_("PM_NOTIFY_ME") . "</b><br /><i>".T_("EMAIL_WHEN_PM")."</i></td></tr>");
-
-	   //print("<tr><td align=right class=alt3 valign=top><b>".T_("CATEGORY_FILTER").": </b></td><td align=left class=alt3><i>The system will only display the following categories when browsing (uncheck all to disable filter).</i><br />".$categories."</td></tr>");
-
-	print("<tr><td align='right' class='alt3'><b>" . T_("THEME") . ":</b> </td><td align='left' class='alt3'><select name='stylesheet'>\n$stylesheets\n</select></td></tr>");
-	print("<tr><td align='right' class='alt2'><b>" . T_("PREFERRED_CLIENT") .":</b> </td><td align='left' class='alt2'><input type='text' size='20' maxlength='20' name='client' value=\"" . htmlspecialchars($CURUSER["client"]) . "\" /></td></tr>");
-	print("<tr><td align='right' class='alt3'><b>" . T_("AGE") . ":</b> </td><td align='left' class='alt3'><input type='text' size='3' maxlength='2' name='age' value=\"" . htmlspecialchars($CURUSER["age"]) . "\" /></td></tr>");
-	print("<tr><td align='right' class='alt2'><b>" . T_("GENDER") . ":</b> </td><td align='left' class='alt2'><select size='1' name='gender'>\n$gender\n</select></td></tr>");
-	print("<tr><td align='right' class='alt3'><b>" . T_("COUNTRY") . ":</b> </td><td align='left' class='alt3'><select name='country'>\n$countries\n</select></td></tr>");
-
-	if ($CURUSER["class"] > 1)
-		print("<tr><td align='right' class='alt2'><b>".T_("TEAM").":</b> </td><td align='left' class='alt2'><select name='teams'>\n$teams\n</select></td></tr>");
-
-	print("<tr><td align='right' class='alt3'><b>" . T_("AVATAR_UPLOAD") . ":</b> </td><td align='left' class='alt3'><input type='text' name='avatar' size='50' value=\"" . htmlspecialchars($CURUSER["avatar"]) .
-	  "\" /><br />\n<i>".T_("AVATAR_LINK")."</i><br /></td></tr>");
-	print("<tr><td align='right' class='alt2'><b>" . T_("CUSTOM_TITLE") . ":</b> </td><td align='left' class='alt2'><input type='text' name='title' size='50' value=\"" . strip_tags($CURUSER["title"]) .
-	  "\" /><br />\n <i>" . T_("HTML_NOT_ALLOWED") . "</i></td></tr>");
-	print("<tr><td align='right' class='alt3' valign='top'><b>" . T_("SIGNATURE") . ":</b> </td><td align='left' class='alt3'><textarea name='signature' cols='50' rows='10'>" . htmlspecialchars($CURUSER["signature"]) .
-	  "</textarea><br />\n <i>".sprintf(T_("MAX_CHARS"), 150).", " . T_("HTML_NOT_ALLOWED") . "</i></td></tr>");
-
-	print("<tr><td align='right' class='alt2'><b>".T_("RESET_PASSKEY").":</b> </td><td align='left' class='alt2'><input type='checkbox' name='resetpasskey' value='1' />&nbsp;<i>".T_("RESET_PASSKEY_MSG").".</i></td></tr>");
-
-    if ($site_config["SHOUTBOX"])
-        print("<tr><td align='right' class='table_col3'><b>".T_("HIDE_SHOUT").":</b></td><td align='left' class='table_col3'><input type='checkbox' name='hideshoutbox' value='yes' ".($CURUSER['hideshoutbox'] == 'yes' ? 'checked="checked"' : '')." />&nbsp;<i>".T_("HIDE_SHOUT")."</i></td></tr> ");
 	
-    print("<tr><td align='right' class='alt2'><b>" . T_("EMAIL") . ":</b> </td><td align='left' class='alt2'><input type=\"text\" name=\"email\" size=\"50\" value=\"" . htmlspecialchars($CURUSER["email"]) .
-	  "\" /><br />\n<i>".T_("REPLY_TO_CONFIRM_EMAIL")."</i><br /></td></tr>");
+	
+    public function index(){
+		// Set Current User
+		// $curuser = $this->userModel->setCurrentUser();
+		// Set Current User
+		// $db = new Database;
+dbconn();
+global $site_config, $CURUSER;
+$id = (int) $_GET["id"];
+$md5 = $_GET["secret"];
 
-	ksort($tzs);
-	reset($tzs);
-	while (list($key, $val) = thisEach($tzs)) {
-	if ($CURUSER["tzoffset"] == $key)
-		$tz .= "<option value=\"$key\" selected='selected'>$val[0]</option>\n";
-	else
-		$tz .= "<option value=\"$key\">$val[0]</option>\n";
+if (!$id || !$md5)
+	show_error_msg(T_("ERROR"), T_("INVALID_ID"), 1);
+
+$row = DB::run("SELECT `password`, `secret`, `status` FROM `users` WHERE `id` =?", [$id])->fetch();
+if (!$row)
+	show_error_msg(T_("ERROR"), sprintf(T_("CONFIRM_EXPIRE"), $site_config['signup_timeout']/86400), 1);
+
+if ($row["status"] != "pending") {
+	header("Refresh: 0; url=/accountconfirmok?type=confirmed");
+	die;
+}
+
+if ($md5 != md5($row["secret"]))
+	show_error_msg(T_("ERROR"), T_("SIGNUP_ACTIVATE_LINK"), 1);
+
+$secret = mksecret();
+
+$upd = DB::run("UPDATE `users` SET `secret` =?, `status` =? WHERE `id` =? AND `secret` =? AND `status` =?", [$secret, 'confirmed', $id, $row["secret"], 'pending']);
+if (!$upd)
+	show_error_msg(T_("ERROR"), T_("SIGNUP_UNABLE"), 1);
+
+header("Refresh: 0; url=/accountconfirmok?type=confirm");
 	}
 
-	print("<tr><td align='right' class='alt3'><b>".T_("TIMEZONE").":</b> </td><td align='left' class='alt3'><select name='tzoffset'>$tz</select></td></tr>");
+    public function index(){
+		// Set Current User
+		// $curuser = $this->userModel->setCurrentUser();
+		// Set Current User
+		// $db = new Database;
+dbconn();
+global $site_config, $CURUSER;
+$type = $_GET["type"];
+$email = $_GET["email"];
 
-	?>
-	<tr><td colspan="2" align="center"><input type="submit" value="<?php echo T_("SUBMIT");?>" /> <input type="reset" value="<?php echo T_("REVERT");?>" /></td></tr>
-	</table></form>
+if (!$type)
+	die;
 
-	<?php
+if ($type =="noconf"){ //email conf is disabled?
+	stdhead(T_("ACCOUNT_ALREADY_CONFIRMED"));
+	begin_frame(T_("PLEASE_NOW_LOGIN"));
+	print(T_("PLEASE_NOW_LOGIN_REST"));
 	end_frame();
-	}
+	stdfoot();
+	die();
+}
 
-
-	if ($do == "save_settings"){
-	begin_frame(T_("EDIT_ACCOUNT_SETTINGS"));
-
-	navmenu();
-		$set = array();
-		  $updateset = array();
-		  $changedemail = $newsecret = 0;
-
-          $email = $_POST["email"];
-		  if ($email != $CURUSER["email"]) {
-				if (!validemail($email))
-					$message = T_("NOT_VALID_EMAIL");
-				$changedemail = 1;
-		  }
-
-		  $acceptpms = $_POST["acceptpms"];
-		  $pmnotif = $_POST["pmnotif"];
-		  $privacy = $_POST["privacy"];
-		  $notifs = ($pmnotif == 'yes' ? "[pm]" : "");
-		  $r = DB::run("SELECT id FROM categories");
-		  $rows = $r->rowCount();
-		  for ($i = 0; $i < $rows; ++$i) {
-				$a = $r->fetch();
-				if ($_POST["cat$a[id]"] == 'yes')
-				  $notifs .= "[cat$a[id]]";
-		  }
-
-		  if ($_POST['resetpasskey']) $updateset[] = "passkey=''";
-          
-          $avatar = strip_tags( $_POST["avatar"] );
-          
-          if ( $avatar != null )
-          {    
-               # Allowed Image Extenstions.
-               $allowed_types = &$site_config["allowed_image_types"];    
-              
-               # We force http://
-               if ( !preg_match( "#^\w+://#i", $avatar ) ) $avatar = "http://" . $avatar;
-
-               # Clean Avatar Path.
-               $avatar = cleanstr( $avatar );
-               
-               # Validate Image.
-               $im = @getimagesize( $avatar );
-               
-               if ( !$im[ 2 ] || !@array_key_exists( $im['mime'], $allowed_types ) )
-                     $message = "The avatar url was determined to be of a invalid nature.";
-                     
-               # Save New Avatar.
-               $updateset[] = "avatar = " . sqlesc($avatar);
-          }
-          
-		  $title = strip_tags($_POST["title"]);
-		  $signature = $_POST["signature"];
-		  $stylesheet = $_POST["stylesheet"];
-		  $language = $_POST["language"];
-		  $client = strip_tags($_POST["client"]);
-		  $age = $_POST["age"];
-		  $gender= $_POST["gender"];
-		  $country = $_POST["country"];
-		  $teams = $_POST["teams"];
-		  $privacy = $_POST["privacy"];
-		  $timezone = (int)$_POST['tzoffset'];
-
-		  if (is_valid_id($stylesheet))
-			$updateset[] = "stylesheet = '$stylesheet'";
-		  if (is_valid_id($language))
-			$updateset[] = "language = '$language'";
-		  if (is_valid_id($teams))
-			$updateset[] = "team = '$teams'";
-		  if (is_valid_id($country))
-			$updateset[] = "country = $country";
-		  if ($acceptpms == "yes")
-			$acceptpms = 'yes';
-		  else
-			$acceptpms = 'no';
-		  if (is_valid_id($age))
-				$updateset[] = "age = '$age'";
-          
-          $hideshoutbox = ($_POST["hideshoutbox"] == "yes") ? "yes" : "no";
-
-            $updateset[] = "hideshoutbox = ".sqlesc($hideshoutbox);    
-			$updateset[] = "acceptpms = ".sqlesc($acceptpms);
-			$updateset[] = "commentpm = " . sqlesc($pmnotif == "yes" ? "yes" : "no");
-			$updateset[] = "notifs = ".sqlesc($notifs);
-			$updateset[] = "privacy = ".sqlesc($privacy);
-			$updateset[] = "gender = ".sqlesc($gender);
-			$updateset[] = "client = ".sqlesc($client);
-			$updateset[] = "signature = ".sqlesc($signature);
-			$updateset[] = "title = ".sqlesc($title);
-			$updateset[] = "tzoffset = $timezone";
-
-		  /* ****** */
-
-		  if (!$message) {
-
-			if ($changedemail) {
-				$sec = mksecret();
-				$hash = md5($sec . $email . $sec);
-				$obemail = rawurlencode($email);
-				$updateset[] = "editsecret = " . sqlesc($sec);
-				$thishost = $_SERVER["HTTP_HOST"];
-				$thisdomain = preg_replace('/^www\./is', "", $thishost);
-$body = <<<EOD
-You have requested that your user profile (username {$CURUSER["username"]})
-on {$site_config["SITEURL"]} should be updated with this email address ($email) as
-user contact.
-
-If you did not do this, please ignore this email. The person who entered your
-email address had the IP address {$_SERVER["REMOTE_ADDR"]}. Please do not reply.
-
-To complete the update of your user profile, please follow this link:
-
-{$site_config["SITEURL"]}/accountce?id={$CURUSER["id"]}&secret=$hash&email=$obemail
-
-Your new email address will appear in your profile after you do this. Otherwise
-your profile will remain unchanged.
-EOD;
-
-				sendmail($email, "$site_config[SITENAME] profile update confirmation", $body, "From: $site_config[SITEEMAIL]", "-f$site_config[SITEEMAIL]");
-				$mailsent = 1;
-			} //changedemail
-
-			DB::run("UPDATE users SET " . implode(",", $updateset) . " WHERE id = " . $CURUSER["id"]."");
-			$edited=1;
-			echo "<br /><br /><center><b><font class='error'>Updated OK</font></b></center><br /><br />";
-			if ($changedemail) {
-				echo "<br /><center><b>".T_("EMAIL_CHANGE_SEND")."</b></center><br /><br />";
-			}
-		  }else{
-			echo "<br /><br /><center><b><font class='error'>".T_("ERROR").": ".$message."</font></b></center><br /><br />";
-		  }// message
-
-
-		end_frame();
-	}// end do
-
-}//end action
-
-if ($action=="changepw"){
-
-	if ($do=="newpassword"){
-
-        $chpassword = $_POST['chpassword'];
-        $passagain = $_POST['passagain'];
-
-        if ($chpassword != "") {
-
-					if (strlen($chpassword) < 6)
-						$message = T_("PASS_TOO_SHORT");
-					if ($chpassword != $passagain)
-						$message = T_("PASSWORDS_NOT_MATCH");
-					$chpassword = password_hash($chpassword, PASSWORD_BCRYPT);
-                    $secret = mksecret();
-		}
-
-		if ((!$chpassword) || (!$passagain))
-			$message = "You must enter something!";
-
-		begin_frame();
-		navmenu();
-
-		if (!$message){
-			DB::run("UPDATE users SET password = " . sqlesc($chpassword) . ", secret = " . sqlesc($secret) . "  WHERE id = " . $CURUSER["id"]);
-			echo "<br /><br /><center><b>".T_("PASSWORD_CHANGED_OK")."</b></center>";
-			logoutcookie();
-		}else{
-			echo "<br /><br /><b><center>".$message."</center></b><br /><br />";
-		}
-
-
-		end_frame();
-		stdfoot();
-		die();
-	}//do
-
-	begin_frame(T_("CHANGE_YOUR_PASS"));
-	navmenu();
-	?>
-    
-	<form method="post" action="/account?action=changepw">
-	<input type="hidden" name="do" value="newpassword" />
-    <div class="f-border">
-    <br />
-    <table border="0" align="center" cellpadding="10">
-    <tr class="alt3">
-        <td align="right"><b><?php echo T_("NEW_PASSWORD"); ?>:</b></td>
-        <td align="left"><input type="password" name="chpassword" size="50" /></td>
-    </tr>
-    <tr class="alt3">
-        <td align="right"><b><?php echo T_("REPEAT"); ?>:</b></td>
-        <td align="left"><input type="password" name="passagain" size="50" /></td>
-    </tr>
-    <tr class="alt2">
-        <td colspan="2" align="center">
-        <input type="reset" value="<?php echo T_("REVERT"); ?>" />
-        <input type="submit" value="<?php echo T_("SUBMIT"); ?>" />
-        </td>
-    </tr>
-    </table>
-    <br />
-    </div>
-	</form>
-    
-	<?php
+if ($type == "signup" && validemail($email)) {
+	stdhead(T_("ACCOUNT_USER_SIGNUP"));
+ begin_frame(T_("ACCOUNT_SIGNUP_SUCCESS"));
+        if (!$site_config["ACONFIRM"]) {
+            print(T_("A_CONFIRMATION_EMAIL_HAS_BEEN_SENT"). " (" . htmlspecialchars($email) . "). " .T_("ACCOUNT_CONFIRM_SENT_TO_ADDY_REST"). " <br/ >");
+        } else {
+            print(T_("EMAIL_CHANGE_SEND"). " (" . htmlspecialchars($email) . "). " .T_("ACCOUNT_CONFIRM_SENT_TO_ADDY_ADMIN"). " <br/ >");
+        }
+    end_frame();
+}
+elseif ($type == "confirmed") {
+	stdhead(T_("ACCOUNT_ALREADY_CONFIRMED"));
+        begin_frame(T_("ACCOUNT_ALREADY_CONFIRMED"));
+	print(T_("ACCOUNT_ALREADY_CONFIRMED"). "\n");
 	end_frame();
 }
+
+//invite code
+elseif ($type == "invite" && $_GET["email"]) {
+stdhead(T_("INVITE_USER"));
+     begin_frame();
+		Print("<center>".T_("INVITE_SUCCESSFUL")."!</center><br /><br />".T_("A_CONFIRMATION_EMAIL_HAS_BEEN_SENT")." (" . htmlspecialchars($email) . "). ".T_("THEY_NEED_TO_READ_AND_RESPOND_TO_THIS_EMAIL")."");
+	end_frame();
+stdfoot();
+die;
+}//end invite code
+
+elseif ($type == "confirm") {
+	if (isset($CURUSER)) {
+		stdhead(T_("ACCOUNT_SIGNUP_CONFIRMATION"));
+		begin_frame(T_("ACCOUNT_SUCCESS_CONFIRMED"));
+		print(T_("ACCOUNT_ACTIVATED"). " <a href='". $site_config["SITEURL"] ."/index.php'>" .T_("ACCOUNT_ACTIVATED_REST"). "\n");
+		print(T_("ACCOUNT_BEFOR_USING"). " " . $site_config["SITENAME"] . " " .T_("ACCOUNT_BEFOR_USING_REST")."\n");
+		end_frame();
+	}
+	else {
+		stdhead(T_("ACCOUNT_SIGNUP_CONFIRMATION"));
+		begin_frame(T_("ACCOUNT_SUCCESS_CONFIRMED"));
+		print(T_("ACCOUNT_ACTIVATED"));
+		end_frame();
+	}
+}
+else
+	die();
 
 stdfoot();
 	}
+
+
+  public function index(){
+	  // Set Current User
+	  // $curuser = $this->userModel->setCurrentUser();
+	  // Set Current User
+	  // $db = new Database;
+dbconn();
+global $site_config, $CURUSER;
+$username_length = 15; // Max username length. You shouldn't set this higher without editing the database first
+$password_minlength = 6;
+$password_maxlength = 60;
+
+// Disable checks if we're signing up with an invite
+if (!is_valid_id($_REQUEST["invite"]) || strlen($_REQUEST["secret"]) != 32) {
+	//invite only check
+	if ($site_config["INVITEONLY"]) {
+		show_error_msg(T_("INVITE_ONLY"), "<br /><br /><center>".T_("INVITE_ONLY_MSG")."<br /><br /></center>",1);
+	}
+
+	//get max members, and check how many users there is
+	$numsitemembers = get_row_count("users");
+	if ($numsitemembers >= $site_config["maxusers"])
+		show_error_msg(T_("SORRY")."...", T_("SITE_FULL_LIMIT_MSG") . number_format($site_config["maxusers"])." ".T_("SITE_FULL_LIMIT_REACHED_MSG")." ".number_format($numsitemembers)." members",1);
+} else {
+	    $stmt = DB::run("SELECT id FROM users WHERE id = $_REQUEST[invite] AND secret = ".sqlesc($_REQUEST["secret"]));
+        $invite_row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$invite_row) {
+            show_error_msg(T_("ERROR"), T_("INVITE_ONLY_NOT_FOUND")." ".($site_config['signup_timeout']/86400)." days.", 1);
+        }
+}
+
+if ($_GET["takesignup"] == "1") {
+
+$message == "";
+
+
+
+	$wantusername = $_POST["wantusername"];
+	$email = $_POST["email"];
+	$wantpassword = $_POST["wantpassword"];
+	$passagain = $_POST["passagain"];
+	$country = $_POST["country"];
+	$gender = $_POST["gender"];
+	$client = $_POST["client"];
+	$age = (int) $_POST["age"];
+
+  if (empty($wantpassword) || (empty($email) && !$invite_row) || empty($wantusername))
+	$message = T_("DONT_LEAVE_ANY_FIELD_BLANK");
+  elseif (strlen($wantusername) > $username_length)
+	$message = sprintf(T_("USERNAME_TOO_LONG"), $username_length);
+  elseif ($wantpassword != $passagain)
+	$message = T_("PASSWORDS_NOT_MATCH");
+  elseif (strlen($wantpassword) < $password_minlength)
+	$message = sprintf(T_("PASS_TOO_SHORT_2"), $password_minlength);
+  elseif (strlen($wantpassword) > $password_maxlength)
+	$message = sprintf(T_("PASS_TOO_LONG_2"), $password_maxlength);
+  elseif ($wantpassword == $wantusername)
+ 	$message = T_("PASS_CANT_MATCH_USERNAME");
+  elseif (!validusername($wantusername))
+	$message = "Invalid username.";
+  elseif (!$invite_row && !validemail($email))
+		$message = "That doesn't look like a valid email address.";
+
+	if ($message == "") {
+		// Certain checks must be skipped for invites
+		if (!$invite_row) {
+			//check email isnt banned
+			$maildomain = (substr($email, strpos($email, "@") + 1));
+            $a = DB::run("SELECT count(*) FROM email_bans where mail_domain=?",[$email])->fetch();
+			if ($a[0] != 0)
+				$message = sprintf(T_("EMAIL_ADDRESS_BANNED_S"), $email);
+
+            $a = DB::run("SELECT count(*) FROM email_bans where mail_domain LIKE '%$maildomain%'")->fetch();
+			if ($a[0] != 0)
+				$message = sprintf(T_("EMAIL_ADDRESS_BANNED_S"), $email);
+
+		  // check if email addy is already in use
+            $a = DB::run("SELECT count(*) FROM users where email=?",[$email])->fetch();
+		  if ($a[0] != 0)
+			$message = sprintf(T_("EMAIL_ADDRESS_INUSE_S"), $email);
+		}
+
+	   //check username isnt in use
+        $a = DB::run("SELECT count(*) FROM users where username=?",[$wantusername])->fetch();
+	  if ($a[0] != 0)
+		$message = sprintf(T_("USERNAME_INUSE_S"), $wantusername); 
+
+	  $secret = mksecret(); //generate secret field
+
+	  $wantpassword = password_hash($wantpassword, PASSWORD_BCRYPT); // hash the password
+	}
+
+	if ($message != "")
+		show_error_msg(T_("SIGNUP_FAILED"), $message, 1);
+
+  if ($message == "") {
+		if ($invite_row) {
+            $upd = DB::run("UPDATE users SET username=".sqlesc($wantusername).", password=".sqlesc($wantpassword).", secret=".sqlesc($secret).", status='confirmed', added='".get_date_time()."' WHERE id=$invite_row[id]");
+			//send pm to new user
+			if ($site_config["WELCOMEPMON"]){
+				$dt = sqlesc(get_date_time());
+				$msg = sqlesc($site_config["WELCOMEPMMSG"]);
+                $ins =  DB::prepare("INSERT INTO messages (sender, receiver, added, msg, poster) VALUES(0, $invite_row[id], $dt, $msg, 0)");
+                $ins->execute();
+			}
+			header("Refresh: 0; url=/accountconfirmok?type=confirm");
+			die;
+		}
+
+	if ($site_config["CONFIRMEMAIL"]) { //req confirm email true/false
+		$status = "pending";
+	}else{
+		$status = "confirmed";
+	}
+
+	//make first member admin
+	if ($numsitemembers == '0')
+		$signupclass = '7';
+	else
+		$signupclass = '1';
+
+
+	$sql = "INSERT INTO users (username, password, secret, email, status, added, last_access, age, country, gender, client, stylesheet, language, class, ip) VALUES (" . implode(",", array_map("sqlesc", array($wantusername, $wantpassword, $secret, $email, $status, get_date_time(), get_date_time(), $age, $country, $gender, $client, $site_config["default_theme"], $site_config["default_language"], $signupclass, getip()))).")";
+    $ins_user =  DB::prepare($sql);
+    $ins_user->execute();
+    $id = DB::lastInsertId();
+
+    $psecret = md5($secret);
+    $thishost = $_SERVER["HTTP_HOST"];
+    $thisdomain = preg_replace('/^www\./is', "", $thishost);
+
+	//ADMIN CONFIRM
+	if ($site_config["ACONFIRM"]) {
+		$body = T_("YOUR_ACCOUNT_AT")." ".$site_config['SITENAME']." ".T_("HAS_BEEN_CREATED_YOU_WILL_HAVE_TO_WAIT")."\n\n".$site_config['SITENAME']." ".T_("ADMIN");
+	}else{//NO ADMIN CONFIRM, BUT EMAIL CONFIRM
+		$body = T_("YOUR_ACCOUNT_AT")." ".$site_config['SITENAME']." ".T_("HAS_BEEN_APPROVED_EMAIL")."\n\n	".$site_config['SITEURL']."/accountconfirm?id=$id&secret=$psecret\n\n".T_("HAS_BEEN_APPROVED_EMAIL_AFTER")."\n\n	".T_("HAS_BEEN_APPROVED_EMAIL_DELETED")."\n\n".$site_config['SITENAME']." ".T_("ADMIN");
+	}
+
+	if ($site_config["CONFIRMEMAIL"]){ //email confirmation is on
+		sendmail($email, "Your $site_config[SITENAME] User Account", $body, "", "-f$site_config[SITEEMAIL]");
+		header("Refresh: 0; url=/accountconfirmok?type=signup&email=" . urlencode($email));
+	}else{ //email confirmation is off
+		header("Refresh: 0; url=/accountconfirmok?type=noconf");
+	}
+	//send pm to new user
+	if ($site_config["WELCOMEPMON"]){
+		$dt = sqlesc(get_date_time());
+		$msg = sqlesc($site_config["WELCOMEPMMSG"]);
+        $qry = DB::prepare("INSERT INTO messages (sender, receiver, added, msg, poster) VALUES(0, $id, $dt, $msg, 0)");
+        $qry->execute();
+	}
+
+    die;
+  }
+
+}//end takesignup
+
+
+
+stdhead(T_("SIGNUP"));
+begin_frame(T_("SIGNUP"));
+?>
+<?php echo T_("COOKIES"); ?>
+
+<form method="post" action="/accountsignup?takesignup=1">
+	<?php if ($invite_row) { ?>
+	<input type="hidden" name="invite" value="<?php echo $_GET["invite"]; ?>" />
+	<input type="hidden" name="secret" value="<?php echo htmlspecialchars($_GET["secret"]); ?>" />
+	<?php } ?>
+	<table cellspacing="0" cellpadding="2" border="0">
+			<tr>
+				<td><?php echo T_("USERNAME"); ?>: <font class="required">*</font></td>
+				<td><input type="text" size="40" name="wantusername" /></td>
+			</tr>
+			<tr>
+				<td><?php echo T_("PASSWORD"); ?>: <font class="required">*</font></td>
+				<td><input type="password" size="40" name="wantpassword" /></td>
+			</tr>
+			<tr>
+				<td><?php echo T_("CONFIRM"); ?>: <font class="required">*</font></td>
+				<td><input type="password" size="40" name="passagain" /></td>
+			</tr>
+			<?php if (!$invite_row) {?>
+			<tr>
+				<td><?php echo T_("EMAIL"); ?>: <font class="required">*</font></td>
+				<td><input type="text" size="40" name="email" /></td>
+			</tr>
+			<?php } ?>
+			<tr>
+				<td><?php echo T_("AGE"); ?>:</td>
+				<td><input type="text" size="40" name="age" maxlength="3" /></td>
+			</tr>
+			<tr>
+				<td><?php echo T_("COUNTRY"); ?>:</td>
+				<td>
+					<select name="country" size="1">
+						<?php
+						$countries = "<option value=\"0\">---- ".T_("NONE_SELECTED")." ----</option>\n";
+                        $ct_r = DB::run("SELECT id,name,domain from countries ORDER BY name");
+                        while ($ct_a = $ct_r->fetch(PDO::FETCH_LAZY)){
+							$countries .= "<option value=\"$ct_a[id]\">$ct_a[name]</option>\n";
+						}
+						?>
+						<?php echo $countries; ?>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td><?php echo T_("GENDER"); ?>:</td>
+				<td>
+					<input type="radio" name="gender" value="Male" /><?php echo T_("MALE"); ?>
+					&nbsp;&nbsp;
+					<input type="radio" name="gender" value="Female" /><?php echo T_("FEMALE"); ?>
+				</td>
+			</tr>
+			<tr>
+				<td><?php echo T_("PREF_BITTORRENT_CLIENT"); ?>:</td>
+				<td><input type="text" size="40" name="client"  maxlength="20" /></td>
+			</tr>
+			<tr>
+				<td align="center" colspan="2">
+                <input type="submit" value="<?php echo T_("SIGNUP"); ?>" />
+              </td>
+			</tr>
+	</table>
+</form>
+<?php
+end_frame();
+stdfoot();
+					}	
+	
+	
 }
