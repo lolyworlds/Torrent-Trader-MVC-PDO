@@ -2,19 +2,16 @@
   class Rules extends Controller {
     
     public function __construct(){
-        // $this->userModel = $this->model('User');
+         $this->rulesModel = $this->model('Rule');
     }
     
     public function index(){
-		// Set Current User
-		// $curuser = $this->userModel->setCurrentUser();
-		// Set Current User
-		// $db = new Database;
+
   dbconn();
 global $site_config, $CURUSER;
   stdhead( T_("SITE_RULES") );
   
-  $res = DB::run("SELECT * FROM `rules` ORDER BY `id`");
+  $res = $this->rulesModel->getRules();
   while ($row = $res->fetch(PDO::FETCH_ASSOC))
   {
       if ($row["public"] == "yes")

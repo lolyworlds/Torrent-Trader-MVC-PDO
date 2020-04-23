@@ -31,8 +31,9 @@ function show_error_msg($title, $message, $wrapper = "1")
 // Function To Count A Data Established In A Data Table
 function get_row_count($table, $suffix = "")
 {
+    global $pdo;
     $suffix = !empty($suffix) ? ' ' . $suffix : '';
-    $row = DB::run("SELECT COUNT(*) FROM $table $suffix")->fetchColumn();
+    $row = $pdo->run("SELECT COUNT(*) FROM $table $suffix")->fetchColumn();
     return $row;
 }
 
@@ -65,9 +66,10 @@ function autolink($al_url, $al_msg)
 
 function write_log($text)
 {
+    global $pdo;
     $text = $text;
     $added = get_date_time();
-    DB::run("INSERT INTO log (added, txt) VALUES (?,?)", [$added, $text]);
+    $pdo->run("INSERT INTO log (added, txt) VALUES (?,?)", [$added, $text]);
 }
 
 /// each() replacement for php 7+. Change all instances of each() to thisEach() in all TT files. each() deprecated as of 7.2
@@ -131,23 +133,24 @@ function strtobytes($str)
 
 function navmenu()
 {
+    global $site_config;
     ?>
         <br />
           <div class="f-border">
             <table cellpadding='0' cellspacing='3' width='100%'>
             <tr class="f-title">
             <th width='100%' height="32" align='center'>
-            <?php print("<a href='/account'><b>" . T_("YOUR_PROFILE") . "</b></a>");?>
+            <?php print("<a href='". $site_config['SITEURL'] ."/usercp/'><b>" . T_("YOUR_PROFILE") . "</b></a>");?>
             &nbsp;|&nbsp;
-            <?php print("<a href='/account?action=edit_settings&amp;do=edit'><b>" . T_("YOUR_SETTINGS") . "</b></a>");?>
+            <?php print("<a href='". $site_config['SITEURL'] ."/usercp/editsettings&amp;do=edit'><b>" . T_("YOUR_SETTINGS") . "</b></a>");?>
             &nbsp;|&nbsp;
-            <?php print("<a href='/account?action=changepw'><b>" . T_("CHANGE_PASS") . "</b></a>");?>
+            <?php print("<a href='". $site_config['SITEURL'] ."/usercp/changepw'><b>" . T_("CHANGE_PASS") . "</b></a>");?>
             &nbsp;|&nbsp;
-            <?php print("<a href='/account?action=mytorrents'><b>" . T_("YOUR_TORRENTS") . "</b></a>");?>
+            <?php print("<a href='". $site_config['SITEURL'] ."/usercp/mytorrents'><b>" . T_("YOUR_TORRENTS") . "</b></a>");?>
             &nbsp;|&nbsp;
-            <?php print("<a href='/mailbox'><b>" . T_("YOUR_MESSAGES") . "</b></a>");?>
+            <?php print("<a href='". $site_config['SITEURL'] ."/mailbox'><b>" . T_("YOUR_MESSAGES") . "</b></a>");?>
              &nbsp;|&nbsp;
-            <?php print("<a href='/snatched'><b>" . T_("YOUR_SNATCHLIST") . "</b></a>");?>
+            <?php print("<a href='". $site_config['SITEURL'] ."/snatched'><b>" . T_("YOUR_SNATCHLIST") . "</b></a>");?>
             </th>
             </tr>
             </table>
@@ -158,21 +161,22 @@ function navmenu()
 
 function navmenuu()
 {
+    global $site_config;
     ?>
         <br />
           <div class="f-border">
             <table cellpadding='0' cellspacing='3' width='100%'>
             <tr class="f-title">
             <th width='100%' height="32" align='center'>
-            <?php print("<a href='/account'><b>" . T_("YOUR_PROFILE") . "</b></a>");?>
+            <?php print("<a href='". $site_config['SITEURL'] ."/usercp'><b>" . T_("YOUR_PROFILE") . "</b></a>");?>
             &nbsp;|&nbsp;
-            <?php print("<a href='/account?action=edit_settings&amp;do=edit'><b>" . T_("YOUR_SETTINGS") . "</b></a>");?>
+            <?php print("<a href='". $site_config['SITEURL'] ."/usercp/edit_settings&amp;do=edit'><b>" . T_("YOUR_SETTINGS") . "</b></a>");?>
             &nbsp;|&nbsp;
-            <?php print("<a href='/account?action=changepw'><b>" . T_("CHANGE_PASS") . "</b></a>");?>
+            <?php print("<a href='". $site_config['SITEURL'] ."/usercp/changepw'><b>" . T_("CHANGE_PASS") . "</b></a>");?>
             &nbsp;|&nbsp;
-            <?php print("<a href='/account?action=mytorrents'><b>" . T_("YOUR_TORRENTS") . "</b></a>");?>
+            <?php print("<a href='". $site_config['SITEURL'] ."/usercp/mytorrents'><b>" . T_("YOUR_TORRENTS") . "</b></a>");?>
             &nbsp;|&nbsp;
-            <?php print("<a href='/mailbox'><b>" . T_("YOUR_MESSAGES") . "</b></a>");?>
+            <?php print("<a href='". $site_config['SITEURL'] ."/mailbox'><b>" . T_("YOUR_MESSAGES") . "</b></a>");?>
                </th>
             </tr>
             </table>

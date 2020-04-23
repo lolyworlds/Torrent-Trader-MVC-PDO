@@ -20,8 +20,8 @@ if (file_exists("check.php") && $CURUSER["class"] == 7){
 	show_error_msg("WARNING", "check still exists, please delete or rename the file as it could pose a security risk<br /><br /><a href='".$site_config["SITEURL"]."/check.php'>View /check</a> - Use to check your config!<br /><br />",0);
 }
 //intro
-if (file_exists("controllers/Ttintro.php") && $CURUSER["class"] == 7){
-	show_error_msg("UPDATE", "Any mods must be PDO to work here is a page to assist<br /><br /><a href='".$site_config["SITEURL"]."/ttintro'>Guide to update old mods!</a> - !<br /><br />",0);
+if (file_exists("controllers/Intro.php") && $CURUSER["class"] == 7){
+	show_error_msg("UPDATE", "Any mods must be PDO to work here is a page to assist<br /><br /><a href='".$site_config["SITEURL"]."/intro'>Guide to update old mods!</a> - !<br /><br />",0);
 }
 
 //Site Notice
@@ -58,7 +58,7 @@ if ($site_config['NEWSON'] && $CURUSER['view_news'] == "yes"){
 			print("<br /><a href=\"javascript: klappe_news('a".$array['id']."')\"><img border=\"0\" src=\"".$site_config["SITEURL"]."/images/$pic.gif\" id=\"pica".$array['id']."\" alt=\"Show/Hide\" />");
 			print("&nbsp;<b>". $array['title'] . "</b></a> - <b>".T_("POSTED").":</b> " . date("d-M-y", utc_to_tz_time($array['added'])) . " <b>".T_("BY").":</b> ".class_user($array['username'])."");
 
-			print("<div id=\"ka".$array['id']."\" style=\"display: $disp;\"> ".format_comment($array["body"])." <br /><br />".T_("COMMENTS")." (<a href='/comments?type=news&amp;id=".$array['id']."'>".number_format($numcomm)."</a>)</div><br /> ");
+			print("<div id=\"ka".$array['id']."\" style=\"display: $disp;\"> ".format_comment($array["body"])." <br /><br />".T_("COMMENTS")." (<a href='$site_config[SITEURL]/comments?type=news&amp;id=".$array['id']."'>".number_format($numcomm)."</a>)</div><br /> ");
 
 			$news_flag++;
 		}
@@ -81,7 +81,7 @@ if ($site_config['SHOUTBOX'] && !($CURUSER['hideshoutbox'] == 'yes')){
 // latest torrents
 begin_frame(T_("LATEST_TORRENTS"));
 
-print("<br /><center><a href='torrentsmain'>".T_("BROWSE_TORRENTS")."</a> - <a href='torrentssearch'>".T_("SEARCH_TORRENTS")."</a></center><br />");
+print("<br /><center><a href='$site_config[SITEURL]torrents/browse'>".T_("BROWSE_TORRENTS")."</a> - <a href='$site_config[SITEURL]torrentssearch'>".T_("SEARCH_TORRENTS")."</a></center><br />");
 
 if ($site_config["MEMBERSONLY"] && !$CURUSER) {
 	echo "<br /><br /><center><b>".T_("BROWSE_MEMBERS_ONLY")."</b></center><br /><br />";

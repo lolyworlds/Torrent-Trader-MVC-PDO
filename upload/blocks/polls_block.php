@@ -15,20 +15,20 @@ if (!function_exists("srt")) {
 if ($_SERVER["REQUEST_METHOD"] == "POST" && $CURUSER && $_POST["act"] == "takepoll"){
 	$choice = $_POST["choice"];
 	if ($choice != "" && $choice < 256 && $choice == floor($choice)){
-		$res = DB::run("SELECT * FROM polls ORDER BY added DESC LIMIT 1");
+		$res = $pdo->run("SELECT * FROM polls ORDER BY added DESC LIMIT 1");
 		$arr = $res->fetch(PDO::FETCH_ASSOC) or show_error_msg(T_("ERROR"), "No Poll", 1);
 
 		$pollid = $arr["id"];
 		$userid = $CURUSER["id"];
 
-		$res = DB::run("SELECT * FROM pollanswers WHERE pollid=? && userid=?", [$pollid, $userid]);
+		$res = $pdo->run("SELECT * FROM pollanswers WHERE pollid=? && userid=?", [$pollid, $userid]);
 		$arr = $res->fetch(PDO::FETCH_ASSOC);
 
 		if ($arr){
 			show_error_msg(T_("ERROR"), "You have already voted!", 0);
 		}else{
 
-			$ins = DB::run("INSERT INTO pollanswers VALUES(?, ?, ?, ?)", [0, $pollid, $userid, $choice]);
+			$ins = $pdo->run("INSERT INTO pollanswers VALUES(?, ?, ?, ?)", [0, $pollid, $userid, $choice]);
 			if (!$ins)
 					show_error_msg(T_("ERROR"), "An error occured. Your vote has not been counted.", 0);
 		}
@@ -39,7 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $CURUSER && $_POST["act"] == "takepo
 
 // Get current poll
 if ($CURUSER){
-	$res = DB::run("SELECT * FROM polls ORDER BY added DESC LIMIT 1");
+	$res = $pdo->run("SELECT * FROM polls ORDER BY added DESC LIMIT 1");
 
 	if($pollok=($res->rowCount())) {
 		$arr = $res->fetch(PDO::FETCH_ASSOC);
@@ -53,7 +53,7 @@ if ($CURUSER){
     	$arr["option15"], $arr["option16"], $arr["option17"], $arr["option18"], $arr["option19"]);
 
 		// Check if user has already voted
-  		$res = DB::run("SELECT * FROM pollanswers WHERE pollid=? AND userid=?", [$pollid, $userid]);
+  		$res = $pdo->run("SELECT * FROM pollanswers WHERE pollid=? AND userid=?", [$pollid, $userid]);
   		$arr2 = $res->fetch(PDO::FETCH_ASSOC);
 	}
 
@@ -70,7 +70,7 @@ if ($CURUSER){
       			$uservote = -1;
 
 			// we reserve 255 for blank vote.
-    		$res = DB::run("SELECT selection FROM pollanswers WHERE pollid=$pollid AND selection < 20");
+    		$res = $pdo->run("SELECT selection FROM pollanswers WHERE pollid=$pollid AND selection < 20");
 
     		$tvotes = $res->rowCount();
 

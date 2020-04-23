@@ -5,7 +5,7 @@
 if ($action == "users")
 {
     if ($CURUSER['delete_users'] == 'no' || $CURUSER['delete_torrents'] == 'no')
-        autolink("/admincp", "You do not have permission to be here.");
+        autolink(TTURL."/admincp", "You do not have permission to be here.");
     
     if ($do == "del") 
     {
@@ -31,7 +31,7 @@ if ($action == "users")
             }  
         } 
 
-        autolink("/admincp?action=users", "Entries Deleted");
+        autolink(TTURL."/admincp?action=users", "Entries Deleted");
     }
     
     $where = null;
@@ -62,7 +62,7 @@ if ($action == "users")
     redefining your search.
     
     <br />
-    <form method="get" action="/admincp">
+    <form method="get" action="<?php echo TTURL; ?>/admincp">
     <input type="hidden" name="action" value="users" />
     Search: <input type="text" name="search" size="30" value="<?php echo htmlspecialchars( $_GET['search'] ); ?>" />
     <input type="submit" value="Search" />
@@ -85,7 +85,7 @@ if ($action == "users")
     </tr>
     <?php while ($row = $res->fetch(PDO::FETCH_ASSOC)): ?>
     <tr>
-        <td class="table_col1" align="center"><a href="/accountdetails?id=<?php echo $row["id"]; ?>"><?php echo class_user($row["username"]); ?></a></td>
+        <td class="table_col1" align="center"><a href="<?php echo TTURL; ?>/accountdetails?id=<?php echo $row["id"]; ?>"><?php echo class_user($row["username"]); ?></a></td>
         <td class="table_col2" align="center"><?php echo get_user_class_name($row["class"]); ?></td>
         <td class="table_col1" align="center"><?php echo $row["email"]; ?></td>
         <td class="table_col2" align="center"><?php echo $row["ip"]; ?></td>

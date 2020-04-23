@@ -21,12 +21,12 @@ if ($action == "forum") {
         if ($error_ac == "") {
             $res = DB::run("INSERT INTO forum_forums (`name`, `description`, `sort`, `category`, `minclassread`, `minclasswrite`, `guest_read`) VALUES (?,?,?,?,?,?,?)", [$new_forum_name, $new_desc, $new_forum_sort, $new_forum_cat, $minclassread, $minclasswrite, $guest_read]);
             if ($res)
-                autolink("/admincp?action=forum", T_("CP_FORUM_NEW_ADDED_TO_DB"));
+                autolink(TTURL."/admincp?action=forum", T_("CP_FORUM_NEW_ADDED_TO_DB"));
             else
                 echo "<h4>".T_("CP_COULD_NOT_SAVE_TO_DB")."</h4>";
         } 
         else
-            autolink("/admincp?action=forum", $error_ac);
+            autolink(TTURL."/admincp?action=forum", $error_ac);
     }
 
     if ($_POST["do"] == "add_this_forumcat") {
@@ -40,12 +40,12 @@ if ($action == "forum") {
         if ($error_ac == "") {
             $res = DB::run("INSERT INTO forumcats (`name`, `sort`) VALUES (?,?)", [$new_forumcat_name, intval($new_forumcat_sort)]);
             if ($res)
-                autolink("/admincp?action=forum", "Thank you, new forum cat added to db ...");
+                autolink(TTURL."/admincp?action=forum", "Thank you, new forum cat added to db ...");
             else
                 echo "<h4>".T_("CP_COULD_NOT_SAVE_TO_DB")."</h4>";
         } 
         else
-            autolink("/admincp?action=forum", $error_ac);
+            autolink(TTURL."/admincp?action=forum", $error_ac);
     }
 
     if ($_POST["do"] == "save_edit") {
@@ -60,7 +60,7 @@ if ($action == "forum") {
         $guest_read = $_POST["guest_read"];
         
         DB::run("UPDATE forum_forums SET sort =?, name =?, description =?, category =?, minclassread=?, minclasswrite=?, guest_read=? WHERE id=?", [$changed_sort, $changed_forum, $changed_forum_desc, $changed_forum_cat, $minclassread, $minclasswrite, $guest_read, $id]);
-        autolink("/admincp?action=forum", "<center><b>".T_("CP_UPDATE_COMPLETED")."</b></center>");
+        autolink(TTURL."/admincp?action=forum", "<center><b>".T_("CP_UPDATE_COMPLETED")."</b></center>");
     }
 
     if ($_POST["do"] == "save_editcat") {
@@ -69,7 +69,7 @@ if ($action == "forum") {
         $changed_sortcat = (int) $_POST["changed_sortcat"];
         
         DB::run("UPDATE forumcats SET sort = '$changed_sortcat', name = ".sqlesc($_POST["changed_forumcat"])." WHERE id='$id'");
-        autolink("/admincp?action=forum", "<center><b>".T_("CP_UPDATE_COMPLETED")."</b></center>");
+        autolink(TTURL."/admincp?action=forum", "<center><b>".T_("CP_UPDATE_COMPLETED")."</b></center>");
     }
 
     if ($_POST["do"] == "delete_forum" && is_valid_id($_POST["id"])) 
@@ -78,7 +78,7 @@ if ($action == "forum") {
         DB::run("DELETE FROM forum_topics WHERE forumid = $_POST[id]");
         DB::run("DELETE FROM forum_posts WHERE topicid = $_POST[id]");
         DB::run("DELETE FROM forum_readposts WHERE topicid = $_POST[id]");
-        autolink("/admincp?action=forum", T_("CP_FORUM_DELETED"));
+        autolink(TTURL."/admincp?action=forum", T_("CP_FORUM_DELETED"));
     }
     
     if ($_POST["do"] == "delete_forumcat" && is_valid_id($_POST["id"])) 
@@ -101,7 +101,7 @@ if ($action == "forum") {
             DB::run("DELETE FROM forum_forums WHERE id = $row[id]");
         }
         
-        autolink("/admincp?action=forum", T_("CP_FORUM_CAT_DELETED"));
+        autolink(TTURL."/admincp?action=forum", T_("CP_FORUM_CAT_DELETED"));
     }
     
     stdhead(T_("FORUM_MANAGEMENT"));
@@ -116,11 +116,11 @@ if ($action == "forum") {
         $q = DB::run("SELECT * FROM forum_forums WHERE id = '$id'");
         $r = $q->fetch();
         if (!$r)
-             autolink("/admincp?action=forum", T_("FORUM_INVALID"));
+             autolink(TTURL."/admincp?action=forum", T_("FORUM_INVALID"));
         
         begin_frame(T_("FORUM_MANAGEMENT_EDIT"));   
     ?>
-          <form action="/admincp?action=forum" method="post">
+          <form action="<?php echo TTURL; ?>/admincp?action=forum" method="post">
           <input type="hidden" name="do" value="save_edit" />
           <input type="hidden" name="id" value="<?php echo $id; ?>" />
           <table class='f-border a-form' align='center' width='80%' cellspacing='2' cellpadding='5'>
@@ -193,7 +193,7 @@ if ($_GET["do"] == "del_forum") {
     
     $v = DB::run("SELECT * FROM forum_forums WHERE id = '$id'")->fetch();
     if (!$v)
-         autolink("/admincp?action=forum", T_("FORUM_INVALID"));
+         autolink(TTURL."/admincp?action=forum", T_("FORUM_INVALID"));
     
     begin_frame(T_("CONFIRM")); 
 ?>
@@ -216,11 +216,11 @@ if ($_GET["do"] == "del_forumcat") {
     $v = $t->fetch();
     
     if (!$v)
-         autolink("/admincp?action=forum", T_("FORUM_INVALID_CAT"));
+         autolink(TTURL."/admincp?action=forum", T_("FORUM_INVALID_CAT"));
     
     begin_frame(T_("CONFIRM")); 
 ?>
-  <form class='a-form' action="/admincp?action=forum" method="post">
+  <form class='a-form' action="<?php echo TTURL; ?>/admincp?action=forum" method="post">
   <input type="hidden" name="do" value="delete_forumcat" />
   <input type="hidden" name="id" value="<?php echo $id; ?>" />
       <?php echo T_("CP_FORUM_REALY_DEL_CAT");?><?php echo "<b>$v[name] with ID$v[id] ???</b>"; ?> <?php echo T_("CP_FORUM_THIS_WILL_REALLY_DEL");?>.
@@ -237,11 +237,11 @@ if ($_GET["do"] == "edit_forumcat") {
 
     $r = DB::run("SELECT * FROM forumcats WHERE id = '$id'")->fetch();
     if (!$r)
-         autolink("/admincp?action=forum", T_("FORUM_INVALID_CAT")); 
+         autolink(TTURL."/admincp?action=forum", T_("FORUM_INVALID_CAT")); 
          
     begin_frame(T_("CP_CATEGORY_EDIT"));
     ?>
-    <form action="/admincp?action=forum" method="post">
+    <form action="<?php echo TTURL; ?>/admincp?action=forum" method="post">
     <input type="hidden" name="do" value="save_editcat" />
     <input type="hidden" name="id" value="<?php echo $id; ?>" />
     <table class='f-border a-form' align='center' width='80%' cellspacing='2' cellpadding='5'>

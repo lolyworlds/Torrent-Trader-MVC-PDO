@@ -30,13 +30,13 @@
         ?>
 
         <center>
-        <form method='get' action='/admincp'>
+        <form method='get' action='<?php echo TTURL; ?>/admincp'>
         <input type='hidden' name='action' value='torrentmanage' />
         Search: <input type='text' name='search' value='<?php echo $search; ?>' size='30' />
         <input type='submit' value='Search' />
         </form>
 
-        <form id="myform" method='post' action='/admincp?action=torrentmanage'>
+        <form id="myform" method='post' action='<?php echo TTURL; ?>/admincp?action=torrentmanage'>
         <input type='hidden' name='do' value='delete' />
         <table cellpadding='5' cellspacing='3' width='100%' align='center' class='table_table'>
         <tr>
@@ -53,13 +53,13 @@
         <?php while ($row = $res->fetch(PDO::FETCH_LAZY)) { ?>
         
         <tr>
-            <td class='table_col1'><a href='torrentsdetails?id=<?php echo $row["id"]; ?>'><?php echo CutName(htmlspecialchars($row["name"]), 40); ?></a></td>
+            <td class='table_col1'><a href='<?php echo TTURL; ?>/torrents/details?id=<?php echo $row["id"]; ?>'><?php echo CutName(htmlspecialchars($row["name"]), 40); ?></a></td>
             <td class='table_col2'><?php echo $row["visible"]; ?></td>
             <td class='table_col1'><?php echo $row["banned"]; ?></td>
             <td class='table_col2'><?php echo number_format($row["seeders"]); ?></td>
             <td class='table_col1'><?php echo number_format($row["leechers"]); ?></td>
             <td class='table_col2'><?php echo $row["external"]; ?></td>
-            <td class='table_col1'><a href='torrentsedit?id=<?php echo $row["id"]; ?>&amp;returnto=<?php echo urlencode($_SERVER['REQUEST_URI']); ?>'>Edit</a></td>
+            <td class='table_col1'><a href='<?php echo TTURL; ?>torrents/edit?id=<?php echo $row["id"]; ?>&amp;returnto=<?php echo urlencode($_SERVER['REQUEST_URI']); ?>'>Edit</a></td>
             <td class='table_col2' align='center'><input type='checkbox' name='torrentids[]' value='<?php echo $row["id"]; ?>' /></td>    
         </tr>
         

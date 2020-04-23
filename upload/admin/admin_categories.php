@@ -64,7 +64,7 @@ if ($action=="categories" && $do=="edit"){
 		$image = $image;
 
 		DB::run("UPDATE categories SET parent_cat=?, name=?, sort_index=?, image=? WHERE id=?", [$parent_cat, $name, $sort_index, $image, $id]);
-		autolink("/admincp?action=categories&do=view", T_("SUCCESS"),"category was edited successfully!");
+		autolink(TTURL."/admincp?action=categories&do=view", T_("SUCCESS"),"category was edited successfully!");
 
 	} else {
 		begin_frame(T_("CP_CATEGORY_EDIT"));
@@ -99,7 +99,7 @@ if ($action=="categories" && $do=="delete"){
 
 		DB::run("DELETE FROM categories WHERE id=?", [$id]); //delete old cat
 		
-		autolink("/admincp?action=categories&do=view", T_("Category Deleted OK."));
+		autolink(TTURL."/admincp?action=categories&do=view", T_("Category Deleted OK."));
 
 	}else{
 		begin_frame(T_("CATEGORY_DEL"));
@@ -134,7 +134,7 @@ if ($action=="categories" && $do=="takeadd"){
 	$ins = DB::run("INSERT INTO categories (name, parent_cat, sort_index, image) VALUES (?,?,?,?)", [$name, $parent_cat, $sort_index, $image]);
 
 	if ($ins)
-		autolink("/admincp?action=categories&do=view", T_("Category was added successfully."));
+		autolink(TTURL."/admincp?action=categories&do=view", T_("Category was added successfully."));
 	else
 		show_error_msg(T_("ERROR"),"Unable to add category",1);
 }

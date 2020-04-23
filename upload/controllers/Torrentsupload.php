@@ -293,7 +293,7 @@ end_frame();
 
 begin_frame(T_("UPLOAD"));
 ?>
-<form name="upload" enctype="multipart/form-data" action="torrentsupload" method="post">
+<form name="upload" enctype="multipart/form-data" action="<?php echo TTURL; ?>/torrentsupload" method="post">
 <input type="hidden" name="takeupload" value="yes" />
 <table border="0" cellspacing="0" cellpadding="6" align="center">
 <?php
@@ -339,7 +339,7 @@ if ($site_config['ANONYMOUSUPLOAD'] && $site_config["MEMBERSONLY"] ){ ?>
 }
 
 print ("<tr><td align='center' colspan='2'>" . T_("DESCRIPTION") . "</td></tr></table>");
-
+$descr = '';
 require_once("helpers/bbcode_helper.php");
 print textbbcode("upload","descr","$descr");
 ?>

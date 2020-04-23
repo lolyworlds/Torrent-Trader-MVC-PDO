@@ -1,8 +1,8 @@
 <?php
   class Torrentssearch extends Controller {
-    
+
     public function __construct(){
-        // $this->userModel = $this->model('User');
+         $this->torrentModel = $this->model('Torrent');
     }
     
     public function index(){
@@ -22,7 +22,7 @@ if ($site_config["MEMBERSONLY"]){
 
 
 //GET SEARCH STRING
-$searchstr = trim($_GET["search"]);
+$searchstr = trim($_GET["search"] ?? '');
 $cleansearchstr = searchfield($searchstr);
 if (empty($cleansearchstr))
 unset($cleansearchstr);
@@ -36,7 +36,7 @@ $wherea[] = "banned = 'no'";
 
 $wherecatina = array();
 $wherecatin = "";
-$res = DB::run("SELECT id FROM categories");
+$res = $this->torrentModel->getCatById();
 while($row = $res->fetch(PDO::FETCH_LAZY)){
     if (isset($_GET["c$row[id]"])) {
         $wherecatina[] = $row['id'];
@@ -49,6 +49,10 @@ while($row = $res->fetch(PDO::FETCH_LAZY)){
 if ($wherecatin)
     $wherea[] = "category IN ($wherecatin)";
 
+$_GET['incldead'] = (int) ($_GET['incldead'] ?? 0);
+$_GET['freeleech'] = (int) ($_GET['freeleech'] ?? 0);
+$_GET['inclexternal'] = (int) ($_GET['inclexternal'] ?? 0);
+$_GET['cat'] = $_GET['cat'] ?? '';
 
 //include dead
 if ($_GET["incldead"] == 1) {
@@ -94,19 +98,19 @@ if ($_GET["cat"]) {
 }
 
 //language
-if ($_GET["lang"]) {
+if ($_GET["lang"] ?? '') {
     $wherea[] = "torrentlang = " . sqlesc($_GET["lang"]);
     $addparam .= "lang=" . urlencode($_GET["lang"]) . "&amp;";
     $thisurl .= "lang=".urlencode($_GET["lang"])."&amp;";
 }
 
 //parent cat
-if ($_GET["parent_cat"]) {
+if ($_GET["parent_cat"] ?? '') {
 	$addparam .= "parent_cat=" . urlencode($_GET["parent_cat"]) . "&amp;";
 	$thisurl .= "parent_cat=".urlencode($_GET["parent_cat"])."&amp;";
 }
 
-$parent_cat = $_GET["parent_cat"];
+$parent_cat = $_GET["parent_cat"] ?? '';
 
 $wherebase = $wherea;
 
@@ -118,7 +122,7 @@ if (isset($cleansearchstr)) {
 }
 
 //order by
-if ($_GET['sort'] && $_GET['order']) {
+if ($_GET['sort'] ?? '' && $_GET['order']) {
 	$column = '';
 	$ascdesc = '';
 	switch($_GET['sort']) {
@@ -148,7 +152,7 @@ if ($_GET['sort'] && $_GET['order']) {
 	$orderby = "ORDER BY torrents." . $column . " " . $ascdesc;
 	$pagerlink = "sort=" . $_GET['sort'] . "&amp;order=" . $_GET['order'] . "&amp;";
 
-if (is_valid_id($_GET["page"]))
+if (is_valid_id($_GET["page"] ?? ''))
 	$thisurl .= "page=$_GET[page]&amp;";
 
 
@@ -164,7 +168,7 @@ if ($parent_cat){
 
 
 //GET NUMBER FOUND FOR PAGER
-$count = DB::run("SELECT COUNT(*) FROM torrents $where $parent_check")->fetchColumn();
+$count = $this->torrentModel->getTorrentWhere ($where, $parent_check);
 // $count = $row[0];
 
 
@@ -211,8 +215,7 @@ if ($count) {
 
 	//SEARCH QUERIES! 
 	list($pagertop, $pagerbottom, $limit) = pager(20, $count, "torrentssearch?" . $addparam);
-	$query = "SELECT torrents.id, torrents.anon, torrents.announce, torrents.category, torrents.leechers, torrents.nfo, torrents.seeders, torrents.name, torrents.times_completed, torrents.size, torrents.added, torrents.comments, torrents.numfiles, torrents.filename, torrents.owner, torrents.external, torrents.freeleech, categories.name AS cat_name, categories.parent_cat AS cat_parent, categories.image AS cat_pic, users.username, users.privacy, IF(torrents.numratings < 2, NULL, ROUND(torrents.ratingsum / torrents.numratings, 1)) AS rating FROM torrents LEFT JOIN categories ON category = categories.id LEFT JOIN users ON torrents.owner = users.id $where $parent_check $orderby $limit";
-	$res = DB::run($query);
+$res = $this->torrentModel->getTorrentByCat ($where, $parent_check, $orderby, $limit) ;
 
 	}else{
 		unset($res);
@@ -227,10 +230,10 @@ begin_frame(T_("SEARCH_TORRENTS"));
 
 // get all parent cats
 echo "<center><b>".T_("CATEGORIES").":</b> ";
-$catsquery = DB::run("SELECT distinct parent_cat FROM categories ORDER BY parent_cat");
-echo " - <a href='torrentsmain'>".T_("SHOWALL")."</a>";
+$catsquery = $this->torrentModel->getCatByParent () ;
+echo " - <a href='$site_config[SITEURL]torrents/browse'>".T_("SHOWALL")."</a>";
 while($catsrow = $catsquery->fetch(PDO::FETCH_ASSOC)){
-		echo " - <a href='torrentsmain?parent_cat=".urlencode($catsrow['parent_cat'])."'>$catsrow[parent_cat]</a>";
+		echo " - <a href='$site_config[SITEURL]torrents/browse?parent_cat=".urlencode($catsrow['parent_cat'])."'>$catsrow[parent_cat]</a>";
 }
 echo "</center>";
 
@@ -243,22 +246,22 @@ echo "</center>";
 <tr align='right'>
 <?php
 $i = 0;
-$cats = DB::run("SELECT * FROM categories ORDER BY parent_cat, name");
+$cats = $this->torrentModel->getCatByParentName();
 while ($cat = $cats->fetch(PDO::FETCH_ASSOC)) {
     $catsperrow = 5;
     print(($i && $i % $catsperrow == 0) ? "</tr><tr align='right'>" : "");
-    print("<td style=\"padding-bottom: 2px;padding-left: 2px\"><a href='torrentsmain?cat={$cat["id"]}'>".htmlspecialchars($cat["parent_cat"])." - " . htmlspecialchars($cat["name"]) . "</a> <input name='c{$cat["id"]}' type=\"checkbox\" " . (in_array($cat["id"], $wherecatina) || $_GET["cat"] == $cat["id"]  ? "checked='checked' " : "") . "value='1' /></td>\n");
+    print("<td style=\"padding-bottom: 2px;padding-left: 2px\"><a href='$site_config[SITEURL]/torrents/browse?cat={$cat["id"]}'>".htmlspecialchars($cat["parent_cat"])." - " . htmlspecialchars($cat["name"]) . "</a> <input name='c{$cat["id"]}' type=\"checkbox\" " . (in_array($cat["id"], $wherecatina) || $_GET["cat"] == $cat["id"]  ? "checked='checked' " : "") . "value='1' /></td>\n");
     $i++;                                                                                                                                                                                                                                                                                                                 
 }
 echo "</tr></table>";
 
 //if we are browsing, display all subcats that are in same cat
 if ($parent_cat){
-    echo "<br /><br /><b>".T_("YOU_ARE_IN").":</b> <a href='torrentsmain?parent_cat=$parent_cat'>$parent_cat</a><br /><b>".T_("SUB_CATS").":</b> ";
-	$subcatsquery = DB::run("SELECT id, name, parent_cat FROM categories WHERE parent_cat='$parent_cat' ORDER BY name");
-	while($subcatsrow = $subcatsquery->fetch(PDo::FETCH_ASSOC)){
+    echo "<br /><br /><b>".T_("YOU_ARE_IN").":</b> <a href='$site_config[SITEURL]/torrents/browse?parent_cat=$parent_cat'>$parent_cat</a><br /><b>".T_("SUB_CATS").":</b> ";
+	$subcatsquery = $this->torrentModel->getSubCatByParentName ($parent_cat) ;
+	while($subcatsrow = $subcatsquery->fetch(PDO::FETCH_ASSOC)){
 		$name = $subcatsrow['name'];
-		echo " - <a href='torrentsmain?cat=$subcatsrow[id]'>$name</a>";
+		echo " - <a href='$site_config[SITEURL]/torrents/browse?cat=$subcatsrow[id]'>$name</a>";
 	}
 }	
 
@@ -324,7 +327,7 @@ echo "<br /><br />";//some spacing
 	?>
 	<?php echo  $langdropdown ?>
 	</select>
-	<input type="submit" value="<?php print T_("SEARCH"); ?>" />
+	<button type='submit' class='btn btn-sm btn-primary'><?php print T_("SEARCH"); ?></button>
 	<br />
 	</form>
 	<?php print T_("SEARCH_RULES"); ?><br />

@@ -55,7 +55,7 @@ if ($action == "style") {
         $ids = implode(', ', $ids);
         DB::run("DELETE FROM `stylesheets` WHERE `id` IN ($ids)");
         DB::run("UPDATE `users` SET `stylesheet` = ".$site_config["default_theme"]." WHERE stylesheet NOT IN (SELECT id FROM stylesheets)");
-        autolink("/admincp?action=style", T_("THEME_SUCCESS_THEME_DELETED"));
+        autolink(TTURL."/admincp?action=style", T_("THEME_SUCCESS_THEME_DELETED"));
                                  
 	}elseif ($do == "add2") {
 
@@ -74,10 +74,10 @@ if ($action == "style") {
 		}
         
         if ($a == count($add))
-            autolink("/admincp?action=style", T_("THEME_NOTHING_SELECTED"));
+            autolink(TTURL."/admincp?action=style", T_("THEME_NOTHING_SELECTED"));
 
 		if ($added)
-            autolink("/admincp?action=style", sprintf(T_("THEME_THE_FOLLOWING_THEMES_WAS_ADDED"), $added));   
+            autolink(TTURL."/admincp?action=style", sprintf(T_("THEME_THE_FOLLOWING_THEMES_WAS_ADDED"), $added));   
 		if ($error)
 			show_error_msg(T_("FAILED"), sprintf(T_("THEME_THE_FOLLOWING_THEMES_WAS_NOT_ADDED"), $error), 1);
         

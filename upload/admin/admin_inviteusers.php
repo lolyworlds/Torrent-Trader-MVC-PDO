@@ -20,7 +20,7 @@ if ($action == "invited")
              deleteaccount($row['id']);
         }
 
-        autolink("/admincp?action=invited", "Entries Deleted");
+        autolink(TTURL."/admincp?action=invited", "Entries Deleted");
     }
     
     // $count = get_row_count("users", "WHERE status = 'confirmed' AND invited_by != '0'");
@@ -42,7 +42,7 @@ if ($action == "invited")
 
     <?php  if ($count > 0): ?>
     <br />
-     <form id="invited" method="post" action="/admincp?action=invited">
+     <form id="invited" method="post" action="<?php echo TTURL; ?>/admincp?action=invited">
     <input type="hidden" name="do" value="del" />
     <div class='table-responsive'><table class='table table-striped'>
     <thead>
@@ -57,18 +57,18 @@ if ($action == "invited")
     </tr></thead>
     <?php while ($row = $res->fetch(PDO::FETCH_ASSOC)): ?>
     <tbody><tr>
-        <td><a href="/accountdetails?id=<?php echo $row["id"]; ?>"><?php echo class_user($row["username"]); ?></a></td>
+        <td><a href="<?php echo TTURL; ?>/accountdetails?id=<?php echo $row["id"]; ?>"><?php echo class_user($row["username"]); ?></a></td>
         <td><?php echo $row["email"]; ?></td>
         <td><?php echo get_user_class_name($row["class"]); ?></td>     
         <td><?php echo utc_to_tz($row["added"]); ?></td>
         <td><?php echo utc_to_tz($row["last_access"]); ?></td>  
-        <td><?php echo ( $row['inviter'] ) ? '<a href="/accountdetails?id='.$row["invited_by"].'">'.$row["inviter"].'</a>' : 'Unknown User'; ?></td>
+        <td><?php echo ( $row['inviter'] ) ? '<a href="'.TTURL.'/accountdetails?id='.$row["invited_by"].'">'.$row["inviter"].'</a>' : 'Unknown User'; ?></td>
         <td><input type="checkbox" name="users[]" value="<?php echo $row["id"]; ?>" /></td>
     </tr>
     <?php endwhile; ?>
     <tr>
         <td>
-        <center><input type="submit" value="Delete Checked" /></center>
+        <button type='submit' class='btn btn-xs btn-danger'>Delete Checked</button>
         </td>
     </tr>
      

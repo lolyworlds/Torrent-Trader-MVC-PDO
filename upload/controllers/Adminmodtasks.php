@@ -6,10 +6,6 @@
     }
     
     public function index(){
-		// Set Current User
-		// $curuser = $this->userModel->setCurrentUser();
-		// Set Current User
-		// $db = new Database;
 dbconn();
 global $site_config, $CURUSER;
 loggedinonly();
@@ -110,7 +106,7 @@ if ($action == 'edituser'){
 			write_log($CURUSER['username']." has changed password for user: $userid");
 		}
 	}
-  header("Location: /accountdetails?id=$userid");
+  header("Location: ".TTURL."/accountdetails?id=$userid");
   die;
 }
 
@@ -139,8 +135,8 @@ if ($action == 'addwarning'){
 	$added = sqlesc(get_date_time());
     DB::run("INSERT INTO messages (sender, receiver, msg, added) VALUES(0, $userid, $msg, $added)");
 
-	write_log($CURUSER['username']." has added a warning for user: <a href='/accountdetails?id=$userid'>$userid</a>");
-	header("Location: /accountdetails?id=$userid");
+	write_log($CURUSER['username']." has added a warning for user: <a href='$site_config[SITEURL]/accountdetails?id=$userid'>$userid</a>");
+	header("Location: ".TTURL."/accountdetails?id=$userid");
 	die;
 }
 

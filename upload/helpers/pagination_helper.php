@@ -92,8 +92,9 @@ function pager($rpp, $count, $href, $opts = array())
 function pagination($query, $per_page = 10, $page = 1, $url = '?')
 {
 
+    global $pdo;
     $query = "SELECT COUNT(*) as `num` FROM {$query}";
-    $row = DB::run($query)->fetch();
+    $row = $pdo->run($query)->fetch();
     $total = $row['num'];
     $adjacents = "2";
 

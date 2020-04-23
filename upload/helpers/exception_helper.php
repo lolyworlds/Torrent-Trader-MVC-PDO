@@ -91,7 +91,7 @@ function get_verbose_backtrace($backtrace = null, $depth = 0)
 // Exception Log & Redirect
 function handleUncaughtException($e)
 {
-    header("Location: /exceptionerror");
+    header("Location: ".TTURL."/exceptions/error");
     // Construct the error string
     $error = "\nUncaught Exception: " . ($message = date("Y-m-d H:i:s - "));
     $error .= $e->getMessage() . " in file " . $e->getFile() . " on line " . $e->getLine() . "\n";

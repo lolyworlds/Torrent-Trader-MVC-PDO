@@ -10,7 +10,7 @@ if ($action == "sitelog") {
 			$ids = implode(", ", $ids);
 			DB::run("DELETE FROM `log` WHERE `id` IN ($ids)");
 		}
-		autolink("/admincp?action=sitelog", T_("CP_DELETED_ENTRIES"));
+		autolink(TTURL."/admincp?action=sitelog", T_("CP_DELETED_ENTRIES"));
 		stdhead();
 		show_error_msg(T_("SUCCESS"), T_("CP_DELETED_ENTRIES"), 0);
 		stdfoot();

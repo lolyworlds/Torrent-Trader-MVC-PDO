@@ -1,6 +1,6 @@
 <?php
 
-require_once "functions_helper.php";
+require_once "functions_connect.php";
 // Summary Table of Emotions
 $smilies = array
     (
@@ -57,6 +57,6 @@ function insert_smilies_frame()
     echo "</table>";
 }
 
-if ($_GET['action'] == "display") {
+if (isset($_GET['action']) == "display") {
     insert_smilies_frame();
 }

@@ -136,9 +136,9 @@ $return = "";
 
 // lets redirect still
 if ($compression) {
-    autolink("/admincp?action=backups", "Has encountered a error during the backup.<br><br>");
+    autolink("TTURL./admincp?action=backups", "Has encountered a error during the backup.<br><br>");
 } else {
-    autolink("/admincp?action=backups", "BackUp Complete.<br><br>");
+    autolink(TTURL."/admincp?action=backups", "BackUp Complete.<br><br>");
 }
 
 

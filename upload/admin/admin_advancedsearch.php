@@ -77,12 +77,12 @@ if ($action == "usersearch") {
 			respectively, as well as linking to the history page.\n
 			</td></tr></table><br /><br />\n";
 	} else {
-		echo "<p align='center'>[<a href='/admincp?action=usersearch&amp;h=1'>Instructions</a>]";
-		echo "&nbsp;-&nbsp;[<a href='/admincp?action=usersearch'>Reset</a>]</p>\n";
+		echo "<p align='center'>[<a href='".TTURL."/admincp?action=usersearch&amp;h=1'>Instructions</a>]";
+		echo "&nbsp;-&nbsp;[<a href='".TTURL."/admincp?action=usersearch'>Reset</a>]</p>\n";
 	}
 ?>
     <br />
-	<form method="get" action="/admincp">
+	<form method="get" action="<?php echo TTURL; ?>/admincp">
 	<input type="hidden" name="action" value="usersearch" />
 	<table border="0" class="table_table" cellspacing="0" cellpadding="0" width="100%">
     <tr>
@@ -675,7 +675,7 @@ if ($action == "usersearch") {
 			$auxres = DB::run("SELECT COUNT(id) FROM comments WHERE user = ".$user['id']);
 			$n = $auxres->fetch();
 			$n_comments = $n[0];
-			echo "<tr><td class='table_col1' align='center'><b><a href='/accountdetails?id=$user[id]'>" . class_user($user['username']) . "</a></b></td>" .
+			echo "<tr><td class='table_col1' align='center'><b><a href='".TTURL."/accountdetails?id=$user[id]'>" . class_user($user['username']) . "</a></b></td>" .
 				"<td class='table_col2' align='center'>" . $ipstr . "</td><td class='table_col1' align='center'>" . $user['email'] . "</td>".
 				"<td class='table_col2' align='center'>" . utc_to_tz($user['added']) . "</td>".
 				"<td class='table_col1' align='center'>" . $user['last_access'] . "</td>".

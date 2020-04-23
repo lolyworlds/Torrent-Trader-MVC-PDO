@@ -6,10 +6,6 @@
     }
     
     public function index(){
-		// Set Current User
-		// $curuser = $this->userModel->setCurrentUser();
-		// Set Current User
-		// $db = new Database;
 require_once("helpers/mailbox_helper.php");
 dbconn();
 global $site_config, $CURUSER;
@@ -232,12 +228,12 @@ if (isset($_REQUEST['compose']))
 	<br />
 <div class='table-responsive'><table class='table table-striped'>
 <thead><tr><th><center>
-	<a href="/mailbox"><b><?php echo T_("OVERVIEW"); ?></b></a>&nbsp;|&nbsp;
-	<a href="/mailbox?inbox"><b><?php echo T_("INBOX"); ?></b></a>&nbsp;|&nbsp;
-	<a href="/mailbox?outbox"><b><?php echo T_("OUTBOX"); ?></b></a>&nbsp;|&nbsp;
-	<a href="/mailbox?draft"><b><?php echo T_("DRAFT"); ?></b></a>&nbsp;|&nbsp;
-	<a href="/mailbox?templates"><b><?php echo T_("TEMPLATES"); ?></b></a>&nbsp;|&nbsp;
-	<a href="/mailbox?compose"><b><?php echo T_("COMPOSE"); ?></b></a>
+	<a href="<?php echo $site_config['SITEURL']; ?>/mailbox"><b><?php echo T_("OVERVIEW"); ?></b></a>&nbsp;|&nbsp;
+	<a href="<?php echo $site_config['SITEURL']; ?>/mailbox?inbox"><b><?php echo T_("INBOX"); ?></b></a>&nbsp;|&nbsp;
+	<a href="<?php echo $site_config['SITEURL']; ?>/mailbox?outbox"><b><?php echo T_("OUTBOX"); ?></b></a>&nbsp;|&nbsp;
+	<a href="<?php echo $site_config['SITEURL']; ?>/mailbox?draft"><b><?php echo T_("DRAFT"); ?></b></a>&nbsp;|&nbsp;
+	<a href="<?php echo $site_config['SITEURL']; ?>/mailbox?templates"><b><?php echo T_("TEMPLATES"); ?></b></a>&nbsp;|&nbsp;
+	<a href="<?php echo $site_config['SITEURL']; ?>/mailbox?compose"><b><?php echo T_("COMPOSE"); ?></b></a>
 </center></th></tr></thead>
 </table></div>
 	<?php
@@ -293,12 +289,12 @@ echo "<center>";
 	<br />
 <div class='table-responsive'><table class='table table-striped'>
 <thead><tr><th><center>
-	<a href="/mailbox"><b><?php echo T_("OVERVIEW"); ?></b></a>&nbsp;|&nbsp;
-	<a href="/mailbox?inbox"><b><?php echo T_("INBOX"); ?></b></a>&nbsp;|&nbsp;
-	<a href="/mailbox?outbox"><b><?php echo T_("OUTBOX"); ?></b></a>&nbsp;|&nbsp;
-	<a href="/mailbox?draft"><b><?php echo T_("DRAFT"); ?></b></a>&nbsp;|&nbsp;
-	<a href="/mailbox?templates"><b><?php echo T_("TEMPLATES"); ?></b></a>&nbsp;|&nbsp;
-	<a href="/mailbox?compose"><b><?php echo T_("COMPOSE"); ?></b></a>
+	<a href="<?php echo $site_config['SITEURL']; ?>/mailbox"><b><?php echo T_("OVERVIEW"); ?></b></a>&nbsp;|&nbsp;
+	<a href="<?php echo $site_config['SITEURL']; ?>/mailbox?inbox"><b><?php echo T_("INBOX"); ?></b></a>&nbsp;|&nbsp;
+	<a href="<?php echo $site_config['SITEURL']; ?>/mailbox?outbox"><b><?php echo T_("OUTBOX"); ?></b></a>&nbsp;|&nbsp;
+	<a href="<?php echo $site_config['SITEURL']; ?>/mailbox?draft"><b><?php echo T_("DRAFT"); ?></b></a>&nbsp;|&nbsp;
+	<a href="<?php echo $site_config['SITEURL']; ?>/mailbox?templates"><b><?php echo T_("TEMPLATES"); ?></b></a>&nbsp;|&nbsp;
+	<a href="<?php echo $site_config['SITEURL']; ?>/mailbox?compose"><b><?php echo T_("COMPOSE"); ?></b></a>
 </center></th></tr></thead>
 </table></div>	
 <?php
@@ -321,10 +317,10 @@ if ($type == "Overview")
 	echo"<br />";
 	echo("<center><div id='tablebox'><table class='table_mb' align='center' border='1' width='40%' cellspacing='5' cellpadding='5'><br /></center>");
 	echo('<tr><td class="table_head" align="center" colspan="2"><b><i>'.T_("OVERVIEW_INFO").'</i></b></td></tr>');
-	echo('<tr><td align="right" width="25%"><!--<a href="/mailbox?inbox">-->'.T_("INBOX").' :</a></td><td align="center" "width="25%" >'. " [<font color=green> $inbox </font>] ".P_("", $inbox)." (<font color=red>$unread ".T_("UNREAD")."</font>)</td></tr>");
-	echo('<tr><td align="right" width="25%"><!--<a href="/mailbox?outbox">-->'.T_("OUTBOX").' :</a></td><td align="center" width="25%">'. " [ $outbox ] ".P_("", $outbox)."</td></tr>");
-	echo('<tr><td align="right" width="25%"><!--<a href="/mailbox?draft">-->'.T_("DRAFT").' :</a></td><td align="center" width="25%">'. " [ $draft ] ".P_("", $draft)."</td></tr>");
-	echo('<tr><td align="right" width="25%"><!--<a href="/mailbox?templates">-->'.T_("TEMPLATES").' :</a></td><td align="center" width="25%">'. " [ $template ] ".P_("", $template)."</td></tr>");
+	echo('<tr><td align="right" width="25%"><!--<a href="<?php echo $site_config[SITEURL]; ?>/mailbox?inbox">-->'.T_("INBOX").' :</a></td><td align="center" "width="25%" >'. " [<font color=green> $inbox </font>] ".P_("", $inbox)." (<font color=red>$unread ".T_("UNREAD")."</font>)</td></tr>");
+	echo('<tr><td align="right" width="25%"><!--<a href="<?php echo $site_config[SITEURL]; ?>/mailbox?outbox">-->'.T_("OUTBOX").' :</a></td><td align="center" width="25%">'. " [ $outbox ] ".P_("", $outbox)."</td></tr>");
+	echo('<tr><td align="right" width="25%"><!--<a href="<?php echo $site_config[SITEURL]; ?>/mailbox?draft">-->'.T_("DRAFT").' :</a></td><td align="center" width="25%">'. " [ $draft ] ".P_("", $draft)."</td></tr>");
+	echo('<tr><td align="right" width="25%"><!--<a href="<?php echo $site_config[SITEURL]; ?>/mailbox?templates">-->'.T_("TEMPLATES").' :</a></td><td align="center" width="25%">'. " [ $template ] ".P_("", $template)."</td></tr>");
 	echo('</table><br /></div>');
     echo"<br /><br />";
 }

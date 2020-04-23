@@ -9,7 +9,7 @@ if ($action=="messagespy"){
 			$ids = implode(", ", $ids);
 			DB::run("DELETE FROM `messages` WHERE `id` IN ($ids)");
 		}
-		autolink("/admincp?action=messagespy", T_("CP_DELETED_ENTRIES")); 
+		autolink(TTURL."/admincp?action=messagespy", T_("CP_DELETED_ENTRIES")); 
 		stdhead();
 		show_error_msg(T_("SUCCESS"), T_("CP_DELETED_ENTRIES"), 0);
 		stdfoot();
@@ -41,13 +41,13 @@ if ($action=="messagespy"){
 		$res2 = DB::run("SELECT username FROM users WHERE id=?", [$arr["receiver"]]);
 
 		if ($arr2 = $res2->fetch())
-			$receiver = "<a href='/accountdetails?id=" . $arr["receiver"] . "'><b>" . class_user($arr2["username"]) . "</b></a>";
+			$receiver = "<a href='".TTURL."/accountdetails?id=" . $arr["receiver"] . "'><b>" . class_user($arr2["username"]) . "</b></a>";
 		else
 			$receiver = "<i>Deleted</i>";
 
 		$arr3 = DB::run("SELECT username FROM users WHERE id=?", [$arr["sender"]])->fetch();
 
-		$sender = "<a href='/accountdetails?id=" . $arr["sender"] . "'><b>" . class_user($arr3["username"]) . "</b></a>";
+		$sender = "<a href='".TTURL."/accountdetails?id=" . $arr["sender"] . "'><b>" . class_user($arr3["username"]) . "</b></a>";
 		if( $arr["sender"] == 0 )
 			$sender = "<font class='error'><b>System</b></font>";
 		$msg = format_comment($arr["msg"]);

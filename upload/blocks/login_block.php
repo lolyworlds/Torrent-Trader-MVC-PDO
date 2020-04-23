@@ -3,7 +3,7 @@
 if (!$CURUSER) {
 	begin_block(T_("LOGIN"));
 ?>
-<form method="post" action="/accountlogin">
+<form method="post" action="<?php echo TTURL; ?>/account/login">
 <table border="0" width="100%">
 	<tr><td>
 		<table border="0" align="center">
@@ -22,7 +22,7 @@ if (!$CURUSER) {
 		</td>
 		</tr>
 	<tr>
-<td align="center">[<a href="/accountsignup"><?php echo T_("SIGNUP");?></a>]<br />[<a href="/accountrecover"><?php echo T_("RECOVER_ACCOUNT");?></a>]</td> </tr>
+<td align="center">[<a href=".$site_config['SITEURL']."/account/signup"><?php echo T_("SIGNUP");?></a>]<br />[<a href=".$site_config['SITEURL']."/account/recover"><?php echo T_("RECOVER_ACCOUNT");?></a>]</td> </tr>
 	</table>
     </form> 
 <?php
@@ -53,8 +53,9 @@ begin_block(class_user($CURUSER["username"]));
 ?>
 
 
-<center><a href="/account"><?php echo T_("ACCOUNT"); ?></a> <br /> 
-<?php if ($CURUSER["control_panel"]=="yes") {print("<a href=\"/admincp\">".T_("STAFFCP")."</a>");}?>
+<center><a href="<?php echo $site_config["SITEURL"]; ?>/usercp"><?php echo T_("ACCOUNT"); ?></a> <br /> 
+<?php if ($CURUSER["control_panel"]=="yes") {
+print("<a href=".$site_config['SITEURL']."/admincp>".T_("STAFFCP")."</a>");}?>
 </center>
 <?php
 end_block();

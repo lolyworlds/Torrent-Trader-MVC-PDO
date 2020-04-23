@@ -7,7 +7,7 @@ class TTCache
     // Fonction Constructeur De La Classe Cache
     public function __construct()
     {
-        global $site_config;
+        global $site_config, $pdo;
         $this->cachedir = $site_config["cache_dir"];
         $this->type = strtolower(trim($site_config["cache_type"]));
 // Cache Connection
@@ -122,7 +122,7 @@ function get_row_count_cached($table, $suffix = "")
     $query = "SELECT COUNT(*) FROM $table $suffix";
     $cache = "get_row_count/" . sha1($query);
     if (($ret = $TTCache->Get($cache, 300)) === false) {
-        $row = DB::run($query)->fetch();
+        $row = $pdo->run($query)->fetch();
         $ret = $row[0];
         $TTCache->Set($cache, $ret, 300);
     }
@@ -135,7 +135,7 @@ function SQL_Query_exec_cached($query, $cache_time = 300, $cache_blank = 1)
 
     $cache = "queries/" . sha1($query);
     if (($rows = $TTCache->Get($cache, $cache_time)) === false) {
-        $res = DB::run($query);
+        $res = $pdo->run($query);
         $rows = array();
         while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
             $rows[] = $row;

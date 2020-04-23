@@ -27,7 +27,7 @@ if ($action == "warned")
         }
         
         
-        autolink("/admincp?action=warned", "Entries Confirmed");
+        autolink(TTURL."/admincp?action=warned", "Entries Confirmed");
     }
     
     $count = get_row_count("users", "WHERE enabled = 'yes' AND status = 'confirmed' AND warned = 'yes'");
@@ -62,11 +62,11 @@ if ($action == "warned")
     </tr>
     <?php while ($row = $res->fetch(PDO::FETCH_ASSOC)): ?>
     <tr>
-        <td class="table_col1" align="center"><a href="/accountdetails?id=<?php echo $row["id"]; ?>"><?php echo class_user($row["username"]); ?></a></td>
+        <td class="table_col1" align="center"><a href="<?php echo TTURL; ?>/accountdetails?id=<?php echo $row["id"]; ?>"><?php echo class_user($row["username"]); ?></a></td>
         <td class="table_col2" align="center"><?php echo get_user_class_name($row["class"]); ?></td>  
         <td class="table_col1" align="center"><?php echo utc_to_tz($row["added"]); ?></td>
         <td class="table_col2" align="center"><?php echo utc_to_tz($row["last_access"]); ?></td>
-        <td class="table_col1" align="center"><a href="/accountdetails?id=<?php echo $row["id"]; ?>#warnings"><?php echo number_format(get_row_count("warnings", "WHERE userid = '$row[id]' AND active = 'yes'")); ?></a></td>
+        <td class="table_col1" align="center"><a href="<?php echo TTURL; ?>/accountdetails?id=<?php echo $row["id"]; ?>#warnings"><?php echo number_format(get_row_count("warnings", "WHERE userid = '$row[id]' AND active = 'yes'")); ?></a></td>
         <td class="table_col2" align="center"><input type="checkbox" name="warned[]" value="<?php echo $row["id"]; ?>" /></td>
     </tr>
     <?php endwhile; ?>

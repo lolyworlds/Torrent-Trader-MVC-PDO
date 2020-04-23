@@ -3,7 +3,7 @@ if ($CURUSER){
 if ($site_config['NEWSON']){ //check news is turned on first   
 	begin_block(T_("LATEST_NEWS"));
 
-	$res = DB::run("SELECT * FROM news ORDER BY added DESC LIMIT 10");
+	$res = $pdo->run("SELECT * FROM news ORDER BY added DESC LIMIT 10");
 
 	?>
 	<style type="text/css">
@@ -77,7 +77,7 @@ if ($site_config['NEWSON']){ //check news is turned on first
 	<?php
 	if ($res->rowCount()){
 		while($array = $res->fetch(PDO::FETCH_ASSOC)){
-			print("<a href='/comments?type=news&amp;id=". $array['id'] . "'><b>". $array['title'] . "</b></a><br /><b>".T_("POSTED").":</b> " . gmdate("d-M-y", utc_to_tz_time($array["added"])) . "<br /><br />");
+			print("<a href='$site_config[SITEURL]/comments?type=news&amp;id=". $array['id'] . "'><b>". $array['title'] . "</b></a><br /><b>".T_("POSTED").":</b> " . gmdate("d-M-y", utc_to_tz_time($array["added"])) . "<br /><br />");
 		}
 	}else{
 		echo T_("NO_NEWS");

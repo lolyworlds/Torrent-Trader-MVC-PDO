@@ -1,25 +1,23 @@
 <?php
-  class Memberlist extends Controller {
+  class Users extends Controller {
     
     public function __construct(){
-        // $this->userModel = $this->model('User');
+         $this->countriesModel = $this->model('Countries');
+         $this->groupsModel = $this->model('Groups');
     }
     
     public function index(){
-		// Set Current User
-		// $curuser = $this->userModel->setCurrentUser();
-		// Set Current User
-		// $db = new Database;
+
 dbconn();
-global $site_config, $CURUSER;
+global $site_config, $CURUSER, $pdo;
 loggedinonly();
 
 if ($CURUSER["view_users"]=="no")
     show_error_msg(T_("ERROR"), T_("NO_USER_VIEW"), 1);
     
-$search = trim($_GET['search']);
-$class = (int) $_GET['class'];
-$letter = trim($_GET['letter']);
+$search = trim($_GET['search'] ?? '');
+$class = (int) ($_GET['class'] ?? 0);
+$letter = trim($_GET['letter'] ?? '');
 
 if (!$class)
 	unset($class);
@@ -53,11 +51,11 @@ if ($class) {
 stdhead(T_("USERS"));
 begin_frame(T_("USERS"));
 
-print("<center><br /><form method='get' action='/memberlist'>\n");
+print("<center><br /><form method='get' action='/users'>\n");
 print(T_("SEARCH").": <input type='text' size='30' name='search' />\n");
 print("<select name='class'>\n");
 print("<option value='-'>(any class)</option>\n");
-$res = DB::run("SELECT group_id, level FROM groups");
+$res = $this->groupsModel->getGroups ();
 while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
 	print("<option value='$row[group_id]'" . ($class && $class == $row['group_id'] ? " selected='selected'" : "") . ">".htmlspecialchars($row['level'])."</option>\n");
 }
@@ -67,13 +65,13 @@ print("</form></center>\n");
 
 print("<p align='center'>\n");
 
-print("<a href='/memberlist'><b>".T_("ALL")."</b></a> - \n");
+print("<a href='$site_config[SITEURL]/users'><b>".T_("ALL")."</b></a> - \n");
 foreach (range("a", "z") as $l) {
 	$L = strtoupper($l);
 	if ($l == $letter)
 		print("<b>$L</b>\n");
 	else
-		print("<a href='/memberlist?letter=$l'><b>$L</b></a>\n");
+		print("<a href='$site_config[SITEURL]/users?letter=$l'><b>$L</b></a>\n");
 }
 
 print("</p>\n");
@@ -84,7 +82,7 @@ if ($page <= 0) $page = 1;
 $per_page = 5; // Set how many records do you want to display per page.
 $startpoint = ($page * $per_page) - $per_page;
 $statement = "`users` ORDER BY `id` ASC"; // Change `users` & 'id' according to your table name.
-$results = DB::run("SELECT users.*, groups.level FROM users INNER JOIN groups ON groups.group_id=users.class WHERE $query ORDER BY username LIMIT {$startpoint} , {$per_page}");
+$results = $this->groupsModel->getGroupsearch ($query, $startpoint, $per_page) ;
 
 if ($results->rowCount()) {
  
@@ -101,7 +99,7 @@ print("<div class='table-responsive'> <table class='table table-striped'><thead>
 
 while ($row = $results->fetch(PDO::FETCH_ASSOC)) {
 	
-		$cres = DB::run("SELECT name,flagpic FROM countries WHERE id=?", [$row['country']]);
+		$cres = $this->countriesModel->getCountry ($row) ;
 
 		if ($carr = $cres->fetch(PDO::FETCH_ASSOC)) {
 			$country = "<td><img src='$site_config[SITEURL]/images/countries/$carr[flagpic]' title='".htmlspecialchars($carr['name'])."' alt='".htmlspecialchars($carr['name'])."' /></td>";
@@ -110,7 +108,7 @@ while ($row = $results->fetch(PDO::FETCH_ASSOC)) {
 		}
 
 print("<tbody><tr>
-<td><a href='/accountdetails?id=$row[id]'><b>".class_user($row['username'])."</b></a>" .($row["donated"] > 0 ? "<img src='$site_config[SITEURL]/images/star.png' border='0' alt='Donated' />" : "")."</td>"."
+<td><a href='$site_config[SITEURL]/accountdetails?id=$row[id]'><b>".class_user($row['username'])."</b></a>" .($row["donated"] > 0 ? "<img src='$site_config[SITEURL]/images/star.png' border='0' alt='Donated' />" : "")."</td>"."
 <td>".utc_to_tz($row["added"])."</td>
 <td>".utc_to_tz($row["last_access"])."</td>". "
 <td>".T_($row["level"])."</td>$country</tr></tbody>");

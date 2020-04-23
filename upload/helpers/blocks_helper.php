@@ -2,10 +2,10 @@
 // Function For Left Blocks
 function leftblocks()
 {
-    global $site_config, $CURUSER, $THEME, $LANGUAGE, $TTCache, $blockfilename; //Define globals
+    global $site_config, $CURUSER, $THEME, $LANGUAGE, $TTCache, $pdo, $blockfilename; //Define globals
 
     if (($blocks = $TTCache->get("blocks_left", 900)) === false) {
-        $res = DB::run("SELECT * FROM blocks WHERE position='left' AND enabled=1 ORDER BY sort");
+        $res = $pdo->run("SELECT * FROM blocks WHERE position='left' AND enabled=1 ORDER BY sort");
         $blocks = array();
         while ($result = $res->fetch(PDO::FETCH_LAZY)) {
             $blocks[] = $result["name"];
@@ -20,10 +20,10 @@ function leftblocks()
 // Function For Right Blocks
 function rightblocks()
 {
-    global $site_config, $CURUSER, $THEME, $LANGUAGE, $TTCache, $blockfilename; //Define globals
+    global $site_config, $CURUSER, $THEME, $LANGUAGE, $TTCache, $pdo, $blockfilename; //Define globals
 
     if (($blocks = $TTCache->get("blocks_right", 900)) === false) {
-        $res = DB::run("SELECT * FROM blocks WHERE position='right' AND enabled=1 ORDER BY sort");
+        $res = $pdo->run("SELECT * FROM blocks WHERE position='right' AND enabled=1 ORDER BY sort");
         $blocks = array();
         while ($result = $res->fetch(PDO::FETCH_LAZY)) {
             $blocks[] = $result["name"];
@@ -38,10 +38,10 @@ function rightblocks()
 // Function For Middle Blocks
 function middleblocks()
 {
-    global $site_config, $CURUSER, $THEME, $LANGUAGE, $TTCache; //Define globals
+    global $site_config, $CURUSER, $THEME, $LANGUAGE, $pdo, $TTCache; //Define globals
 
     if (($blocks = $TTCache->get("blocks_middle", 900)) === false) {
-        $res = DB::run("SELECT * FROM blocks WHERE position='middle' AND enabled=1 ORDER BY sort");
+        $res = $pdo->run("SELECT * FROM blocks WHERE position='middle' AND enabled=1 ORDER BY sort");
         $blocks = array();
         while ($result = $res->fetch(PDO::FETCH_LAZY)) {
             $blocks[] = $result["name"];
@@ -56,7 +56,7 @@ function middleblocks()
 // BEGIN BLOCK
 function begin_block($caption = "-", $align = "justify")
 {
-    global $THEME, $site_config;
+    global $THEME, $pdo, $site_config;
 
     $blockId = 'b-' . sha1($caption);
     print("
@@ -69,7 +69,7 @@ function begin_block($caption = "-", $align = "justify")
 // END BLOCK
 function end_block()
 {
-    global $THEME, $site_config;
+    global $THEME, $pdo, $site_config;
     print("</div></div>
 
       </div>
@@ -78,30 +78,33 @@ function end_block()
 // resort left blocks
 function resortleft()
 {
-    $sortleft = DB::run("SELECT sort, id FROM blocks WHERE position='left' AND enabled=1 ORDER BY sort ASC");
+    global $pdo;
+    $sortleft = $pdo->run("SELECT sort, id FROM blocks WHERE position='left' AND enabled=1 ORDER BY sort ASC");
     $i = 1;
     while ($sort = $sortleft->fetch(PDO::FETCH_ASSOC)) {
-        DB::run("UPDATE blocks SET sort = $i WHERE id=" . $sort["id"]);
+        $pdo->run("UPDATE blocks SET sort = $i WHERE id=" . $sort["id"]);
         $i++;
     }
 }
 // resort middle blocks
 function resortmiddle()
 {
-    $sortmiddle = DB::run("SELECT sort, id FROM blocks WHERE position='middle' AND enabled=1 ORDER BY sort ASC");
+    global $pdo;
+    $sortmiddle = $pdo->run("SELECT sort, id FROM blocks WHERE position='middle' AND enabled=1 ORDER BY sort ASC");
     $i = 1;
     while ($sort = $sortmiddle->fetch(PDO::FETCH_ASSOC)) {
-        DB::run("UPDATE blocks SET sort = $i WHERE id=" . $sort["id"]);
+        $pdo->run("UPDATE blocks SET sort = $i WHERE id=" . $sort["id"]);
         $i++;
     }
 }
 // resort right blocks
 function resortright()
 {
-    $sortright = DB::run("SELECT sort, id FROM blocks WHERE position='right' AND enabled=1 ORDER BY sort ASC");
+    global $pdo;
+    $sortright = $pdo->run("SELECT sort, id FROM blocks WHERE position='right' AND enabled=1 ORDER BY sort ASC");
     $i = 1;
     while ($sort = $sortright->fetch(PDO::FETCH_ASSOC)) {
-        DB::run("UPDATE blocks SET sort = $i WHERE id=" . $sort["id"]);
+        $pdo->run("UPDATE blocks SET sort = $i WHERE id=" . $sort["id"]);
         $i++;
     }
 }

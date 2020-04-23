@@ -8,7 +8,7 @@ if (!$site_config["MEMBERSONLY"] || $CURUSER) {
 
 	$expires = 600; // Cache time in seconds
 	if (($rows = $TTCache->Get("seedwanted_block", $expires)) === false) {
-		$res = DB::run("SELECT id, name, seeders, leechers FROM torrents WHERE seeders = ? AND leechers > ? AND banned = ? AND ? ORDER BY leechers DESC LIMIT 5", [0, 0, 'no', $external]);
+		$res = $pdo->run("SELECT id, name, seeders, leechers FROM torrents WHERE seeders = ? AND leechers > ? AND banned = ? AND ? ORDER BY leechers DESC LIMIT 5", [0, 0, 'no', $external]);
 		$rows = array();
 
 		while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
@@ -26,7 +26,7 @@ if (!$site_config["MEMBERSONLY"] || $CURUSER) {
 		foreach ($rows as $row) { 
 			$char1 = 18; //cut length 
 			$smallname = htmlspecialchars(CutName($row["name"], $char1));
-			echo "<li><a href='torrentsdetails?id=$row[id]' title='".htmlspecialchars($row["name"])."'>$smallname</a><br /> - [".T_("LEECHERS").": " . number_format($row["leechers"]) . "]</li>\n";
+			echo "<li><a href='".$site_config['SITEURL']."/torrents/details?id=$row[id]' title='".htmlspecialchars($row["name"])."'>$smallname</a><br /> - [".T_("LEECHERS").": " . number_format($row["leechers"]) . "]</li>\n";
 		}
 	echo "</ul></div>\n";
 	}

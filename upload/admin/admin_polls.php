@@ -47,7 +47,7 @@ if ($action=="polls" && $do=="results"){
 		
 		echo '<tr>';
 		echo '<td class="table_col1" align="left"><b>';
-		echo '<a href="/accountdetails?id='.$user["id"].'">';
+		echo '<a href="'.TTURL.'/accountdetails?id='.$user["id"].'">';
 		echo '&nbsp;&nbsp;'.class_user($user['username']);
 		echo '</a>';
 		echo '</b></td>';
@@ -75,7 +75,7 @@ if ($action=="polls" && $do=="delete"){
 	DB::run("DELETE FROM polls WHERE id=?", [$id]);
 	DB::run("DELETE FROM pollanswers WHERE  pollid=?", [$id]);
 	
-	autolink("/admincp?action=polls&do=view", T_("Poll and answers deleted"));
+	autolink(TTURL."/admincp?action=polls&do=view", T_("Poll and answers deleted"));
 }
 
 if ($action=="polls" && $do=="add"){
@@ -91,7 +91,7 @@ if ($action=="polls" && $do=="add"){
                                 
 	begin_frame("Polls");
 	?>                                                
-    <form method="post" action="/admincp?action=polls&amp;do=save"> 
+    <form method="post" action="<?php echo TTURL; ?>/admincp?action=polls&amp;do=save"> 
 	<table border="0" cellspacing="0" class="table_table" align="center">
     <tr><td class="table_col1">Question <font class="error">*</font></td><td class="table_col2" align="left"><input name="question" size="60" maxlength="255" value="<?php echo $poll['question']; ?>" /></td></tr>
     <tr><td class="table_col1">Option 1 <font class="error">*</font></td><td class="table_col2" align="left"><input name="option0" size="60" maxlength="40" value="<?php echo $poll['option0']; ?>" /><br /></td></tr>
@@ -217,5 +217,5 @@ if ($action=="polls" && $do=="save"){
   	")");
 	}
 
-	autolink("/admincp?action=polls&do=view", T_("COMPLETE"));
+	autolink(TTURL."/admincp?action=polls&do=view", T_("COMPLETE"));
 }

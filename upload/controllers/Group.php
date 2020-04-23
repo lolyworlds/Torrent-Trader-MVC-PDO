@@ -1,31 +1,28 @@
 <?php
-  class Staff extends Controller {
+  class Group extends Controller {
     
     public function __construct(){
-        // $this->userModel = $this->model('User');
+         $this->groupsModel = $this->model('Groups');
     }
     
-    public function index(){
-		// Set Current User
-		// $curuser = $this->userModel->setCurrentUser();
-		// Set Current User
-		// $db = new Database;
+    public function staff(){
   dbconn();
-global $site_config, $CURUSER;
+global $site_config, $CURUSER, $pdo;
   loggedinonly();
   stdhead("Staff");
 
   $dt = get_date_time(gmtime() - 180);
   
-  $res = DB::run("SELECT `users`.`id`, `users`.`username`, `users`.`class`, `users`.`last_access` FROM `users` INNER JOIN `groups` ON `users`.`class` = `groups`.`group_id` WHERE `users`.`enabled` =? AND `users`.`status` =? AND `groups`.`staff_page` =? ORDER BY `username`", ['yes', 'confirmed', 'yes']);
+  $res = $this->groupsModel->getStaff();
+  
   $col = [];  //undefined var
   $table = []; //undefined var
   while ( $row = $res->fetch(PDO::FETCH_ASSOC) )
   {
-      $table[$row["class"]] = ($table[$row["class"]]).
+      $table[$row['class']] = ($table[$row['class']] ?? '').
         "<td><img src='images/button_o".($row["last_access"] > $dt ? "n" : "ff")."line.png' alt='' /> ". 
-        "<a href='/accountdetails?id=".$row["id"]."'>" . class_user($row["username"]) . "</a> ".       
-        "<a href='/mailbox?compose&amp;id=".$row["id"]."'><img src='images/button_pm.gif' border='0' alt='' /></a></td>";
+        "<a href='".$site_config['SITEURL']."/accountdetails?id=".$row["id"]."'>" . class_user($row["username"]) . "</a> ".       
+        "<a href='".$site_config['SITEURL']."/mailbox?compose&amp;id=".$row["id"]."'><img src='images/button_pm.gif' border='0' alt='' /></a></td>";
         
        $col[$row['class']] = ($col[$row['class']] ?? 0) + 1;
       
@@ -42,8 +39,8 @@ global $site_config, $CURUSER;
   if ($CURUSER["edit_users"] == "no")
       $where = "AND `staff_public` = 'yes'";
   
-  $res = DB::run("SELECT `group_id`, `level`, `staff_public` FROM `groups` WHERE `staff_page` = 'yes' $where ORDER BY `staff_sort`");
-
+  $res = $this->groupsModel->getStaffLevel($where);
+  
   if ($res->rowCount() == 0)
       show_error_msg(T_("ERROR"), T_("NO_STAFF_HERE"), 1);
       

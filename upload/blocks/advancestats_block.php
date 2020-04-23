@@ -14,12 +14,12 @@ $leechers = get_row_count("peers", "WHERE seeder='no'");
 $members = number_format(get_row_count("users", "WHERE UNIX_TIMESTAMP('" . get_date_time() . "') - UNIX_TIMESTAMP(users.last_access) < 900"));
 $totalonline = $members + $guests;
 
-$result = DB::run("SELECT SUM(downloaded) AS totaldl FROM users");
+$result = $pdo->run("SELECT SUM(downloaded) AS totaldl FROM users");
 while ($row = $result->fetch(PDO::FETCH_LAZY)) {
 	$totaldownloaded = $row["totaldl"]; 
 } 
 
-$result = DB::run("SELECT SUM(uploaded) AS totalul FROM users");
+$result = $pdo->run("SELECT SUM(uploaded) AS totalul FROM users");
 while ($row =  $result->fetch(PDO::FETCH_LAZY)) {
 	$totaluploaded      = $row["totalul"]; 
 }

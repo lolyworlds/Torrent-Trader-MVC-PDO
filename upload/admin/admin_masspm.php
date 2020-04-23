@@ -27,7 +27,7 @@ if ($action=="masspm"){
 		}
 
 		write_log("A Mass PM was sent by ($CURUSER[username])");
-		autolink("/admincp?action=masspm", T_("SUCCESS"),"Mass PM Sent!");
+		autolink(TTURL."/admincp?action=masspm", T_("SUCCESS"),"Mass PM Sent!");
 		die;
 	}
 

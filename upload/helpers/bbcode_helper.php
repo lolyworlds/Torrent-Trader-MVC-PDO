@@ -5,6 +5,7 @@ function textbbcode($form, $name, $content = "")
     //$form = form name
     //$name = textarea name
     //$content = textarea content (only for edit pages etc)
+    global $site_config;
     ?>
 <script type="text/javascript">
 
@@ -118,57 +119,57 @@ switch(tag)
     <td class='bb-btn' width='130' align="center" valign='top'>
       <table border="0" cellpadding="3" cellspacing="3" align="center">
       <tr>
-          <td width="26"><a href="javascript:SmileIT(':)','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="images/smilies/smile.png" border="0" alt=':)' title=':)' /></a></td>
-          <td width="26"><a href="javascript:SmileIT(':(','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="images/smilies/sad.png" border="0" alt=':(' title=':(' /></a></td>
-          <td width="26"><a href="javascript:SmileIT(':D','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="images/smilies/grin.png" border="0" alt=':D' title=':D' /></a></td>
-          <td width="26"><a href="javascript:SmileIT(':P','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="images/smilies/razz.png" border="0" alt=':P' title=':P' /></a></td>
+          <td width="26"><a href="javascript:SmileIT(':)','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="<?php echo $site_config["SITEURL"]; ?>/images/smilies/smile.png" border="0" alt=':)' title=':)' /></a></td>
+          <td width="26"><a href="javascript:SmileIT(':(','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="<?php echo $site_config["SITEURL"]; ?>/images/smilies/sad.png" border="0" alt=':(' title=':(' /></a></td>
+          <td width="26"><a href="javascript:SmileIT(':D','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="<?php echo $site_config["SITEURL"]; ?>/images/smilies/grin.png" border="0" alt=':D' title=':D' /></a></td>
+          <td width="26"><a href="javascript:SmileIT(':P','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="<?php echo $site_config["SITEURL"]; ?>/images/smilies/razz.png" border="0" alt=':P' title=':P' /></a></td>
       </tr>
       <tr>
-          <td width="26"><a href="javascript:SmileIT(':-)','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="images/smilies/smile-big.png" border="0" alt=':-)' title=':-)' /></a></td>
-          <td width="26"><a href="javascript:SmileIT('B)','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="images/smilies/cool.png" border="0" alt='B)' title='B)' /></a></td>
-          <td width="26"><a href="javascript:SmileIT('8o','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="images/smilies/eek.png" border="0" alt='8o' title='8o' /></a></td>
-          <td width="26"><a href="javascript:SmileIT(':?','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="images/smilies/confused.png" border="0" alt=':?' title=':?' /></a></td>
+          <td width="26"><a href="javascript:SmileIT(':-)','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="<?php echo $site_config["SITEURL"]; ?>/images/smilies/smile-big.png" border="0" alt=':-)' title=':-)' /></a></td>
+          <td width="26"><a href="javascript:SmileIT('B)','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="<?php echo $site_config["SITEURL"]; ?>/images/smilies/cool.png" border="0" alt='B)' title='B)' /></a></td>
+          <td width="26"><a href="javascript:SmileIT('8o','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="<?php echo $site_config["SITEURL"]; ?>/images/smilies/eek.png" border="0" alt='8o' title='8o' /></a></td>
+          <td width="26"><a href="javascript:SmileIT(':?','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="<?php echo $site_config["SITEURL"]; ?>/images/smilies/confused.png" border="0" alt=':?' title=':?' /></a></td>
       </tr>
       <tr>
-          <td width="26"><a href="javascript:SmileIT('8)','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="images/smilies/glasses.png" border="0" alt='8)' title='8)' /></a></td>
-          <td width="26"><a href="javascript:SmileIT(';)','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="images/smilies/wink.png" border="0" alt=';)' title=';)' /></a></td>
-          <td width="26"><a href="javascript:SmileIT(':-*','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="images/smilies/kiss.png" border="0" alt=':-*' title=':-*' /></a></td>
-          <td width="26"><a href="javascript:SmileIT(':-(','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="images/smilies/crying.png" border="0" alt=':-(' title=':-(' /></a></td>
+          <td width="26"><a href="javascript:SmileIT('8)','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="<?php echo $site_config["SITEURL"]; ?>/images/smilies/glasses.png" border="0" alt='8)' title='8)' /></a></td>
+          <td width="26"><a href="javascript:SmileIT(';)','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="<?php echo $site_config["SITEURL"]; ?>/images/smilies/wink.png" border="0" alt=';)' title=';)' /></a></td>
+          <td width="26"><a href="javascript:SmileIT(':-*','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="<?php echo $site_config["SITEURL"]; ?>/images/smilies/kiss.png" border="0" alt=':-*' title=':-*' /></a></td>
+          <td width="26"><a href="javascript:SmileIT(':-(','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="<?php echo $site_config["SITEURL"]; ?>/images/smilies/crying.png" border="0" alt=':-(' title=':-(' /></a></td>
       </tr>
       <tr>
-          <td width="26"><a href="javascript:SmileIT(':|','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="images/smilies/plain.png" border="0" alt=':|' title=':|' /></a></td>
-          <td width="26"><a href="javascript:SmileIT('O:-D','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="images/smilies/angel.png" border="0" alt='O:-D' title='0:-D' /></a></td>
-          <td width="26"><a href="javascript:SmileIT(':-@','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="images/smilies/devilish.png" border="0" alt=':-@' title=':-@' /></a></td>
-          <td width="26"><a href="javascript:SmileIT(':o)','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="images/smilies/monkey.png" border="0" alt=':o)' title=':o)' /></a></td>
+          <td width="26"><a href="javascript:SmileIT(':|','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="<?php echo $site_config["SITEURL"]; ?>/images/smilies/plain.png" border="0" alt=':|' title=':|' /></a></td>
+          <td width="26"><a href="javascript:SmileIT('O:-D','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="<?php echo $site_config["SITEURL"]; ?>/images/smilies/angel.png" border="0" alt='O:-D' title='0:-D' /></a></td>
+          <td width="26"><a href="javascript:SmileIT(':-@','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="<?php echo $site_config["SITEURL"]; ?>/images/smilies/devilish.png" border="0" alt=':-@' title=':-@' /></a></td>
+          <td width="26"><a href="javascript:SmileIT(':o)','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="<?php echo $site_config["SITEURL"]; ?>/images/smilies/monkey.png" border="0" alt=':o)' title=':o)' /></a></td>
       </tr>
       <tr>
-           <td width="26"><a href="javascript:SmileIT('brb','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="images/smilies/brb.png" border="0" alt='brb' title='brb' /></a></td>
-           <td width="26"><a href="javascript:SmileIT(':warn','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="images/smilies/warn.png" border="0" alt=':warn' title=':warn' /></a></td>
-           <td width="26"><a href="javascript:SmileIT(':help','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="images/smilies/help.png" border="0" alt=':help' title=':help' /></a></td>
-           <td width="26"><a href="javascript:SmileIT(':bad','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="images/smilies/bad.png" border="0" alt=':bad' title=':bad' /></a></td>
+           <td width="26"><a href="javascript:SmileIT('brb','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="<?php echo $site_config["SITEURL"]; ?>/images/smilies/brb.png" border="0" alt='brb' title='brb' /></a></td>
+           <td width="26"><a href="javascript:SmileIT(':warn','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="<?php echo $site_config["SITEURL"]; ?>/images/smilies/warn.png" border="0" alt=':warn' title=':warn' /></a></td>
+           <td width="26"><a href="javascript:SmileIT(':help','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="<?php echo $site_config["SITEURL"]; ?>/images/smilies/help.png" border="0" alt=':help' title=':help' /></a></td>
+           <td width="26"><a href="javascript:SmileIT(':bad','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="<?php echo $site_config["SITEURL"]; ?>/images/smilies/bad.png" border="0" alt=':bad' title=':bad' /></a></td>
       </tr>
       <tr>
-          <td width="26"><a href="javascript:SmileIT(':love','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="images/smilies/love.png" border="0" alt=':love' title=':love' /></a></td>
-          <td width="26"><a href="javascript:SmileIT(':idea','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="images/smilies/idea.png" border="0" alt=':idea' title=':idea' /></a></td>
-          <td width="26"><a href="javascript:SmileIT(':bomb','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="images/smilies/bomb.png" border="0" alt=':bomb' title=':bomb' /></a></td>
-          <td width="26"><a href="javascript:SmileIT(':!','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="images/smilies/important.png" border="0" alt=':!' title=':!' /></a></td>
+          <td width="26"><a href="javascript:SmileIT(':love','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="<?php echo $site_config["SITEURL"]; ?>/images/smilies/love.png" border="0" alt=':love' title=':love' /></a></td>
+          <td width="26"><a href="javascript:SmileIT(':idea','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="<?php echo $site_config["SITEURL"]; ?>/images/smilies/idea.png" border="0" alt=':idea' title=':idea' /></a></td>
+          <td width="26"><a href="javascript:SmileIT(':bomb','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="<?php echo $site_config["SITEURL"]; ?>/images/smilies/bomb.png" border="0" alt=':bomb' title=':bomb' /></a></td>
+          <td width="26"><a href="javascript:SmileIT(':!','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="<?php echo $site_config["SITEURL"]; ?>/images/smilies/important.png" border="0" alt=':!' title=':!' /></a></td>
       </tr>
       <tr>
-          <td width="26"><a href="javascript:SmileIT(':gigg','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="images/smilies/giggle.png" border="0" alt=':|' title=':|' /></a></td>
-          <td width="26"><a href="javascript:SmileIT(':rofl','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="images/smilies/roflmao.png" border="0" alt='O:-D' title='0:-D' /></a></td>
-          <td width="26"><a href="javascript:SmileIT(':slep','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="images/smilies/sleep.png" border="0" alt=':-@' title=':-@' /></a></td>
-          <td width="26"><a href="javascript:SmileIT(':thum','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="images/smilies/thumbsup.png" border="0" alt=':o)' title=':o)' /></a></td>
+          <td width="26"><a href="javascript:SmileIT(':gigg','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="<?php echo $site_config["SITEURL"]; ?>/images/smilies/giggle.png" border="0" alt=':|' title=':|' /></a></td>
+          <td width="26"><a href="javascript:SmileIT(':rofl','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="<?php echo $site_config["SITEURL"]; ?>/images/smilies/roflmao.png" border="0" alt='O:-D' title='0:-D' /></a></td>
+          <td width="26"><a href="javascript:SmileIT(':slep','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="<?php echo $site_config["SITEURL"]; ?>/images/smilies/sleep.png" border="0" alt=':-@' title=':-@' /></a></td>
+          <td width="26"><a href="javascript:SmileIT(':thum','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="<?php echo $site_config["SITEURL"]; ?>/images/smilies/thumbsup.png" border="0" alt=':o)' title=':o)' /></a></td>
       </tr>
       <tr>
-          <td width="26"><a href="javascript:SmileIT(':0_0','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="images/smilies/zpo.png" border="0" alt=':|' title=':|' /></a></td>
-          <td width="26"><a href="javascript:SmileIT(':poop','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="images/smilies/poop.png" border="0" alt='O:-D' title='0:-D' /></a></td>
-          <td width="26"><a href="javascript:SmileIT(':spechles','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="images/smilies/speechless.png" border="0" alt=':-@' title=':-@' /></a></td>
-          <td width="26"><a href="javascript:SmileIT(':unsure','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="images/smilies/unsure.png" border="0" alt=':o)' title=':o)' /></a></td>
+          <td width="26"><a href="javascript:SmileIT(':0_0','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="<?php echo $site_config["SITEURL"]; ?>/images/smilies/zpo.png" border="0" alt=':|' title=':|' /></a></td>
+          <td width="26"><a href="javascript:SmileIT(':poop','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="<?php echo $site_config["SITEURL"]; ?>/images/smilies/poop.png" border="0" alt='O:-D' title='0:-D' /></a></td>
+          <td width="26"><a href="javascript:SmileIT(':spechles','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="<?php echo $site_config["SITEURL"]; ?>/images/smilies/speechless.png" border="0" alt=':-@' title=':-@' /></a></td>
+          <td width="26"><a href="javascript:SmileIT(':unsure','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="<?php echo $site_config["SITEURL"]; ?>/images/smilies/unsure.png" border="0" alt=':o)' title=':o)' /></a></td>
       </tr>
 	  <tr>
-          <td width="26"><a href="javascript:SmileIT(':mad','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="images/smilies/mad.png" border="0" alt=':|' title=':|' /></a></td>
-          <td width="26"><a href="javascript:SmileIT(':roll','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="images/smilies/rolleyes.png" border="0" alt='O:-D' title='0:-D' /></a></td>
-          <td width="26"><a href="javascript:SmileIT(':sick','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="images/smilies/sick.png" border="0" alt=':-@' title=':-@' /></a></td>
+          <td width="26"><a href="javascript:SmileIT(':mad','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="<?php echo $site_config["SITEURL"]; ?>/images/smilies/mad.png" border="0" alt=':|' title=':|' /></a></td>
+          <td width="26"><a href="javascript:SmileIT(':roll','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="<?php echo $site_config["SITEURL"]; ?>/images/smilies/rolleyes.png" border="0" alt='O:-D' title='0:-D' /></a></td>
+          <td width="26"><a href="javascript:SmileIT(':sick','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="<?php echo $site_config["SITEURL"]; ?>/images/smilies/sick.png" border="0" alt=':-@' title=':-@' /></a></td>
       </tr>
 	  	  <tr>
           <td width="26"><a href="javascript:SmileIT(':crylol','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="images/smilies/crylaugh.png" border="0" alt=':|' title=':|' /></a></td>

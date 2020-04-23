@@ -23,7 +23,7 @@ begin_frame(T_("WORD_CENSOR"));
 ------------------*/
 ?>
 
-<form method="post" action="/admincp?action=censor">  
+<form method="post" action="<?php echo TTURL; ?>/admincp?action=censor">  
 <table width='100%' cellspacing='3' cellpadding='3' align='center'>
 <tr>
 <td bgcolor='#eeeeee'><font face="verdana" size="1">Word:  <input type="text" name="word" id="word" size="50" maxlength="255" value="" /></font></td></tr>
@@ -34,7 +34,7 @@ begin_frame(T_("WORD_CENSOR"));
 </table>
 </form>
 
-<form method="post" action="/admincp?action=censor">
+<form method="post" action="<?php echo TTURL; ?>/admincp?action=censor">
 <table>
 <tr>
 <td bgcolor='#eeeeee'><font face="verdana" size="1">Remove Censor For: <select name="censor">
@@ -65,7 +65,7 @@ switch ($to)
             @fwrite($f,$_POST["badwords"]);
             fclose($f);
             }
-			autolink("/admincp?action=censor", T_("SUCCESS"),"Censor Updated!");
+			autolink(TTURL."/admincp?action=censor", T_("SUCCESS"),"Censor Updated!");
          break;
 
 

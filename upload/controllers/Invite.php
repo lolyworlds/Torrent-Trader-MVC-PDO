@@ -6,10 +6,6 @@
     }
     
     public function index(){
-		// Set Current User
-		// $curuser = $this->userModel->setCurrentUser();
-		// Set Current User
-		// $db = new Database;
 dbconn();
 global $site_config, $CURUSER;
 loggedinonly();
@@ -90,7 +86,7 @@ $site_config[SITEURL]/faq
 
 To confirm your invitation, you have to follow this link:
 
-$site_config[SITEURL]/accountsignup?invite=$id&secret=$psecret
+$site_config[SITEURL]/account/signup?invite=$id&secret=$psecret
 
 After you do this, you will be able to use your new account. If you fail to
 do this, your account will be deleted within a few days. We urge you to read
@@ -98,7 +94,7 @@ the RULES and FAQ before you start using $site_config[SITENAME].
 EOD;
 	sendmail($email, "$site_config[SITENAME] user registration confirmation", $body, "", "-f$site_config[SITEEMAIL]");
 
-	header("Refresh: 0; url=/accountconfirmok?type=invite&email=" . urlencode($email));
+	header("Refresh: 0; url=".TTURL."/account/confirmok?type=invite&email=" . urlencode($email));
 	die;
 }
 
@@ -106,7 +102,7 @@ stdhead(T_("INVITE"));
 begin_frame(T_("INVITE"));
 ?>
 
-<form method="post" action="/invite?take=1">
+<form method="post" action="<?php echo TTURL ?>/invite?take=1">
 <table border="0" cellspacing="0" cellpadding="3">
 <tr valign="top"><td align="right"><b><?php echo T_("EMAIL_ADDRESS");?>:</b></td><td align="left"><input type="text" size="40" name="email" /> 
 <table width="250" border="0" cellspacing="0" cellpadding="0"><tr><td><font class="small"><?php echo T_("EMAIL_ADDRESS_VALID_MSG");?></font></td></tr></table></td></tr>   

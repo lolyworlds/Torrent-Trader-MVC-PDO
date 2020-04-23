@@ -1,25 +1,19 @@
 <?php
-  class Account extends Controller {
+  class Usercp extends Controller {
     
     public function __construct(){
         // $this->userModel = $this->model('User');
     }
     
     public function index(){
-		// Set Current User
-		// $curuser = $this->userModel->setCurrentUser();
-		// Set Current User
-		// $db = new Database;
 dbconn();
-global $site_config, $CURUSER;
+global $site_config, $CURUSER, $pdo;
 loggedinonly();
 
 stdhead(T_("USERCP"));
-
-$action = $_REQUEST["action"];
 $do = $_REQUEST["do"];
 
-if (!$action){
+
 	begin_frame(T_("USER").": $CURUSER[username] (".T_("ACCOUNT_PROFILE").")");
 
 	$usersignature = stripslashes($CURUSER["signature"]);
@@ -43,16 +37,16 @@ if (!$action){
 	<b><?php echo T_("PASSKEY"); ?>:</b> <?php echo $CURUSER["passkey"]; ?><br />
 	<?php
 		if ($CURUSER["invited_by"]) {
-			$row = DB::run("SELECT username FROM users WHERE id= ?", [$CURUSER[invited_by]])->fetch();
-			echo "<b>".T_("INVITED_BY").":</b> <a href=\"/accountdetails?id=$CURUSER[invited_by]\">$row[username]</a><br />";
+			$row = $pdo->run("SELECT username FROM users WHERE id= ?", [$CURUSER['invited_by']])->fetch();
+			echo "<b>".T_("INVITED_BY").":</b> <a href=\"".$site_config['SITEURL']."/accountdetails?id=$CURUSER[invited_by]\">$row[username]</a><br />";
 		}
 		echo "<b>".T_("INVITES").":</b> " . number_format($CURUSER["invites"]) . "<br />";
 		$invitees = array_reverse(explode(" ", $CURUSER["invitees"]));
 		$rows = array();
 		foreach ($invitees as $invitee) {
-			$res = DB::run("SELECT id, username FROM users WHERE id=? and status=?", [$invitee, 'confirmed']);
+			$res = $pdo->run("SELECT id, username FROM users WHERE id=? and status=?", [$invitee, 'confirmed']);
 			if ($row = $res->fetch(PDO::FETCH_LAZY)) {
-				$rows[] = "<a href=\"/accountdetails?id=$row[id]\">$row[username]</a>";
+				$rows[] = "<a href=\"".$site_config['SITEURL']."/accountdetails?id=$row[id]\">$row[username]</a>";
 			}
 		}
 		if ($rows)
@@ -64,11 +58,18 @@ if (!$action){
 	<br /><br />
 	<?php
 	end_frame();
+	stdfoot();
 }
-
+  
 /////////////// MY TORRENTS ///////////////////
 
-if ($action=="mytorrents"){
+ public function mytorrents(){
+dbconn();
+global $site_config, $CURUSER, $pdo;
+loggedinonly();
+
+stdhead(T_("USERCP"));
+$do = $_REQUEST["do"];
 begin_frame(T_("YOUR_TORRENTS"));
 navmenu();
 //page numbers
@@ -76,7 +77,7 @@ $page = (int) ($_GET['page'] ?? 0);
 $perpage = 200;
 
 
-$arr = DB::run("SELECT COUNT(*) FROM torrents WHERE torrents.owner = " . $CURUSER["id"] ."")->fetch();
+$arr = $pdo->run("SELECT COUNT(*) FROM torrents WHERE torrents.owner = " . $CURUSER["id"] ."")->fetch();
 $pages = floor($arr[0] / $perpage);
 if ($pages * $perpage < $arr[0])
   ++$pages;
@@ -91,19 +92,19 @@ for ($i = 1; $i <= $pages; ++$i)
   if ($i == $page)
     $pagemenu .= "$i\n";
   else
-    $pagemenu .= "<a href='/account?action=mytorrents&amp;page=$i'>$i</a>\n";
+    $pagemenu .= "<a href='". $site_config['SITEURL'] ."/usercp/mytorrents&amp;page=$i'>$i</a>\n";
 
 if ($page == 1)
   $browsemenu .= "";
 else
-  $browsemenu .= "<a href='/account?action=mytorrents&amp;page=" . ($page - 1) . "'>[Prev]</a>";
+  $browsemenu .= "<a href='". $site_config['SITEURL'] ."/usercp/mytorrents&amp;page=" . ($page - 1) . "'>[Prev]</a>";
 
 $browsemenu .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 
 if ($page == $pages)
   $browsemenu .= "";
 else
-  $browsemenu .= "<a href='/account?action=mytorrents&amp;page=" . ($page + 1) . "'>[Next]</a>";
+  $browsemenu .= "<a href='". $site_config['SITEURL'] ."/usercp/mytorrents&amp;page=" . ($page + 1) . "'>[Next]</a>";
 
 $offset = ($page * $perpage) - $perpage;
 //end page numbers
@@ -112,7 +113,7 @@ $offset = ($page * $perpage) - $perpage;
 $where = "WHERE torrents.owner = " . $CURUSER["id"] ."";
 $orderby = "ORDER BY added DESC";
 
-$query = DB::run("SELECT torrents.id, torrents.category, torrents.name, torrents.added, torrents.hits, torrents.banned, torrents.comments, torrents.seeders, torrents.leechers, torrents.times_completed, categories.name AS cat_name, categories.parent_cat AS cat_parent FROM torrents LEFT JOIN categories ON category = categories.id $where $orderby LIMIT $offset,$perpage");
+$query = $pdo->run("SELECT torrents.id, torrents.category, torrents.name, torrents.added, torrents.hits, torrents.banned, torrents.comments, torrents.seeders, torrents.leechers, torrents.times_completed, categories.name AS cat_name, categories.parent_cat AS cat_parent FROM torrents LEFT JOIN categories ON category = categories.id $where $orderby LIMIT $offset,$perpage");
 $allcats = $query->rowCount();
 	if($allcats == 0) {
 		echo '<div class="f-border comment"><br /><b>'.T_("NO_UPLOADS").'</b></div>';
@@ -137,31 +138,39 @@ $allcats = $query->rowCount();
 			{
 			$char1 = 35; //cut length 
 			$smallname = CutName(htmlspecialchars($row["name"]), $char1);
-			echo "<tr><td class='table_col2' align='center'>$row[cat_parent]: $row[cat_name]</td><td class='table_col1' align='left'><a href='torrentsdetails?id=$row[id]'>$smallname</a></td><td class='table_col2' align='center'><a href='/comments?type=torrent&amp;id=$row[id]'>".number_format($row["comments"])."</a></td><td class='table_col1' align='center'>".number_format($row["hits"])."</td><td class='table_col2' align='center'>".number_format($row["seeders"])."</td><td class='table_col1' align='center'>".number_format($row["leechers"])."</td><td class='table_col2' align='center'>".number_format($row["times_completed"])."</td><td class='table_col1' align='center'>".get_elapsed_time(sql_timestamp_to_unix_timestamp($row["added"]))."</td><td class='table_col2'><a href='torrentsedit?id=$row[id]'>EDIT</a></td></tr>\n";
+			echo "<tr><td class='table_col2' align='center'>$row[cat_parent]: $row[cat_name]</td><td class='table_col1' align='left'><a href='". $site_config['SITEURL'] ."/torrents/details?id=$row[id]'>$smallname</a></td><td class='table_col2' align='center'><a href='$site_config[SITEURL]/comments?type=torrent&amp;id=$row[id]'>".number_format($row["comments"])."</a></td><td class='table_col1' align='center'>".number_format($row["hits"])."</td><td class='table_col2' align='center'>".number_format($row["seeders"])."</td><td class='table_col1' align='center'>".number_format($row["leechers"])."</td><td class='table_col2' align='center'>".number_format($row["times_completed"])."</td><td class='table_col1' align='center'>".get_elapsed_time(sql_timestamp_to_unix_timestamp($row["added"]))."</td><td class='table_col2'><a href='$site_config[SITEURL]/torrents/edit?id=$row[id]'>EDIT</a></td></tr>\n";
 			}
 		echo "</table><br />";
 		print("<p align='center'>$pagemenu<br />$browsemenu</p>");
 	}
 
 end_frame();
-}
+stdfoot();
+     
+ }
 
 
 /////////////////////// EDIT SETTINGS ////////////////
-if ($action=="edit_settings"){
+    public function editsettings(){
+dbconn();
+global $site_config, $CURUSER, $pdo;
+loggedinonly();
+
+stdhead(T_("USERCP"));
+$do = $_REQUEST["do"];
 
 	if ($do=="edit"){
 	begin_frame(T_("EDIT_ACCOUNT_SETTINGS"));
 
 	navmenu();
 	?>
-	<form enctype="multipart/form-data" method="post" action="/account">
+	<form enctype="multipart/form-data" method="post" action="<?php echo $site_config["SITEURL"]; ?>/usercp/editsettings">
 	<input type="hidden" name="action" value="edit_settings" />
 	<input type="hidden" name="do" value="save_settings" />
 	<table class="f-border" cellspacing="0" cellpadding="5" max-width="100%" align="center">
 	<?php
 
-	$ss_r = DB::run("SELECT * from stylesheets");
+	$ss_r = $pdo->run("SELECT * from stylesheets");
 	$ss_sa = array();
 	while ($ss_a = $ss_r->fetch(PDO::FETCH_LAZY))
 	{
@@ -178,12 +187,12 @@ if ($action=="edit_settings"){
 	}
 
 	$countries = "<option value='0'>----</option>\n";
-	$ct_r = DB::run("SELECT id,name from countries ORDER BY name");
+	$ct_r = $pdo->run("SELECT id,name from countries ORDER BY name");
 	while ($ct_a = $ct_r->fetch(PDO::FETCH_LAZY))
 	  $countries .= "<option value='$ct_a[id]'" . ($CURUSER["country"] == $ct_a['id'] ? " selected='selected'" : "") . ">$ct_a[name]</option>\n";
 
 	$teams = "<option value='0'>--- ".T_("NONE_SELECTED")." ----</option>\n";
-	$sashok = DB::run("SELECT id,name FROM teams ORDER BY name");
+	$sashok = $pdo->run("SELECT id,name FROM teams ORDER BY name");
 	while ($sasha = $sashok->fetch(PDO::FETCH_LAZY))
 		$teams .= "<option value='$sasha[id]'" . ($CURUSER["team"] == $sasha['id'] ? " selected='selected'" : "") . ">$sasha[name]</option>\n"; 
 
@@ -197,7 +206,7 @@ if ($action=="edit_settings"){
 		 ."<option value='Female'" . ($CURUSER["gender"] == "Female" ? " selected='selected'" : "") . ">" . T_("FEMALE") . "</option>\n";
 
 	// START CAT LIST SQL
-	$r = DB::run("SELECT id,name,parent_cat FROM categories ORDER BY parent_cat ASC, sort_index ASC");
+	$r = $pdo->run("SELECT id,name,parent_cat FROM categories ORDER BY parent_cat ASC, sort_index ASC");
 	if ($r->rowCount() > 0)
 	{
 		$categories .= "<table><tr>\n";
@@ -256,11 +265,12 @@ if ($action=="edit_settings"){
 	print("<tr><td align='right' class='alt3'><b>".T_("TIMEZONE").":</b> </td><td align='left' class='alt3'><select name='tzoffset'>$tz</select></td></tr>");
 
 	?>
-	<tr><td colspan="2" align="center"><input type="submit" value="<?php echo T_("SUBMIT");?>" /> <input type="reset" value="<?php echo T_("REVERT");?>" /></td></tr>
+	<tr><td colspan="2" align="center"><button type='submit' class='btn btn-sm btn-primary'><?php echo T_("SUBMIT");?></button> <input type="reset" value="<?php echo T_("REVERT");?>" /></td></tr>
 	</table></form>
 
 	<?php
 	end_frame();
+	stdfoot();
 	}
 
 
@@ -283,7 +293,7 @@ if ($action=="edit_settings"){
 		  $pmnotif = $_POST["pmnotif"];
 		  $privacy = $_POST["privacy"];
 		  $notifs = ($pmnotif == 'yes' ? "[pm]" : "");
-		  $r = DB::run("SELECT id FROM categories");
+		  $r = $pdo->run("SELECT id FROM categories");
 		  $rows = $r->rowCount();
 		  for ($i = 0; $i < $rows; ++$i) {
 				$a = $r->fetch();
@@ -377,7 +387,7 @@ email address had the IP address {$_SERVER["REMOTE_ADDR"]}. Please do not reply.
 
 To complete the update of your user profile, please follow this link:
 
-{$site_config["SITEURL"]}/accountce?id={$CURUSER["id"]}&secret=$hash&email=$obemail
+{$site_config["SITEURL"]}/account/ce?id={$CURUSER["id"]}&secret=$hash&email=$obemail
 
 Your new email address will appear in your profile after you do this. Otherwise
 your profile will remain unchanged.
@@ -387,7 +397,7 @@ EOD;
 				$mailsent = 1;
 			} //changedemail
 
-			DB::run("UPDATE users SET " . implode(",", $updateset) . " WHERE id = " . $CURUSER["id"]."");
+			$pdo->run("UPDATE users SET " . implode(",", $updateset) . " WHERE id = " . $CURUSER["id"]."");
 			$edited=1;
 			echo "<br /><br /><center><b><font class='error'>Updated OK</font></b></center><br /><br />";
 			if ($changedemail) {
@@ -399,11 +409,18 @@ EOD;
 
 
 		end_frame();
+		stdfoot();
 	}// end do
 
 }//end action
 
-if ($action=="changepw"){
+    public function changepw(){
+dbconn();
+global $site_config, $CURUSER, $pdo;
+loggedinonly();
+
+stdhead(T_("USERCP"));
+$do = $_REQUEST["do"];
 
 	if ($do=="newpassword"){
 
@@ -427,7 +444,7 @@ if ($action=="changepw"){
 		navmenu();
 
 		if (!$message){
-			DB::run("UPDATE users SET password = " . sqlesc($chpassword) . ", secret = " . sqlesc($secret) . "  WHERE id = " . $CURUSER["id"]);
+			$pdo->run("UPDATE users SET password = " . sqlesc($chpassword) . ", secret = " . sqlesc($secret) . "  WHERE id = " . $CURUSER["id"]);
 			echo "<br /><br /><center><b>".T_("PASSWORD_CHANGED_OK")."</b></center>";
 			logoutcookie();
 		}else{
@@ -444,7 +461,7 @@ if ($action=="changepw"){
 	navmenu();
 	?>
     
-	<form method="post" action="/account?action=changepw">
+	<form method="post" action="<?php echo $site_config["SITEURL"]; ?>/usercp/changepw">
 	<input type="hidden" name="do" value="newpassword" />
     <div class="f-border">
     <br />
@@ -460,7 +477,7 @@ if ($action=="changepw"){
     <tr class="alt2">
         <td colspan="2" align="center">
         <input type="reset" value="<?php echo T_("REVERT"); ?>" />
-        <input type="submit" value="<?php echo T_("SUBMIT"); ?>" />
+        <button type='submit' class='btn btn-sm btn-primary'><?php echo T_("SUBMIT"); ?></button>
         </td>
     </tr>
     </table>
@@ -470,7 +487,7 @@ if ($action=="changepw"){
     
 	<?php
 	end_frame();
-}
+
 
 stdfoot();
 	}

@@ -1,15 +1,11 @@
 <?php
-  class Taketheme extends Controller {
+  class Stylesheet extends Controller {
     
     public function __construct(){
         // $this->userModel = $this->model('User');
     }
     
     public function index(){
-		// Set Current User
-		// $curuser = $this->userModel->setCurrentUser();
-		// Set Current User
-		// $db = new Database;
  dbconn();
 global $site_config, $CURUSER;
  loggedinonly();
@@ -29,7 +25,7 @@ global $site_config, $CURUSER;
  
  if (empty($_SERVER["HTTP_REFERER"]))
  {
-     header("Location: index.php"); 
+     header("Location: ".TTURL."/index.php"); 
      return;
  }     
  

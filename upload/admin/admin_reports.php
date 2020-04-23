@@ -11,7 +11,7 @@ if ($action == "reports" && $do == "view") {
           $ids = array_map("intval", $_POST["reports"]);
           $ids = implode(",", $ids);
           DB::run("UPDATE reports SET complete = '1', dealtwith = '1', dealtby = '$CURUSER[id]' WHERE id IN ($ids)");
-          header("Refresh: 2; url=/admincp?action=reports&do=view");
+          header("Refresh: 2; url=".TTURL."/admincp?action=reports&do=view");
           show_error_msg(T_("SUCCESS"), T_("CP_ENTRIES_MARK_COMP"), 1);
       }
       
@@ -21,7 +21,7 @@ if ($action == "reports" && $do == "view") {
           $ids = array_map("intval", $_POST["reports"]);
           $ids = implode(",", $ids);
           DB::run("DELETE FROM reports WHERE id IN ($ids)");
-          header("Refresh: 2; url=/admincp?action=reports&do=view");
+          header("Refresh: 2; url=".TTURL."/admincp?action=reports&do=view");
           show_error_msg(T_("SUCCESS"), "Entries marked deleted.", 1);
       }
       
@@ -102,7 +102,7 @@ if ($action == "reports" && $do == "view") {
       <br />
       <br />
       
-      <form id="reports" method="post" action="/admincp?action=reports&amp;do=view">
+      <form id="reports" method="post" action="<?php echo TTURL; ?>/admincp?action=reports&amp;do=view">
       <table cellpadding="3" cellspacing="3" class="table_table" width="100%" align="center">
       <tr>
           <th class="table_head">Reported By</th>
@@ -127,7 +127,7 @@ if ($action == "reports" && $do == "view") {
       if ($row["dealtby"] > 0)
       {
           $r = DB::run("SELECT username FROM users WHERE id = '$row[dealtby]'")->fetch();
-          $dealtwith = 'By <a href="/accountdetails?id='.$row['dealtby'].'">'.$r['username'].'</a>';
+          $dealtwith = 'By <a href="'.TTURL.'/accountdetails?id='.$row['dealtby'].'">'.$r['username'].'</a>';
       }    
       
       switch ( $row["type"] )
@@ -151,14 +151,14 @@ if ($action == "reports" && $do == "view") {
       if ($row["type"] == "user")
           $link = "/accountdetails?id=$row[votedfor]";
       else if ($row["type"] == "torrent")
-          $link = "torrentsdetails?id=$row[votedfor]";
+          $link = "torrents/details?id=$row[votedfor]";
       else if ($row["type"] == "comment")
           $link = "/comments?type=".($r[1] > 0 ? "news" : "torrent")."&amp;id=".($r[1] > 0 ? $r[1] : $r[2])."#comment$row[votedfor]";
       else if ($row["type"] == "forum")
-          $link = "/forums?action=viewtopic&amp;topicid=$row[votedfor]&amp;page=last#post$row[votedfor_xtra]";
+          $link = "/forums/viewtopic&amp;topicid=$row[votedfor]&amp;page=last#post$row[votedfor_xtra]";
       ?>
       <tr>
-          <td class="table_col1" align="center" width="10%"><a href="/accountdetails?id=<?php echo $row['addedby']; ?>"><?php echo class_user($row['username']); ?></a></td>
+          <td class="table_col1" align="center" width="10%"><a href="<?php echo TTURL; ?>/accountdetails?id=<?php echo $row['addedby']; ?>"><?php echo class_user($row['username']); ?></a></td>
           <td class="table_col2" align="center" width="15%"><a href="<?php echo $link; ?>"><?php echo CutName($r[0], 40); ?></a></td>
           <td class="table_col1" align="center" width="10%"><?php echo $row['type']; ?></td>
           <td class="table_col2" align="center" width="50%"><?php echo htmlspecialchars($row['reason']); ?></td>

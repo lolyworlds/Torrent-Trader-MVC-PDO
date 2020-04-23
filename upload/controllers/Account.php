@@ -1,15 +1,12 @@
 <?php
-class Accountlogin extends Controller
-{
-    // autoload model with constructor
-    public function __construct()
-    {
-        $this->userModel = $this->model('User');
+  class Account extends Controller {
+    
+    public function __construct(){
+         $this->userModel = $this->model('User');
     }
-
-    public function index()
-    {
-		dbconn();
+    
+    public function login(){
+				dbconn();
 		// add globals
         global $site_config, $CURUSER;
 
@@ -35,7 +32,7 @@ class Accountlogin extends Controller
 
                 logincookie($row["id"], $row["password"], $row["secret"]);
                 if (!empty($_POST)) {
-                    header("Refresh: 0; url=index.php");
+                    header("Refresh: 0; url=".$site_config['SITEURL']."/index.php");
                     die();
                 }
             } else {
@@ -63,23 +60,19 @@ class Accountlogin extends Controller
 
         end_frame();
         stdfoot();
-    }
+}
+
 	
 	public function logout()
     {
         dbconn();
         logoutcookie();
-        header("Location: /index.php");
+        header("Location: ".TTURL."/index.php");
     }
-	
-	
-   public function index(){
-		// Set Current User
-		// $curuser = $this->userModel->setCurrentUser();
-		// Set Current User
-		// $db = new Database;
+
+    public function recover(){
 dbconn();
-global $site_config, $CURUSER;
+global $site_config, $CURUSER, $pdo;
 $kind = '0';
 
 if (is_valid_id($_POST["id"]) && strlen($_POST["secret"]) == 32) {
@@ -97,7 +90,7 @@ if (is_valid_id($_POST["id"]) && strlen($_POST["secret"]) == 32) {
 		show_error_msg(T_("ERROR"), T_("NO_SUCH_USER"));
         $newsec = mksecret();
         $wantpassword = password_hash($password, PASSWORD_BCRYPT);
-        DB::run("UPDATE `users` SET `password` =?, `secret` =? WHERE `id`=? AND secret =?", [$wantpassword, $newsec, $_POST['id'], $_POST["secret"]]);
+        $pdo->run("UPDATE `users` SET `password` =?, `secret` =? WHERE `id`=? AND secret =?", [$wantpassword, $newsec, $_POST['id'], $_POST["secret"]]);
         $kind = T_("SUCCESS");
         $msg =  T_("PASSWORD_CHANGED_OK");
     }
@@ -110,7 +103,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_GET["take"] == 1) {
         $msg = T_("EMAIL_ADDRESS_NOT_VAILD");
         $kind = T_("ERROR");
     }else{
-        $arr = DB::run("SELECT id, username, email FROM users WHERE email=? LIMIT 1", [$email])->fetch();
+        $arr = $pdo->run("SELECT id, username, email FROM users WHERE email=? LIMIT 1", [$email])->fetch();
         if (!$arr) {
             $msg = T_("EMAIL_ADDRESS_NOT_FOUND");
             $kind = T_("ERROR");
@@ -121,10 +114,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_GET["take"] == 1) {
             $secmd5 = md5($sec);
             $id = $arr['id'];
 
-            $body = T_("SOMEONE_FROM")." " . $_SERVER["REMOTE_ADDR"] . " ".T_("MAILED_BACK")." ($email) ".T_("BE_MAILED_BACK")." \r\n\r\n ".T_("ACCOUNT_INFO")." \r\n\r\n ".T_("USERNAME").": ".class_user($arr["username"])." \r\n ".T_("CHANGE_PSW")."\n\n$site_config[SITEURL]/accountrecover?id=$id&secret=$secmd5\n\n\n".$site_config["SITENAME"]."\r\n";
+            $body = T_("SOMEONE_FROM")." " . $_SERVER["REMOTE_ADDR"] . " ".T_("MAILED_BACK")." ($email) ".T_("BE_MAILED_BACK")." \r\n\r\n ".T_("ACCOUNT_INFO")." \r\n\r\n ".T_("USERNAME").": ".class_user($arr["username"])." \r\n ".T_("CHANGE_PSW")."\n\n$site_config[SITEURL]/account/recover?id=$id&secret=$secmd5\n\n\n".$site_config["SITENAME"]."\r\n";
             
             @sendmail($arr["email"], T_("ACCOUNT_DETAILS"), $body, "", "-f".$site_config['SITEEMAIL']);
-            $res2 =DB::run("UPDATE `users` SET `secret` =? WHERE `email`=? LIMIT 1", [$sec, $email]);
+            $res2 =$pdo->run("UPDATE `users` SET `secret` =? WHERE `email`=? LIMIT 1", [$sec, $email]);
             $msg = sprintf(T_('MAIL_RECOVER'), htmlspecialchars($email));
             $kind = T_("SUCCESS");
         }
@@ -139,7 +132,7 @@ if ($kind != "0") {
 }
 
 if (is_valid_id($_GET["id"]) && strlen($_GET["secret"]) == 32) {?>
-<form method="post" action="/accountrecover">
+<form method="post" action="<?php echo $site_config["SITEURL"]; ?>/account/recover">
 <table border="0" cellspacing="0" cellpadding="5">
     <tr>
         <td>
@@ -167,7 +160,7 @@ if (is_valid_id($_GET["id"]) && strlen($_GET["secret"]) == 32) {?>
 </form>
 <?php } else { echo T_("USE_FORM_FOR_ACCOUNT_DETAILS"); ?>
 
-<form method="post" action="/accountrecover?take=1">
+<form method="post" action="<?php echo TTURL; ?>/account/recover?take=1">
     <table border="0" cellspacing="0" cellpadding="5">
         <tr>
             <td><b><?php echo T_("EMAIL_ADDRESS"); ?>:</b></td>
@@ -182,13 +175,9 @@ end_frame();
 stdfoot();
     }
 
-    public function index(){
-		// Set Current User
-		// $curuser = $this->userModel->setCurrentUser();
-		// Set Current User
-		// $db = new Database;
+    public function ce(){
 dbconn();
-global $site_config, $CURUSER;
+global $site_config, $CURUSER, $pdo;
 $id = (int) $_GET["id"];
 $md5 = $_GET["secret"];
 $email = $_GET["email"];
@@ -197,7 +186,7 @@ if (!$id || !$md5 || !$email) {
 	show_error_msg(T_("ERROR"), T_("MISSING_FORM_DATA"), 1);
 }
 
-$row = DB::run("SELECT `editsecret` FROM `users` WHERE `enabled` =? AND `status` =? AND `editsecret` !=?  AND `id` =?", ['yes', 'confirmed', '', $id])->fetch();
+$row = $pdo->run("SELECT `editsecret` FROM `users` WHERE `enabled` =? AND `status` =? AND `editsecret` !=?  AND `id` =?", ['yes', 'confirmed', '', $id])->fetch();
 
 if (!$row) {
 	show_error_msg(T_("ERROR"), T_("NOTHING_FOUND"), 1);
@@ -208,32 +197,27 @@ $sec = $row["editsecret"];
 if ($md5 != md5($sec . $email . $sec))
     show_error_msg(T_("ERROR"), T_("NOTHING_FOUND"), 1);
 
-DB::run("UPDATE `users` SET `editsecret` =?, `email` =? WHERE `id` =? AND `editsecret` =?", ['', $email, $id, $row["editsecret"]]);
+$pdo->run("UPDATE `users` SET `editsecret` =?, `email` =? WHERE `id` =? AND `editsecret` =?", ['', $email, $id, $row["editsecret"]]);
 
-header("Refresh: 0; url=/account");
-header("Location: /account");
+header("Refresh: 0; url=".TTURL."/account");
+header("Location: ".TTURL."/account");
 	}
-	
-	
-    public function index(){
-		// Set Current User
-		// $curuser = $this->userModel->setCurrentUser();
-		// Set Current User
-		// $db = new Database;
+
+    public function confirm(){
 dbconn();
-global $site_config, $CURUSER;
+global $site_config, $CURUSER, $pdo;
 $id = (int) $_GET["id"];
 $md5 = $_GET["secret"];
 
 if (!$id || !$md5)
 	show_error_msg(T_("ERROR"), T_("INVALID_ID"), 1);
 
-$row = DB::run("SELECT `password`, `secret`, `status` FROM `users` WHERE `id` =?", [$id])->fetch();
+$row = $pdo->run("SELECT `password`, `secret`, `status` FROM `users` WHERE `id` =?", [$id])->fetch();
 if (!$row)
 	show_error_msg(T_("ERROR"), sprintf(T_("CONFIRM_EXPIRE"), $site_config['signup_timeout']/86400), 1);
 
 if ($row["status"] != "pending") {
-	header("Refresh: 0; url=/accountconfirmok?type=confirmed");
+	header("Refresh: 0; url=".TTURL."/account/confirmok?type=confirmed");
 	die;
 }
 
@@ -242,18 +226,14 @@ if ($md5 != md5($row["secret"]))
 
 $secret = mksecret();
 
-$upd = DB::run("UPDATE `users` SET `secret` =?, `status` =? WHERE `id` =? AND `secret` =? AND `status` =?", [$secret, 'confirmed', $id, $row["secret"], 'pending']);
+$upd =$pdo->run("UPDATE `users` SET `secret` =?, `status` =? WHERE `id` =? AND `secret` =? AND `status` =?", [$secret, 'confirmed', $id, $row["secret"], 'pending']);
 if (!$upd)
 	show_error_msg(T_("ERROR"), T_("SIGNUP_UNABLE"), 1);
 
-header("Refresh: 0; url=/accountconfirmok?type=confirm");
+header("Refresh: 0; url=".TTURL."/account/confirmok?type=confirm");
 	}
 
-    public function index(){
-		// Set Current User
-		// $curuser = $this->userModel->setCurrentUser();
-		// Set Current User
-		// $db = new Database;
+    public function confirmok(){
 dbconn();
 global $site_config, $CURUSER;
 $type = $_GET["type"];
@@ -319,14 +299,9 @@ else
 stdfoot();
 	}
 
-
-  public function index(){
-	  // Set Current User
-	  // $curuser = $this->userModel->setCurrentUser();
-	  // Set Current User
-	  // $db = new Database;
+  public function signup(){
 dbconn();
-global $site_config, $CURUSER;
+global $site_config, $CURUSER, $pdo;
 $username_length = 15; // Max username length. You shouldn't set this higher without editing the database first
 $password_minlength = 6;
 $password_maxlength = 60;
@@ -343,7 +318,7 @@ if (!is_valid_id($_REQUEST["invite"]) || strlen($_REQUEST["secret"]) != 32) {
 	if ($numsitemembers >= $site_config["maxusers"])
 		show_error_msg(T_("SORRY")."...", T_("SITE_FULL_LIMIT_MSG") . number_format($site_config["maxusers"])." ".T_("SITE_FULL_LIMIT_REACHED_MSG")." ".number_format($numsitemembers)." members",1);
 } else {
-	    $stmt = DB::run("SELECT id FROM users WHERE id = $_REQUEST[invite] AND secret = ".sqlesc($_REQUEST["secret"]));
+	    $stmt = $pdo->run("SELECT id FROM users WHERE id = $_REQUEST[invite] AND secret = ".sqlesc($_REQUEST["secret"]));
         $invite_row = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if (!$invite_row) {
@@ -352,10 +327,6 @@ if (!is_valid_id($_REQUEST["invite"]) || strlen($_REQUEST["secret"]) != 32) {
 }
 
 if ($_GET["takesignup"] == "1") {
-
-$message == "";
-
-
 
 	$wantusername = $_POST["wantusername"];
 	$email = $_POST["email"];
@@ -388,22 +359,22 @@ $message == "";
 		if (!$invite_row) {
 			//check email isnt banned
 			$maildomain = (substr($email, strpos($email, "@") + 1));
-            $a = DB::run("SELECT count(*) FROM email_bans where mail_domain=?",[$email])->fetch();
+            $a = $pdo->run("SELECT count(*) FROM email_bans where mail_domain=?",[$email])->fetch();
 			if ($a[0] != 0)
 				$message = sprintf(T_("EMAIL_ADDRESS_BANNED_S"), $email);
 
-            $a = DB::run("SELECT count(*) FROM email_bans where mail_domain LIKE '%$maildomain%'")->fetch();
+            $a = $pdo->run("SELECT count(*) FROM email_bans where mail_domain LIKE '%$maildomain%'")->fetch();
 			if ($a[0] != 0)
 				$message = sprintf(T_("EMAIL_ADDRESS_BANNED_S"), $email);
 
 		  // check if email addy is already in use
-            $a = DB::run("SELECT count(*) FROM users where email=?",[$email])->fetch();
+            $a = $pdo->run("SELECT count(*) FROM users where email=?",[$email])->fetch();
 		  if ($a[0] != 0)
 			$message = sprintf(T_("EMAIL_ADDRESS_INUSE_S"), $email);
 		}
 
 	   //check username isnt in use
-        $a = DB::run("SELECT count(*) FROM users where username=?",[$wantusername])->fetch();
+        $a = $pdo->run("SELECT count(*) FROM users where username=?",[$wantusername])->fetch();
 	  if ($a[0] != 0)
 		$message = sprintf(T_("USERNAME_INUSE_S"), $wantusername); 
 
@@ -417,15 +388,15 @@ $message == "";
 
   if ($message == "") {
 		if ($invite_row) {
-            $upd = DB::run("UPDATE users SET username=".sqlesc($wantusername).", password=".sqlesc($wantpassword).", secret=".sqlesc($secret).", status='confirmed', added='".get_date_time()."' WHERE id=$invite_row[id]");
+            $upd = $pdo->run("UPDATE users SET username=".sqlesc($wantusername).", password=".sqlesc($wantpassword).", secret=".sqlesc($secret).", status='confirmed', added='".get_date_time()."' WHERE id=$invite_row[id]");
 			//send pm to new user
 			if ($site_config["WELCOMEPMON"]){
 				$dt = sqlesc(get_date_time());
 				$msg = sqlesc($site_config["WELCOMEPMMSG"]);
-                $ins =  DB::prepare("INSERT INTO messages (sender, receiver, added, msg, poster) VALUES(0, $invite_row[id], $dt, $msg, 0)");
+                $ins =  $pdo->prepare("INSERT INTO messages (sender, receiver, added, msg, poster) VALUES(0, $invite_row[id], $dt, $msg, 0)");
                 $ins->execute();
 			}
-			header("Refresh: 0; url=/accountconfirmok?type=confirm");
+			header("Refresh: 0; url=".TTURL."/account/confirmok?type=confirm");
 			die;
 		}
 
@@ -443,9 +414,9 @@ $message == "";
 
 
 	$sql = "INSERT INTO users (username, password, secret, email, status, added, last_access, age, country, gender, client, stylesheet, language, class, ip) VALUES (" . implode(",", array_map("sqlesc", array($wantusername, $wantpassword, $secret, $email, $status, get_date_time(), get_date_time(), $age, $country, $gender, $client, $site_config["default_theme"], $site_config["default_language"], $signupclass, getip()))).")";
-    $ins_user =  DB::prepare($sql);
+    $ins_user =  $pdo->prepare($sql);
     $ins_user->execute();
-    $id = DB::lastInsertId();
+    $id = $pdo->lastInsertId();
 
     $psecret = md5($secret);
     $thishost = $_SERVER["HTTP_HOST"];
@@ -455,20 +426,20 @@ $message == "";
 	if ($site_config["ACONFIRM"]) {
 		$body = T_("YOUR_ACCOUNT_AT")." ".$site_config['SITENAME']." ".T_("HAS_BEEN_CREATED_YOU_WILL_HAVE_TO_WAIT")."\n\n".$site_config['SITENAME']." ".T_("ADMIN");
 	}else{//NO ADMIN CONFIRM, BUT EMAIL CONFIRM
-		$body = T_("YOUR_ACCOUNT_AT")." ".$site_config['SITENAME']." ".T_("HAS_BEEN_APPROVED_EMAIL")."\n\n	".$site_config['SITEURL']."/accountconfirm?id=$id&secret=$psecret\n\n".T_("HAS_BEEN_APPROVED_EMAIL_AFTER")."\n\n	".T_("HAS_BEEN_APPROVED_EMAIL_DELETED")."\n\n".$site_config['SITENAME']." ".T_("ADMIN");
+		$body = T_("YOUR_ACCOUNT_AT")." ".$site_config['SITENAME']." ".T_("HAS_BEEN_APPROVED_EMAIL")."\n\n	".$site_config['SITEURL']."/account/confirm?id=$id&secret=$psecret\n\n".T_("HAS_BEEN_APPROVED_EMAIL_AFTER")."\n\n	".T_("HAS_BEEN_APPROVED_EMAIL_DELETED")."\n\n".$site_config['SITENAME']." ".T_("ADMIN");
 	}
 
 	if ($site_config["CONFIRMEMAIL"]){ //email confirmation is on
 		sendmail($email, "Your $site_config[SITENAME] User Account", $body, "", "-f$site_config[SITEEMAIL]");
-		header("Refresh: 0; url=/accountconfirmok?type=signup&email=" . urlencode($email));
+		header("Refresh: 0; url=".TTURL."/account/confirmok?type=signup&email=" . urlencode($email));
 	}else{ //email confirmation is off
-		header("Refresh: 0; url=/accountconfirmok?type=noconf");
+		header("Refresh: 0; url=".TTURL."/account/confirmok?type=noconf");
 	}
 	//send pm to new user
 	if ($site_config["WELCOMEPMON"]){
 		$dt = sqlesc(get_date_time());
 		$msg = sqlesc($site_config["WELCOMEPMMSG"]);
-        $qry = DB::prepare("INSERT INTO messages (sender, receiver, added, msg, poster) VALUES(0, $id, $dt, $msg, 0)");
+        $qry = $pdo->prepare("INSERT INTO messages (sender, receiver, added, msg, poster) VALUES(0, $id, $dt, $msg, 0)");
         $qry->execute();
 	}
 
@@ -484,7 +455,7 @@ begin_frame(T_("SIGNUP"));
 ?>
 <?php echo T_("COOKIES"); ?>
 
-<form method="post" action="/accountsignup?takesignup=1">
+<form method="post" action="<?php echo $site_config["SITEURL"]; ?>/account/signup?takesignup=1">
 	<?php if ($invite_row) { ?>
 	<input type="hidden" name="invite" value="<?php echo $_GET["invite"]; ?>" />
 	<input type="hidden" name="secret" value="<?php echo htmlspecialchars($_GET["secret"]); ?>" />
@@ -518,7 +489,7 @@ begin_frame(T_("SIGNUP"));
 					<select name="country" size="1">
 						<?php
 						$countries = "<option value=\"0\">---- ".T_("NONE_SELECTED")." ----</option>\n";
-                        $ct_r = DB::run("SELECT id,name,domain from countries ORDER BY name");
+                        $ct_r = $pdo->run("SELECT id,name,domain from countries ORDER BY name");
                         while ($ct_a = $ct_r->fetch(PDO::FETCH_LAZY)){
 							$countries .= "<option value=\"$ct_a[id]\">$ct_a[name]</option>\n";
 						}
@@ -549,7 +520,5 @@ begin_frame(T_("SIGNUP"));
 <?php
 end_frame();
 stdfoot();
-					}	
-	
-	
 }
+  }

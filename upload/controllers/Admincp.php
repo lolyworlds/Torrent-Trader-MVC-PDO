@@ -38,7 +38,7 @@ if (!$row){
 }
 
 	begin_frame(T_("MENU"));
-	echo "<center>Last cleanup performed: ".$lastclean." ago [<a href='/admincp?action=forceclean'>".T_("FORCE_CLEAN")."</a>]</center>";                                      
+	echo "<center>Last cleanup performed: ".$lastclean." ago [<a href='$site_config[SITEURL]/admincp?action=forceclean'>".T_("FORCE_CLEAN")."</a>]</center>";                                      
 	if ($site_config["ttversion"] != "PDO") {  
         $file = @file_get_contents('https://www.torrenttradertest.uk/ttversion.php');
         if ($site_config['ttversion'] >= $file){
@@ -60,40 +60,40 @@ return ($ver[0] . " " . $ver[1]);
 	echo "<center>".T_("VERSION_MYSQL").": <b>" . $mysqlver . "</b>&nbsp;-&nbsp;".T_("VERSION_PHP").": <b>" . phpversion() . "</b>&nbsp;-&nbsp;".T_("Apache Version").": <b>" . apache_version() . "</b></center>";
 ?>
 </br><div class="row">
-    <div class="col"><td><a href="/admincp?action=usersearch"><img src="images/admin/user_search.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("ADVANCED_USER_SEARCH"); ?></a><br /><td></div>
-    <div class="col"><td><a href="/admincp?action=avatars"><img src="images/admin/avatar_log.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("AVATAR_LOG"); ?></a><br /><td></div>
-    <div class="col"><td><a href="/admincp?action=backups"><img src="images/admin/db_backup.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("BACKUPS"); ?></a><br /><td></div>
-    <div class="col"><td><a href="/admincp?action=ipbans"><img src="images/admin/ip_block.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("BANNED_IPS"); ?></a><br /><td></div>
-    <div class="col"><td><a href="/admincp?action=bannedtorrents"><img src="images/admin/banned_torrents.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("BANNED_TORRENTS"); ?></a><br /><td></div>
-    <div class="col"><td><a href="/admincp?action=blocks&amp;do=view"><img src="images/admin/blocks.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("BLOCKS"); ?></a><br /><td></div>
-    <div class="col"><td><a href="/admincp?action=cheats"><img src="images/admin/cheats.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("DETECT_POSS_CHEATS"); ?></a><br /><td></div>
-    <div class="col"><td><a href="/admincp?action=emailbans"><img src="images/admin/mail_bans.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("EMAIL_BANS"); ?></a><br /><td></div>
-    <div class="col"><td><a href="/faqmanage"><img src="images/admin/faq.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("FAQ"); ?></a><br /><td></div>
-    <div class="col"><td><a href="/admincp?action=freetorrents"><img src="images/admin/free_leech.png" border="0" width="32" height="32" alt="" /><br />Freeleech Torrents<?php /*echo T_("TORRENTS_FREE_LEECH");*/ ?></a><br /><td></div>
-    <div class="col"><td><a href="/admincp?action=lastcomm"><img src="images/admin/comments.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("LATEST_COMMENTS"); ?></a><br /><td></div>
-    <div class="col"><td><a href="/admincp?action=masspm"><img src="images/admin/mass_pm.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("MASS_PM"); ?></a><br /><td></div>
-    <div class="col"><td><a href="/admincp?action=messagespy"><img src="images/admin/message_spy.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("MESSAGE_SPY"); ?></a><br /><td></div>
-    <div class="col"><td><a href="/admincp?action=news&amp;do=view"><img src="images/admin/news.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("NEWS"); ?></a><br /><td></div>
-    <div class="col"><td><a href="/admincp?action=peers"><img src="images/admin/peer_list.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("PEERS_LIST"); ?></a><br /><td></div>
-    <div class="col"><td><a href="/admincp?action=polls&amp;do=view"><img src="images/admin/polls.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("POLLS"); ?></a><br /><td></div>
-    <div class="col"><td><a href="/admincp?action=reports&amp;do=view"><img src="images/admin/report_system.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("REPORTS"); ?></a><br /><td></div>
-    <div class="col"><td><a href="/admincp?action=rules&amp;do=view"><img src="images/admin/rules.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("RULES"); ?></a><br /><td></div>
-    <div class="col"><td><a href="/admincp?action=sitelog"><img src="images/admin/site_log.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("SITELOG"); ?></a><br /><td></div>
-    <div class="col"><td><a href="teamscreate"><img src="images/admin/teams.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("TEAMS"); ?></a><br /><td></div>
-    <div class="col"><td><a href="/admincp?action=style"><img src="images/admin/themes.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("THEME_MANAGEMENT"); ?></a><br /><td></div>
-    <div class="col"><td><a href="/admincp?action=categories&amp;do=view"><img src="images/admin/torrent_cats.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("TORRENT_CAT_VIEW"); ?></a><br /><td></div>
-    <div class="col"><td><a href="/admincp?action=torrentlangs&amp;do=view"><img src="images/admin/torrent_lang.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("TORRENT_LANG"); ?></a><br /><td></div>
-    <div class="col"><td><a href="/admincp?action=torrentmanage"><img src="images/admin/torrents.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("TORRENTS"); ?></a><br /><td></div>
-    <div class="col"><td><a href="/admincp?action=groups&amp;do=view"><img src="images/admin/user_groups.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("USER_GROUPS_VIEW"); ?></a><br /><td></div>
-    <div class="col"><td><a href="/admincp?action=warned"><img src="images/admin/warned_user.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("WARNED_USERS"); ?></a><br /><td></div>
-    <div class="col"><td><a href="/admincp?action=whoswhere"><img src="images/admin/whos_where.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("WHOS_WHERE"); ?></a><br /><td></div>
-    <div class="col"><td><a href="/admincp?action=censor"><img src="images/admin/word_censor.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("WORD_CENSOR"); ?></a><br /><td></div>
-    <div class="col"><td><a href="/admincp?action=forum"><img src="images/admin/forums.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("FORUM_MANAGEMENT"); ?><br /></a><td></div>
-    <div class="col"><td><a href="/admincp?action=users"><img src="images/admin/simple_user_search.png" border="0" width="32" height="32" alt="" /><br />Simple User Search<br /></a><td></div>  
-    <div class="col"><td><a href="/admincp?action=privacylevel"><img src="images/admin/privacy_level.png" border="0" width="32" height="32" alt="" /><br />Privacy Level<br /></a><td></div>     
-    <div class="col"><td><a href="/admincp?action=pendinginvite"><img src="images/admin/pending_invited_user.png" border="0" width="32" height="32" alt="" /><br />Pending Invited Users<br /></a><td></div>    
-    <div class="col"><td><a href="/admincp?action=invited"><img src="images/admin/invited_user.png" border="0" width="32" height="32" alt="" /><br />Invited Users<br /></a><td></div>    
-    <div class="col"><td><a href="exceptionview"><img src="images/admin/sql_error.png" border="0" width="32" height="32" alt="" /><br />SQL Error<br /></a><td></div>  
+    <div class="col"><td><a href="<?php echo TTURL; ?>/admincp?action=usersearch"><img src="images/admin/user_search.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("ADVANCED_USER_SEARCH"); ?></a><br /><td></div>
+    <div class="col"><td><a href="<?php echo TTURL; ?>/admincp?action=avatars"><img src="images/admin/avatar_log.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("AVATAR_LOG"); ?></a><br /><td></div>
+    <div class="col"><td><a href="<?php echo TTURL; ?>/admincp?action=backups"><img src="images/admin/db_backup.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("BACKUPS"); ?></a><br /><td></div>
+    <div class="col"><td><a href="<?php echo TTURL; ?>/admincp?action=ipbans"><img src="images/admin/ip_block.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("BANNED_IPS"); ?></a><br /><td></div>
+    <div class="col"><td><a href="<?php echo TTURL; ?>/admincp?action=bannedtorrents"><img src="images/admin/banned_torrents.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("BANNED_TORRENTS"); ?></a><br /><td></div>
+    <div class="col"><td><a href="<?php echo TTURL; ?>/admincp?action=blocks&amp;do=view"><img src="images/admin/blocks.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("BLOCKS"); ?></a><br /><td></div>
+    <div class="col"><td><a href="<?php echo TTURL; ?>/admincp?action=cheats"><img src="images/admin/cheats.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("DETECT_POSS_CHEATS"); ?></a><br /><td></div>
+    <div class="col"><td><a href="<?php echo TTURL; ?>/admincp?action=emailbans"><img src="images/admin/mail_bans.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("EMAIL_BANS"); ?></a><br /><td></div>
+    <div class="col"><td><a href="<?php echo TTURL; ?>/faq/manage"><img src="images/admin/faq.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("FAQ"); ?></a><br /><td></div>
+    <div class="col"><td><a href="<?php echo TTURL; ?>/admincp?action=freetorrents"><img src="images/admin/free_leech.png" border="0" width="32" height="32" alt="" /><br />Freeleech Torrents<?php /*echo T_("TORRENTS_FREE_LEECH");*/ ?></a><br /><td></div>
+    <div class="col"><td><a href="<?php echo TTURL; ?>/admincp?action=lastcomm"><img src="images/admin/comments.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("LATEST_COMMENTS"); ?></a><br /><td></div>
+    <div class="col"><td><a href="<?php echo TTURL; ?>/admincp?action=masspm"><img src="images/admin/mass_pm.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("MASS_PM"); ?></a><br /><td></div>
+    <div class="col"><td><a href="<?php echo TTURL; ?>/admincp?action=messagespy"><img src="images/admin/message_spy.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("MESSAGE_SPY"); ?></a><br /><td></div>
+    <div class="col"><td><a href="<?php echo TTURL; ?>/admincp?action=news&amp;do=view"><img src="images/admin/news.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("NEWS"); ?></a><br /><td></div>
+    <div class="col"><td><a href="<?php echo TTURL; ?>/admincp?action=peers"><img src="images/admin/peer_list.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("PEERS_LIST"); ?></a><br /><td></div>
+    <div class="col"><td><a href="<?php echo TTURL; ?>/admincp?action=polls&amp;do=view"><img src="images/admin/polls.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("POLLS"); ?></a><br /><td></div>
+    <div class="col"><td><a href="<?php echo TTURL; ?>/admincp?action=reports&amp;do=view"><img src="images/admin/report_system.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("REPORTS"); ?></a><br /><td></div>
+    <div class="col"><td><a href="<?php echo TTURL; ?>/admincp?action=rules&amp;do=view"><img src="images/admin/rules.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("RULES"); ?></a><br /><td></div>
+    <div class="col"><td><a href="<?php echo TTURL; ?>/admincp?action=sitelog"><img src="images/admin/site_log.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("SITELOG"); ?></a><br /><td></div>
+    <div class="col"><td><a href="<?php echo TTURL; ?>/teams/create"><img src="images/admin/teams.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("TEAMS"); ?></a><br /><td></div>
+    <div class="col"><td><a href="<?php echo TTURL; ?>/admincp?action=style"><img src="images/admin/themes.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("THEME_MANAGEMENT"); ?></a><br /><td></div>
+    <div class="col"><td><a href="<?php echo TTURL; ?>/admincp?action=categories&amp;do=view"><img src="images/admin/torrent_cats.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("TORRENT_CAT_VIEW"); ?></a><br /><td></div>
+    <div class="col"><td><a href="<?php echo TTURL; ?>/admincp?action=torrentlangs&amp;do=view"><img src="images/admin/torrent_lang.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("TORRENT_LANG"); ?></a><br /><td></div>
+    <div class="col"><td><a href="<?php echo TTURL; ?>/admincp?action=torrentmanage"><img src="images/admin/torrents.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("TORRENTS"); ?></a><br /><td></div>
+    <div class="col"><td><a href="<?php echo TTURL; ?>/admincp?action=groups&amp;do=view"><img src="images/admin/user_groups.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("USER_GROUPS_VIEW"); ?></a><br /><td></div>
+    <div class="col"><td><a href="<?php echo TTURL; ?>/admincp?action=warned"><img src="images/admin/warned_user.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("WARNED_USERS"); ?></a><br /><td></div>
+    <div class="col"><td><a href="<?php echo TTURL; ?>/admincp?action=whoswhere"><img src="images/admin/whos_where.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("WHOS_WHERE"); ?></a><br /><td></div>
+    <div class="col"><td><a href="<?php echo TTURL; ?>/admincp?action=censor"><img src="images/admin/word_censor.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("WORD_CENSOR"); ?></a><br /><td></div>
+    <div class="col"><td><a href="<?php echo TTURL; ?>/admincp?action=forum"><img src="images/admin/forums.png" border="0" width="32" height="32" alt="" /><br /><?php echo T_("FORUM_MANAGEMENT"); ?><br /></a><td></div>
+    <div class="col"><td><a href="<?php echo TTURL; ?>/admincp?action=users"><img src="images/admin/simple_user_search.png" border="0" width="32" height="32" alt="" /><br />Simple User Search<br /></a><td></div>  
+    <div class="col"><td><a href="<?php echo TTURL; ?>/admincp?action=privacylevel"><img src="images/admin/privacy_level.png" border="0" width="32" height="32" alt="" /><br />Privacy Level<br /></a><td></div>     
+    <div class="col"><td><a href="<?php echo TTURL; ?>/admincp?action=pendinginvite"><img src="images/admin/pending_invited_user.png" border="0" width="32" height="32" alt="" /><br />Pending Invited Users<br /></a><td></div>    
+    <div class="col"><td><a href="<?php echo TTURL; ?>/admincp?action=invited"><img src="images/admin/invited_user.png" border="0" width="32" height="32" alt="" /><br />Invited Users<br /></a><td></div>    
+    <div class="col"><td><a href="<?php echo TTURL; ?>/exceptions/admin"><img src="images/admin/sql_error.png" border="0" width="32" height="32" alt="" /><br />SQL Error<br /></a><td></div>  
 </div>
 <?php
 	end_frame();
@@ -112,7 +112,7 @@ if ($action=="forceclean"){
 	require_once("helpers/cleanup_helper.php");
 	do_cleanup();
     
-    autolink('/admincp', T_("FORCE_CLEAN_COMPLETED"));
+    autolink(TTURL.'/admincp', T_("FORCE_CLEAN_COMPLETED"));
 }
 
 #======================================================================#
@@ -132,7 +132,7 @@ if ($action == "confirmreg")
             DB::run("UPDATE `users` SET `status` = 'confirmed' WHERE `status` = 'pending' AND `invited_by` = '0' AND `id` IN ($ids)");
         }
         
-        autolink("/admincp?action=confirmreg", "Entries Confirmed");
+        autolink(TTURL."/admincp?action=confirmreg", "Entries Confirmed");
     }
     
     $count = get_row_count("users", "WHERE status = 'pending' AND invited_by = '0'");
@@ -153,7 +153,7 @@ if ($action == "confirmreg")
 
     <?php if ($count > 0): ?>
     <br />
-    <form id="confirmreg" method="post" action="/admincp?action=confirmreg&amp;do=confirm">
+    <form id="confirmreg" method="post" action="<?php echo TTURL; ?>/admincp?action=confirmreg&amp;do=confirm">
     <table border="0" cellpadding="3" cellspacing="0" width="100%" align="center" class="table_table">
     <tr>
         <th class="table_head">Username</th>

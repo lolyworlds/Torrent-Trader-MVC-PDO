@@ -70,16 +70,16 @@ function torrent_scrape_url($scrape, $hash)
 // Function To Delete A Torrent
 function deletetorrent($id)
 {
-    global $site_config;
+    global $site_config, $pdo;
 
-    $stmt = @DB::run("SELECT image1,image2 FROM torrents WHERE id=$id");
+    $stmt = @$pdo->run("SELECT image1,image2 FROM torrents WHERE id=$id");
     $row = @$stmt->fetch(PDO::FETCH_ASSOC);
 
     foreach (explode(".", "peers.comments.ratings.files.announce") as $x) {
-        DB::run("DELETE FROM $x WHERE torrent = $id");
+        $pdo->run("DELETE FROM $x WHERE torrent = $id");
     }
 
-    DB::run("DELETE FROM completed WHERE torrentid = $id");
+    $pdo->run("DELETE FROM completed WHERE torrentid = $id");
 
     if (file_exists($site_config["torrent_dir"] . "/$id.torrent")) {
         unlink($site_config["torrent_dir"] . "/$id.torrent");
@@ -95,17 +95,18 @@ function deletetorrent($id)
 
     @unlink($site_config["nfo_dir"] . "/$id.nfo");
 
-    DB::run("DELETE FROM torrents WHERE id = $id");
-    DB::run("DELETE FROM reports WHERE votedfor = $id AND type = 'torrent'");
+    $pdo->run("DELETE FROM torrents WHERE id = $id");
+    $pdo->run("DELETE FROM reports WHERE votedfor = $id AND type = 'torrent'");
     // snatch
-    DB::run("DELETE FROM `snatched` WHERE `tid` = '$id'");
+    $pdo->run("DELETE FROM `snatched` WHERE `tid` = '$id'");
 }
 
 // Function To Retrieve Main Categories Of Torrents
 function genrelist()
 {
+    global $pdo;
     $ret = array();
-    $res = DB::run("SELECT id, name, parent_cat FROM categories ORDER BY parent_cat ASC, sort_index ASC");
+    $res = $pdo->run("SELECT id, name, parent_cat FROM categories ORDER BY parent_cat ASC, sort_index ASC");
     while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
         $ret[] = $row;
     }
@@ -115,8 +116,9 @@ function genrelist()
 // Function To Edit The List Of Possible Languages For Torrents
 function langlist()
 {
+    global $pdo;
     $ret = array();
-    $stmt = DB::run("SELECT id, name, image FROM torrentlang ORDER BY sort_index, id");
+    $stmt = $pdo->run("SELECT id, name, image FROM torrentlang ORDER BY sort_index, id");
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
         $ret[] = $row;
     }
@@ -125,17 +127,18 @@ function langlist()
 
 function peerstable($res)
 {
+    global $site_config, $pdo;
     $ret = "<table align='center' cellpadding=\"3\" cellspacing=\"0\" class=\"table_table\" width=\"100%\" border=\"1\"><tr><th class='table_head'>" . T_("NAME") . "</th><th class='table_head'>" . T_("SIZE") . "</th><th class='table_head'>" . T_("UPLOADED") . "</th>\n<th class='table_head'>" . T_("DOWNLOADED") . "</th><th class='table_head'>" . T_("RATIO") . "</th></tr>\n";
 
     while ($arr = $res->fetch(PDO::FETCH_LAZY)) {
-        $res2 = DB::run("SELECT name,size FROM torrents WHERE id=? ORDER BY name", [$arr['torrent']]);
+        $res2 = $pdo->run("SELECT name,size FROM torrents WHERE id=? ORDER BY name", [$arr['torrent']]);
         $arr2 = $res2->fetch(PDO::FETCH_LAZY);
         if ($arr["downloaded"] > 0) {
             $ratio = number_format($arr["uploaded"] / $arr["downloaded"], 2);
         } else {
             $ratio = "---";
         }
-        $ret .= "<tr><td class='table_col1'><a href='torrentsdetails?id=$arr[torrent]&amp;hit=1'><b>" . htmlspecialchars($arr2["name"]) . "</b></a></td><td align='center' class='table_col2'>" . mksize($arr2["size"]) . "</td><td align='center' class='table_col1'>" . mksize($arr["uploaded"]) . "</td><td align='center' class='table_col2'>" . mksize($arr["downloaded"]) . "</td><td align='center' class='table_col1'>$ratio</td></tr>\n";
+        $ret .= "<tr><td class='table_col1'><a href='$site_config[SITEURL]/torrents/details?id=$arr[torrent]&amp;hit=1'><b>" . htmlspecialchars($arr2["name"]) . "</b></a></td><td align='center' class='table_col2'>" . mksize($arr2["size"]) . "</td><td align='center' class='table_col1'>" . mksize($arr["uploaded"]) . "</td><td align='center' class='table_col2'>" . mksize($arr["downloaded"]) . "</td><td align='center' class='table_col1'>$ratio</td></tr>\n";
     }
     $ret .= "</table>\n";
     return $ret;
@@ -144,7 +147,7 @@ function peerstable($res)
 // Function To Display Tables Of Torrents
 function torrenttable($res)
 {
-    global $site_config, $CURUSER, $THEME, $LANGUAGE; //Define globals
+    global $site_config, $CURUSER, $THEME, $LANGUAGE, $pdo; //Define globals
 
     if ($site_config["MEMBERSONLY_WAIT"] && $site_config["MEMBERSONLY"] && in_array($CURUSER["class"], explode(",", $site_config["WAIT_CLASS"]))) {
         $gigs = $CURUSER["uploaded"] / (1024 * 1024 * 1024);
@@ -261,7 +264,7 @@ function torrenttable($res)
                 case 'category':
                     print("<td class='ttable_col$x' align='center' valign='middle'>");
                     if (!empty($row["cat_name"])) {
-                        print("<a href=\"torrentsmain?cat=" . $row["category"] . "\">");
+                        print("<a href=\"torrents/browse?cat=" . $row["category"] . "\">");
                         if (!empty($row["cat_pic"]) && $row["cat_pic"] != "") {
                             print("<img border=\"0\"src=\"" . $site_config['SITEURL'] . "/images/categories/" . $row["cat_pic"] . "\" alt=\"" . $row["cat_name"] . "\" />");
                         } else {
@@ -294,13 +297,14 @@ function torrenttable($res)
                         $dispname .= " <img src='images/free.gif' border='0' alt='' />";
                     }
 
-                    print("<td class='ttable_col$x' nowrap='nowrap'>" . (count($expandrows) ? "<a href=\"javascript: klappe_torrent('t" . $row['id'] . "')\"><img border=\"0\" src=\"" . $site_config["SITEURL"] . "/images/plus.gif\" id=\"pict" . $row['id'] . "\" alt=\"Show/Hide\" class=\"showthecross\" /></a>" : "") . "&nbsp;<a title=\"" . $row["name"] . "\" href=\"torrentsdetails?id=$id&amp;hit=1\">$dispname</a></td>");
+                    print("<td class='ttable_col$x' nowrap='nowrap'>" . (count($expandrows) ? "<a href=\"javascript: klappe_torrent('t" . $row['id'] . "')\"><img border=\"0\" src=\"" . $site_config["SITEURL"] . "/images/plus.gif\" id=\"pict" . $row['id'] . "\" alt=\"Show/Hide\" class=\"showthecross\" /></a>" : "") . "&nbsp;<a title=\"" . $row["name"] . "\" href=\"".$site_config['SITEURL']."/torrents/details?id=$id&amp;hit=1\">$dispname</a></td>");
+
                     break;
                 case 'dl':
                     print("<td class='ttable_col$x' align='center'><a href=\"/download?id=$id&amp;name=" . rawurlencode($row["filename"]) . "\"><img src='" . $site_config['SITEURL'] . "/images/icon_download.gif' border='0' alt=\"Download .torrent\" /></a></td>");
                     break;
                 case 'magnet':
-                    $magnet = DB::run("SELECT info_hash FROM torrents WHERE id=?", [$id])->fetch();
+                    $magnet = $pdo->run("SELECT info_hash FROM torrents WHERE id=?", [$id])->fetch();
                     print("<td class='ttable_col$x' align='center'><a href=\"magnet:?xt=urn:btih:" . $magnet["info_hash"] . "&dn=" . rawurlencode($row['name']) . "&tr=" . $row['announce'] . "?passkey=" . $CURUSER['passkey'] . "\"><img src='" . $site_config['SITEURL'] . "/images/magnetique.png' border='0' title='Download via Magnet' /></a></td>");
                     break;
                 case 'uploader':
@@ -308,7 +312,7 @@ function torrenttable($res)
                     if (($row["anon"] == "yes" || $row["privacy"] == "strong") && $CURUSER["id"] != $row["owner"] && $CURUSER["edit_torrents"] != "yes") {
                         echo "Anonymous";
                     } elseif ($row["username"]) {
-                        echo "<a href='/accountdetails?id=$row[owner]'>" . class_user($row['username']) . "</a>";
+                        echo "<a href='".$site_config['SITEURL']."/accountdetails?id=$row[owner]'>" . class_user($row['username']) . "</a>";
                     } else {
                         echo "Unknown";
                     }
@@ -316,11 +320,11 @@ function torrenttable($res)
                     echo "</td>";
                     break;
                 case 'comments':
-                    print("<td class='ttable_col$x' align='center'><font size='1' face='verdana'><a href='/comments?type=torrent&amp;id=$id'>" . number_format($row["comments"]) . "</a></font></td>\n");
+                    print("<td class='ttable_col$x' align='center'><font size='1' face='verdana'><a href='$site_config[SITEURL]/comments?type=torrent&amp;id=$id'>" . number_format($row["comments"]) . "</a></font></td>\n");
                     break;
                 case 'nfo':
                     if ($row["nfo"] == "yes") {
-                        print("<td class='ttable_col$x' align='center'><a href='/nfoview?id=$row[id]'><img src='" . $site_config['SITEURL'] . "/images/icon_nfo.gif' border='0' alt='View NFO' /></a></td>");
+                        print("<td class='ttable_col$x' align='center'><a href='$site_config[SITEURL]/nfo/view?id=$row[id]'><img src='" . $site_config['SITEURL'] . "/images/icon_nfo.gif' border='0' alt='View NFO' /></a></td>");
                     } else {
                         print("<td class='ttable_col$x' align='center'>-</td>");
                     }
@@ -356,7 +360,7 @@ function torrenttable($res)
                     break;
                 case 'speed':
                     if ($row["external"] != "yes" && $row["leechers"] >= 1) {
-                        $speedQ = DB::run("SELECT (SUM(downloaded)) / (UNIX_TIMESTAMP('" . get_date_time() . "') - UNIX_TIMESTAMP(started)) AS totalspeed FROM peers WHERE seeder = 'no' AND torrent = '$id' ORDER BY started ASC");
+                        $speedQ = $pdo->run("SELECT (SUM(downloaded)) / (UNIX_TIMESTAMP('" . get_date_time() . "') - UNIX_TIMESTAMP(started)) AS totalspeed FROM peers WHERE seeder = 'no' AND torrent = '$id' ORDER BY started ASC");
                         $a = $speedQ->fetch(PDO::FETCH_LAZY);
                         $totalspeed = mksize($a["totalspeed"]) . "/s";
                     } else {
@@ -429,7 +433,7 @@ function torrenttable($res)
                         break;
                     case 'speed':
                         if ($row["external"] != "yes" && $row["leechers"] >= 1) {
-                            $speedQ = DB::run("SELECT (SUM(downloaded)) / (UNIX_TIMESTAMP('" . get_date_time() . "') - UNIX_TIMESTAMP(started)) AS totalspeed FROM peers WHERE seeder = 'no' AND torrent = '$id' ORDER BY started ASC");
+                            $speedQ = $pdo->run("SELECT (SUM(downloaded)) / (UNIX_TIMESTAMP('" . get_date_time() . "') - UNIX_TIMESTAMP(started)) AS totalspeed FROM peers WHERE seeder = 'no' AND torrent = '$id' ORDER BY started ASC");
                             $a = $speedQ->fetch(PDO::FETCH_LAZY);
                             $totalspeed = mksize($a["totalspeed"]) . "/s";
                             print("<tr><td><b>" . T_("SPEED") . ":</b> $totalspeed</td></tr>");

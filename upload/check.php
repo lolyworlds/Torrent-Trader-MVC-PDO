@@ -2,7 +2,7 @@
 error_reporting(E_ALL ^ E_NOTICE);
 
 if ($_GET["phpinfo"] == 1){
-	echo "<br /><center><a href='/check'>Back To Check</a></center><br /><br />";
+	echo "<br /><center><a href='$site_config[SITEURL]/check'>Back To Check</a></center><br /><br />";
 	phpinfo();
 	die();
 }
@@ -49,7 +49,7 @@ td { vertical-align: top; }
 
 <input type="button" class="button" value="Check Again" onclick="window.location=window.location" /><br /><br />
 
-<a href="/check?phpinfo=1">PHPInfo</a><br /><br />
+<a href="check?phpinfo=1">PHPInfo</a><br /><br />
 <a href='index.php'>Return to your homepage</a></center><br />
 <b>Required Settings Check:</b><br />
 <p>If any of these items are highlighted in red then please take actions to correct them. <br />

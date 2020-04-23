@@ -7,7 +7,7 @@ if ($action=="backups" && $do=="delete"){
    $delete_error = false;
    if (!unlink('backups/'.$filename)) { $delete_error = true; }
 //   if (!unlink('backups/'.$filename.'.gz')) { $delete_error = true; }
-   header("Refresh: 3 ;url=/admincp?action=backups");
+   header("Refresh: 3 ;url=".TTURL."/admincp?action=backups");
 //   end_frame();
 stdhead();
 show_error_msg(T_("SUCCESS"), "Selected Backup Files deleted", 0);
@@ -68,7 +68,7 @@ if ($action=="backups"){
   // CLOSE TABLE
   echo ("</table>");
   // CREATE BACKUP LINK
-  echo ("<br><br><center><a href='/backupdatabase'>Backup Database</a> (or create a CRON task on ".$site_config["SITEURL"]."/backupdatabase)</center>");
+  echo ("<br><br><center><a href='".$site_config['SITEURL']."/backupdatabase'>Backup Database</a> (or create a CRON task on ".$site_config["SITEURL"]."/backupdatabase)</center>");
   end_frame();
   stdfoot();
 }

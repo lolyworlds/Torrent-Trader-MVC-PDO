@@ -60,7 +60,7 @@ if ($action=="torrentlangs" && $do=="edit"){
 
 		DB::run("UPDATE torrentlang SET name=?, sort_index=?, image=? WHERE id=?", [$name, $sort_index, $image, $id]);
 
-		autolink("/admincp?action=torrentlangs&do=view", T_("Language was edited successfully."));
+		autolink(TTURL."/admincp?action=torrentlangs&do=view", T_("Language was edited successfully."));
 
 	} else {
 		begin_frame("Edit Language");
@@ -94,7 +94,7 @@ if ($action=="torrentlangs" && $do=="delete"){
 
 		DB::run("DELETE FROM torrentlang WHERE id=$id"); //delete old cat
 		
-		autolink("/admincp?action=torrentlangs&do=view", T_("Language Deleted OK."));
+		autolink(TTURL."/admincp?action=torrentlangs&do=view", T_("Language Deleted OK."));
 
 	}else{
 		begin_frame("Delete Language");
@@ -124,7 +124,7 @@ if ($action=="torrentlangs" && $do=="takeadd"){
 	$ins = DB::run("INSERT INTO torrentlang (name, sort_index, image) VALUES (?, ?, ?)", [$name, $sort_index, $image]);
 
 	if ($ins)
-		autolink("/admincp?action=torrentlangs&do=view", T_("Language was added successfully."));
+		autolink(TTURL."/admincp?action=torrentlangs&do=view", T_("Language was added successfully."));
 	else
 		show_error_msg(T_("ERROR"),"Unable to add Language",1);
 }
@@ -134,7 +134,7 @@ if ($action=="torrentlangs" && $do=="add"){
 	adminnavmenu();
 
 	begin_frame("Add Language");
-	print("<center><form method='post' action='/admincp'>\n");
+	print("<center><form method='post' action='$site_config[SITEURL]/admincp'>\n");
 	print("<input type='hidden' name='action' value='torrentlangs' />\n");
 	print("<input type='hidden' name='do' value='takeadd' />\n");
 

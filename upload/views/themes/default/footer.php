@@ -8,7 +8,7 @@
     <?php } ?>
 <!-- END RIGHT COLUMN -->
 </div>
-<?php require TTROOT . "/views/themes/" . $THEME . "/bottomnavbar.php";?>
+<?php require TTROOT."/views/themes/" . $THEME . "/bottomnavbar.php";?>
 </div>
 
 <!-- JS -->

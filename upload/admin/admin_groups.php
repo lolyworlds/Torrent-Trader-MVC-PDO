@@ -123,7 +123,7 @@ if ($action=="groups" && $do=="update"){
      $group_id=intval($_GET["group_id"]);
      DB::run("UPDATE groups SET $strupdate WHERE group_id=?", [$group_id]);
                  
-		autolink("/admincp?action=groups&do=view", T_("SUCCESS"),"Groups Updated!");
+		autolink(TTURL."/admincp?action=groups&do=view", T_("SUCCESS"),"Groups Updated!");
 		end_frame();
 		stdfoot();	
 }
@@ -135,7 +135,7 @@ if ($action=="groups" && $do=="delete"){
 			show_error_msg(T_("ERROR"),T_("CP_YOU_CANT_DEL_THIS_GRP"),1);
  
 		DB::run("DELETE FROM groups WHERE group_id=?", [$group_id]);
-        autolink("/admincp?action=groups&do=view", T_("CP_DEL_OK"));
+        autolink(TTURL."/admincp?action=groups&do=view", T_("CP_DEL_OK"));
 }
 
 
@@ -146,7 +146,7 @@ if ($action=="groups" && $do=="add") {
 
 	begin_frame(T_("GROUPS_ADD_NEW"));
 	?>
-	<form action="/admincp?action=groups&amp;do=addnew" name="level" method="post">
+	<form action="<?php echo TTURL; ?>/admincp?action=groups&amp;do=addnew" name="level" method="post">
 	<table width="100%" align="center">
 	<tr><td>Group Name:</td><td><input type="text" name="gname" value="" size="40" /></td></tr>
 	<tr><td>Group colour:</td><td align="left"><input type="text" name="gcolor" value="" size="10" /></td></tr>
@@ -202,7 +202,7 @@ if ($action=="groups" && $do=="addnew") {
     $update[] = "staff_sort = " . intval($level["staff_sort"]);
 	$strupdate = implode(",", $update);
 	DB::run("INSERT INTO groups SET $strupdate");
-	autolink("/admincp?action=groups&do=view", T_("SUCCESS"),"Groups Updated!");
+	autolink(TTURL."/admincp?action=groups&do=view", T_("SUCCESS"),"Groups Updated!");
 	end_frame();
 	stdfoot();	
 }

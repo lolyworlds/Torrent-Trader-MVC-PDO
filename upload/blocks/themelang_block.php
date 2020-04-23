@@ -3,7 +3,7 @@ if ($CURUSER){
 	begin_block(T_("THEME")." / ".T_("LANGUAGE"));
 $stylesheets= '';
 $languages = '';
-	$ss_r = DB::run("SELECT * from stylesheets");
+	$ss_r = $pdo->run("SELECT * from stylesheets");
 	$ss_sa = array();
 
 	while ($ss_a = $ss_r->fetch(PDO::FETCH_ASSOC)){
@@ -20,7 +20,7 @@ $languages = '';
 		$stylesheets .= "<option value='$ss_id'$ss>$ss_name</option>\n";
 	}
 
-	$lang_r = DB::run("SELECT * from languages");
+	$lang_r = $pdo->run("SELECT * from languages");
 	$lang_sa = array();
 
 	while ($lang_a = $lang_r->fetch(PDO::FETCH_ASSOC)){
@@ -39,7 +39,7 @@ $languages = '';
 
 ?>
  
- <form method="post" action="taketheme">
+ <form method="post" action="<?php echo $site_config['SITEURL'] ?>/stylesheet">
 <table width="100%">
   <tr>
 <td align="center" valign="middle"><b><?php echo T_("THEME"); ?></b>

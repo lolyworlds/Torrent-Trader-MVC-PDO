@@ -6,11 +6,6 @@
     }
     
     public function index(){
-		// Set Current User
-		// $curuser = $this->userModel->setCurrentUser();
-		// Set Current User
-		// $db = new Database;
-
 dbconn();
 global $site_config, $CURUSER;
 // CHECK THE ADMIN PRIVILEGES

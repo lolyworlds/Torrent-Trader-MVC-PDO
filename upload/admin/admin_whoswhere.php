@@ -17,7 +17,7 @@ if ($action == "whoswhere")
     </tr>
     <?php while ($row = $res->fetch(PDO::FETCH_ASSOC)): ?>
     <tr>
-        <td class="table_col1" align="center"><a href="/accountdetails?id=<?php echo $row["id"]; ?>"><b><?php echo class_user($row["username"]); ?></b></a></td>
+        <td class="table_col1" align="center"><a href="$site_config[SITEURL]/accountdetails?id=<?php echo $row["id"]; ?>"><b><?php echo class_user($row["username"]); ?></b></a></td>
         <td class="table_col2" align="center"><?php echo htmlspecialchars($row["page"]); ?></td>
         <td class="table_col1" align="center"><?php echo utc_to_tz($row["last_access"]); ?></td>
     </tr>

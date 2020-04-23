@@ -2,24 +2,24 @@
 // Automatic System Update Function
 function autoclean()
 {
-    global $site_config;
+    global $site_config, $pdo;
     require_once "cleanup_helper.php";
 
     $now = gmtime();
 
-    $res = DB::run("SELECT last_time FROM tasks WHERE task='cleanup'");
+    $res = $pdo->run("SELECT last_time FROM tasks WHERE task='cleanup'");
     $row = $res->fetch(PDO::FETCH_ASSOC);
 
     if (!$row) {
-        DB::run("INSERT INTO tasks (task, last_time) VALUES ('cleanup',$now)");
+        $pdo->run("INSERT INTO tasks (task, last_time) VALUES ('cleanup',$now)");
         return;
     }
-    $ts = $row[0];
+    $ts = isset($row) ? count($row) : 0;
     if ($ts + $site_config["autoclean_interval"] < $now) {
         return;
     }
 
-    $planned_clean = DB::run("UPDATE tasks SET last_time=$now WHERE task='cleanup' AND last_time = $ts");
+    $planned_clean = $pdo->run("UPDATE tasks SET last_time=$now WHERE task='cleanup' AND last_time = $ts");
     if (!$planned_clean) {
         return;
     }
@@ -30,10 +30,11 @@ function autoclean()
 // Invite update function (Author: TorrentialStorm)
 function autoinvites($interval, $minlimit, $maxlimit, $minratio, $invites, $maxinvites)
 {
+    global $pdo;
     $time = gmtime() - ($interval * 86400);
     $minlimit = $minlimit * 1024 * 1024 * 1024;
     $maxlimit = $maxlimit * 1024 * 1024 * 1024;
-    $res = DB::run("SELECT id, username, class, invites FROM users WHERE enabled = 'yes' AND status = 'confirmed' AND downloaded >= $minlimit AND downloaded < $maxlimit AND uploaded / downloaded >= $minratio AND warned = 'no' AND UNIX_TIMESTAMP(invitedate) <= $time");
+    $res = $pdo->run("SELECT id, username, class, invites FROM users WHERE enabled = 'yes' AND status = 'confirmed' AND downloaded >= $minlimit AND downloaded < $maxlimit AND uploaded / downloaded >= $minratio AND warned = 'no' AND UNIX_TIMESTAMP(invitedate) <= $time");
     if ($res->rowCount() > 0) {
         while ($arr = $res->fetch(PDO::FETCH_ASSOC)) {
             $maxninvites = $maxinvites[$arr['class']];
@@ -45,7 +46,7 @@ function autoinvites($interval, $minlimit, $maxlimit, $minratio, $invites, $maxi
                 $invites = $maxninvites - $arr['invites'];
             }
 
-            DB::run("UPDATE users SET invites = invites+$invites, invitedate = NOW() WHERE id=$arr[id]");
+            $pdo->run("UPDATE users SET invites = invites+$invites, invitedate = NOW() WHERE id=$arr[id]");
             write_log("Gave $invites invites to '$arr[username]' - Class: " . get_user_class_name($arr['class']) . "");
         }
     }
@@ -53,15 +54,15 @@ function autoinvites($interval, $minlimit, $maxlimit, $minratio, $invites, $maxi
 
 function do_cleanup()
 {
-    global $site_config;
+    global $site_config, $pdo;
 
     //LOCAL TORRENTS - GET PEERS DATA AND UPDATE BROWSE STATS
     //DELETE OLD NON-ACTIVE PEERS
     $deadtime = get_date_time(gmtime() - $site_config['announce_interval']);
-    DB::run("DELETE FROM peers WHERE last_action < '$deadtime'");
+    $pdo->run("DELETE FROM peers WHERE last_action < '$deadtime'");
 
     $torrents = array();
-    $res = DB::run("SELECT torrent, seeder, COUNT(*) AS c FROM peers GROUP BY torrent, seeder");
+    $res = $pdo->run("SELECT torrent, seeder, COUNT(*) AS c FROM peers GROUP BY torrent, seeder");
     while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
         if ($row["seeder"] == "yes") {
             $key = "seeders";
@@ -72,13 +73,13 @@ function do_cleanup()
         $torrents[$row["torrent"]][$key] = $row["c"];
     }
 
-    $res = DB::run("SELECT torrent, COUNT(torrent) as c FROM comments WHERE torrent > 0 GROUP BY torrent");
+    $res = $pdo->run("SELECT torrent, COUNT(torrent) as c FROM comments WHERE torrent > 0 GROUP BY torrent");
     while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
         $torrents[$row["torrent"]]["comments"] = $row["c"];
     }
 
     $fields = explode(":", "comments:leechers:seeders");
-    $res = DB::run("SELECT id, external, seeders, leechers, comments FROM torrents WHERE banned = 'no'");
+    $res = $pdo->run("SELECT id, external, seeders, leechers, comments FROM torrents WHERE banned = 'no'");
     while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
         $id = $row["id"];
         $torr = $torrents[$id];
@@ -98,22 +99,22 @@ function do_cleanup()
             }
         }
         if (count($update)) {
-            DB::run("UPDATE torrents SET " . implode(",", $update) . " WHERE id = $id");
+            $pdo->run("UPDATE torrents SET " . implode(",", $update) . " WHERE id = $id");
         }
 
     }
 
 //LOCAL TORRENTS - MAKE NON-ACTIVE/OLD TORRENTS INVISIBLE
     $deadtime = gmtime() - $site_config["max_dead_torrent_time"];
-    DB::run("UPDATE torrents SET visible='no' WHERE visible='yes' AND last_action < FROM_UNIXTIME($deadtime) AND seeders = '0' AND leechers = '0' AND external !='yes'");
+    $pdo->run("UPDATE torrents SET visible='no' WHERE visible='yes' AND last_action < FROM_UNIXTIME($deadtime) AND seeders = '0' AND leechers = '0' AND external !='yes'");
 
 //DELETE PENDING USER ACCOUNTS OVER TIMOUT AGE
     $deadtime = gmtime() - $site_config["signup_timeout"];
-    DB::run("DELETE FROM users WHERE status = 'pending' AND added < FROM_UNIXTIME($deadtime)");
+    $pdo->run("DELETE FROM users WHERE status = 'pending' AND added < FROM_UNIXTIME($deadtime)");
 
 // DELETE OLD LOG ENTRIES
     $ts = gmtime() - $site_config["LOGCLEAN"];
-    DB::run("DELETE FROM log WHERE added < FROM_UNIXTIME($ts)");
+    $pdo->run("DELETE FROM log WHERE added < FROM_UNIXTIME($ts)");
 
 //LEECHWARN USERS WITH LOW RATIO
 
@@ -123,7 +124,7 @@ function do_cleanup()
         $length = $site_config["ratiowarn_daystowarn"];
 
         //ADD WARNING
-        $res = DB::run("SELECT id,username FROM users WHERE class = 1 AND warned = 'no' AND enabled='yes' AND uploaded / downloaded < $minratio AND downloaded >= $downloaded");
+        $res = $pdo->run("SELECT id,username FROM users WHERE class = 1 AND warned = 'no' AND enabled='yes' AND uploaded / downloaded < $minratio AND downloaded >= $downloaded");
 
         if ($res->rowCount() > 0) {
             $timenow = get_date_time();
@@ -132,52 +133,52 @@ function do_cleanup()
             $expiretime = gmdate("Y-m-d H:i:s", gmtime() + (86400 * $length));
 
             while ($arr = $res->fetch(PDO::FETCH_ASSOC)) {
-                DB::run("INSERT INTO warnings (userid, reason, added, expiry, warnedby, type) VALUES ('" . $arr["id"] . "','" . $reason . "','" . $timenow . "','" . $expiretime . "','0','Poor Ratio')");
-                DB::run("UPDATE users SET warned='yes' WHERE id='" . $arr["id"] . "'");
-                DB::run("INSERT INTO messages (sender, receiver, added, msg, poster) VALUES ('0', '" . $arr["id"] . "', '" . $timenow . "', '" . $reason . "', '0')");
-                write_log("Auto Leech warning has been <b>added</b> for: <a href='/accountdetails?id=" . $arr["id"] . "'>" . class_user($arr["username"]) . "</a>");
+                $pdo->run("INSERT INTO warnings (userid, reason, added, expiry, warnedby, type) VALUES ('" . $arr["id"] . "','" . $reason . "','" . $timenow . "','" . $expiretime . "','0','Poor Ratio')");
+                $pdo->run("UPDATE users SET warned='yes' WHERE id='" . $arr["id"] . "'");
+                $pdo->run("INSERT INTO messages (sender, receiver, added, msg, poster) VALUES ('0', '" . $arr["id"] . "', '" . $timenow . "', '" . $reason . "', '0')");
+                write_log("Auto Leech warning has been <b>added</b> for: <a href='$site_config[SITEURL]/accountdetails?id=" . $arr["id"] . "'>" . class_user($arr["username"]) . "</a>");
             }
         }
 
         //REMOVE WARNING
-        $res1 = DB::run("SELECT users.id, users.username FROM users INNER JOIN warnings ON users.id=warnings.userid WHERE type='Poor Ratio' AND active = 'yes' AND warned = 'yes'  AND enabled='yes' AND uploaded / downloaded >= $minratio AND downloaded >= $downloaded");
+        $res1 = $pdo->run("SELECT users.id, users.username FROM users INNER JOIN warnings ON users.id=warnings.userid WHERE type='Poor Ratio' AND active = 'yes' AND warned = 'yes'  AND enabled='yes' AND uploaded / downloaded >= $minratio AND downloaded >= $downloaded");
         if ($res1->rowCount() > 0) {
             $timenow = get_date_time();
             $reason = "Your warning of low ratio has been removed. We highly recommend you to keep a your ratio up to not be warned again.\n";
 
             while ($arr1 = $res1->fetch(PDO::FETCH_ASSOC)) {
-                write_log("Auto Leech warning has been removed for: <a href='/accountdetails?id=" . $arr1["id"] . "'>" . class_user($arr1["username"]) . "</a>");
+                write_log("Auto Leech warning has been removed for: <a href='$site_config[SITEURL]/accountdetails?id=" . $arr1["id"] . "'>" . class_user($arr1["username"]) . "</a>");
 
-                DB::run("UPDATE users SET warned = 'no' WHERE id = '" . $arr1["id"] . "'");
-                DB::run("UPDATE warnings SET expiry = '$timenow', active = 'no' WHERE userid = $arr1[id]");
-                DB::run("INSERT INTO messages (sender, receiver, added, msg, poster) VALUES ('0', '" . $arr1["id"] . "', '" . $timenow . "', '" . $reason . "', '0')");
+                $pdo->run("UPDATE users SET warned = 'no' WHERE id = '" . $arr1["id"] . "'");
+                $pdo->run("UPDATE warnings SET expiry = '$timenow', active = 'no' WHERE userid = $arr1[id]");
+                $pdo->run("INSERT INTO messages (sender, receiver, added, msg, poster) VALUES ('0', '" . $arr1["id"] . "', '" . $timenow . "', '" . $reason . "', '0')");
             }
         }
 
         //BAN WARNED USERS
-        $res = DB::run("SELECT users.id, users.username, UNIX_TIMESTAMP(warnings.expiry) AS expiry FROM users INNER JOIN warnings ON users.id=warnings.userid WHERE type='Poor Ratio' AND active = 'yes' AND class = 1 AND enabled='yes' AND warned = 'yes' AND uploaded / downloaded < $minratio AND downloaded >= $downloaded");
+        $res = $pdo->run("SELECT users.id, users.username, UNIX_TIMESTAMP(warnings.expiry) AS expiry FROM users INNER JOIN warnings ON users.id=warnings.userid WHERE type='Poor Ratio' AND active = 'yes' AND class = 1 AND enabled='yes' AND warned = 'yes' AND uploaded / downloaded < $minratio AND downloaded >= $downloaded");
 
         if ($res->rowCount() > 0) {
             $timenow = get_date_time();
             $expires = (86400 * $length);
             while ($arr = $res->fetch(PDO::FETCH_ASSOC)) {
                 if (gmtime() - $arr["expiry"] >= 0) {
-                    DB::run("UPDATE users SET enabled='no', warned='no' WHERE id='" . $arr["id"] . "'");
-                    write_log("User <a href='/accountdetails?id=" . $arr["id"] . "'>" . class_user($arr["username"]) . "</a> has been banned (Auto Leech warning).");
+                    $pdo->run("UPDATE users SET enabled='no', warned='no' WHERE id='" . $arr["id"] . "'");
+                    write_log("User <a href='$site_config[SITEURL]/accountdetails?id=" . $arr["id"] . "'>" . class_user($arr["username"]) . "</a> has been banned (Auto Leech warning).");
                 }
             }
         }
 
     } //check if warning system is on
     // REMOVE WARNINGS
-    $res = DB::run("SELECT users.id, users.username, warnings.expiry FROM users INNER JOIN warnings ON users.id=warnings.userid WHERE type != 'Poor Ratio' AND warned = 'yes'  AND enabled='yes' AND warnings.active = 'yes' AND warnings.expiry < '" . get_date_time() . "'");
+    $res = $pdo->run("SELECT users.id, users.username, warnings.expiry FROM users INNER JOIN warnings ON users.id=warnings.userid WHERE type != 'Poor Ratio' AND warned = 'yes'  AND enabled='yes' AND warnings.active = 'yes' AND warnings.expiry < '" . get_date_time() . "'");
     while ($arr1 = $res->fetch(PDO::FETCH_ASSOC)) {
-        DB::run("UPDATE users SET warned = 'no' WHERE id = $arr1[id]");
-        DB::run("UPDATE warnings SET active = 'no' WHERE userid = $arr1[id] AND expiry < '" . get_date_time() . "'");
+        $pdo->run("UPDATE users SET warned = 'no' WHERE id = $arr1[id]");
+        $pdo->run("UPDATE warnings SET active = 'no' WHERE userid = $arr1[id] AND expiry < '" . get_date_time() . "'");
         write_log("Removed warning for $arr1[username]. Expiry: $arr1[expiry]");
     }
 // WARN USERS THAT STILL HAVE ACTIVE WARNINGS
-    DB::run("UPDATE users SET warned = 'yes' WHERE warned = 'no' AND id IN (SELECT userid FROM warnings WHERE active = 'yes')");
+    $pdo->run("UPDATE users SET warned = 'yes' WHERE warned = 'no' AND id IN (SELECT userid FROM warnings WHERE active = 'yes')");
 //END//
 
     // START INVITES UPDATE
@@ -214,14 +215,14 @@ function do_cleanup()
     //    }
 
     //NEW OPTIMIZE TABLES
-    $res = DB::run("SHOW TABLES");
+    $res = $pdo->run("SHOW TABLES");
 
     while ($table = $res->fetch(PDO::FETCH_LAZY)) {
         // Get rid of overhead.
-        DB::run("REPAIR TABLE `$table[0]`;");
+        $pdo->run("REPAIR TABLE `$table[0]`;");
         // Analyze table for faster indexing.
-        DB::run("ANALYZE TABLE `$table[0]`;");
+        $pdo->run("ANALYZE TABLE `$table[0]`;");
         // Optimize table to minimize thrashing.
-        DB::run("OPTIMIZE TABLE `$table[0]`;");
+        $pdo->run("OPTIMIZE TABLE `$table[0]`;");
     }
 }

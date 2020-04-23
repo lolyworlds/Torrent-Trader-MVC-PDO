@@ -6,10 +6,6 @@
     }
     
     public function index(){
-		// Set Current User
-		// $curuser = $this->userModel->setCurrentUser();
-		// Set Current User
-		// $db = new Database;
 dbconn();
 global $site_config, $CURUSER;
 loggedinonly();
@@ -33,55 +29,6 @@ if ($tid > 0) {
 	$count_tid = 0;
 }
 
-
-
-
-//===| for debug...
-$debug = 0;
-	if ($debug)
-	{
-		$title1 = sprintf(T_("SNATCHLIST_FOR"), " Debug");
-		stdhead($title1);
-		begin_frame($title1);
-		
-		$qry1 = "SELECT
-			users.id,
-			users.username,
-			users.class,
-			snatched.uid as uid,
-			snatched.tid as tid,
-			snatched.uload,
-			snatched.dload,
-			snatched.stime,
-			snatched.utime,
-			snatched.ltime,
-			snatched.completed,
-			completed.date,
-			(
-				SELECT seeder
-				FROM peers
-				WHERE torrent = tid AND userid = uid LIMIT 1
-			) AS seeding
-			FROM
-			snatched
-			INNER JOIN users ON snatched.uid = users.id
-			INNER JOIN torrents ON snatched.tid = torrents.id
-			LEFT JOIN completed ON snatched.tid = completed.torrentid AND snatched.uid = completed.userid
-			WHERE
-			users.status = 'confirmed' AND
-			torrents.banned = 'no' AND snatched.tid = '$tid' $limit";
-		
-		?>
-		<div align="center"><b>Type: <?php echo $type;?></b></div>
-		<div align="center"><b>Torrent ID: <?php echo $tid;?></b></div>
-		<div align="center"><b>UserID: <?php echo $uid;?></b></div>
-		<div align="center"><b>Torrent Count: <?php echo $count_tid;?></b></div>
-		<div align="center"><b>User Count: <?php echo $count_uid;?></b></div>
-		<div align="left"><b>Query: </b><?php echo $qry1;?></div>
-		<?php
-		end_frame();
-	}
-	
 
 	if ($type == 'torrent')
 	{
@@ -127,7 +74,7 @@ $debug = 0;
 			
 			$res = DB::run($qry);
 
-		//	print("<div style='margin-top:10px; margin-bottom:5px'><a href=torrentsdetails?id=$tid><b><input type='submit' value='".T_("BACK_TO_TORRENT")."'></b></a></div>");
+		//	print("<div style='margin-top:10px; margin-bottom:5px'><a href=$site_config[SITEURL]/torrents/details?id=$tid><b><input type='submit' value='".T_("BACK_TO_TORRENT")."'></b></a></div>");
 
 			if ($count_tid > $perpage) { echo ($pagertop); }
 			
@@ -164,7 +111,7 @@ $debug = 0;
 				?>
 				
 				<tr align="center">
-					<td class="table_col1" align="left"><a href="/accountdetails?id=<?php echo $row[0];?>"><?php echo "<b>".$row[1]."</b>";?></a></td>
+					<td class="table_col1" align="left"><a href="$site_config[SITEURL]/accountdetails?id=<?php echo $row[0];?>"><?php echo "<b>".$row[1]."</b>";?></a></td>
 					<td class="table_col2"><font color="#27B500"><?php echo mksize($row[5]);?></font></td>
 					<td class="table_col1"><font color="#FF1200"><?php echo mksize($row[6]);?></font></td>
 					<td class="table_col2"><?php echo $ratio;?></td>
@@ -181,7 +128,7 @@ $debug = 0;
 			</table>
 			<?php
 			if ($count_tid > $perpage) { echo ($pagerbottom); }
-			print("<div style='margin-top:5px; margin-bottom:10px' align='right'><a href=torrentsdetails?id=$tid><b><input type='submit' value='".T_("BACK_TO_TORRENT")."'></b></a></div>");
+			print("<div style='margin-top:5px; margin-bottom:10px' align='right'><a href=$site_config[SITEURL]/torrents/details?id=$tid><b><input type='submit' value='".T_("BACK_TO_TORRENT")."'></b></a></div>");
 				endif;
 				end_frame();
 				stdfoot();
@@ -200,7 +147,7 @@ $debug = 0;
 				begin_frame($ttitle);
 				?>
 				<div style="margin-top:10px; margin-bottom:10px" align="center"><font size="2"><?php echo T_("NOTHING_FOUND"); ?>.</font></div>
-				<div style="margin-bottom:10px" align="center">[<?php echo "<a href=torrentsdetails?id=$tid>";?><b><?php echo T_("BACK_TO_TORRENT"); ?></b></a>]</div>
+				<div style="margin-bottom:10px" align="center">[<?php echo "<a href=$site_config[SITEURL]/torrents/details?id=$tid>";?><b><?php echo T_("BACK_TO_TORRENT"); ?></b></a>]</div>
 				<?php
 				end_frame();
 				stdfoot();
@@ -265,17 +212,17 @@ $debug = 0;
 		<table cellpadding='0' cellspacing='3' width='100%'>
 		<tr class="f-title">
 		<th width='100%' height="32" align='center'>
-		<?php print("<a href='/account'><b>".T_("YOUR_PROFILE")."</b></a>");?>
+		<?php print("<a href='$site_config[SITEURL]/usercp'><b>".T_("YOUR_PROFILE")."</b></a>");?>
 		&nbsp;|&nbsp;
-		<?php print("<a href='/account?action=edit_settings&amp;do=edit'><b>".T_("YOUR_SETTINGS")."</b></a>");?>
+		<?php print("<a href='$site_config[SITEURL]/usercp/edit_settings&amp;do=edit'><b>".T_("YOUR_SETTINGS")."</b></a>");?>
 		&nbsp;|&nbsp;
-		<?php print("<a href='/account?action=changepw'><b>".T_("CHANGE_PASS")."</b></a>");?>
+		<?php print("<a href='$site_config[SITEURL]/usercp/changepw'><b>".T_("CHANGE_PASS")."</b></a>");?>
 		&nbsp;|&nbsp;
-		<?php print("<a href='/account?action=mytorrents'><b>".T_("YOUR_TORRENTS")."</b></a>");?>
+		<?php print("<a href='$site_config[SITEURL]/usercp/mytorrents'><b>".T_("YOUR_TORRENTS")."</b></a>");?>
 		&nbsp;|&nbsp;
-		<?php print("<a href='/mailbox'><b>".T_("YOUR_MESSAGES")."</b></a>");?>
+		<?php print("<a href='$site_config[SITEURL]/mailbox'><b>".T_("YOUR_MESSAGES")."</b></a>");?>
 		 &nbsp;|&nbsp;
-        <?php print("<a href='/snatched'><b>".T_("YOUR_SNATCHLIST")."</b></a>");?>
+        <?php print("<a href='$site_config[SITEURL]/snatched'><b>".T_("YOUR_SNATCHLIST")."</b></a>");?>
 		</th>
         </tr>
 		</table>
@@ -285,7 +232,7 @@ $debug = 0;
 			}
 			
 			if ( $uid != $CURUSER['id'] )
-				print("<div style='margin-top:10px; margin-bottom:5px'><a href=/accountdetails?id=$uid><b><input type='submit' value='".T_("GO_TO_USER_ACCOUNT")."'></b></a></div>");
+				print("<div style='margin-top:10px; margin-bottom:5px'><a href=$site_config[SITEURL]/accountdetails?id=$uid><b><input type='submit' value='".T_("GO_TO_USER_ACCOUNT")."'></b></a></div>");
 			
 			if ($count_uid > $perpage) { echo $pagertop; }
 
@@ -332,7 +279,7 @@ $debug = 0;
 						$smallname = htmlspecialchars(CutName($row[1], $maxchar));
 					?>
 					<tr align="center">  <!-- below was ".(count($expandrows)?" -->
-						<?php echo("<td class='ttable_col1' align='left' nowrap='nowrap'>".($expandrows?"<a href=\"javascript: klappe_torrent('t".$row['0']."')\"><img border=\"0\" src=\"".$site_config["SITEURL"]."/images/plus.gif\" id=\"pict".$row['0']."\" alt=\"Show/Hide\" class=\"showthecross\" /></a>":"")."<a title=\"".$row["1"]."\" href=\"torrentsdetails?id=".$row['0']."&amp;hit=1\"><b>$smallname</b></a> $freeleech</td>"); ?>
+						<?php echo("<td class='ttable_col1' align='left' nowrap='nowrap'>".($expandrows?"<a href=\"javascript: klappe_torrent('t".$row['0']."')\"><img border=\"0\" src=\"".$site_config["SITEURL"]."/images/plus.gif\" id=\"pict".$row['0']."\" alt=\"Show/Hide\" class=\"showthecross\" /></a>":"")."<a title=\"".$row["1"]."\" href=\"/torrents/details?id=".$row['0']."&amp;hit=1\"><b>$smallname</b></a> $freeleech</td>"); ?>
 					  <?php if ($site_config["ALLOWEXTERNAL"]) { ?>
 						<td class="table_col2" align="center"><?php echo $type;?></td>
 					  <?php } ?>
@@ -355,7 +302,7 @@ $debug = 0;
 			if ($count_uid > $perpage) { echo $pagerbottom; }
 			
 			if ( $uid != $CURUSER['id'] )
-				print("<div style='margin-top:5px; margin-bottom:10px' align='right'><a href=/accountdetails?id=$uid><b><input type='submit' value='".T_("GO_TO_USER_ACCOUNT")."'></b></a></div>");
+				print("<div style='margin-top:5px; margin-bottom:10px' align='right'><a href=$site_config[SITEURL]/accountdetails?id=$uid><b><input type='submit' value='".T_("GO_TO_USER_ACCOUNT")."'></b></a></div>");
 			
 			endif;
 			end_frame();
@@ -388,9 +335,9 @@ $debug = 0;
 		//	if ($users->rowCount() > 0)
 			{
 				if ( $uid != $CURUSER['id'] ) {
-					print("<div style='margin-bottom:10px' align='center'><a href=/accountdetails?id=$uid><b><input type='submit' value='".T_("GO_TO_USER_ACCOUNT")."'></b></a></div>");
+					print("<div style='margin-bottom:10px' align='center'><a href=$site_config[SITEURL]/accountdetails?id=$uid><b><button type='submit' class='btn btn-sm btn-primary'>".T_("GO_TO_USER_ACCOUNT")."</button></b></a></div>");
 				} else {
-					print("<div style='margin-bottom:10px' align='center'>[<a href=/account><b>".T_("GO_TO_YOUR_PROFILE")."</b></a>]</div>");
+					print("<div style='margin-bottom:10px' align='center'>[<a href=$site_config[SITEURL]/users><b>".T_("GO_TO_YOUR_PROFILE")."</b></a>]</div>");
 				}
 			}
 			end_frame();

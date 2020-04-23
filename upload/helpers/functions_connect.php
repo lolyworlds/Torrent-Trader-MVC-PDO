@@ -9,6 +9,7 @@ require "forum_helper.php";
 require "blocks_helper.php";
 require "pagination_helper.php";
 require "ip_helper.php";
+require "backup_helper.php";
 require "cookie_helper.php";
 require "general_helper.php";
 require "format_helper.php";
@@ -43,11 +44,11 @@ function dbconn($autoclean = false)
     //Get language and theme
     $CURUSER = $GLOBALS["CURUSER"];
 
-    $stmt = DB::run("select uri from stylesheets where id='" . ($CURUSER ? $CURUSER['stylesheet'] : $site_config['default_theme']) . "'");
+    $stmt = $pdo->run("select uri from stylesheets where id='" . ($CURUSER ? $CURUSER['stylesheet'] : $site_config['default_theme']) . "'");
     $ss_a = $stmt->fetch(PDO::FETCH_ASSOC);
     $THEME = $ss_a["uri"];
 
-    $stmt = DB::run("select uri from languages where id='" . ($CURUSER ? $CURUSER['language'] : $site_config['default_language']) . "'");
+    $stmt = $pdo->run("select uri from languages where id='" . ($CURUSER ? $CURUSER['language'] : $site_config['default_language']) . "'");
     $lng_a = $stmt->fetch(PDO::FETCH_ASSOC);
     $LANGUAGE = $lng_a["uri"];
 

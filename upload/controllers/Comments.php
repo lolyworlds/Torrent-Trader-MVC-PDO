@@ -6,10 +6,6 @@
     }
     
     public function index(){
-		// Set Current User
-		// $curuser = $this->userModel->setCurrentUser();
-		// Set Current User
-		// $db = new Database;
 require_once("helpers/bbcode_helper.php");
 dbconn();
 global $site_config, $CURUSER;
@@ -124,7 +120,7 @@ if ($type =="torrent"){
 		stdfoot();
 	}
 
-	echo "<center><b>".T_("COMMENTSFOR")."</b> <a href='torrentsdetails?id=".$row['id']."'>".htmlspecialchars($row['name'])."</a></center><br />";
+	echo "<center><b>".T_("COMMENTSFOR")."</b> <a href='$site_config[SITEURL]/torrents/details?id=".$row['id']."'>".htmlspecialchars($row['name'])."</a></center><br />";
 	
 }
 

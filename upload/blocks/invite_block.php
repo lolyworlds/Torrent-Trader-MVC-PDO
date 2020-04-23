@@ -13,7 +13,7 @@ if (($site_config["INVITEONLY"] || $site_config["ENABLEINVITES"]) && $CURUSER) {
 	<?php if ($invites > 0 ){?>
 	<tr>
         <td align="center">
-        <a href="/invite"><?php echo T_("SEND_AN_INVITE"); ?></a>
+        <a href="<?php echo $site_config['SITEURL'] ?>/invite"><?php echo T_("SEND_AN_INVITE"); ?></a>
         </td>
     </tr>
 	<?php } ?>

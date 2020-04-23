@@ -61,7 +61,7 @@ if ($action=="emailbans"){
 
 			$r4 = DB::run("SELECT username,id FROM users WHERE id=$arr[addedby]");
 			$a4 = $r4->fetch(PDO::FETCH_ASSOC);
-			print("<tr><td class='table_col1'>".utc_to_tz($arr['added'])."</td><td align='left' class='table_col2'>$arr[mail_domain]</td><td align='left' class='table_col1'><a href='/accountdetails?id=$a4[id]'>$a4[username]"."</a></td><td align='left' class='table_col2'>$arr[comment]</td><td class='table_col1'><a href='/admincp?action=emailbans&amp;remove=$arr[id]'>Remove</a></td></tr>\n");
+			print("<tr><td class='table_col1'>".utc_to_tz($arr['added'])."</td><td align='left' class='table_col2'>$arr[mail_domain]</td><td align='left' class='table_col1'><a href='".TTURL."/accountdetails?id=$a4[id]'>$a4[username]"."</a></td><td align='left' class='table_col2'>$arr[comment]</td><td class='table_col1'><a href='/admincp?action=emailbans&amp;remove=$arr[id]'>Remove</a></td></tr>\n");
 		}
 
 		print("</table>\n");

@@ -6,10 +6,6 @@
     }
     
     public function index(){
-		// Set Current User
-		// $curuser = $this->userModel->setCurrentUser();
-		// Set Current User
-		// $db = new Database;
 dbconn();
 global $site_config, $CURUSER;
 loggedinonly();
@@ -142,9 +138,9 @@ if ($user !=""){
 
     $arr = $res->fetch(PDO::FETCH_ASSOC);
     
-    print("<b>Are you sure you would like to report user:</b><br /><a href='/accountdetails?id=$user'><b>" . class_user($arr['username']) . "</b></a>?<br />");
+    print("<b>Are you sure you would like to report user:</b><br /><a href='$site_config[SITEURL]/accountdetails?id=$user'><b>" . class_user($arr['username']) . "</b></a>?<br />");
     print("<p>Please note, this is <b>not</b> to be used to report leechers, we have scripts in place to deal with them</p>");
-    print("<b>Reason</b> (required): <form method='post' action='/report'><input type='hidden' name='user' value='$user' /><input type='text' size='100' name='reason' /><input type='submit' value='Confirm' /></form>");
+    print("<b>Reason</b> (required): <form method='post' action='$site_config[SITEURL]/report'><input type='hidden' name='user' value='$user' /><input type='text' size='100' name='reason' /><input type='submit' value='Confirm' /></form>");
     end_frame();
     stdfoot();
     die();
@@ -162,8 +158,8 @@ if ($torrent !=""){
     }
 
     $arr = $res->fetch(PDO::FETCH_LAZY);
-    print("<b>Are you sure you would like to report torrent:</b><br /><a href='torrentsdetails?id=$torrent'><b>$arr[name]</b></a>?<br />");
-    print("<b>Reason</b> (required): <form method='post' action='/report'><input type='hidden' name='torrent' value='$torrent' /><input type='text' size='100' name='reason' /><input type='submit' value='Confirm' /></form>");
+    print("<b>Are you sure you would like to report torrent:</b><br /><a href='$site_config[SITEURL]/torrents/details?id=$torrent'><b>$arr[name]</b></a>?<br />");
+    print("<b>Reason</b> (required): <form method='post' action='<?php echo $site_config[SITEURL] ?>/report'><input type='hidden' name='torrent' value='$torrent' /><input type='text' size='100' name='reason' /><input type='submit' value='Confirm' /></form>");
     end_frame();
     stdfoot();
     die();
@@ -181,8 +177,8 @@ if (($forumid !="") && ($forumpost !="")){
     }
 
     $arr = $res->fetch(PDO::FETCH_LAZY);
-    print("<b>Are you sure you would like to report the following forum post:</b><br /><a href='/forums?action=viewtopic&amp;topicid=$forumid&amp;page=p#post$forumpost'><b>$arr[subject]</b></a>?<br />");
-    print("<b>Reason</b> (required): <form method='post' action='/report'><input type='hidden' name='forumid' value='$forumid' /><input type='hidden' name='forumpost' value='$forumpost'><input type='text' size='100' name='reason' /><input type='submit'  value='Confirm' /></form>");
+    print("<b>Are you sure you would like to report the following forum post:</b><br /><a href='$site_config[SITEURL]/forums/viewtopic&amp;topicid=$forumid&amp;page=p#post$forumpost'><b>$arr[subject]</b></a>?<br />");
+    print("<b>Reason</b> (required): <form method='post' action='$site_config[SITEURL]/report'><input type='hidden' name='forumid' value='$forumid' /><input type='hidden' name='forumpost' value='$forumpost'><input type='text' size='100' name='reason' /><input type='submit'  value='Confirm' /></form>");
     end_frame();
     stdfoot();
     die;
@@ -202,7 +198,7 @@ if ($comment !=""){
     
     print("<b>Are you sure you would like to report Comment:</b><br /><br /><b>".format_comment($arr["text"])."</b>?<br />");
     print("<p>Please note, this is <b>not</b> to be used to report leechers, we have scripts in place to deal with them</p>");
-    print("<b>Reason</b> (required): <form method='post' action='/report'><input type='hidden' name='comment' value='$comment' /><input type='text' size='100' name='reason' /><input type='submit'  value='Confirm' /></form>");
+    print("<b>Reason</b> (required): <form method='post' action='<?php echo $site_config[SITEURL] ?>/report'><input type='hidden' name='comment' value='$comment' /><input type='text' size='100' name='reason' /><input type='submit'  value='Confirm' /></form>");
     end_frame();
     stdfoot();
     die();

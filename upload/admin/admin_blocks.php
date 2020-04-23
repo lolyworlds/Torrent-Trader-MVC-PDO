@@ -36,10 +36,10 @@ if ($action=="blocks" && $do=="view") {
                         "<td class=\"$class\">".$blocks["description"]."</td>".
                         "<td class=\"$class\" align=\"center\">".$blocks["position"]."</td>".
                         "<td class=\"$class\" align=\"center\">".$blocks["sort"]."</td>".
-                        "<td class=\"$class\" align=\"center\">[<a href=\"/blocksedit?preview=true&amp;name=".$blocks["name"]."#".$blocks["name"]."\" target=\"_blank\">preview</a>]</td>".
+                        "<td class=\"$class\" align=\"center\">[<a href=\"/blocks/edit?preview=true&amp;name=".$blocks["name"]."#".$blocks["name"]."\" target=\"_blank\">preview</a>]</td>".
                     "</tr>");
         }
-    print("<tr><td colspan=\"5\" align=\"center\" class=\"table_head\"><form action='/blocksedit'><input type='submit' value='Edit' /></form></td></tr>");
+    print("<tr><td colspan=\"5\" align=\"center\" class=\"table_head\"><form action='/blocks/edit'><input type='submit' value='Edit' /></form></td></tr>");
     print("</table>");
     print("</td></tr></table>");    
     
@@ -70,10 +70,10 @@ if ($action=="blocks" && $do=="view") {
                         "<td class='$class'>".$blocks["description"]."</td>".
                         "<td class='$class' align=\"center\">".$blocks["position"]."</td>".
                         "<td class='$class' align=\"center\">".$blocks["sort"]."</td>".
-                        "<td class='$class' align=\"center\">[<a href=\"/blocksedit?preview=true&amp;name=".$blocks["name"]."#".$blocks["name"]."\" target=\"_blank\">preview</a>]</td>".
+                        "<td class='$class' align=\"center\">[<a href=\"/blocks/edit?preview=true&amp;name=".$blocks["name"]."#".$blocks["name"]."\" target=\"_blank\">preview</a>]</td>".
                     "</tr>");
         }
-    print("<tr><td colspan=\"5\" align=\"center\" valign=\"bottom\" class=\"table_head\"><form action='/blocksedit'><input type='submit' value='Edit' /></form></td></tr>");
+    print("<tr><td colspan=\"5\" align=\"center\" valign=\"bottom\" class=\"table_head\"><form action='/blocks/edit'><input type='submit' value='Edit' /></form></td></tr>");
     print("</table>");
     print("</td></tr></table>");    
     end_frame();

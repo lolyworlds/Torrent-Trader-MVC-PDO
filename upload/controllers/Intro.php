@@ -1,15 +1,11 @@
 <?php
-  class Ttintro extends Controller {
+  class Intro extends Controller {
     
     public function __construct(){
         // $this->userModel = $this->model('User');
     }
     
     public function index(){
-		// Set Current User
-		// $curuser = $this->userModel->setCurrentUser();
-		// Set Current User
-		// $db = new Database;
   dbconn();
   global $site_config, $CURUSER;
   stdhead( T_("intro") );

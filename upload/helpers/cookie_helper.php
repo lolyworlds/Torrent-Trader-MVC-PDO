@@ -2,6 +2,7 @@
 // Obtain / Create Cookie Function
 function logincookie($id, $password, $secret, $updatedb = 1, $expires = 0x7fffffff)
 {
+    global $pdo;
     // Retrieving Cookie Information
     $hash = $id . $secret . $password . getip() . $secret;
     // Cookie Information Encryption
@@ -14,7 +15,7 @@ function logincookie($id, $password, $secret, $updatedb = 1, $expires = 0x7fffff
     setcookie("uid", $id, $expires, "/");
 
     if ($updatedb) {
-        $stmt = DB::run("UPDATE users SET last_login=? WHERE id=?", [get_date_time(), $id]);
+        $stmt = $pdo->run("UPDATE users SET last_login=? WHERE id=?", [get_date_time(), $id]);
     }
 
 }
