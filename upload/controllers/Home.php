@@ -6,13 +6,13 @@
     }
     
     public function index(){
-		// Set Current User
-		// $curuser = $this->userModel->setCurrentUser();
-		// Set Current User
-		// $db = new Database;
 dbconn(true);
 global $site_config, $CURUSER;
+
+if ($site_config['MEMBERSONLY']){
 loggedinonly ();
+}
+
 stdhead(T_("HOME"));
 
 //check

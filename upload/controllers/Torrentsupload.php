@@ -206,12 +206,19 @@ if ($_POST["takeupload"] == "yes") {
 	}
 	
 $filecounts = (int)$filecount;
+/* Images not inserting bybass image2 for now
 $inames = '';
 
     $ret = DB::run("INSERT INTO torrents (filename, owner, name, descr, image1, image2, category, added, info_hash, size, numfiles, save_as, announce, external, nfo, torrentlang, anon, last_action) 
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 	[$fname, $CURUSER['id'], $name, $descr, $inames[0], $inames[1], $catid, get_date_time(), $infohash, $torrentsize, $filecounts, $fname, $announce, $external, $nfo, $langid, $anon, get_date_time()]);
-	
+*/ 
+$image2fix = '';
+
+    $ret = DB::run("INSERT INTO torrents (filename, owner, name, descr, image1, image2, category, added, info_hash, size, numfiles, save_as, announce, external, nfo, torrentlang, anon, last_action) 
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+	[$fname, $CURUSER['id'], $name, $descr, $inames[0], $image2fix, $catid, get_date_time(), $infohash, $torrentsize, $filecounts, $fname, $announce, $external, $nfo, $langid, $anon, get_date_time()]);
+		
 	$id = DB::lastInsertId();
 	
 	if ($ret->errorCode() == 1062)

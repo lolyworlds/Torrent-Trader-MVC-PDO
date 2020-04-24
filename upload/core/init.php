@@ -5,7 +5,7 @@ mb_internal_encoding('UTF-8');
 define("TTROOT", dirname(dirname(__FILE__)));
 
 // Register custom exception handler
-include("helpers/exception_helper.php");
+include( "helpers/exception_helper.php");
 set_exception_handler("handleUncaughtException");
 
 // Do NOT change this. All times are converted to user's chosen timezone.

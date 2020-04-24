@@ -6,4 +6,4 @@
 	</table>
 
 </form>
-<p align="center"><a href="<?php echo TTURL; ?>account/signup"><?php echo T_("SIGNUP"); ?></a> | <a href="<?php echo TTURL; ?>account/recover"><?php echo T_("RECOVER_ACCOUNT"); ?></a></p>
+<p align="center"><a href="<?php echo TTURL; ?>/account/signup"><?php echo T_("SIGNUP"); ?></a> | <a href="<?php echo TTURL; ?>/account/recover"><?php echo T_("RECOVER_ACCOUNT"); ?></a></p>

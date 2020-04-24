@@ -37,12 +37,12 @@ function commenttable($res, $type = null)
 
         $edit = null;
         if ($type == "torrent" && $CURUSER["edit_torrents"] == "yes" || $type == "news" && $CURUSER["edit_news"] == "yes" || $CURUSER['id'] == $row['user']) {
-            $edit = '[<a href="$site_config[SITEURL]/comments?id=' . $row["id"] . '&amp;type=' . $type . '&amp;edit=1">Edit</a>]&nbsp;';
+            $edit = '[<a href="'.$site_config['SITEURL'].'/comments?id=' . $row["id"] . '&amp;type=' . $type . '&amp;edit=1">Edit</a>]&nbsp;';
         }
 
         $delete = null;
         if ($type == "torrent" && $CURUSER["delete_torrents"] == "yes" || $type == "news" && $CURUSER["delete_news"] == "yes") {
-            $delete = '[<a href="$site_config[SITEURL]/comments?id=' . $row["id"] . '&amp;type=' . $type . '&amp;delete=1">Delete</a>]&nbsp;';
+            $delete = '[<a href="'.$site_config['SITEURL'].'/comments?id=' . $row["id"] . '&amp;type=' . $type . '&amp;delete=1">Delete</a>]&nbsp;';
         }
 
         print('<div class="f-post f-border"><table cellspacing="0" width="100%">');

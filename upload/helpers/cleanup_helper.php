@@ -14,12 +14,14 @@ function autoclean()
         $pdo->run("INSERT INTO tasks (task, last_time) VALUES ('cleanup',$now)");
         return;
     }
+/*
     $ts = isset($row) ? count($row) : 0;
     if ($ts + $site_config["autoclean_interval"] < $now) {
         return;
     }
-
-    $planned_clean = $pdo->run("UPDATE tasks SET last_time=$now WHERE task='cleanup' AND last_time = $ts");
+*/
+//  $planned_clean = $pdo->run("UPDATE tasks SET last_time=$now WHERE task='cleanup' AND last_time = $ts");
+    $planned_clean = $pdo->run("UPDATE tasks SET last_time=$now WHERE task='cleanup'");
     if (!$planned_clean) {
         return;
     }

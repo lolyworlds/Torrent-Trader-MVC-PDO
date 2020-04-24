@@ -643,7 +643,7 @@ print("</form>\n");
 end_frame();
 
 begin_frame(T_("DELETE_TORRENT"));
-        print("<center><form method='post' action='torrents/edit?action=deleteit&amp;id=$id'>\n");
+        print("<center><form method='post' action='".TTURL."/torrents/edit?action=deleteit&amp;id=$id'>\n");
         print("<input type='hidden' name='torrentid' value='$id' />\n");
         print("<input type='hidden' name='torrentname' value='".htmlspecialchars($row["name"])."' />\n");
         echo "<b>".T_("REASON_FOR_DELETE")."</b><input type='text' size='30' name='delreason' />";

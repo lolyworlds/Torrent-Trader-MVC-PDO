@@ -153,7 +153,7 @@ stdfoot();
 /////////////////////// EDIT SETTINGS ////////////////
     public function editsettings(){
 dbconn();
-global $site_config, $CURUSER, $pdo;
+global $site_config, $CURUSER, $tzs, $pdo;
 loggedinonly();
 
 stdhead(T_("USERCP"));

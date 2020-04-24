@@ -172,9 +172,9 @@ switch(tag)
           <td width="26"><a href="javascript:SmileIT(':sick','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="<?php echo $site_config["SITEURL"]; ?>/images/smilies/sick.png" border="0" alt=':-@' title=':-@' /></a></td>
       </tr>
 	  	  <tr>
-          <td width="26"><a href="javascript:SmileIT(':crylol','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="images/smilies/crylaugh.png" border="0" alt=':|' title=':|' /></a></td>
-          <td width="26"><a href="javascript:SmileIT(':confos','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="images/smilies/confound.png" border="0" alt='O:-D' title='0:-D' /></a></td>
-          <td width="26"><a href="javascript:SmileIT(':fire','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="images/smilies/fire.png" border="0" alt=':-@' title=':-@' /></a></td>
+          <td width="26"><a href="javascript:SmileIT(':crylol','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="<?php echo $site_config["SITEURL"]; ?>/images/smilies/crylaugh.png" border="0" alt=':|' title=':|' /></a></td>
+          <td width="26"><a href="javascript:SmileIT(':confos','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="<?php echo $site_config["SITEURL"]; ?>/images/smilies/confound.png" border="0" alt='O:-D' title='0:-D' /></a></td>
+          <td width="26"><a href="javascript:SmileIT(':fire','<?php echo $form; ?>','<?php echo $name; ?>')"><img src="<?php echo $site_config["SITEURL"]; ?>/images/smilies/fire.png" border="0" alt=':-@' title=':-@' /></a></td>
       </tr>
 	  </table>
       <br />

@@ -8,7 +8,11 @@
     public function index(){
 dbconn();
 global $site_config, $CURUSER;
+
+if ($site_config['MEMBERSONLY']){
 loggedinonly ();
+}
+
 if ($site_config['SHOUTBOX']){
 
 //DELETE MESSAGES

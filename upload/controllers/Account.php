@@ -414,9 +414,8 @@ if ($_GET["takesignup"] == "1") {
 
 
 	$sql = "INSERT INTO users (username, password, secret, email, status, added, last_access, age, country, gender, client, stylesheet, language, class, ip) VALUES (" . implode(",", array_map("sqlesc", array($wantusername, $wantpassword, $secret, $email, $status, get_date_time(), get_date_time(), $age, $country, $gender, $client, $site_config["default_theme"], $site_config["default_language"], $signupclass, getip()))).")";
-    $ins_user =  $pdo->prepare($sql);
-    $ins_user->execute();
-    $id = $pdo->lastInsertId();
+    $ins_user =  DB::run($sql);
+    $id = DB::lastInsertId();
 
     $psecret = md5($secret);
     $thishost = $_SERVER["HTTP_HOST"];
@@ -439,8 +438,7 @@ if ($_GET["takesignup"] == "1") {
 	if ($site_config["WELCOMEPMON"]){
 		$dt = sqlesc(get_date_time());
 		$msg = sqlesc($site_config["WELCOMEPMMSG"]);
-        $qry = $pdo->prepare("INSERT INTO messages (sender, receiver, added, msg, poster) VALUES(0, $id, $dt, $msg, 0)");
-        $qry->execute();
+        $qry = $pdo->run("INSERT INTO messages (sender, receiver, added, msg, poster) VALUES(0, $id, $dt, $msg, 0)");;
 	}
 
     die;
@@ -455,7 +453,7 @@ begin_frame(T_("SIGNUP"));
 ?>
 <?php echo T_("COOKIES"); ?>
 
-<form method="post" action="<?php echo $site_config["SITEURL"]; ?>/account/signup?takesignup=1">
+<form method="post" action="<?php echo TTURL; ?>/account/signup?takesignup=1">
 	<?php if ($invite_row) { ?>
 	<input type="hidden" name="invite" value="<?php echo $_GET["invite"]; ?>" />
 	<input type="hidden" name="secret" value="<?php echo htmlspecialchars($_GET["secret"]); ?>" />
