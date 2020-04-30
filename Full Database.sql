@@ -697,6 +697,7 @@ CREATE TABLE `users` (
   `team` int(10) unsigned NOT NULL default '0',
   `tzoffset` int(4) default 0,
   `hideshoutbox` enum('yes', 'no') NOT NULL DEFAULT 'no',
+  `token` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `username` (`username`),
   KEY `status_added` (`status`,`added`),

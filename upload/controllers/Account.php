@@ -6,58 +6,51 @@
     }
     
     public function login(){
-				dbconn();
-		// add globals
-        global $site_config, $CURUSER;
-
-        $username = $_POST['username'] ?? false;
-        $user_password = $_POST['password'] ?? false;
-        $message = '';
-
-        if ($username && $user_password) {
-
-            $password = $user_password;
+		session_start();
+		dbconn();
+		global $site_config, $pdo;
+		// Check for POST
+        if($_SERVER['REQUEST_METHOD'] == 'POST'){
+			// Sanitize POST data
+			$_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+			// Init data
+			$username = $_POST['username'];
+			$password = $_POST['password'];
+			$testing = $_POST['rememberme'];
             // called model method/function
-			$row = $this->userModel->getUserByUsername($username);
+            $row =	DB::run("SELECT id, password, secret, status, enabled FROM users WHERE username =? ", [$username])->fetch();
+    	    // Verify user password and set $_SESSION
+		if ( !$row || !password_verify($password,$row["password"]))
+			$message = T_("LOGIN_INCORRECT");
+		elseif ($row["status"] == "pending")
+			$message = T_("ACCOUNT_PENDING");
+		elseif ($row["enabled"] == "no")
+			$message = T_("ACCOUNT_DISABLED");
+			
+			if (!$message){
+			    setsess($row["id"], $row['password']);
+			    if( isset($_POST['rememberme']) ){
+			        
+			        logincookie($row["id"], $row["password"], $row["secret"]);
+			        setsess($row["id"], $row['password']);
+			    }
+                header("Location: ".TTURL."/index.php");
+               }else {
+                  show_error_msg(T_("ACCESS_DENIED"), $message, 1);
+               }
 
-            if (!$row || !password_verify($password, $row["password"])) {
-                $message = T_("LOGIN_INCORRECT");
-            } elseif ($row["status"] == "pending") {
-                $message = T_("ACCOUNT_PENDING");
-            } elseif ($row["enabled"] == "no") {
-                $message = T_("ACCOUNT_DISABLED");
-            }
-
-            if (!$message) {
-
-                logincookie($row["id"], $row["password"], $row["secret"]);
-                if (!empty($_POST)) {
-                    header("Refresh: 0; url=".$site_config['SITEURL']."/index.php");
-                    die();
-                }
-            } else {
-                show_error_msg(T_("ACCESS_DENIED"), $message, 1);
-            }
-        }
-
-        logoutcookie();
+        }    
 
         stdhead(T_("LOGIN"));
-
-        begin_frame(T_("LOGIN"));
-
-        if ($site_config["MEMBERSONLY"]) {
-            $message = T_("MEMBERS_ONLY");
-            print("<center><b>" . $message . "</b></center>\n");
-        }
-
+		begin_frame(T_("LOGIN"));
+		        // Members Only
+				if ($site_config["MEMBERSONLY"]) {
+					$message = T_("MEMBERS_ONLY");
+					print("<center><b>" . $message . "</b></center>\n");
+				}
 		// add view
-		$data = [
-		  //  we can add data to view 'posts' => $posts
-		  ];
-		  // load view
-		  $this->view('account/login', $data);
-
+		$data = [];
+		$this->view('account/login', $data);
         end_frame();
         stdfoot();
 }
@@ -66,7 +59,8 @@
 	public function logout()
     {
         dbconn();
-        logoutcookie();
+		// Remove cookies & sessions
+		logoutcookie();
         header("Location: ".TTURL."/index.php");
     }
 
@@ -75,7 +69,7 @@ dbconn();
 global $site_config, $CURUSER, $pdo;
 $kind = '0';
 
-if (is_valid_id($_POST["id"]) && strlen($_POST["secret"]) == 32) {
+if (is_valid_id($_POST["id"]) && strlen($_POST["secret"]) == 20) {
     $password = $_POST["password"];
     $password1 = $_POST["password1"];
     if (empty($password) || empty($password1)) {
@@ -85,13 +79,15 @@ if (is_valid_id($_POST["id"]) && strlen($_POST["secret"]) == 32) {
         $kind = T_("ERROR");
         $msg = T_("PASSWORD_NO_MATCH");
     } else {
-	$n = get_row_count("users", "WHERE `id`=".intval($_POST["id"])." AND MD5(`secret`) = ".sqlesc($_POST["secret"]));
+	$n = get_row_count("users", "WHERE `id`=".intval($_POST["id"])." AND `secret` = ".sqlesc($_POST["secret"]));
 	if ($n != 1)
 		show_error_msg(T_("ERROR"), T_("NO_SUCH_USER"));
         $newsec = mksecret();
         $wantpassword = password_hash($password, PASSWORD_BCRYPT);
-        $pdo->run("UPDATE `users` SET `password` =?, `secret` =? WHERE `id`=? AND secret =?", [$wantpassword, $newsec, $_POST['id'], $_POST["secret"]]);
-        $kind = T_("SUCCESS");
+        $pid = $_POST['id']; 
+        $psecret = $_POST["secret"];
+        $stmt = $this->userModel->recoverUpdate($wantpassword, $newsec, $pid, $psecret);
+		$kind = T_("SUCCESS");
         $msg =  T_("PASSWORD_CHANGED_OK");
     }
 }
@@ -103,7 +99,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_GET["take"] == 1) {
         $msg = T_("EMAIL_ADDRESS_NOT_VAILD");
         $kind = T_("ERROR");
     }else{
-        $arr = $pdo->run("SELECT id, username, email FROM users WHERE email=? LIMIT 1", [$email])->fetch();
+        $arr = $this->userModel->getIdEmailByEmail($email);
         if (!$arr) {
             $msg = T_("EMAIL_ADDRESS_NOT_FOUND");
             $kind = T_("ERROR");
@@ -111,13 +107,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_GET["take"] == 1) {
 
         if ($arr) {
               $sec = mksecret();
-            $secmd5 = md5($sec);
             $id = $arr['id'];
 
-            $body = T_("SOMEONE_FROM")." " . $_SERVER["REMOTE_ADDR"] . " ".T_("MAILED_BACK")." ($email) ".T_("BE_MAILED_BACK")." \r\n\r\n ".T_("ACCOUNT_INFO")." \r\n\r\n ".T_("USERNAME").": ".class_user($arr["username"])." \r\n ".T_("CHANGE_PSW")."\n\n$site_config[SITEURL]/account/recover?id=$id&secret=$secmd5\n\n\n".$site_config["SITENAME"]."\r\n";
+            $body = T_("SOMEONE_FROM")." " . $_SERVER["REMOTE_ADDR"] . " ".T_("MAILED_BACK")." ($email) ".T_("BE_MAILED_BACK")." \r\n\r\n ".T_("ACCOUNT_INFO")." \r\n\r\n ".T_("USERNAME").": ".class_user($arr["username"])." \r\n ".T_("CHANGE_PSW")."\n\n$site_config[SITEURL]/account/recover?id=$id&secret=$sec\n\n\n".$site_config["SITENAME"]."\r\n";
             
             @sendmail($arr["email"], T_("ACCOUNT_DETAILS"), $body, "", "-f".$site_config['SITEEMAIL']);
-            $res2 =$pdo->run("UPDATE `users` SET `secret` =? WHERE `email`=? LIMIT 1", [$sec, $email]);
+            $res2 = $this->userModel->setSecret($sec, $email);
             $msg = sprintf(T_('MAIL_RECOVER'), htmlspecialchars($email));
             $kind = T_("SUCCESS");
         }
@@ -131,45 +126,12 @@ if ($kind != "0") {
     show_error_msg("Notice", "$kind: $msg", 0);
 }
 
-if (is_valid_id($_GET["id"]) && strlen($_GET["secret"]) == 32) {?>
-<form method="post" action="<?php echo $site_config["SITEURL"]; ?>/account/recover">
-<table border="0" cellspacing="0" cellpadding="5">
-    <tr>
-        <td>
-            <b><?php echo T_("NEW_PASSWORD"); ?></b>:
-        </td>
-        <td>
-            <input type="hidden" name="secret" value="<?php echo $_GET['secret']; ?>" />
-            <input type="hidden" name="id" value="<?php echo $_GET['id']; ?>" />
-            <input type="password" size="40" name="password" />
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <b><?php echo T_("REPEAT"); ?></b>:
-        </td>
-        <td>
-            <input type="password" size="40" name="password1" />
-        </td>
-    </tr>
-    <tr>
-        <td>&nbsp;</td>
-        <td><input type="submit" value="<?php echo T_("SUBMIT"); ?>" /></td>
-    </tr>
-</table>
-</form>
-<?php } else { echo T_("USE_FORM_FOR_ACCOUNT_DETAILS"); ?>
-
-<form method="post" action="<?php echo TTURL; ?>/account/recover?take=1">
-    <table border="0" cellspacing="0" cellpadding="5">
-        <tr>
-            <td><b><?php echo T_("EMAIL_ADDRESS"); ?>:</b></td>
-            <td><input type="text" size="40" name="email" />&nbsp;<input type="submit" value="<?php echo T_("SUBMIT");?>" /></td>
-        </tr>
-    </table>
-</form>
-
-<?php
+if (is_valid_id($_GET["id"]) && strlen($_GET["secret"]) == 20) {
+	$data = [];
+	$this->view('account/recover', $data);
+  } else { echo T_("USE_FORM_FOR_ACCOUNT_DETAILS");
+	$data = [];
+	$this->view('account/recoverpass', $data);	
 }
 end_frame();
 stdfoot();
@@ -221,7 +183,7 @@ if ($row["status"] != "pending") {
 	die;
 }
 
-if ($md5 != md5($row["secret"]))
+if ($md5 != $row["secret"])
 	show_error_msg(T_("ERROR"), T_("SIGNUP_ACTIVATE_LINK"), 1);
 
 $secret = mksecret();
@@ -307,7 +269,7 @@ $password_minlength = 6;
 $password_maxlength = 60;
 
 // Disable checks if we're signing up with an invite
-if (!is_valid_id($_REQUEST["invite"]) || strlen($_REQUEST["secret"]) != 32) {
+if (!is_valid_id($_REQUEST["invite"]) || strlen($_REQUEST["secret"]) != 20) {
 	//invite only check
 	if ($site_config["INVITEONLY"]) {
 		show_error_msg(T_("INVITE_ONLY"), "<br /><br /><center>".T_("INVITE_ONLY_MSG")."<br /><br /></center>",1);
@@ -393,8 +355,7 @@ if ($_GET["takesignup"] == "1") {
 			if ($site_config["WELCOMEPMON"]){
 				$dt = sqlesc(get_date_time());
 				$msg = sqlesc($site_config["WELCOMEPMMSG"]);
-                $ins =  $pdo->prepare("INSERT INTO messages (sender, receiver, added, msg, poster) VALUES(0, $invite_row[id], $dt, $msg, 0)");
-                $ins->execute();
+                $ins =  $pdo->run("INSERT INTO messages (sender, receiver, added, msg, poster) VALUES(0, $invite_row[id], $dt, $msg, 0)");
 			}
 			header("Refresh: 0; url=".TTURL."/account/confirmok?type=confirm");
 			die;
@@ -417,7 +378,6 @@ if ($_GET["takesignup"] == "1") {
     $ins_user =  DB::run($sql);
     $id = DB::lastInsertId();
 
-    $psecret = md5($secret);
     $thishost = $_SERVER["HTTP_HOST"];
     $thisdomain = preg_replace('/^www\./is', "", $thishost);
 
@@ -425,7 +385,7 @@ if ($_GET["takesignup"] == "1") {
 	if ($site_config["ACONFIRM"]) {
 		$body = T_("YOUR_ACCOUNT_AT")." ".$site_config['SITENAME']." ".T_("HAS_BEEN_CREATED_YOU_WILL_HAVE_TO_WAIT")."\n\n".$site_config['SITENAME']." ".T_("ADMIN");
 	}else{//NO ADMIN CONFIRM, BUT EMAIL CONFIRM
-		$body = T_("YOUR_ACCOUNT_AT")." ".$site_config['SITENAME']." ".T_("HAS_BEEN_APPROVED_EMAIL")."\n\n	".$site_config['SITEURL']."/account/confirm?id=$id&secret=$psecret\n\n".T_("HAS_BEEN_APPROVED_EMAIL_AFTER")."\n\n	".T_("HAS_BEEN_APPROVED_EMAIL_DELETED")."\n\n".$site_config['SITENAME']." ".T_("ADMIN");
+		$body = T_("YOUR_ACCOUNT_AT")." ".$site_config['SITENAME']." ".T_("HAS_BEEN_APPROVED_EMAIL")."\n\n	".$site_config['SITEURL']."/account/confirm?id=$id&secret=$secret\n\n".T_("HAS_BEEN_APPROVED_EMAIL_AFTER")."\n\n	".T_("HAS_BEEN_APPROVED_EMAIL_DELETED")."\n\n".$site_config['SITENAME']." ".T_("ADMIN");
 	}
 
 	if ($site_config["CONFIRMEMAIL"]){ //email confirmation is on

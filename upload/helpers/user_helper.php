@@ -2,52 +2,35 @@
 // Login User Function
 function userlogin()
 {
+    session_start();
     $ip = getip();
     // If there's no IP a script is being ran from CLI. Any checks here will fail, skip all.
     if ($ip == '') {
         return;
     }
+    checkipban($ip);
 
     global $CURUSER, $pdo;
+
     unset($GLOBALS["CURUSER"]);
-
-    //Check IP bans
-    if (is_ipv6($ip)) {
-        $nip = ip2long6($ip);
-    } else {
-        $nip = ip2long($ip);
+    // Check The Cookies and Sessions details
+    if (isset($_COOKIE['token'])) {
+		$res1 = $pdo->run("SELECT id FROM users WHERE token=?",[$_COOKIE['token']]);
+		$row = $res1->fetch(PDO::FETCH_ASSOC);
+		$id = $row['id'];
+		$_SESSION["uid"] = $id;
     }
 
-    $res = $pdo->run('SELECT * FROM bans WHERE true');
-    while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
-        $banned = false;
-        if (is_ipv6($row["first"]) && is_ipv6($row["last"]) && is_ipv6($ip)) {
-            $row["first"] = ip2long6($row["first"]);
-            $row["last"] = ip2long6($row["last"]);
-            $banned = bccomp($row["first"], $nip) != -1 && bccomp($row["last"], $nip) != -1;
-        } else {
-            $row["first"] = ip2long($row["first"]);
-            $row["last"] = ip2long($row["last"]);
-            $banned = $nip >= $row["first"] && $nip <= $row["last"];
-        }
-        if ($banned) {
-            header("HTTP/1.0 403 Forbidden");
-// todo        echo "<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title>Forbidden</title></head><body><h1>Forbidden</h1>Unauthorized IP address.<br />";
-            //    "Reason for banning: $row[comment]</body></html>";
-            //    die;
-        }
-    }
-
-    //Check The Cookie and get CURUSER details
-    if (strlen($_COOKIE["pass"]) != 60 || !is_numeric($_COOKIE["uid"])) {
+    if (!isset($_SESSION['uid'])) {
         logoutcookie();
         return;
     }
+    
     //Get User Details And Permissions
-    $res = $pdo->run("SELECT * FROM users INNER JOIN groups ON users.class=groups.group_id WHERE id=$_COOKIE[uid] AND users.enabled='yes' AND users.status = 'confirmed'");
+    $res = $pdo->run("SELECT * FROM users INNER JOIN groups ON users.class=groups.group_id WHERE id=$_SESSION[uid] AND users.enabled='yes' AND users.status = 'confirmed'");
     $row = $res->fetch(PDO::FETCH_ASSOC);
     $hash = $row["id"] . $row["secret"] . $row["password"] . $ip . $row["secret"];
-    if (!$row || !password_verify($hash, $_COOKIE["pass"])) {
+    if (!$row || !password_verify($hash, $_COOKIE["token"])) {
         logoutcookie();
         return;
     }

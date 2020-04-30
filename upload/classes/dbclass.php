@@ -1,5 +1,5 @@
 <?php
-include $_SERVER["DOCUMENT_ROOT"] . '/config/config.php';
+include 'config/config.php';
 define('DB_HOST', $site_config['mysql_host']);
 define('DB_NAME', $site_config['mysql_db']);
 define('DB_USER', $site_config['mysql_user']);

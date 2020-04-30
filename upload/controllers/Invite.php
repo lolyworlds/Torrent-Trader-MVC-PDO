@@ -65,8 +65,6 @@ if ($_GET["take"]) {
 	$invitees = "$id $CURUSER[invitees]";
     DB::run("UPDATE users SET invites = invites - 1, invitees='$invitees' WHERE id = $CURUSER[id]");
 
-	$psecret = md5($secret);
-
 	$mess = strip_tags($_POST["mess"]);
 
 	$body = <<<EOD
@@ -86,7 +84,7 @@ $site_config[SITEURL]/faq
 
 To confirm your invitation, you have to follow this link:
 
-$site_config[SITEURL]/account/signup?invite=$id&secret=$psecret
+$site_config[SITEURL]/account/signup?invite=$id&secret=$secret
 
 After you do this, you will be able to use your new account. If you fail to
 do this, your account will be deleted within a few days. We urge you to read

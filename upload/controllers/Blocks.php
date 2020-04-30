@@ -7,7 +7,7 @@
     
     public function edit(){
 dbconn();
-global $site_config, $CURUSER;
+global $site_config, $CURUSER, $TTCache, $pdo;
 loggedinonly();
 
 if (!$CURUSER || $CURUSER["control_panel"]!="yes"){

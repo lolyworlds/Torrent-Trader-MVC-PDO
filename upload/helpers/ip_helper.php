@@ -1,5 +1,29 @@
 <?php
 
+// Check IP for ban and Redirect
+function checkipban($ip)
+{
+    global $pdo;
+    $res = $pdo->run('SELECT * FROM bans WHERE true');
+    while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
+        $banned = false;
+        if (is_ipv6($row["first"]) && is_ipv6($row["last"]) && is_ipv6($ip)) {
+            $row["first"] = ip2long6($row["first"]);
+            $row["last"] = ip2long6($row["last"]);
+            $banned = bccomp($row["first"], $nip) != -1 && bccomp($row["last"], $nip) != -1;
+        } else {
+            $row["first"] = ip2long($row["first"]);
+            $row["last"] = ip2long($row["last"]);
+            $banned = $nip >= $row["first"] && $nip <= $row["last"];
+        }
+        if ($banned) {
+        header("HTTP/1.0 403 Forbidden");
+        echo '<html><head><title>Forbidden</title> </head><body> <h1>Forbidden</h1>Unauthorized IP address.<br> </body></html>';
+        die;
+        }
+    }
+}
+
 // IP Validation Function
 function validip($ip)
 {

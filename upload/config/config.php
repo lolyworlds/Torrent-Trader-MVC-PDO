@@ -138,13 +138,6 @@ $site_config["mail_smtp_auth"] = false; // true to use auth for SMTP
 $site_config["mail_smtp_user"] = ""; // SMTP username
 $site_config["mail_smtp_pass"] = ""; // SMTP password
 
-
-// Password hashing - Once set, cannot be changed without all users needing to reset their passwords
-$site_config["passhash_method"] = "sha1"; // Hashing method (sha1, md5 or hmac). Must use what your previous version of TT did or all users will need to reset their passwords
-// Only used for hmac.
-$site_config["passhash_algorithm"] = "sha1"; // See http://php.net/hash_algos for a list of supported algorithms.
-$site_config["passhash_salt"] = ""; // Shouldn't be blank. At least 20 characters of random text.
-
 // Set User Group
 $site_config['User'] = "1";
 $site_config['PowerUser'] = "2";
