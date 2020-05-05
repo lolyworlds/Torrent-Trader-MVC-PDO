@@ -965,7 +965,7 @@ if ($tres->rowCount() > 1){
 	echo '</table>';
 }
 
-echo "<br /><br /><b>".T_("FILE_LIST").":</b>&nbsp;<img src='images/plus.gif' id='pic1' onclick='klappe_torrent(1)' alt='' /><div id='k1' style='display: none;'><table align='center' cellpadding='0' cellspacing='0' class='table_table' border='1' width='100%'><tr><th class='table_head' align='left'>&nbsp;".T_("FILE")."</th><th width='50' class='table_head'>&nbsp;".T_("SIZE")."</th></tr>";
+echo "<br /><br /><b>".T_("FILE_LIST").":</b>&nbsp;<img src='/images/plus.gif' id='pic1' onclick='klappe_torrent(1)' alt='' /><div id='k1' style='display: none;'><table align='center' cellpadding='0' cellspacing='0' class='table_table' border='1' width='100%'><tr><th class='table_head' align='left'>&nbsp;".T_("FILE")."</th><th width='50' class='table_head'>&nbsp;".T_("SIZE")."</th></tr>";
 $fres = $pdo->run("SELECT * FROM `files` WHERE `torrent` = $id ORDER BY `path` ASC");
 if ($fres->rowCount()) {
     while ($frow = $fres->fetch(PDO::FETCH_ASSOC)) {
@@ -1023,7 +1023,7 @@ if ($row["external"]!='yes'){
                 if ( !$arr["username"] ) $arr["username"] = "Unknown User";
         
 				if ($arr["privacy"] != "strong" || ($CURUSER["control_panel"] == "yes")) {
-					print("<tr><td class='table_col2'>".$row1["port"]."</td><td class='table_col1'>".mksize($row1["uploaded"])."</td><td class='table_col2'>".mksize($row1["downloaded"])."</td><td class='table_col1'>".$ratio."</td><td class='table_col2'>".mksize($row1["to_go"])."</td><td class='table_col1'>".$percentcomp."%</td><td class='table_col2'>$row1[seeder]</td><td class='table_col1'>$row1[connectable]</td><td class='table_col2'>".htmlspecialchars($row1["client"])."</td><td class='table_col1'>".class_user($arr['username'])."</td></tr>");
+					print("<tr><td class='table_col2'>".$row1["port"]."</td><td class='table_col1'>".mksize($row1["uploaded"])."</td><td class='table_col2'>".mksize($row1["downloaded"])."</td><td class='table_col1'>".$ratio."</td><td class='table_col2'>".mksize($row1["to_go"])."</td><td class='table_col1'>".$percentcomp."%</td><td class='table_col2'>$row1[seeder]</td><td class='table_col1'>$row1[connectable]</td><td class='table_col2'>".htmlspecialchars($row1["client"])."</td><td class='table_col1'>$arr[username]</td></tr>");
 				}else{
 					print("<tr><td class='table_col2'>".$row1["port"]."</td><td class='table_col1'>".mksize($row1["uploaded"])."</td><td class='table_col2'>".mksize($row1["downloaded"])."</td><td class='table_col1'>".$ratio."</td><td class='table_col2'>".mksize($row1["to_go"])."</td><td class='table_col1'>".$percentcomp."%</td><td class='table_col2'>$row1[seeder]</td><td class='table_col1'>$row1[connectable]</td><td class='table_col2'>".htmlspecialchars($row1["client"])."</td><td class='table_col1'>Private</td></tr>");
 				}
@@ -1042,7 +1042,9 @@ echo "<br /><br />";
 if($row["nfo"]== "yes"){
 	$nfofilelocation = "$nfo_dir/$row[id].nfo";
 	$filegetcontents = file_get_contents($nfofilelocation);
-	$nfo = htmlspecialchars($filegetcontents);
+// needs filtering better todo
+//	$nfo = htmlspecialchars($filegetcontents);
+	$nfo = $filegetcontents;
 		if ($nfo) {	
 			$nfo = my_nfo_translate($nfo);
 			echo "<br /><br /><b>NFO:</b><br />";

@@ -102,9 +102,9 @@ while ($row = $results->fetch(PDO::FETCH_ASSOC)) {
 		$cres = $this->countriesModel->getCountry ($row) ;
 
 		if ($carr = $cres->fetch(PDO::FETCH_ASSOC)) {
-			$country = "<td><img src='$site_config[SITEURL]/images/countries/$carr[flagpic]' title='".htmlspecialchars($carr['name'])."' alt='".htmlspecialchars($carr['name'])."' /></td>";
+			$country = "<td><img src='$site_config[SITEURL]/images/languages/$carr[flagpic]' title='".htmlspecialchars($carr['name'])."' alt='".htmlspecialchars($carr['name'])."' /></td>";
 		} else {
-			$country = "<td><img src='$site_config[SITEURL]/images/countries/unknown.gif' alt='Unknown' /></td>";
+			$country = "<td><img src='$site_config[SITEURL]/images/languages/unknown.gif' alt='Unknown' /></td>";
 		}
 
 print("<tbody><tr>

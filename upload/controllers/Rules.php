@@ -8,11 +8,11 @@
     public function index(){
 
   dbconn();
-global $site_config, $CURUSER;
+  global $site_config, $CURUSER;
   stdhead( T_("SITE_RULES") );
   
   $res = $this->rulesModel->getRules();
-  while ($row = $res->fetch(PDO::FETCH_ASSOC))
+  foreach ($res as $row)
   {
       if ($row["public"] == "yes")
       {

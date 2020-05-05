@@ -51,16 +51,16 @@ DB::run("UPDATE torrents SET hits = hits + 1 WHERE id = $id");
 
 require_once("classes/BEcode.php");
 
-//if user dont have a passkey generate one, only if tracker is set to members only
-if ($site_config["MEMBERSONLY"]){
+// if user dont have a passkey generate one, only if current member, note - it was membersonly
+if ($CURUSER){
 	if (strlen($CURUSER['passkey']) != 32) {
 		$rand = array_sum(explode(" ", microtime()));
 		$CURUSER['passkey'] = md5($CURUSER['username'].$rand.$CURUSER['secret'].($rand*mt_rand()));
 		DB::run("UPDATE users SET passkey=? WHERE id=?", [$CURUSER['passkey'], $CURUSER['id']]);
 	}
 }
-
-if ($row["external"]!='yes' && $site_config["MEMBERSONLY"]){// local torrent so add passkey
+// if not external and current member, note - it was membersonly
+if ($row["external"]!='yes' && $CURUSER){// local torrent so add passkey
 	$dict = BDecode(file_get_contents($fn));
 	$dict['announce'] = sprintf($site_config["PASSKEYURL"], $CURUSER["passkey"]);
 	unset($dict['announce-list']);
