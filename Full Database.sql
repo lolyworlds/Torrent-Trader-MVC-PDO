@@ -1,3 +1,11 @@
+create table sessions(
+  id serial,
+  sess_id text not null,
+  _access integer,
+  data text,
+  primary key (id)
+);
+
 DROP TABLE IF EXISTS `files`;
 CREATE TABLE `files` (
 `id` BIGINT( 20 ) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,
@@ -580,7 +588,7 @@ CREATE TABLE `tasks` (
 ) ENGINE=MyISAM;
 
 INSERT INTO `tasks` (`task`, `last_time`) VALUES 
-('cleanup', 1189677270);
+('cleanup', 0);
 
 DROP TABLE IF EXISTS `teams`;
 CREATE TABLE `teams` (

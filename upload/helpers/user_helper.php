@@ -2,7 +2,6 @@
 // Login User Function
 function userlogin()
 {
-    session_start();
     $ip = getip();
     // If there's no IP a script is being ran from CLI. Any checks here will fail, skip all.
     if ($ip == '') {
@@ -13,15 +12,9 @@ function userlogin()
     global $CURUSER, $pdo;
 
     unset($GLOBALS["CURUSER"]);
-    // Check The Cookies and Sessions details
-    if (isset($_COOKIE['token'])) {
-		$res1 = $pdo->run("SELECT id FROM users WHERE token=?",[$_COOKIE['token']]);
-		$row = $res1->fetch(PDO::FETCH_ASSOC);
-		$id = $row['id'];
-		$_SESSION["uid"] = $id;
-    }
 
-    if (!isset($_SESSION['uid'])) {
+    // Check The Cookies and Sessions details
+    if (!$_SESSION["pass"] || !is_numeric($_SESSION["uid"])) {     // todo
         logoutcookie();
         return;
     }
@@ -29,10 +22,14 @@ function userlogin()
     //Get User Details And Permissions
     $res = $pdo->run("SELECT * FROM users INNER JOIN groups ON users.class=groups.group_id WHERE id=$_SESSION[uid] AND users.enabled='yes' AND users.status = 'confirmed'");
     $row = $res->fetch(PDO::FETCH_ASSOC);
+
     $hash = $row["id"] . $row["secret"] . $row["password"] . $ip . $row["secret"];
-    if (!$row || !password_verify($hash, $_COOKIE["token"])) {
-        logoutcookie();
-        return;
+    if (!$row || !$_SESSION['pass'] == $hash){
+    		logoutcookie();
+		return;
+        
+    } else {
+    // success - need else to match hash & session above
     }
 
     $where = where($_SERVER["SCRIPT_FILENAME"], $row["id"], 0);

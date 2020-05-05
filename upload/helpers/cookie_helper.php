@@ -3,34 +3,30 @@
 function logincookie($id, $password, $secret, $updatedb = 1, $expires = 0x7fffffff)
 {
     global $pdo;
-    // Retrieving Cookie Information
-    $hash = $id . $secret . $password . getip() . $secret;
-    // Cookie Information Encryption
-    $hash = password_hash($hash, PASSWORD_BCRYPT);
-    // Declaration And Sending Cookie
-    setcookie("token", $hash, $expires, "/");
-
+    // get sess_id
+    $sid = session_id();
+    // store only sess_id
+    setcookie("PHPSESSID", $sid, time()+ 30*30*60*60, "/"); // one month
+    // maybe add session in cleanup
     if ($updatedb) {
         $stmt = $pdo->run("UPDATE users SET last_login=? WHERE id=?", [get_date_time(), $id]);
-		$token = $pdo->run("UPDATE users SET token=? WHERE id=?", [$hash, $id]);
     }
-
 }
+
 // Cookie Destruction function
 function logoutcookie()
 {
-    session_start();
-    // As Set to NULL ==> Destruction
-    setcookie("token", null, time(), "/");
-    // Destroy Sessions
-    unset($_SESSION['uid']);
-    unset($_SESSION['pass']);
-    session_destroy();
+    // get sess_id
+    $sid = session_id();
+    // reset cookie to session 
+    setcookie("PHPSESSID", $sid, "0", "/");
 }
 
-function setsess($id, $password)
+function setsess($id, $password, $secret)
 {
-    session_start();
+    // encrypt pass
+    $hash = $id . $secret . $password . getip() . $secret;
+    // set session handler
     $_SESSION['uid'] = $id;
-    $_SESSION['pass'] = $password;
+    $_SESSION['pass'] = $hash;
 }

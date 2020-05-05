@@ -6,7 +6,6 @@
     }
     
     public function login(){
-		session_start();
 		dbconn();
 		global $site_config, $pdo;
 		// Check for POST
@@ -28,11 +27,11 @@
 			$message = T_("ACCOUNT_DISABLED");
 			
 			if (!$message){
-			    setsess($row["id"], $row['password']);
-			    if( isset($_POST['rememberme']) ){
-			        
+				// Session Handler
+				setsess($row["id"], $row["password"], $row["secret"]);
+			    if( isset($_POST['rememberme']) ){			        
 			        logincookie($row["id"], $row["password"], $row["secret"]);
-			        setsess($row["id"], $row['password']);
+			        setsess($row["id"], $row["password"], $row["secret"]);
 			    }
                 header("Location: ".TTURL."/index.php");
                }else {
@@ -60,6 +59,7 @@
     {
         dbconn();
 		// Remove cookies & sessions
+		session_destroy();
 		logoutcookie();
         header("Location: ".TTURL."/index.php");
     }
