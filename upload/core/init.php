@@ -19,10 +19,17 @@ define("TTURL", $site_config['SITEURL']);
 // Include all helpers & connection
 require_once ("helpers/functions_connect.php");
 
+// Global Standard connection
+global $dbh;
+$dbh = new PDO('mysql:host='.$site_config['mysql_host'].';dbname='.$site_config['mysql_db'], $site_config['mysql_user'], $site_config['mysql_pass']);
+
 // Classes 
-require "classes/dbclass.php"; //Get PDO Connection Info
+require "classes/dbclass.php"; // DB::run Static prepared atatements
 require "classes/cache.php"; // Caching
 require "classes/mail.php"; // Mail functions
+
+// Session Handler
+require "classes/Session.php";
 
 $GLOBALS['tstart'] = array_sum(explode(" ", microtime()));
 

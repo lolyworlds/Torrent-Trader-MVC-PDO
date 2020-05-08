@@ -59,7 +59,7 @@
     {
         dbconn();
 		// Remove cookies & sessions
-		session_destroy();
+		// session_destroy();
 		logoutcookie();
         header("Location: ".TTURL."/index.php");
     }

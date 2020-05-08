@@ -20,6 +20,8 @@ function logoutcookie()
     $sid = session_id();
     // reset cookie to session 
     setcookie("PHPSESSID", $sid, "0", "/");
+    $_SESSION['uid'] = "";
+    $_SESSION['pass'] = "";
 }
 
 function setsess($id, $password, $secret)

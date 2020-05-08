@@ -82,10 +82,6 @@ stdfoot();
 }
 
 public function actions(){
-  // Set Current User
-  // $curuser = $this->userModel->setCurrentUser();
-  // Set Current User
-  // $db = new Database;
 dbconn();
 global $site_config, $CURUSER;
 loggedinonly();
@@ -242,10 +238,7 @@ else header("Refresh: 0; url=".TTURL."/faq/manage");
 
 
 public function manage(){
-  // Set Current User
-  // $curuser = $this->userModel->setCurrentUser();
-  // Set Current User
-  // $db = new Database;
+
 dbconn(false);
 global $site_config, $CURUSER;
 loggedinonly();

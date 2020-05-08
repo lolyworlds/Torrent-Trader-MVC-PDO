@@ -32,7 +32,7 @@ function userlogin()
     // success - need else to match hash & session above
     }
 
-    $where = where($_SERVER["SCRIPT_FILENAME"], $row["id"], 0);
+    $where = where($_SERVER['REQUEST_URI'], $row["id"], 0);
     $id = $row['id'];
 
     $stmt = $pdo->run("UPDATE users SET last_access=?,ip=?,page=? WHERE id=?", [get_date_time(), $ip, $where, $id]);
@@ -83,37 +83,21 @@ function getguests()
     return get_row_count("guests");
 }
 // Function Who Finds Where The Member Is
-function where($scriptname = "index", $userid, $update = 1)
-{
-    global $pdo;
-    if (!is_valid_id($userid)) {
-        die;
-    }
+function where ($where, $userid, $update=1){
+        if (!is_valid_id($userid))
+                die;
 
-    if (preg_match("/torrents/details/i", $scriptname)) {
-        $where = "Browsing Torrents Details (ID: $_GET[id])...";
-    } elseif (preg_match("/torrents/browse/i", $scriptname)) {
-        $where = "Browsing Torrents...";
-    } elseif (preg_match("/accountdetails/i", $scriptname)) {
-        $where = "Browsing Account Details (ID: $_GET[id])...";
-    } elseif (preg_match("/torrentsupload/i", $scriptname)) {
-        $where = "Uploading Torrent..";
-    } elseif (preg_match("/usercp/i", $scriptname)) {
-        $where = "Browsing User Control Panel...";
-    } elseif (preg_match("/torrents/search/i", $scriptname)) {
-        $where = "Searching Torrents...";
-    } elseif (preg_match("/forums/i", $scriptname)) {
-        $where = "Browsing Forums...";
-    } elseif (preg_match("/index/i", $scriptname)) {
-        $where = "Browsing Homepage...";
-    } else {
-        $where = "Unknown Location...";
-    }
+        if(empty($where))
+                $where = "Unknown Location...";
 
-    if ($update) {
-        $stmt = $pdo->run("UPDATE users SET page=? WHERE id=?", [$where, $userid]);
-    }
-    return $where;
+        if ($update)
+                $stmt = $pdo->run("UPDATE users SET page=? WHERE id=?", [$where, $userid]);
+
+        if (!$update){
+                return $where;
+                }else{
+                return;
+                }
 }
 // Function That Returns The Group Name
 function get_user_class_name($i)

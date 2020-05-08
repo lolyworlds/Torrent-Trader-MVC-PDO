@@ -24,9 +24,7 @@ require "mod_helper.php";
 // Set user globals
 function dbconn($autoclean = false)
 {
-    // Session Handler
-    require "classes/Session.php";
-	global $THEME, $LANGUAGE, $LANG, $site_config, $pdo;
+    global $THEME, $LANGUAGE, $LANG, $site_config, $pdo;
     $THEME = $LANGUAGE = null;
     $pdo = new Database;
 	
