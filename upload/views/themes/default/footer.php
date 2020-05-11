@@ -25,18 +25,6 @@
 </footer>
 <!-- Footer -->
 
-  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.js" type="text/javascript"></script>
-  <!-- TT old JS -->
-  <script src="<?php echo TTURL; ?>/views/themes/<?php echo $THEME; ?>/js/java_klappe.js"></script>
-  <!-- Jquery 3.4 core JavaScript -->
-  <script src="<?php echo TTURL; ?>/views/themes/<?php echo $THEME; ?>/js/jquery-3.3.1.min"></script>
-  <!-- Popper JavaScript -->
-  <script src="<?php echo TTURL; ?>/views/themes/<?php echo $THEME; ?>/js/popper.min"></script>
-  <!-- Bootstrap 4 core JavaScript -->
-  <script src="<?php echo TTURL; ?>/views/themes/<?php echo $THEME; ?>/js/bootstrap-4.3.1"></script>
-
-
 </body>
 
 </html>

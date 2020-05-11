@@ -33,7 +33,7 @@
     <!-- START NAVIGATION -->
     <?php if ($CURUSER){ ?>
     <nav class="navbar navbar-expand-lg">
-  <a class="navbar-brand" href="<?php echo $site_config["SITEURL"]; ?>/index.php"><img src='<?php echo $site_config["SITEURL"]; ?>/views/themes/default/images/logo.gif'></a>
+  <a class="navbar-brand" href="<?php echo $site_config["SITEURL"]; ?>/index.php"><img src='<?php echo $site_config["SITEURL"]; ?>/views/themes/<?php echo $THEME; ?>/images/logo.gif'></a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>

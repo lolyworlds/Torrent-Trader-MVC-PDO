@@ -1,3 +1,7 @@
+.navbar-nav .nav-link {
+    color: #fff;
+}
+
 .navbar {
     background-image: -webkit-linear-gradient(top, #072F5F, #3895D3);
     background-image: linear-gradient(to bottom, #072F5F, #3895D3);
@@ -5,7 +9,8 @@
 }
 
 .card-header {
-    background-image: -webkit-linear-gradient(top, #072F5F, #3895D3);
+    color: #fff;
+	background-image: -webkit-linear-gradient(top, #072F5F, #3895D3);
     background-image: linear-gradient(to bottom, #072F5F, #3895D3);
     background-repeat: repeat-x;
 }
@@ -43,3 +48,10 @@ body {
 .tbody td {
     background-color: #EEEEEE;
 } 
+
+
+.navbar-toggler {
+    color: #fff;
+    background-color: #000;
+    border: 1px solid #fff;
+}
