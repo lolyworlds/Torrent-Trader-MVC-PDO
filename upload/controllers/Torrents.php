@@ -5,6 +5,10 @@
         $this->torrentModel = $this->model('Torrent');
     }
     
+	    public function index(){
+			// for now just to prevent display warning
+		}
+	
     public function browse(){
 
 dbconn();

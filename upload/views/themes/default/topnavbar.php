@@ -53,6 +53,7 @@
           Torrents
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+			<a class="dropdown-item" href="<?php echo $site_config["SITEURL"]; ?>/torrentsupload"><?php echo T_("UPLOAD_TORRENT");?></a>
 			<a class="dropdown-item" href="<?php echo $site_config["SITEURL"]; ?>/torrents/browse"><?php echo T_("BROWSE_TORRENTS");?></a> 
 			<a class="dropdown-item" href="<?php echo $site_config["SITEURL"]; ?>/torrentssearch"><?php echo T_("SEARCH_TORRENTS");?></a>
 			<a class="dropdown-item" href="<?php echo $site_config["SITEURL"]; ?>/torrents/today"><?php echo T_("TODAYS_TORRENTS");?></a>
@@ -61,5 +62,6 @@
     </ul>
   </div>
 </nav>
+<br>
     <?php } ?>
     <!-- END NAVIGATION -->

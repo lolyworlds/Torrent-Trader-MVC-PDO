@@ -8,7 +8,7 @@ if ($CURUSER) {
 if ($CURUSER["view_torrents"]=="yes" || !$site_config["MEMBERSONLY"]) { ?>
 	<a href='<?php echo TTURL; ?>/torrents/browse' class="list-group-item"><i class="fa fa-chevron-right"></i> <?php echo T_("BROWSE_TORRENTS"); ?></a>
 	<a href='<?php echo TTURL; ?>/torrents/today' class="list-group-item"><i class="fa fa-chevron-right"></i> <?php echo T_("TODAYS_TORRENTS"); ?></a>
-	<a href='<?php echo TTURL; ?>/torrents/search' class="list-group-item"><i class="fa fa-chevron-right"></i> <?php echo T_("SEARCH"); ?></a>
+	<a href='<?php echo TTURL; ?>/torrentssearch' class="list-group-item"><i class="fa fa-chevron-right"></i> <?php echo T_("SEARCH"); ?></a>
 	<a href='<?php echo TTURL; ?>/torrents/needseed' class="list-group-item"><i class="fa fa-chevron-right"></i> <?php echo T_("TORRENT_NEED_SEED"); ?></a>
 <?php }
     if ($CURUSER["edit_torrents"]=="yes") { ?>

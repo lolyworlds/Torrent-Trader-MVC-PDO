@@ -432,7 +432,7 @@ CREATE TABLE `news` (
 ) ENGINE=MyISAM AUTO_INCREMENT=1 ;
 
 INSERT INTO `news` (`id`, `userid`, `added`, `title`, `body`) VALUES 
-(1, 1, '2011-07-27 09:29:22', 'Welcome', 'Welcome To TorrentTrader v2');
+(1, 1, '2011-07-27 09:29:22', 'Welcome', 'Welcome To TorrentTrader MVC/PDO');
 
 DROP TABLE IF EXISTS `peers`;
 CREATE TABLE `peers` (

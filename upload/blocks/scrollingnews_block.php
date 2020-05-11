@@ -11,7 +11,7 @@ if ($CURUSER) {
 	position: relative;
 	/*width: 200px; marquee width */
 	height: 200px; /*marquee height */
-	background-color: white;
+	background-color: transparent;
 	overflow: hidden;
 	/*border: 3px solid orange;*/
 	padding: 2px;

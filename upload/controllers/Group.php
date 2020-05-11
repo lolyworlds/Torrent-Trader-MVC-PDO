@@ -5,6 +5,10 @@
          $this->groupsModel = $this->model('Groups');
     }
     
+	    public function index(){
+			// for now just to prevent display warning
+		}
+	
     public function staff(){
   dbconn();
 global $site_config, $CURUSER, $pdo;
@@ -20,9 +24,9 @@ global $site_config, $CURUSER, $pdo;
   while ( $row = $res->fetch(PDO::FETCH_ASSOC) )
   {
       $table[$row['class']] = ($table[$row['class']] ?? '').
-        "<td><img src='images/button_o".($row["last_access"] > $dt ? "n" : "ff")."line.png' alt='' /> ". 
+        "<td><img src='".$site_config['SITEURL']."/images/button_o".($row["last_access"] > $dt ? "n" : "ff")."line.png' alt='' /> ". 
         "<a href='".$site_config['SITEURL']."/accountdetails?id=".$row["id"]."'>" . class_user($row["username"]) . "</a> ".       
-        "<a href='".$site_config['SITEURL']."/mailbox?compose&amp;id=".$row["id"]."'><img src='images/button_pm.gif' border='0' alt='' /></a></td>";
+        "<a href='".$site_config['SITEURL']."/mailbox?compose&amp;id=".$row["id"]."'><img src='".$site_config['SITEURL']."/images/button_pm.gif' border='0' alt='' /></a></td>";
         
        $col[$row['class']] = ($col[$row['class']] ?? 0) + 1;
       

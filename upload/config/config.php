@@ -13,7 +13,7 @@ $site_config['mysql_user'] = "user";  //Username to connect
 $site_config['mysql_pass'] = "pass"; //Password to connect
 $site_config['mysql_db'] = "dbname";  //Database name
 
-$site_config['ttversion'] = 'PDO';							//DONT CHANGE THIS!
+$site_config['ttversion'] = 'MVC/PDO';							//DONT CHANGE THIS!
 
 // Main Site Settings
 $site_config['SITENAME'] = 'TorrentTrader';					//Site Name
@@ -72,7 +72,7 @@ $site_config['WELCOMEPMON'] = true;			//Auto PM New members
 $site_config['WELCOMEPMMSG'] = 'Thank you for registering at our tracker! Please remember to keep your ratio at 1.00 or greater :)';
 
 $site_config['SITENOTICEON'] = true;
-$site_config['SITENOTICE'] = 'Welcome To TorrentTrader PDO';
+$site_config['SITENOTICE'] = 'Welcome To TorrentTrader MVC/PDO';
 
 $site_config['UPLOADRULES'] = 'You should also include a .nfo file wherever possible<br />Try to make sure your torrents are well-seeded for at least 24 hours<br />Do not re-release material that is still active';
 
