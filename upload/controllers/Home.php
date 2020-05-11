@@ -81,7 +81,7 @@ if ($site_config['SHOUTBOX'] && !($CURUSER['hideshoutbox'] == 'yes')){
 // latest torrents
 begin_frame(T_("LATEST_TORRENTS"));
 
-print("<br /><center><a href='$site_config[SITEURL]torrents/browse'>".T_("BROWSE_TORRENTS")."</a> - <a href='$site_config[SITEURL]torrentssearch'>".T_("SEARCH_TORRENTS")."</a></center><br />");
+print("<br /><center><a href='$site_config[SITEURL]/torrents/browse'>".T_("BROWSE_TORRENTS")."</a> - <a href='$site_config[SITEURL]/torrentssearch'>".T_("SEARCH_TORRENTS")."</a></center><br />");
 
 if ($site_config["MEMBERSONLY"] && !$CURUSER) {
 	echo "<br /><br /><center><b>".T_("BROWSE_MEMBERS_ONLY")."</b></center><br /><br />";

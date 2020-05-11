@@ -145,7 +145,7 @@ while ($row = $result->fetch(PDO::FETCH_LAZY)) {
 
 //if the user is logged in, show the shoutbox, if not, dont.
 if(!isset($_GET['history'])) {
-	if (isset($_COOKIE["pass"])){
+	if (isset($_SESSION["pass"])){
 		echo "<form name='shoutboxform' action='/shoutbox' method='post'>";
 		echo "<center><table width='100%' border='0' cellpadding='1' cellspacing='1'>";
 		echo "<tr class='shoutbox_messageboxback'>";
