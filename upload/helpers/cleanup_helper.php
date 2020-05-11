@@ -105,6 +105,10 @@ function do_cleanup()
 
     }
 
+// DELETE OLD SESSION ENTRIES
+    $ts = gmtime() - $site_config["session_time"];
+    $pdo->run("DELETE FROM sessions WHERE _access > FROM_UNIXTIME($ts)");
+
 //LOCAL TORRENTS - MAKE NON-ACTIVE/OLD TORRENTS INVISIBLE
     $deadtime = gmtime() - $site_config["max_dead_torrent_time"];
     $pdo->run("UPDATE torrents SET visible='no' WHERE visible='yes' AND last_action < FROM_UNIXTIME($deadtime) AND seeders = '0' AND leechers = '0' AND external !='yes'");

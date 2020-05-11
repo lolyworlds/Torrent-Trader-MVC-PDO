@@ -43,6 +43,9 @@ $site_config['maxusers_invites'] = $site_config['maxusers'] + 5000; // Max # of 
 
 $site_config['currency_symbol'] = '$'; // Currency symbol (HTML allowed)
 
+// cleanup sessions
+$site_config["session_time"] = 1800; // default above 30 mins
+
 //AGENT BANS (MUST BE AGENT ID, USE FULL ID FOR SPECIFIC VERSIONS)
 $site_config['BANNED_AGENTS'] = "-AZ21, -BC, LIME";
 
