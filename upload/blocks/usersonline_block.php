@@ -1,31 +1,32 @@
 <?php
-if ($CURUSER){
-begin_block(T_("ONLINE_USERS"));
+if ($CURUSER) {
+    begin_block(T_("ONLINE_USERS"));
 
-$expires = 600; // Cache time in seconds
+    $expires = 600; // Cache time in seconds
 
-if (($rows = $TTCache->Get("usersonline_block", $expires)) === false) {
-	$res = $pdo->run("SELECT id, username FROM users WHERE enabled = 'yes' AND status = 'confirmed' AND privacy !='strong' AND UNIX_TIMESTAMP('".get_date_time()."') - UNIX_TIMESTAMP(users.last_access) <= 900");
+    if (($rows = $TTCache->Get("usersonline_block", $expires)) === false) {
+        $res = $pdo->run("SELECT id, username FROM users WHERE enabled = 'yes' AND status = 'confirmed' AND privacy !='strong' AND UNIX_TIMESTAMP('".get_date_time()."') - UNIX_TIMESTAMP(users.last_access) <= 900");
 
-	$rows = array();
-	while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
-		$rows[] = $row;
-	}
+        $rows = array();
+        while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
+            $rows[] = $row;
+        }
 
-	$TTCache->Set("usersonline_block", $rows, $expires);
+        $TTCache->Set("usersonline_block", $rows, $expires);
+    }
+
+    if (!$rows) { ?>
+	<p class="text-center"><?php echo T_("NO_USERS_ONLINE");?></p>
+<?php } else { ?>
+	<?php for ($i = 0, $cnt = count($rows), $n = $cnt - 1; $i < $cnt; $i++) {
+        $row = &$rows[$i]; ?>
+
+			<a href='<?php echo TTURL; ?>/accountdetails?id=<?php echo $row["id"]; ?>'><?php echo $row["username"]; ?></a><?php echo($i < $n ? ", " : ""); ?>
+			
+	<?php
+    }
 }
 
-if (!$rows) {
-	echo T_("NO_USERS_ONLINE");
-} else {
-		echo "<div id='uOnline' class='bMenu'><ul>\n";;
-	for ($i = 0, $cnt = count($rows), $n = $cnt - 1; $i < $cnt; $i++) {
-		$row = &$rows[$i];
-		echo "<li><a href='".TTURL."/accountdetails?id=$row[id]'>" . class_user($row["username"]) . "</a>".($i < $n ? ", " : "")."</li>\n";;
-	}
-		echo "</ul></div>\n";;
-}
-
-end_block();
+    end_block();
 }
 ?>

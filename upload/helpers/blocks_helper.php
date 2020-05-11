@@ -59,21 +59,23 @@ function begin_block($caption = "-", $align = "justify")
     global $THEME, $pdo, $site_config;
 
     $blockId = 'b-' . sha1($caption);
-    print("
-      <div class='myBlock'>
-        <div class='myBlock-caption'>$caption<a style='float:right; clear:right;' href='#' class='showHide' id='$blockId'></a></div>
-        <div class='myBlock-content'>
-        <div class='slidingDiv$blockId'>");
+    ?>
+    <div class="card">
+        <div class="card-header">
+            <?php echo $caption ?><a data-toggle="collapse" href="#" class="showHide" id="<?php echo $blockId; ?>" style="float: right;"></a>
+        </div>
+        <div class="card-body slidingDiv<?php echo $blockId; ?>">
+    <?php
 }
 
 // END BLOCK
 function end_block()
 {
     global $THEME, $pdo, $site_config;
-    print("</div></div>
-
-      </div>
-	  <br />");
+    ?>
+        </div>
+    </div><br />
+    <?php
 }
 // resort left blocks
 function resortleft()

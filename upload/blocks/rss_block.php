@@ -1,6 +1,5 @@
 <?php
-if ($CURUSER){
-class SimpleXmlParser1{
+class RssXmlParser{
     // @ Variable Holding Parser
 	var $SimpleParser;
 
@@ -43,7 +42,7 @@ class SimpleXmlParser1{
     function XmlParserendElement($parser, $tagName) {
         //The Function Will be called, when ever the XML_PARSER Encounters a end Tag, in the XML File
 		if ($tagName == "ITEM") {
-		  	printf("<dt><b><a href='%s'>%s</a></b></dt>",
+		  	printf("<dt><strong><a href='%s'>%s</a></strong></dt>",
 			trim($this->link),htmlspecialchars(trim($this->title)));    //Display the Title Element from the XML file to HTML
 			//printf("<dd>%s</dd>",htmlspecialchars(trim($this->description)));  // Description element is made to display in HTML
             // Deallocation of all Global Variables
@@ -89,13 +88,13 @@ class SimpleXmlParser1{
 }	
 
 
-
+if ($CURUSER) {
 begin_block("RSS");
 $FeedUrl = "";
-if (!$FeedUrl) {
-	echo "<center>This would need editing with an rss feed of your choice.</center>";
-} else {
-	$XMLpar = new SimpleXmlParser1($FeedUrl);
+if (!$FeedUrl) { ?>
+	<p class="text-center">This would need editing with an rss feed of your choice.</p>
+<?php } else {
+	$XMLpar = new RssXmlParser($FeedUrl);
 }
 end_block();
 }

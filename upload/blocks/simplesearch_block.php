@@ -1,14 +1,14 @@
 <?php
-if ($CURUSER){
-begin_block(T_("SEARCH"));
-?>
-	<center>
-	<form method="get" action="<?php echo TTURL; ?>/torrentssearch"><br />
-	<input type="text" name="search" size="15" value="<?php echo htmlspecialchars($_GET['search'] ?? ''); ?>" />
-	<br /><br />
-	<button type="submit" class="btn btn-primary btn-sm"><?php echo T_("SEARCH"); ?></button>
+if ($CURUSER) {
+    begin_block(T_("SEARCH")); ?>
+	<form method="get" action="<?php echo TTURL; ?>/torrentssearch" class="form-inline">
+		<div class="input-group">
+			<input type="text" name="search" class="form-control" value="<?php echo htmlspecialchars($_GET['search']); ?>" />
+			<span class="input-group-btn">
+				<button type="submit" class="btn btn-primary"/><?php echo T_("SEARCH"); ?></button>
+			</span>
+		</div>
 	</form>
-	</center><br />
 	<?php
 end_block();
 }

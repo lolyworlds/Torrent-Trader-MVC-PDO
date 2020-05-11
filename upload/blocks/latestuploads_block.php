@@ -15,14 +15,14 @@ if (!$site_config["MEMBERSONLY"] || $CURUSER) {
 
 	if ($latestuploadsrecords) {
 		foreach ($latestuploadsrecords as $row) { 
-			$char1 = 18; //cut length 
-			$smallname = htmlspecialchars(CutName($row["name"], $char1));
-			echo "<a href='$site_config[SITEURL]/torrents/details?id=$row[id]' title='".htmlspecialchars($row["name"])."'>$smallname</a><br />\n";
-			echo "- [".T_("SIZE").": ".mksize($row["size"])."]<br /><br />\n";
-		}
-	} else {
-		print("<center>".T_("NOTHING_FOUND")."</center>\n");
-	}
+			$char1 = 20; //cut length 
+			$smallname = htmlspecialchars(CutName($row["name"], $char1)); ?>
+			<div class="pull-left"><a href="<?php echo TTURL; ?>/torrents-details.php?id=<?php echo $row["id"]; ?>" title="<?php echo htmlspecialchars($row["name"]); ?>"><?php echo $smallname; ?></a></div> 
+			<div class="pull-right"><?php echo T_("SIZE"); ?>: <span class="label label-success"><?php echo mksize($row["size"]); ?></span></div>
+		<?php }
+	} else { ?>
+		<p calss="text-center"><?php echo T_("NOTHING_FOUND");?></p>
+	<?php }
 	end_block();
 }
 ?>

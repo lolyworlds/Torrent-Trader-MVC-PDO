@@ -1,5 +1,4 @@
 <?php
-
 $date_time = get_date_time(gmtime()-(3600*24)); // the 24hrs is the hours you want listed
 $registered = number_format(get_row_count("users"));
 $ncomments = number_format(get_row_count("comments"));
@@ -26,36 +25,45 @@ while ($row =  $result->fetch(PDO::FETCH_LAZY)) {
 $localpeers = $leechers+$seeders;
 if($CURUSER["edit_users"]=="yes") {
 begin_block(T_("STATS"));
+?>
 
-    echo "<div align='left'>";
-echo "<b>".T_("TORRENTS")."</b>";
-echo "<br /><small>".T_("TRACKING").":<b> $ntor ".P_("TORRENT", $ntor)."</b></small>";
-echo "<br /><small>".T_("NEW_TODAY").":<b> " . $todaytor . "</b></small>";
-echo "<br /><small>".T_("SEEDERS").":<b> " . number_format($seeders) . "</b></small>";
-echo "<br /><small>".T_("LEECHERS").":<b> " . number_format($leechers) . "</b></small>";
-echo "<br /><small>".T_("PEERS").":<b> " . number_format($localpeers) . "</b></small>";
-echo "<br /><small>".T_("DOWNLOADED").":<b> " . mksize($totaldownloaded) . "</b></small>";
-echo "<br /><small>".T_("UPLOADED").":<b> " . mksize($totaluploaded) . "</b></small>";
-echo "<br /><br /><b>".T_("MEMBERS")."</b>";
-echo "<br /><small>".T_("WE_HAVE").":<b> $registered ".P_("MEMBER", $registered)."</b></small>";
-echo "<br /><small>".T_("NEW_TODAY").":<b> " . $regtoday . "</b></small>";
-echo "<br /><small>".T_("VISITORS_TODAY").": <b>" . $totaltoday . "</b></small>";
-echo "<br /><br /><b>".T_("ONLINE")."</b>";
-echo "<br /><small>".T_("TOTAL_ONLINE").":<b> " . $totalonline . "</b></small>";
-echo "<br /><small>".T_("MEMBERS").":<b> " . $members . "</b></small>";
-echo "<br /><small>".T_("GUESTS_ONLINE").":<b> " . $guests . "</b></small>";
-echo "<br /><small>".T_("COMMENTS_POSTED").":<b> " . $ncomments . "</b></small>";
-echo "<br /><small>".T_("MESSAGES_SENT").":<b> " . $nmessages . "</b></small>";
-echo "<br /><br /></div>";
+<ul class="list-unstyled">
+	<p><strong><?php echo T_("TORRENTS");?></strong></p>
+	<li><i class="fa fa-folder-open-o"></i> <?php echo T_("TRACKING");?>: <strong><?php echo $ntor;?> <?php echo P_("TORRENT", $ntor);?></strong></li>
+	<li><i class="fa fa-calendar-o"></i> <?php echo T_("NEW_TODAY");?>: <strong><?php echo $todaytor ;?></strong></li>
+	<li><i class="fa fa-refresh"></i> <?php echo T_("SEEDERS");?>: <strong><?php echo number_format($seeders);?></strong></li>
+	<li><i class="fa fa-arrow-circle-down"></i> <?php echo T_("LEECHERS");?>: <strong><?php echo number_format($leechers);?></strong></li>
+	<li><i class="fa fa-arrow-circle-up"></i> <?php echo T_("PEERS");?>: <strong><?php echo number_format($localpeers);?></strong></li>
+	<li><i class="fa fa-download"></i> <?php echo T_("DOWNLOADED");?>: <strong><span class="label label-danger"><?php echo mksize($totaldownloaded);?></span></strong></li>
+	<li><i class="fa fa-upload"></i> <?php echo T_("UPLOADED");?>: <strong><span class="label label-success"><?php echo mksize($totaluploaded);?></span></strong></li>
+	<hr />
+	<p><strong><?php echo T_("MEMBERS");?></strong></p>
+	<li><?php echo T_("WE_HAVE");?>: <strong><?php echo $registered;?> <?php echo P_("MEMBER", $registered);?></strong></li>
+	<li><?php echo T_("NEW_TODAY");?>: <strong><?php echo $regtoday;?></strong></li>
+	<li><?php echo T_("VISITORS_TODAY");?>: <strong><?php echo $totaltoday;?></strong></li>
+	<hr />
+	<p><strong><?php echo T_("ONLINE");?></strong></p>
+	<li><?php echo T_("TOTAL_ONLINE");?>: <strong><?php echo $totalonline;?></strong></li>
+	<li><?php echo T_("MEMBERS");?>: <strong><?php echo $members;?></strong></li>
+	<li><?php echo T_("GUESTS_ONLINE");?>: <strong><?php echo $guests;?></strong></li>
+	<li><?php echo T_("COMMENTS_POSTED");?>: <strong><?php echo $ncomments;?></strong></li>
+	<li><?php echo T_("MESSAGES_SENT");?>: <strong><?php echo $nmessages;?></strong></li>
+</ul>
+
+<?php
 end_block();
 }
 if($CURUSER["edit_users"]=="no") {
 begin_block(T_("STATS"));
-    echo "<div align='left'>";
-echo "<b>".T_("TORRENTS")."</b>";
-echo "<br /><small>".T_("TRACKING").":<b> $ntor ".P_("TORRENT", $ntor)."</b></small>";
-echo "<br /><small>".T_("NEW_TODAY").":<b> " . $todaytor . "</b></small>";
-echo "<br /><br /></div>";
+?>
+
+<ul class="list-unstyled">
+	<p><strong><?php echo T_("TORRENTS");?></strong></p>
+	<li><i class="fa fa-folder-open-o"></i> <?php echo T_("TRACKING");?>: <strong><?php echo $ntor;?> <?php echo P_("TORRENT", $ntor);?></strong></li>
+	<li><i class="fa fa-calendar-o"></i> <?php echo T_("NEW_TODAY");?>: <strong><?php echo $todaytor ;?></strong></li>
+</ul>
+
+<?php
 end_block();
 }
 ?>

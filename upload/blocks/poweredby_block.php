@@ -1,19 +1,21 @@
 <?php
-if ($CURUSER){
+if ($CURUSER) {
 begin_block("Powered By");
 ?>
 
 <center>
-    <a href="http://validator.w3.org/check?uri=referer" target="_blank"><img
-      src="<?php echo $site_config["SITEURL"]; ?>/images/misc/xhtml.png" alt="Valid XHTML 1.0 Transitional" title="Valid XHTML 1.0 Transitional" height="31" width="88" /></a>
+    <a href="https://getbootstrap.com/" target="_blank"><img
+      src="<?php echo $site_config["SITEURL"]; ?>/blocks/images/bootstrap.png" alt="Bootstrap" title="Bootstrap" height="60" width="50" /></a>
       
-    <a href="http://www.php.net" target="_blank"><img
-      src="<?php echo $site_config["SITEURL"]; ?>/images/misc/php.png" alt="PHP Hypertext Preprocessor" title="PHP Hypertext Preprocessor" height="31" width="88" /></a>
+    <a href="#" target="_blank"><img
+      src="<?php echo $site_config["SITEURL"]; ?>/blocks/images/mvc.png" alt="MVC" title="MVC" height="60" width="60" /></a>
       
-    <a href="http://www.mysql.com/" target="_blank"><img
-      src="<?php echo $site_config["SITEURL"]; ?>/images/misc/pdo.png" alt="MySQL" title="MySQL" height="31" width="88" /></a>
+    <a href="https://phpdelusions.net/pdo" target="_blank"><img
+      src="<?php echo $site_config["SITEURL"]; ?>/blocks/images/pdo.png" alt="PDO" title="PDO" height="60" width="60" /></a>
+
+    <a href="https://www.php.net/" target="_blank"><img
+      src="<?php echo $site_config["SITEURL"]; ?>/blocks/images/php.png" alt="PHP" title="PHP" height="60" width="60" /></a>
 </center>
-  
 <?php
 end_block();
 }

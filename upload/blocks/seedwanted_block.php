@@ -19,16 +19,16 @@ if (!$site_config["MEMBERSONLY"] || $CURUSER) {
 	}
 
 
-	if (!$rows) {
-		echo "<br />".T_("NOTHING_FOUND")."<br />";
-	} else {
-		echo "<div id='sNeeded' class='bMenu'><ul>\n";
+	if (!$rows) { ?>
+		<p class="text-center"><?php echo T_("NOTHING_FOUND");?></p>
+	<?php } else {
 		foreach ($rows as $row) { 
-			$char1 = 18; //cut length 
-			$smallname = htmlspecialchars(CutName($row["name"], $char1));
-			echo "<li><a href='".$site_config['SITEURL']."/torrents/details?id=$row[id]' title='".htmlspecialchars($row["name"])."'>$smallname</a><br /> - [".T_("LEECHERS").": " . number_format($row["leechers"]) . "]</li>\n";
-		}
-	echo "</ul></div>\n";
+			$char1 = 20; //cut length 
+			$smallname = htmlspecialchars(CutName($row["name"], $char1)); ?>
+
+			<div class="pull-left"><a href="<?php echo TTURL; ?>torrents/details?id=<?php echo $row["id"]; ?>" title="<?php echo htmlspecialchars($row["name"]); ?>"><?php echo $smallname; ?></a></div>
+			<div class="pull-right"><span class="label label-waring"><?php echo T_("LEECHERS"); ?>: <?php echo number_format($row["leechers"]); ?></span></div>
+		<?php }
 	}
 	end_block();
 }

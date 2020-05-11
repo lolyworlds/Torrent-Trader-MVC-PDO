@@ -1,0 +1,45 @@
+.navbar {
+    background-image: -webkit-linear-gradient(top, #072F5F, #3895D3);
+    background-image: linear-gradient(to bottom, #072F5F, #3895D3);
+    background-repeat: repeat-x;
+}
+
+.card-header {
+    background-image: -webkit-linear-gradient(top, #072F5F, #3895D3);
+    background-image: linear-gradient(to bottom, #072F5F, #3895D3);
+    background-repeat: repeat-x;
+}
+.showHide {
+	float: right;
+}
+.shoutbox {
+	max-height: 200px;
+	overflow: auto;
+}
+iframe {
+	border: 0;
+	width: 100%;
+	min-height:220px;
+}
+body {
+	overflow-x:hidden;
+}
+
+.newtd {
+    color: #fff;
+    background-image: -webkit-linear-gradient(top, #072F5F, #3895D3);
+    background-image: linear-gradient(to bottom, #072F5F, #3895D3);
+    background-repeat: repeat-x;
+}
+
+/* -- Bootstrap Table --*/
+.table thead th {
+        color: #fff;
+        background-color: #072F5F;
+        background-image: -webkit-linear-gradient(top, #072F5F, #3895D3);
+        background-image: linear-gradient(to bottom, #072F5F, #3895D3);
+        background-repeat: repeat-x;
+}
+.tbody td {
+    background-color: #EEEEEE;
+} 

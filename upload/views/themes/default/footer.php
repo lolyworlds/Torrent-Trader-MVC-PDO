@@ -2,29 +2,41 @@
 <!-- END MIDDLE COLUMN -->
 <!-- START RIGHT COLUMN -->
     <?php if ($site_config["RIGHTNAV"]){ ?>
-<div class="col-sm-2 sidenav">
+<div class="col-sm-2">
     <?php rightblocks(); ?>
 </div>
     <?php } ?>
 <!-- END RIGHT COLUMN -->
 </div>
-<?php require "views/themes/" . $THEME . "/bottomnavbar.php";?>
 </div>
+<!-- END MAIN -->
 
-<!-- JS -->
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.js" type="text/javascript"></script>
-<script type="text/javascript" src="<?php echo $site_config["SITEURL"]; ?>/helpers/java_klappe.js"></script>
-<!-- Optional JavaScript -->
-<!-- jQuery first, then Popper.js, then Bootstrap JS -->
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
-</script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
-</script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
-</script>
+<!-- Footer -->
+<footer>
+  <hr />
+  <ul class="list-unstyled text-center">
+        <li><?php printf (T_("POWERED_BY_TT"), $site_config["ttversion"]); ?></li>
+        <li><?php $totaltime = array_sum(explode(" ", microtime())) - $GLOBALS['tstart']; ?></li>
+        <li><?php printf(T_("PAGE_GENERATED_IN"), $totaltime); ?></li>
+        <li><a href="https://www.torrenttrader.xyz" target="_blank">www.torrenttrader.xyz</a> -|- <a href='<?php echo TTURL; ?>/rss'><i class="fa fa-rss-square"></i> <?php echo T_("RSS_FEED"); ?></a> - <a href='<?php echo TTURL; ?>/rss.phpcustom=1'><?php echo T_("FEED_INFO"); ?></a></li>
+        <li>Bootstrap 4.3.1 -|- jQuery 3.4.1</li>
+		<li>Update By: M-jay ©2020</li>
+      </ul>
+</footer>
+<!-- Footer -->
+
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.js" type="text/javascript"></script>
+  <!-- TT old JS -->
+  <script src="<?php echo TTURL; ?>/views/themes/<?php echo $THEME; ?>/js/java_klappe.js"></script>
+  <!-- Jquery 3.4 core JavaScript -->
+  <script src="<?php echo TTURL; ?>/views/themes/<?php echo $THEME; ?>/js/jquery-3.3.1.min"></script>
+  <!-- Popper JavaScript -->
+  <script src="<?php echo TTURL; ?>/views/themes/<?php echo $THEME; ?>/js/popper.min"></script>
+  <!-- Bootstrap 4 core JavaScript -->
+  <script src="<?php echo TTURL; ?>/views/themes/<?php echo $THEME; ?>/js/bootstrap-4.3.1"></script>
+
+
 </body>
 
 </html>

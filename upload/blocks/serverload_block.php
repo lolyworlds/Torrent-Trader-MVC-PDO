@@ -1,7 +1,5 @@
 <?php
-//SERVER LOAD BLOCK
-
-if ($CURUSER){
+if ($CURUSER) {
 begin_block(T_("SERVER_LOAD"));
 
 //Get average CPU usage 

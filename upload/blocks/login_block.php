@@ -1,63 +1,37 @@
 <?php
-/*
-if (!$CURUSER) {
-	begin_block(T_("LOGIN"));
-?>
-<form method="post" action="<?php echo TTURL; ?>/account/login">
-<table border="0" width="100%">
-	<tr><td>
-		<table border="0" align="center">
-			<tr>
-			<td align="center"><font face="verdana" size="1"><b><?php echo T_("USERNAME"); ?>:</b></font></td>
-			</tr><tr>
-			<td align="center"><input type="text" size="12" name="username" /></td>
-			</tr><tr>
-			<td align="center"><font face="verdana" size="1"><b><?php echo T_("PASSWORD"); ?>:</b></font></td>
-			</tr><tr>
-			<td align="center"><input type="password" size="12" name="password"  /></td>
-			</tr><tr>
-			<td align="center"><input type="submit" value="<?php echo T_("LOGIN"); ?>" /></td>
-			</tr>
-		</table>
-		</td>
-		</tr>
-	<tr>
-<td align="center">[<a href=".$site_config['SITEURL']."/account/signup"><?php echo T_("SIGNUP");?></a>]<br />[<a href=".$site_config['SITEURL']."/account/recover"><?php echo T_("RECOVER_ACCOUNT");?></a>]</td> </tr>
-	</table>
-    </form> 
-<?php
-end_block();
-
-} else {
-*/
-if ($CURUSER){
-begin_block(class_user($CURUSER["username"]));
+if ($CURUSER) {
+begin_block($CURUSER["username"]);
 
 	$avatar = htmlspecialchars($CURUSER["avatar"]);
 	if (!$avatar)
-		$avatar = $site_config["SITEURL"]."/images/default_avatar.png";
+	// $avatar = $site_config["SITEURL"]."/images/default_avatar.png";
+	$avatar = "https://placehold.it/200x300";
 
 	$userdownloaded = mksize($CURUSER["downloaded"]);
 	$useruploaded = mksize($CURUSER["uploaded"]);
 	$privacylevel = T_($CURUSER["privacy"]);
 
 	if ($CURUSER["uploaded"] > 0 && $CURUSER["downloaded"] == 0)
-		$userratio = "Inf.";
+		$userratio = '<span class="label label-success pull-right">Inf.</span>';
 	elseif ($CURUSER["downloaded"] > 0)
-		$userratio = number_format($CURUSER["uploaded"] / $CURUSER["downloaded"], 2);
+		$userratio = '<span class="label label-info pull-right">'.number_format($CURUSER["uploaded"] / $CURUSER["downloaded"].'</span>', 2);
 	else
-		$userratio = "---";
+		$userratio = '<span class="label label-info pull-right">---</span>'; ?>
+	<img width="200" height="300" src="<?php echo $avatar;?>" alt="" class="thumbnail center-block" />
+	<ul class="list-group">
+		<li class="list-group-item"><?php echo T_("DOWNLOADED");?> : <span class="label label-danger pull-right"><?php echo $userdownloaded;?></span></li>
+		<li class="list-group-item"><?php echo T_("UPLOADED");?>: <span class="label label-success pull-right"><?php echo $useruploaded;?></span></li>
+		<li class="list-group-item"><?php echo T_("CLASS");?>: <div class="pull-right"><?php echo T_($CURUSER["level"]);?></div></li>
+		<li class="list-group-item"><?php echo T_("ACCOUNT_PRIVACY_LVL");?>: <div class="pull-right"><?php echo $privacylevel;?></div></li>
+		<li class="list-group-item"><?php echo T_("RATIO");?>: <?php echo $userratio;?></span></li>
+	</ul>
+	<div class="text-center">
+		<a href="<?php echo TTURL; ?>/usercp" class="btn btn-primary"><?php echo T_("ACCOUNT"); ?></a>
+		<?php if ($CURUSER["control_panel"]=="yes") { ?>
+		<a href="<?php echo TTURL; ?>/admincp" class="btn btn-warning"><?php echo T_("STAFFCP");?></a>
+		<?php } ?>
+	</div>
 
-	print ("<center><img width='80' height='80' src='$avatar' alt='' /></center><br />" . T_("DOWNLOADED") . ": $userdownloaded<br />" . T_("UPLOADED") . ": $useruploaded<br />".T_("CLASS").": ".T_($CURUSER["level"])."<br />" . T_("ACCOUNT_PRIVACY_LVL") . ": $privacylevel<br />". T_("RATIO") .": $userratio");
-
-?>
-
-
-<center><a href="<?php echo $site_config["SITEURL"]; ?>/usercp"><?php echo T_("ACCOUNT"); ?></a> <br /> 
-<?php if ($CURUSER["control_panel"]=="yes") {
-print("<a href=".$site_config['SITEURL']."/admincp>".T_("STAFFCP")."</a>");}?>
-</center>
-<?php
+<?php 
 end_block();
-}
-?>
+} ?>

@@ -39,22 +39,21 @@ $languages = '';
 
 ?>
  
- <form method="post" action="<?php echo $site_config['SITEURL'] ?>/stylesheet">
-<table width="100%">
-  <tr>
-<td align="center" valign="middle"><b><?php echo T_("THEME"); ?></b>
-<select name="stylesheet"><?php echo $stylesheets; ?></select></td>
-  </tr>
-  <tr>
-<td align="center" valign="middle"><b><?php echo T_("LANGUAGE"); ?></b>
-<select name="language"><?php echo $languages; ?></select></td>
-  </tr>
-  <tr>
-<td align="center" valign="middle"><button type="submit" class="btn btn-primary btn-sm"><?php echo T_("APPLY"); ?></button></td>
-  </tr>
-</table>
+ <form method="post" action="<?php echo TTURL; ?>/stylesheet" class="form-horizontal">
+ 	<div class="form-group">
+		<label class="col-sm-4 control-label"><?php echo T_("THEME"); ?></label>
+		<div class="col-sm-8">
+			<select name="stylesheet" class="form-control"><?php echo $stylesheets; ?></select>
+  		</div>
+  	</div>
+	<div class="form-group">
+		<label class="col-sm-4 control-label"><?php echo T_("LANGUAGE"); ?></label>
+		<div class="col-sm-8">
+			<select name="language" class="form-control"><?php echo $languages; ?></select></td>
+  		</div>
+  	</div>
+	<button type="submit" class="btn btn-primary center-block" value="" /><?php echo T_("APPLY"); ?></button>
   </form>  
-
 <?php
 end_block();
 }

@@ -1,10 +1,9 @@
 <?php
-if ($CURUSER){
-if ($site_config['NEWSON']){ //check news is turned on first   
-	begin_block(T_("LATEST_NEWS"));
+if ($CURUSER) {
+    if ($site_config['NEWSON']) { //check news is turned on first
+        begin_block(T_("LATEST_NEWS"));
 
-	$res = $pdo->run("SELECT * FROM news ORDER BY added DESC LIMIT 10");
-
+        $res = $pdo->run("SELECT * FROM news ORDER BY added DESC LIMIT 10");
 	?>
 	<style type="text/css">
 
@@ -70,24 +69,25 @@ if ($site_config['NEWSON']){ //check news is turned on first
 
 	</script>
 
-	<div id="marqueecontainer" onmouseover="copyspeed=pausespeed" onmouseout="copyspeed=marqueespeed" style="background-color: transparent;">
-	<div id="vmarquee" style="position: absolute; width: 100%; background-color: transparent;">
+	<div id="marqueecontainer" onmouseover="copyspeed=pausespeed" onmouseout="copyspeed=marqueespeed">
+	<div id="vmarquee">
 
 	<!--YOUR SCROLL CONTENT HERE-->
 	<?php
-	if ($res->rowCount()){
-		while($array = $res->fetch(PDO::FETCH_ASSOC)){
-			print("<a href='$site_config[SITEURL]/comments?type=news&amp;id=". $array['id'] . "'><b>". $array['title'] . "</b></a><br /><b>".T_("POSTED").":</b> " . gmdate("d-M-y", utc_to_tz_time($array["added"])) . "<br /><br />");
-		}
-	}else{
-		echo T_("NO_NEWS");
-	}
-	?>
-	</div>
-	</div>
-	<?php
+    if ($res->rowCount()) { ?>
+	<dl>
+	<?php while ($array = $res->fetch(PDO::FETCH_ASSOC)) { ?>
+			<dt><a href='<?php echo TTURL; ?>/comments?type=news&amp;id=<?php echo $array['id'];?>'><strong><?php echo $array['title'];?></strong></a></dt><dd><strong><?php echo T_("POSTED");?>:</strong> <?php echo gmdate("d-M-y", utc_to_tz_time($array["added"]));?><dd>
+		<?php } ?>
+	</dl>
 
-	end_block();
-}//end newson check
+	<?php } else { ?>
+	<p class="text-center"><?php echo T_("NO_NEWS");?></p>
+	<?php } ?>
+</div>
+</div>
+<?php 
+end_block();
+    }//end newson check
 }
 ?>

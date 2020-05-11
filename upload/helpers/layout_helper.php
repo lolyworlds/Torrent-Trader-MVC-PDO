@@ -39,20 +39,23 @@ function begin_frame($caption = "-", $align = "justify")
     global $THEME, $site_config;
 
     $blockId = 'f-' . sha1($caption);
-    print("<div class='myFrame'>
-        <div class='myFrame-caption'>$caption<a style='float:right; clear:right;' href='#' class='showHide' id='$blockId'></a></div>
-        <div class='myFrame-content'>
-        <div class='slidingDiv$blockId'>");
+    ?>
+    <div class="card">
+        <div class="card-header">
+            <?php echo $caption ?><a data-toggle="collapse" href="#" class="showHide" id="<?php echo $blockId; ?>" style="float: right;"></a>
+        </div>
+        <div class="card-body slidingDiv<?php echo $blockId; ?>">
+    <?php
 }
 
 //END FRAME
 function end_frame()
 {
     global $THEME, $site_config;
-    print("</div></div>
-
-      </div>
-	  <br />");
+    ?>
+        </div>
+    </div><br />
+    <?php
 }
 
 // Table Construction

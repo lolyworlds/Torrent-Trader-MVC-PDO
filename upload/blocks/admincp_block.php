@@ -5,7 +5,7 @@
        begin_block("AdminCP");
        ?>
        
-       <select name="admin" onchange="if(this.options[this.selectedIndex].value != -1){ window.location = this.options[this.selectedIndex].value; }">
+       <select name="admin" class="form-control" onchange="if(this.options[this.selectedIndex].value != -1){ window.location = this.options[this.selectedIndex].value; }">
        <option value="-1">Navigation</option>
        <option value="<?php echo TTURL; ?>/admincp?action=usersearch">Advanced User Search</option>
        <option value="<?php echo TTURL; ?>/admincp?action=avatars">Avatar Log</option>
@@ -15,7 +15,7 @@
        <option value="<?php echo TTURL; ?>/admincp?action=blocks&amp;do=view">Blocks</option>
        <option value="<?php echo TTURL; ?>/admincp?action=cheats">Detect Possibe Cheats</option>
        <option value="<?php echo TTURL; ?>/admincp?action=emailbans">E-mail Bans</option>
-       <option value="<?php echo TTURL; ?>/faq/manage">FAQ</option>
+       <option value="<?php echo TTURL; ?>/admincp/faq/manage">FAQ</option>
        <option value="<?php echo TTURL; ?>/admincp?action=freetorrents">Freeleech Torrents</option>
        <option value="<?php echo TTURL; ?>/admincp?action=lastcomm">Latest Comments</option>
        <option value="<?php echo TTURL; ?>/admincp?action=masspm">Mass PM</option>

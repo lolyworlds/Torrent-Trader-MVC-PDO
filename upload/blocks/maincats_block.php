@@ -1,14 +1,14 @@
 <?php
 if (!$site_config["MEMBERSONLY"] || $CURUSER) {
 begin_block(T_("BROWSE_TORRENTS"));
-	$catsquery = $pdo->run("SELECT distinct parent_cat FROM categories ORDER BY parent_cat");
-	echo "<div id='maincats' class='bMenu'><ul>\n";
-	echo "<li><a href='$site_config[SITEURL]/torrents/browse'>".T_("SHOW_ALL")."</a></li>\n";
-	while($catsrow = $catsquery->fetch(PDO::FETCH_ASSOC)){
-		echo "<li><a href='$site_config[SITEURL]/torrents/browse?parent_cat=".urlencode($catsrow['parent_cat'])."'>$catsrow[parent_cat]</a></li>\n";
-	}
-	echo "</ul></div>\n";
-
+$catsquery = $pdo->run("SELECT distinct parent_cat FROM categories ORDER BY parent_cat"); ?>
+	<div class="list-group">
+		<a href="torrents.php" class="list-group-item"><i class="fa fa-folder-open"></i> <?php echo T_("SHOW_ALL"); ?></a>
+	<?php while($catsrow = $catsquery->fetch(PDO::FETCH_ASSOC)){ ?>
+		<a href="<?php echo TTURL; ?>/torrents/browse?parent_cat=<?php echo urlencode($catsrow["parent_cat"]); ?>" class="list-group-item"><i class="fa fa-folder-open"></i> <?php echo $catsrow["parent_cat"]; ?></a>
+	<?php } ?>
+	</div>
+<?php
 end_block();
 }
 ?>
