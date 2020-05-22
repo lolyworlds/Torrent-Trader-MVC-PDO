@@ -98,7 +98,7 @@ if ($CURUSER) {
 
             // now os is an array like this: array(array(123, "Option 1"), array(45, "Option 2"))
             if ($arr["sort"] == "yes") {
-                usort($os, srt);
+                usort($os, 'srt');
             }
 
             $i = 0;

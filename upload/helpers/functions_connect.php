@@ -57,5 +57,8 @@ function dbconn($autoclean = false)
     if ($autoclean) {
         autoclean();
     }
-
+/*
+    echo '<br>FULL SESSION<br>';
+    var_dump($_SESSION);
+*/
 }

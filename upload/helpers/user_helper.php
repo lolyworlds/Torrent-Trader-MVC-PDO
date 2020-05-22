@@ -14,17 +14,17 @@ function userlogin()
     unset($GLOBALS["CURUSER"]);
 
     // Check The Cookies and Sessions details
-    if (!$_SESSION["pass"] || !is_numeric($_SESSION["uid"])) {     // todo
+    if (!$_SESSION["password"] || !is_numeric($_SESSION["id"])) {     // todo
         logoutcookie();
         return;
     }
     
     //Get User Details And Permissions
-    $res = $pdo->run("SELECT * FROM users INNER JOIN groups ON users.class=groups.group_id WHERE id=$_SESSION[uid] AND users.enabled='yes' AND users.status = 'confirmed'");
+    $res = $pdo->run("SELECT * FROM users INNER JOIN groups ON users.class=groups.group_id WHERE id=$_SESSION[id] AND users.enabled='yes' AND users.status = 'confirmed'");
     $row = $res->fetch(PDO::FETCH_ASSOC);
 
     $hash = $row["id"] . $row["secret"] . $row["password"] . $ip . $row["secret"];
-    if (!$row || !$_SESSION['pass'] == $hash){
+    if (!$row || !$_SESSION['password'] == $hash){
     		logoutcookie();
 		return;
         
@@ -37,7 +37,9 @@ function userlogin()
 
     $stmt = $pdo->run("UPDATE users SET last_access=?,ip=?,page=? WHERE id=?", [get_date_time(), $ip, $where, $id]);
     $GLOBALS["CURUSER"] = $row;
-    unset($row);
+    // super sess for test todo
+	// $_SESSION = $row;
+	unset($row);
 }
 
 // Connection Verification Function Otherwise Connection Page

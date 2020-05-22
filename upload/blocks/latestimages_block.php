@@ -6,7 +6,7 @@ if (!$site_config["MEMBERSONLY"] || $CURUSER) {
 	if ($res->rowCount() > 0) {
 		begin_block(T_("LATEST_POSTERS"));
 
-		while ($row = mysql_fetch_assoc($res)) {
+		while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
 				$cat = htmlspecialchars("$row[cat_parent] - $row[cat_name]");
 				$name = htmlspecialchars($row["name"]);
 

@@ -201,21 +201,13 @@ if ($_POST["takeupload"] == "yes") {
 	}else{
 		$anon = "no";
 	}
-	
-$filecounts = (int)$filecount;
-/* Images not inserting bybass image2 for now
-$inames = '';
 
+ $inames = '';
+ $filecounts = (int)$filecount;
     $ret = DB::run("INSERT INTO torrents (filename, owner, name, descr, image1, image2, category, added, info_hash, size, numfiles, save_as, announce, external, nfo, torrentlang, anon, last_action) 
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 	[$fname, $CURUSER['id'], $name, $descr, $inames[0], $inames[1], $catid, get_date_time(), $infohash, $torrentsize, $filecounts, $fname, $announce, $external, $nfo, $langid, $anon, get_date_time()]);
-*/ 
-$image2fix = '';
-
-    $ret = DB::run("INSERT INTO torrents (filename, owner, name, descr, image1, image2, category, added, info_hash, size, numfiles, save_as, announce, external, nfo, torrentlang, anon, last_action) 
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-	[$fname, $CURUSER['id'], $name, $descr, $inames[0], $image2fix, $catid, get_date_time(), $infohash, $torrentsize, $filecounts, $fname, $announce, $external, $nfo, $langid, $anon, get_date_time()]);
-		
+ 	
 	$id = DB::lastInsertId();
 	
 	if ($ret->errorCode() == 1062)
@@ -343,12 +335,12 @@ if ($site_config['ANONYMOUSUPLOAD'] && $site_config["MEMBERSONLY"] ){ ?>
 }
 
 print ("<tr><td align='center' colspan='2'>" . T_("DESCRIPTION") . "</td></tr></table>");
-$descr = '';
+//$descr = '';
 require_once("helpers/bbcode_helper.php");
 print textbbcode("upload","descr","$descr");
 ?>
 
-<br /><br /><center><button type="input" class="btn btn-primary btn-sm"><?php echo T_("UPLOAD_TORRENT") ?></button><br />
+<br /><br /><br /><center><input type="submit" value="<?php echo T_("UPLOAD_TORRENT"); ?>" /><br />
 <i><?php echo T_("CLICK_ONCE_IMAGE");?></i>
 </center>
 </form>
