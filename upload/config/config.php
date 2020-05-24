@@ -43,6 +43,10 @@ $site_config['maxusers_invites'] = $site_config['maxusers'] + 5000; // Max # of 
 
 $site_config['currency_symbol'] = '$'; // Currency symbol (HTML allowed)
 
+// sedd bonus
+$site_config["bonuspertime"] = 0.1; // per seeded torrent
+$site_config['add_bonus'] = 3600; // time to add bonus (1 hour)
+
 // cleanup sessions
 $site_config["session_time"] = 1800; // default above 30 mins
 

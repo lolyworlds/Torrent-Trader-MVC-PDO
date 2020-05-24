@@ -6,6 +6,24 @@ create table sessions(
   primary key (id)
 );
 
+DROP TABLE IF EXISTS `bonus`;
+CREATE TABLE `bonus` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(50) NOT NULL,
+  `cost` decimal(10,1) unsigned NOT NULL DEFAULT '0.0',
+  `value` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `descr` varchar(100) NOT NULL,
+  `type` enum('traffic','invite','VIP','other','HnR')  NOT NULL DEFAULT 'other',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM ;
+
+INSERT INTO `bonus` (`id`, `title`, `cost`, `value`, `descr`, `type`) VALUES
+(1, '1GB Uploaded', '70.0', 1073741824, 'Exchange 70 points for 1 GB upload.', 'traffic'),
+(2, '2 GB Uploaded', '100.0', 2147483648, 'Exchange 100 points for  GB upload.', 'traffic'),
+(3, '5 GB Uploaded', '250.0', 5368709120, 'Exchange 250 points for 5 GB upload.', 'traffic'),
+(4, '10 GB Uploaded', '500.0', 10737418240, 'Exchange 500 points for 10 GB upload.', 'traffic'),
+(5, 'Invitations', '1000.0', 2, 'Receive 2 Invites for 1000.00 seedbonus points.', 'invite');
+
 DROP TABLE IF EXISTS `files`;
 CREATE TABLE `files` (
 `id` BIGINT( 20 ) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,
@@ -706,6 +724,9 @@ CREATE TABLE `users` (
   `tzoffset` int(4) default 0,
   `hideshoutbox` enum('yes', 'no') NOT NULL DEFAULT 'no',
   `token` varchar(255) NOT NULL default '',
+  `seedbonus` decimal(10,1) NOT NULL default '0',
+  `vipuntil` datetime NOT NULL default '0000-00-00 00:00:00',
+  `oldclass` int(10) unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `username` (`username`),
   KEY `status_added` (`status`,`added`),

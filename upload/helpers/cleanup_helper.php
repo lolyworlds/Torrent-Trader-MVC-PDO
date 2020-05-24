@@ -6,6 +6,7 @@ function autoclean()
     require_once "cleanup_helper.php";
 
     $now = gmtime();
+	$docleanup = 0;
 
     $res = $pdo->run("SELECT last_time FROM tasks WHERE task='cleanup'");
     $row = $res->fetch(PDO::FETCH_ASSOC);
@@ -15,9 +16,10 @@ function autoclean()
         return;
     }
 
-    $ts = $row[0];
-    if ($ts + $site_config["autoclean_interval"] > $now)
+    $ts = $row['last_time']; // $row['0'] returned null now int string
+    if ($ts + $site_config["autoclean_interval"] > $now){
         return;
+	}
     
     $planned_clean = $pdo->run("UPDATE tasks SET last_time=? WHERE task=? AND last_time =?", [$now, 'cleanup', $ts]);
 //  $planned_clean = $pdo->run("UPDATE tasks SET last_time=$now WHERE task='cleanup'");
@@ -112,6 +114,57 @@ function do_cleanup()
 //LOCAL TORRENTS - MAKE NON-ACTIVE/OLD TORRENTS INVISIBLE
     $deadtime = gmtime() - $site_config["max_dead_torrent_time"];
     $pdo->run("UPDATE torrents SET visible='no' WHERE visible='yes' AND last_action < FROM_UNIXTIME($deadtime) AND seeders = '0' AND leechers = '0' AND external !='yes'");
+
+    // Seedbonus Mod
+    $now = gmtime();
+    $dobonus = 0;
+
+    $res = DB::run("SELECT last_time FROM tasks WHERE task='bonus'");
+    $row = $res->fetch(PDO::FETCH_ASSOC);
+
+    if (!$row) {
+        $pdo->run("INSERT INTO tasks (task, last_time) VALUES ('bonus',$now)");
+        // write_log("theres was no row silly we need one to start");
+    }
+
+    $ts = $row['last_time']; // $row['0'] returned null
+   
+    if ($ts + $site_config['add_bonus'] < $now){
+        
+    $qry = "SELECT DISTINCT userid as peer, (
+    SELECT DISTINCT COUNT( torrent )
+    FROM peers
+    WHERE seeder = 'yes'  AND userid = peer) AS count
+    FROM peers WHERE seeder = 'yes'";
+
+    $res1 = DB::run($qry);
+    while ( $row = $res1->fetch(PDO::FETCH_LAZY) )
+    {
+        DB::run("UPDATE users SET seedbonus = seedbonus + '" . ($site_config["bonuspertime"] * $row->count) . "' WHERE id = '" . $row->peer . "'");
+        DB::run("UPDATE tasks SET last_time=$now WHERE task='bonus'");
+        // write_log("bonus and task inserted every hour");
+    }
+    }
+    // End
+/*
+// Start Vipuntil mod vip ( time difference query not working ?? ) //
+   $timenow = get_date_time();
+   $ret = '0000-00-00 00:00:00';
+   $subject = "Your VIP class stay has just expired";
+   $msg = "Your VIP class stay has just expired. nYour status is back to baseline. nYou can now redeem crazy bonus points for a new VIP class stay. nYou can also donate if you wish to obtain a longer stay.n";
+   $resv = DB::run("SELECT id, oldclass FROM users WHERE vipuntil < ? AND vipuntil <> ?", [$timenow, '0000-00-00 00:00:00']);
+      //$resv = DB::run("SELECT id, oldclass FROM users WHERE vipuntil < $timenow AND vipuntil <> '0000-00-00 00:00:00'");
+
+if ($resv->rowCount){
+   $rowv = $resv->fetch(PDO::FETCH_LAZY);
+   $id = $rowv->id;
+   $oldclass = $rowv->oldclass;
+   DB::run("UPDATE users SET class = '.$oldclass.', oldclass='1', vipuntil = '0000-00-00 00:00:00' WHERE vipuntil < $timenow AND vipuntil <> '0000-00-00 00:00:00'");
+   DB::run("INSERT INTO messages (sender, receiver, added, subject, msg, poster) VALUES(0, '.$id.', $timenow, $subject, $msg, 0)");
+}
+// End Remove Vipuntil mod vip
+*/
+
 
 //DELETE PENDING USER ACCOUNTS OVER TIMOUT AGE
     $deadtime = gmtime() - $site_config["signup_timeout"];
@@ -216,7 +269,7 @@ function do_cleanup()
     //
     //    while ( $table = $res->fetch() )
     //    {
-    //        SQL_Query_exec("OPTIMIZE TABLE `$table[0]`;");
+    //        DB::run("OPTIMIZE TABLE `$table[0]`;");
     //    }
 
     //NEW OPTIMIZE TABLES

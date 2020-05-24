@@ -151,7 +151,9 @@ function navmenu()
             <?php print("<a href='". $site_config['SITEURL'] ."/mailbox'><b>" . T_("YOUR_MESSAGES") . "</b></a>");?>
              &nbsp;|&nbsp;
             <?php print("<a href='". $site_config['SITEURL'] ."/snatched'><b>" . T_("YOUR_SNATCHLIST") . "</b></a>");?>
-            </th>
+            &nbsp;|&nbsp;
+<?php print("<a href='". $site_config['SITEURL'] ."/bonus'><b>My Seedbonus</b></a>");?>
+			</th>
             </tr>
             </table>
           </div>

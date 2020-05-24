@@ -23,6 +23,7 @@ begin_block($CURUSER["username"]);
 		<li class="list-group-item"><?php echo T_("UPLOADED");?>: <span class="label label-success pull-right"><?php echo $useruploaded;?></span></li>
 		<li class="list-group-item"><?php echo T_("CLASS");?>: <div class="pull-right"><?php echo T_($CURUSER["level"]);?></div></li>
 		<li class="list-group-item"><?php echo T_("ACCOUNT_PRIVACY_LVL");?>: <div class="pull-right"><?php echo $privacylevel;?></div></li>
+		<li class="list-group-item"><?php echo T_("SEEDBONUS");?>: <a href="<?php echo TTURL; ?>/bonus"><?php echo $CURUSER['seedbonus'];?></a></span></li>
 		<li class="list-group-item"><?php echo T_("RATIO");?>: <?php echo $userratio;?></span></li>
 	</ul>
 	<div class="text-center">
