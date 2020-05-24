@@ -1,6 +1,5 @@
-    <nav class="navbar navbar-expand-lg">
+    <nav class="navbar navbar-expand-lg navbarone">
         <!-- Start Infobar -->
-        <div class='infobar'>
             <?php
                 if (!$CURUSER){
                     echo "[<a href=".$site_config['SITEURL']."/account/login\><font color='#fff'>".T_("LOGIN")."</font></a>]<b> ";
@@ -25,7 +24,6 @@
                     //end check for pm's
                 }
                 ?>
-        </div>
         <!-- End Infobar -->
         </div>
     </nav>

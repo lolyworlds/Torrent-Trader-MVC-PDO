@@ -1,34 +1,67 @@
-.navbar-nav .nav-link {
-    color: #fff;
+/* Styles ShoutBox */
+.shoutbox_body {
+	color: yellow;
+	float: middle;
+	background-color: transparent;
 }
-
-.navbar {
-    background-image: -webkit-linear-gradient(top, #072F5F, #3895D3);
-    background-image: linear-gradient(to bottom, #072F5F, #3895D3);
-    background-repeat: repeat-x;
-}
-
-.card-header {
-    color: #fff;
-	background-image: -webkit-linear-gradient(top, #072F5F, #3895D3);
-    background-image: linear-gradient(to bottom, #072F5F, #3895D3);
-    background-repeat: repeat-x;
-}
-.showHide {
-	float: right;
-}
-.shoutbox {
-	max-height: 200px;
+.shoutbox_contain {
+	border: 0;
+	height: 250px;
+	width: 100%;
 	overflow: auto;
 }
-iframe {
+.shoutbox_history {
 	border: 0;
+	height: 100%;
 	width: 100%;
-	min-height:220px;
 }
-body {
-	overflow-x:hidden;
+.shoutbox_messageboxback {
+	background-color: transparent;
 }
+.shoutbox_noalt {
+	background-color: #555555;
+	font-size: 16px;
+	color: #fff;
+	border-right: 2px solid #fff;
+	border-left: 2px solid #fff;
+	-webkit-border-radius: 12px 4px;
+    -moz-border-radius: 12px 4px;
+    border-radius: 12px 4px;
+	font-variant: small-caps;
+	line-height: 20px;
+	margin: 1px;
+}
+.shoutbox_alt {
+	background-color: #333333;
+	font-size: 16px;
+	color: #fff;
+	border-left: 2px solid #fff;
+	border-right: 2px solid #fff;
+    -webkit-border-radius: 12px 4px;
+    -moz-border-radius: 12px 4px;
+    border-radius: 12px 4px;
+	font-variant: small-caps;
+	line-height: 20px;
+	margin: 1px;
+}
+.shoutbox_msgbox {
+	width: 100%;
+	font-size: 16px;
+	background-color: #FFF;
+	border: 1px solid #777;
+}
+.shoutbox_shoutbtn {
+	font-size: 12px;
+	background-color: AliceBlue;
+	border: 1px solid black;
+	font-weight: bold;
+}
+/* error sur shoutbox */
+.shoutbox_error {
+	color: red;
+	font-size: 13px;
+}
+/* Fin */
 
 .newtd {
     color: #fff;
@@ -47,11 +80,36 @@ body {
 }
 .tbody td {
     background-color: #EEEEEE;
-} 
+}
 
-
-.navbar-toggler {
+.card-header {
     color: #fff;
-    background-color: #000;
-    border: 1px solid #fff;
+    background-image: -webkit-linear-gradient(top, #072F5F, #3895D3);
+    background-image: linear-gradient(to bottom, #072F5F, #3895D3);
+    background-repeat: repeat-x;
+    border-bottom: 0px;
+}
+
+.card-body {
+    border: 10px solid;
+    border-image-slice: 1;
+    border-width: 5px;
+    background-color: #666666;
+    border-image-source: linear-gradient(to bottom, #3895D3, #8cc6ec);
+}
+
+.navbar-nav .nav-link {
+    color: #fff;
+}
+
+.navbar {
+    background-image: -webkit-linear-gradient(top, #072F5F, #3895D3);
+    background-image: linear-gradient(to bottom, #072F5F, #3895D3);
+    background-repeat: repeat-x;
+}
+
+.navbarone {
+    background-image: -webkit-linear-gradient(top, #3895D3, #072F5F);
+    background-image: linear-gradient(to bottom, #3895D3, #072F5F);
+    background-repeat: repeat-x;
 }

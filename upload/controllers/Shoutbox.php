@@ -59,8 +59,17 @@ if(!isset($_GET['history'])){
 <title><?php echo $site_config['SITENAME'] . T_("SHOUTBOX"); ?></title>
 <?php /* If you do change the refresh interval, you should also change index.php printf(T_("SHOUTBOX_REFRESH"), 5) the 5 is in minutes */ ?>
 <meta http-equiv="refresh" content="300" />
-<link rel="stylesheet" type="text/css" href="<?php echo $site_config['SITEURL']?>/views/themes/<?php echo $THEME; ?>/theme.css" />
-<script type="text/javascript" src="<?php echo $site_config['SITEURL']; ?>/helpers/java_klappe.js"></script>
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="<?php echo TTURL; ?>/views/themes/<?php echo $THEME; ?>/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  <!-- TT old JS -->
+  <script src="<?php echo TTURL; ?>/views/themes/<?php echo $THEME; ?>/js/java_klappe.js"></script>
+  <!-- TT Custom CSS, any edits must go here-->
+  <link href="<?php echo TTURL; ?>/views/themes/<?php echo $THEME; ?>/css/customstyle.css" rel="stylesheet">
 </head>
 <body class="shoutbox_body">
 <?php
@@ -120,7 +129,7 @@ while ($row = $result->fetch(PDO::FETCH_LAZY)) {
 		$alt = true;
 	}
 
-	echo '<td style="font-size: 9px; width: 118px;">';
+	echo '<td style="font-size: 12px; width: 118px;">';
 	echo "<div align='left' style='float: left'>";
 
 	echo date('jS M, g:ia', utc_to_tz_time($row['date']));
@@ -129,10 +138,10 @@ while ($row = $result->fetch(PDO::FETCH_LAZY)) {
 	echo "</div>";
 
 	if ( ($CURUSER["edit_users"]=="yes") || ($CURUSER['username'] == class_user($row['user'])) ){
-		echo "<div align='right' style='float: right'><a href='".$site_config['SITEURL']."/shoutbox?del=".$row['msgid']."' style='font-size: 8px'>[D]</a></div>";
+		echo "<div align='right' style='float: right'><a href='".$site_config['SITEURL']."/shoutbox?del=".$row['msgid']."' style='font-size: 12px'>[D]</a></div>";
 	}
 
-	echo	'</td><td style="font-size: 12px; padding-left: 5px"><a href="'.$site_config['SITEURL'].'/accountdetails?id='.$row['userid'].'" target="_parent"><b>'.class_user($row['user']).':</b></a>&nbsp;&nbsp;'.nl2br(format_comment($row['message']));
+	echo	'</td><td style="font-size: 16px; padding-left: 5px"><a href="'.$site_config['SITEURL'].'/accountdetails?id='.$row['userid'].'" target="_parent"><b>'.class_user($row['user']).':</b></a>&nbsp;&nbsp;'.nl2br(format_comment($row['message']));
 	echo	'</td></tr>';
 }
 ?>
@@ -146,24 +155,25 @@ while ($row = $result->fetch(PDO::FETCH_LAZY)) {
 //if the user is logged in, show the shoutbox, if not, dont.
 if(!isset($_GET['history'])) {
 	if (isset($_SESSION["password"])){
-		echo "<form name='shoutboxform' action='/shoutbox' method='post'>";
-		echo "<center><table width='100%' border='0' cellpadding='1' cellspacing='1'>";
+
+		echo "<form name='shoutboxform' action='shoutbox' method='post'>";
+		echo "<center><div class='table-responsive'> <table class='table table-striped'>";
 		echo "<tr class='shoutbox_messageboxback'>";
 		echo "<td width='75%' align='center'>";
 		echo "<input type='text' name='message' class='shoutbox_msgbox' />";
 		echo "</td>";
 		echo "<td>";
-		echo "<input type='submit' name='submit' value='".T_("SHOUT")."' class='shoutbox_shoutbtn' />";
+		echo "<input type='submit' name='submit' value='".T_("SHOUT")."' class='btn btn-sm btn-primary' />";
 		echo "</td>";
 		echo "<td>";
         echo '<a href="javascript:PopMoreSmiles(\'shoutboxform\', \'message\');"><small>'.T_("MORE_SMILIES").'</small></a>';
         echo ' <small>-</small> <a href="javascript:PopMoreTags();"><small>'.T_("TAGS").'</small></a>';
 		echo "<br />";
-		echo "<a href='/shoutbox'><small>".T_("REFRESH")."</small></a>";              
+		echo "<a href='shoutbox.php'><small>".T_("REFRESH")."</small></a>";              
 		echo " <small>-</small> <a href='".$site_config['SITEURL']."/shoutbox?history=1' target='_blank'><small>".T_("HISTORY")."</small></a>";
 		echo "</td>";
 		echo "</tr>";
-		echo "</table></center>";
+		echo "</table></div></center>";
 		echo "</form>";
 	}else{
 		echo "<br /><div class='shoutbox_error'>".T_("SHOUTBOX_MUST_LOGIN")."</div>";
