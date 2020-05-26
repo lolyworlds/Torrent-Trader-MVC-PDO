@@ -685,7 +685,7 @@ $LANG["HAS_BEEN_DEL_DB"] = "has been deleted from the database";
 $LANG["HIDDEN FROM PUBLIC"] = "HIDDEN FROM PUBLIC";
 $LANG["HIDE_SHOUT"] = "Hide Shoutbox";
 $LANG["HIDE_SHOUT_TEXT"] = "I would like to hide the shoutbox.";
-$LANG["HTML_NOT_ALLOWED"] = "(HTML is not allowed.  <a href='javascript:PopMoreTags();'>Click here</a> for available tags)";
+$LANG["HTML_NOT_ALLOWED"] = "(HTML is not allowed.)";
 $LANG["INC_DEAD"] = "Included Dead";
 $LANG["IP_ADDRESS"] = "IP Address";
 $LANG["LAST_ACCESS"] = "Last Visited";

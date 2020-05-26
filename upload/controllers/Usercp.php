@@ -243,7 +243,7 @@ $do = $_REQUEST["do"];
 	print("<tr><td align='right' class='alt2'><b>" . T_("CUSTOM_TITLE") . ":</b> </td><td align='left' class='alt2'><input type='text' name='title' size='50' value=\"" . strip_tags($CURUSER["title"]) .
 	  "\" /><br />\n <i>" . T_("HTML_NOT_ALLOWED") . "</i></td></tr>");
 	print("<tr><td align='right' class='alt3' valign='top'><b>" . T_("SIGNATURE") . ":</b> </td><td align='left' class='alt3'><textarea name='signature' cols='50' rows='10'>" . htmlspecialchars($CURUSER["signature"]) .
-	  "</textarea><br />\n <i>".sprintf(T_("MAX_CHARS"), 150).", " . T_("HTML_NOT_ALLOWED") . "</i></td></tr>");
+	  "</textarea><br />\n <i>".sprintf(T_("MAX_CHARS"), 150).", " . T_("HTML_NOT_ALLOWED") . "<a href='javascript:PopMoreTags();'>Click here</a> for available tags</a></i></td></tr>");
 
 	print("<tr><td align='right' class='alt2'><b>".T_("RESET_PASSKEY").":</b> </td><td align='left' class='alt2'><input type='checkbox' name='resetpasskey' value='1' />&nbsp;<i>".T_("RESET_PASSKEY_MSG").".</i></td></tr>");
 
@@ -292,7 +292,7 @@ $do = $_REQUEST["do"];
 		  $acceptpms = $_POST["acceptpms"];
 		  $pmnotif = $_POST["pmnotif"];
 		  $privacy = $_POST["privacy"];
-		  // $notifs = ($pmnotif == 'yes' ? "[pm]" : "");
+		  // todo $notifs = ($pmnotif == 'yes' ? "[pm]" : "");
 		  $notifs = $pmnotif;
 		  $r = $pdo->run("SELECT id FROM categories");
 		  $rows = $r->rowCount();
@@ -356,12 +356,9 @@ $do = $_REQUEST["do"];
           
           $hideshoutbox = ($_POST["hideshoutbox"] == "yes") ? "yes" : "no";
 
-
-	// find		$updateset[] = "tzoffset = $timezone . "'";
-
             $updateset[] = "hideshoutbox = $hideshoutbox";   
 			$updateset[] = "acceptpms = $acceptpms";
-     		//$updateset[] = "commentpm = '" . $pmnotif == "yes" ? "yes" : "no" . "'";
+     		// todo $updateset[] = "commentpm = '" . $pmnotif == "yes" ? "yes" : "no" . "'";
 			$updateset[] = "commentpm = $pmnotif";
 			$updateset[] = "notifs = $notifs";
 			$updateset[] = "privacy = $privacy";
