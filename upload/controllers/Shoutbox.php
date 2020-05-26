@@ -73,8 +73,11 @@ if(!isset($_GET['history'])){
 </head>
 <body class="shoutbox_body">
 <?php
+
+echo '<div class="table">';
+
 echo '<div class="shoutbox_contain">
-<table border="0" style="width: 99%; table-layout:fixed">';
+<table class="table" border="0" style="width: 99%; table-layout:fixed">';
 }else{
     
     if ($site_config["MEMBERSONLY"]) {
@@ -95,7 +98,7 @@ echo '<div class="shoutbox_contain">
 		$pages--;
 	}
 
-	echo '</div><br /><table border="0" style="width: 99%; table-layout:fixed">';
+	echo '</div><br /><table class="table" border="0" style="width: 99%; table-layout:fixed">';
 }
 
 if (isset($_GET['history'])) {
@@ -127,25 +130,24 @@ while ($row = $result->fetch(PDO::FETCH_LAZY)) {
 	}else{
 		echo '<tr class="shoutbox_alt">';
 		$alt = true;
-	}
-
-	echo '<td style="font-size: 12px; width: 118px;">';
-	echo "<div align='left' style='float: left'>";
-
-	echo date('jS M, g:ia', utc_to_tz_time($row['date']));
+	} 
 	
-
+    // below shouts
+	echo '<td style="font-size: 12px; width: 88px;">'; // echo '<td style="font-size: 12px; width: 88px;">';
+	// date, time, delete, user part
+	echo "<div align='left' style='float: left'>";
+	echo date('g:ia', utc_to_tz_time($row['date'])); // echo date('jS M,  g:ia', utc_to_tz_time($row['date']));
+	if ( ($CURUSER["edit_users"]=="yes") || ($CURUSER['username'] == class_user($row['user'])) ){
+		echo "&nbsp<a href='".$site_config['SITEURL']."/shoutbox?del=".$row['msgid']."' style='font-size: 12px'>[D]</a>";
+	}	
 	echo "</div>";
 
-	if ( ($CURUSER["edit_users"]=="yes") || ($CURUSER['username'] == class_user($row['user'])) ){
-		echo "<div align='right' style='float: right'><a href='".$site_config['SITEURL']."/shoutbox?del=".$row['msgid']."' style='font-size: 12px'>[D]</a></div>";
-	}
-
-	echo	'</td><td style="font-size: 16px; padding-left: 5px"><a href="'.$site_config['SITEURL'].'/accountdetails?id='.$row['userid'].'" target="_parent"><b>'.class_user($row['user']).':</b></a>&nbsp;&nbsp;'.nl2br(format_comment($row['message']));
+    // message part
+    echo	'</td><td><a href="'.$site_config['SITEURL'].'/accountdetails?id='.$row['userid'].'" target="_parent"><b>'.class_user($row['user']).':</b></a>&nbsp;&nbsp;'.nl2br(format_comment($row['message']));
 	echo	'</td></tr>';
 }
-?>
 
+?>
 </table>
 </div>
 <br/>
@@ -157,7 +159,7 @@ if(!isset($_GET['history'])) {
 	if (isset($_SESSION["password"])){
 
 		echo "<form name='shoutboxform' action='shoutbox' method='post'>";
-		echo "<center><div class='table-responsive'> <table class='table table-striped'>";
+		echo "<center><table width='100%' border='0' cellpadding='1' cellspacing='1'>";
 		echo "<tr class='shoutbox_messageboxback'>";
 		echo "<td width='75%' align='center'>";
 		echo "<input type='text' name='message' class='shoutbox_msgbox' />";
@@ -166,14 +168,14 @@ if(!isset($_GET['history'])) {
 		echo "<input type='submit' name='submit' value='".T_("SHOUT")."' class='btn btn-sm btn-primary' />";
 		echo "</td>";
 		echo "<td>";
-        echo '<a href="javascript:PopMoreSmiles(\'shoutboxform\', \'message\');"><small>'.T_("MORE_SMILIES").'</small></a>';
+        echo '<a href="javascript:PopMoreSmiles(\'shoutboxform\', \'message\');"><small>'.T_("Smilies").'</small></a>';
         echo ' <small>-</small> <a href="javascript:PopMoreTags();"><small>'.T_("TAGS").'</small></a>';
-		echo "<br />";
-		echo "<a href='shoutbox.php'><small>".T_("REFRESH")."</small></a>";              
+		//echo "<br />";
+		echo "<small>-</small> <a href='shoutbox.php'><small>".T_("REFRESH")."</small></a>";              
 		echo " <small>-</small> <a href='".$site_config['SITEURL']."/shoutbox?history=1' target='_blank'><small>".T_("HISTORY")."</small></a>";
 		echo "</td>";
 		echo "</tr>";
-		echo "</table></div></center>";
+		echo "</table></center>";
 		echo "</form>";
 	}else{
 		echo "<br /><div class='shoutbox_error'>".T_("SHOUTBOX_MUST_LOGIN")."</div>";

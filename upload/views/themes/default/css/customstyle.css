@@ -1,3 +1,7 @@
+.form-control {
+    color: #fff;
+}
+
 /* Styles ShoutBox */
 .shoutbox_body {
 	color: yellow;
@@ -28,7 +32,7 @@
     -moz-border-radius: 12px 4px;
     border-radius: 12px 4px;
 	font-variant: small-caps;
-	line-height: 20px;
+	line-height: 16px;
 	margin: 1px;
 }
 .shoutbox_alt {
@@ -41,7 +45,7 @@
     -moz-border-radius: 12px 4px;
     border-radius: 12px 4px;
 	font-variant: small-caps;
-	line-height: 20px;
+	line-height: 16px;
 	margin: 1px;
 }
 .shoutbox_msgbox {
