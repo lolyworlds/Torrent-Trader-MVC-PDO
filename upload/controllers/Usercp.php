@@ -292,7 +292,8 @@ $do = $_REQUEST["do"];
 		  $acceptpms = $_POST["acceptpms"];
 		  $pmnotif = $_POST["pmnotif"];
 		  $privacy = $_POST["privacy"];
-		  $notifs = ($pmnotif == 'yes' ? "[pm]" : "");
+		  // $notifs = ($pmnotif == 'yes' ? "[pm]" : "");
+		  $notifs = $pmnotif;
 		  $r = $pdo->run("SELECT id FROM categories");
 		  $rows = $r->rowCount();
 		  for ($i = 0; $i < $rows; ++$i) {
@@ -323,7 +324,7 @@ $do = $_REQUEST["do"];
                      $message = "The avatar url was determined to be of a invalid nature.";
                      
                # Save New Avatar.
-               $updateset[] = "avatar = " . sqlesc($avatar);
+               $updateset[] = "avatar = $avatar";
           }
           
 		  $title = strip_tags($_POST["title"]);
@@ -339,11 +340,11 @@ $do = $_REQUEST["do"];
 		  $timezone = (int)$_POST['tzoffset'];
 
 		  if (is_valid_id($stylesheet))
-			$updateset[] = "stylesheet = '$stylesheet'";
+			$updateset[] = "stylesheet = $stylesheet";
 		  if (is_valid_id($language))
-			$updateset[] = "language = '$language'";
+			$updateset[] = "language = $language";
 		  if (is_valid_id($teams))
-			$updateset[] = "team = '$teams'";
+			$updateset[] = "team = $teams";
 		  if (is_valid_id($country))
 			$updateset[] = "country = $country";
 		  if ($acceptpms == "yes")
@@ -351,19 +352,23 @@ $do = $_REQUEST["do"];
 		  else
 			$acceptpms = 'no';
 		  if (is_valid_id($age))
-				$updateset[] = "age = '$age'";
+				$updateset[] = "age = $age";
           
           $hideshoutbox = ($_POST["hideshoutbox"] == "yes") ? "yes" : "no";
 
-            $updateset[] = "hideshoutbox = ".sqlesc($hideshoutbox);    
-			$updateset[] = "acceptpms = ".sqlesc($acceptpms);
-			$updateset[] = "commentpm = " . sqlesc($pmnotif == "yes" ? "yes" : "no");
-			$updateset[] = "notifs = ".sqlesc($notifs);
-			$updateset[] = "privacy = ".sqlesc($privacy);
-			$updateset[] = "gender = ".sqlesc($gender);
-			$updateset[] = "client = ".sqlesc($client);
-			$updateset[] = "signature = ".sqlesc($signature);
-			$updateset[] = "title = ".sqlesc($title);
+
+	// find		$updateset[] = "tzoffset = $timezone . "'";
+
+            $updateset[] = "hideshoutbox = $hideshoutbox";   
+			$updateset[] = "acceptpms = $acceptpms";
+     		//$updateset[] = "commentpm = '" . $pmnotif == "yes" ? "yes" : "no" . "'";
+			$updateset[] = "commentpm = $pmnotif";
+			$updateset[] = "notifs = $notifs";
+			$updateset[] = "privacy = $privacy";
+			$updateset[] = "gender = $gender";
+			$updateset[] = "client = $client";
+			$updateset[] = "signature = $signature";
+			$updateset[] = "title = $title";
 			$updateset[] = "tzoffset = $timezone";
 
 		  /* ****** */
@@ -374,7 +379,7 @@ $do = $_REQUEST["do"];
 				$sec = mksecret();
 				$hash = md5($sec . $email . $sec);
 				$obemail = rawurlencode($email);
-				$updateset[] = "editsecret = " . sqlesc($sec);
+				$updateset[] = "editsecret = $sec";
 				$thishost = $_SERVER["HTTP_HOST"];
 				$thisdomain = preg_replace('/^www\./is', "", $thishost);
 $body = <<<EOD
@@ -397,7 +402,7 @@ EOD;
 				$mailsent = 1;
 			} //changedemail
 
-			$pdo->run("UPDATE users SET " . implode(",", $updateset) . " WHERE id = " . $CURUSER["id"]."");
+			$pdo->run("UPDATE users SET ' . implode(",", $updateset) . ' WHERE id =?", [$CURUSER['id']]); // new edit
 			$edited=1;
 			echo "<br /><br /><center><b><font class='error'>Updated OK</font></b></center><br /><br />";
 			if ($changedemail) {
@@ -444,7 +449,7 @@ $do = $_REQUEST["do"];
 		navmenu();
 
 		if (!$message){
-			$pdo->run("UPDATE users SET password = " . sqlesc($chpassword) . ", secret = " . sqlesc($secret) . "  WHERE id = " . $CURUSER["id"]);
+			$pdo->run("UPDATE users SET password = ?, secret = ?  WHERE id =? ", [$chpassword, $secret, $CURUSER['id']]);
 			echo "<br /><br /><center><b>".T_("PASSWORD_CHANGED_OK")."</b></center>";
 			logoutcookie();
 		}else{
