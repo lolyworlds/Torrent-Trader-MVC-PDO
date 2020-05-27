@@ -146,24 +146,22 @@ function do_cleanup()
     }
     }
     // End
-/*
-// Start Vipuntil mod vip ( time difference query not working ?? ) //
-   $timenow = get_date_time();
-   $ret = '0000-00-00 00:00:00';
-   $subject = "Your VIP class stay has just expired";
-   $msg = "Your VIP class stay has just expired. nYour status is back to baseline. nYou can now redeem crazy bonus points for a new VIP class stay. nYou can also donate if you wish to obtain a longer stay.n";
-   $resv = DB::run("SELECT id, oldclass FROM users WHERE vipuntil < ? AND vipuntil <> ?", [$timenow, '0000-00-00 00:00:00']);
-      //$resv = DB::run("SELECT id, oldclass FROM users WHERE vipuntil < $timenow AND vipuntil <> '0000-00-00 00:00:00'");
+// Start Vipuntil mod vip
+$timenow = get_date_time();
 
-if ($resv->rowCount){
-   $rowv = $resv->fetch(PDO::FETCH_LAZY);
-   $id = $rowv->id;
-   $oldclass = $rowv->oldclass;
-   DB::run("UPDATE users SET class = '.$oldclass.', oldclass='1', vipuntil = '0000-00-00 00:00:00' WHERE vipuntil < $timenow AND vipuntil <> '0000-00-00 00:00:00'");
-   DB::run("INSERT INTO messages (sender, receiver, added, subject, msg, poster) VALUES(0, '.$id.', $timenow, $subject, $msg, 0)");
+$subject = 'Your VIP class stay has just expired';
+$msg = 'Your VIP class stay has just expired';
+
+$resv = DB::run("SELECT id, oldclass FROM users WHERE vipuntil < ? AND vipuntil <> ?", [$timenow, '0000-00-00 00:00:00']);
+
+if ($resv->rowCount()) {
+    $rowv = $resv->fetch(PDO::FETCH_LAZY);
+    $id = $rowv->id;
+    $oldclass = $rowv->oldclass;
+    DB::run("UPDATE users SET class =?, oldclass=?, vipuntil =? WHERE vipuntil < ? AND vipuntil <> ?", [$oldclass, 1, '0000-00-00 00:00:00', $timenow, '0000-00-00 00:00:00']);
+    DB::run("INSERT INTO messages (sender, receiver, added, subject, msg, poster) VALUES(?, ?, ?, ?, ?, ?)", [0, $id, $timenow, $subject, $msg, 0]);
 }
 // End Remove Vipuntil mod vip
-*/
 
 
 //DELETE PENDING USER ACCOUNTS OVER TIMOUT AGE

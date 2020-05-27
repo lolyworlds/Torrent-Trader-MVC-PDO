@@ -171,7 +171,7 @@ if(!isset($_GET['history'])) {
         echo '<a href="javascript:PopMoreSmiles(\'shoutboxform\', \'message\');"><small>'.T_("Smilies").'</small></a>';
         echo ' <small>-</small> <a href="javascript:PopMoreTags();"><small>'.T_("TAGS").'</small></a>';
 		//echo "<br />";
-		echo "<small>-</small> <a href='shoutbox.php'><small>".T_("REFRESH")."</small></a>";              
+		echo "<small>-</small> <a href='shoutbox'><small>".T_("REFRESH")."</small></a>";              
 		echo " <small>-</small> <a href='".$site_config['SITEURL']."/shoutbox?history=1' target='_blank'><small>".T_("HISTORY")."</small></a>";
 		echo "</td>";
 		echo "</tr>";
