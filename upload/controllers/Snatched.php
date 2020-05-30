@@ -169,7 +169,7 @@ if ($tid > 0) {
 
 			if (($CURUSER["control_panel"] == "no") && $CURUSER["id"] != $uid)
 			{
-				echo "<div style='margin-top:10px; margin-bottom:10px' align='center'><font size='2' color='red'><b>".T_("NO_PERMISSION")."</b></font></div>";
+				echo "<div style='margin-top:5px; margin-bottom:5px' align='center'><font size='4' color='red'><b>".T_("NO_PERMISSION")."</b></font></div>";
 				end_frame();
 				stdfoot();
 				die;

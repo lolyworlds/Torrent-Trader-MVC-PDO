@@ -1,6 +1,7 @@
 <?php
 if ($CURUSER) {
-    begin_block(T_("SEARCH")); ?>
+    $_GET['search'] = $_GET['search'] ?? '';
+	begin_block(T_("SEARCH")); ?>
 	<form method="get" action="<?php echo TTURL; ?>/torrentssearch" class="form-inline">
 		<div class="input-group">
 			<input type="text" name="search" class="form-control" value="<?php echo htmlspecialchars($_GET['search']); ?>" />

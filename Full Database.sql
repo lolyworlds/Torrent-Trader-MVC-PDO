@@ -194,7 +194,7 @@ INSERT INTO `countries` (`id`, `name`, `flagpic`, `domain`) VALUES
 (9, 'Italy', 'italy.gif', 'IT'),
 (10, 'Denmark', 'denmark.gif', 'DK'),
 (11, 'Norway', 'norway.gif', 'NO'),
-(12, 'United Kingdom', 'uk.gif', 'UK'),
+(12, 'United Kingdom', 'england.gif', 'UK'),
 (13, 'Ireland', 'ireland.gif', 'IE'),
 (14, 'Poland', 'poland.gif', 'PL'),
 (15, 'Netherlands', 'netherlands.gif', 'NL'),

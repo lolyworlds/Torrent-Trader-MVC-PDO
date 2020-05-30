@@ -143,7 +143,7 @@ stdhead($pagename, false);
 if (isset($_REQUEST['compose']))
 {
     begin_frame("Compose");
-    navmenuu ();
+    navmenu ();
     $userid = @$_REQUEST['id'];
     $subject = ''; $msg = ''; $to = ''; $hidden = ''; $output = ''; $reply = false;
 	$sreplay = T_("REPLY");//bugfix
@@ -276,7 +276,7 @@ if (isset($_REQUEST['compose']))
 }
 
 begin_frame($pagename);
-navmenuu ();
+navmenu ();
 echo "<center>";
 ?>
 <style>

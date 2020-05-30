@@ -14,10 +14,10 @@ if ($site_config["MEMBERSONLY"]) {
 }
  
 
-$id = (int)$_GET["id"];
+$id = (int) ($_GET["id"] ?? 0);
 $type = $_GET["type"];
-$edit = (int)$_GET["edit"];
-$delete = (int)$_GET["delete"];
+$edit = (int) ($_GET["edit"] ?? 0);
+$delete = (int) ($_GET["delete"] ?? 0);
 
 if ($edit == 1 || $delete == 1 || $_GET["takecomment"] == 'yes') loggedinonly();
 

@@ -4,7 +4,7 @@
                 if (!$CURUSER){
                     echo "[<a href=".$site_config['SITEURL']."/account/login\><font color='#fff'>".T_("LOGIN")."</font></a>]<b> ";
                 }else{
-                    print (T_("HI")." ".class_user($CURUSER["username"]).""); 
+                    print (T_("HI")." &nbsp; ".class_user($CURUSER["username"])." &nbsp; "); 
                     // call controller/method
 					echo " [<a href='$site_config[SITEURL]/account/logout'><font color='#fff'>".T_("LOGOUT")."</font></a>] ";
                     if ($CURUSER["control_panel"]=="yes") {

@@ -1103,4 +1103,7 @@ $LANG["LOCAL_TORRENT"] = "Local Torrent";
 $LANG["EXTERNAL_TORRENT"] = "External Torrent";
 $LANG["FREE"] = "Free";
 
+// exceptions
+$LANG["EXCEPTION_EDIT"] = "Edit the Exception log (";
+$LANG["EXCEPTION_READ"] = "Read the Exception Log";
 ?>

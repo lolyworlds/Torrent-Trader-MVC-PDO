@@ -1,6 +1,11 @@
 <?php
 mb_internal_encoding('UTF-8');
 
+// Error Reporting
+ini_set('display_errors', 0);
+ini_set('display_startup_errors', 0);
+// error_reporting(E_ALL);
+
 // MOVE TO xampp.php
 define("TTROOT", dirname(dirname(__FILE__)));
 

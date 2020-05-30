@@ -4,9 +4,8 @@ begin_block($CURUSER["username"]);
 
 	$avatar = htmlspecialchars($CURUSER["avatar"]);
 	if (!$avatar)
-	// $avatar = $site_config["SITEURL"]."/images/default_avatar.png";
-	$avatar = "https://placehold.it/200x300";
-
+	$avatar = $site_config["SITEURL"]."/images/default_avatar.png";
+	
 	$userdownloaded = mksize($CURUSER["downloaded"]);
 	$useruploaded = mksize($CURUSER["uploaded"]);
 	$privacylevel = T_($CURUSER["privacy"]);
@@ -17,7 +16,7 @@ begin_block($CURUSER["username"]);
 		$userratio = '<span class="label label-info pull-right">'.number_format($CURUSER["uploaded"] / $CURUSER["downloaded"].'</span>', 2);
 	else
 		$userratio = '<span class="label label-info pull-right">---</span>'; ?>
-	<img width="200" height="300" src="<?php echo $avatar;?>" alt="" class="thumbnail center-block" />
+	<center><img src="<?php echo $avatar;?>" alt=""></center>
 	<ul class="list-group">
 		<li class="list-group-item"><?php echo T_("DOWNLOADED");?> : <span class="label label-danger pull-right"><?php echo $userdownloaded;?></span></li>
 		<li class="list-group-item"><?php echo T_("UPLOADED");?>: <span class="label label-success pull-right"><?php echo $useruploaded;?></span></li>

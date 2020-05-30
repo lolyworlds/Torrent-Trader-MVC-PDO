@@ -777,7 +777,7 @@ if ($row["banned"] == "yes"){
 	if ($row["external"] == 'yes'){
     print ("<a href=\"magnet:?xt=urn:btih:".$row["info_hash"]."&dn=".$row["filename"]."&tr=udp://tracker.openbittorrent.com&tr=udp://tracker.publicbt.com\"><button type='button' class='btn btn-sm btn-danger'>Magnet Download</button></a>");
     }else{
-    print ("<a href=\"magnet:?xt=urn:btih:".$row["info_hash"]."&dn=".$row["filename"]."&tr=".$site_config['SITEURL']."/announce.php/?passkey=".$CURUSER["passkey"]."\"><button type='button' class='btn btn-sm btn-danger'>Magnet Download</button></a>");
+    print ("<a href=\"magnet:?xt=urn:btih:".$row["info_hash"]."&dn=".$row["filename"]."&tr=".$site_config['SITEURL']."/announce.php?passkey=".$CURUSER["passkey"]."\"><button type='button' class='btn btn-sm btn-danger'>Magnet Download</button></a>");
     }
 	
 	print ("<a href=\"/download?id=$id&amp;name=" . rawurlencode($row["filename"]) . "\"><button type='button' class='btn btn-sm btn-success'>".T_("DOWNLOAD_TORRENT")."</button></a></br>");

@@ -62,9 +62,9 @@ function begin_block($caption = "-", $align = "justify")
     ?>
     <div class="card">
         <div class="card-header">
-            <?php echo $caption ?><a data-toggle="collapse" href="#" class="showHide" id="<?php echo $blockId; ?>" style="float: right;"></a>
+            <?php echo $caption ?>
         </div>
-        <div class="card-body slidingDiv<?php echo $blockId; ?>">
+        <div class="card-body">
     <?php
 }
 

@@ -135,8 +135,7 @@ function navmenu()
 {
     global $site_config;
     ?>
-        <br />
-          <div class="f-border">
+        <div class="f-border">
             <table cellpadding='0' cellspacing='3' width='100%'>
             <tr class="f-title">
             <th width='100%' height="32" align='center'>
@@ -152,38 +151,11 @@ function navmenu()
              &nbsp;|&nbsp;
             <?php print("<a href='". $site_config['SITEURL'] ."/snatched'><b>" . T_("YOUR_SNATCHLIST") . "</b></a>");?>
             &nbsp;|&nbsp;
-<?php print("<a href='". $site_config['SITEURL'] ."/bonus'><b>My Seedbonus</b></a>");?>
+            <?php print("<a href='". $site_config['SITEURL'] ."/bonus'><b>My Seedbonus</b></a>");?>
 			</th>
             </tr>
             </table>
-          </div>
-        <br />
-        <?php
-} //end func
-
-function navmenuu()
-{
-    global $site_config;
-    ?>
-        <br />
-          <div class="f-border">
-            <table cellpadding='0' cellspacing='3' width='100%'>
-            <tr class="f-title">
-            <th width='100%' height="32" align='center'>
-            <?php print("<a href='". $site_config['SITEURL'] ."/usercp'><b>" . T_("YOUR_PROFILE") . "</b></a>");?>
-            &nbsp;|&nbsp;
-            <?php print("<a href='". $site_config['SITEURL'] ."/usercp/edit_settings&amp;do=edit'><b>" . T_("YOUR_SETTINGS") . "</b></a>");?>
-            &nbsp;|&nbsp;
-            <?php print("<a href='". $site_config['SITEURL'] ."/usercp/changepw'><b>" . T_("CHANGE_PASS") . "</b></a>");?>
-            &nbsp;|&nbsp;
-            <?php print("<a href='". $site_config['SITEURL'] ."/usercp/mytorrents'><b>" . T_("YOUR_TORRENTS") . "</b></a>");?>
-            &nbsp;|&nbsp;
-            <?php print("<a href='". $site_config['SITEURL'] ."/mailbox'><b>" . T_("YOUR_MESSAGES") . "</b></a>");?>
-               </th>
-            </tr>
-            </table>
-          </div>
-        <!--<br />-->
+		</div>
         <?php
 } //end func
 

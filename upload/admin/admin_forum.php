@@ -352,7 +352,7 @@ if ($allforums == 0) {
             
             echo "<tr><td class='table_col1' width='60' align='center'><font size='2'><b>ID($row[id])</b></font></td><td class='table_col2' width='120'> $row[name]</td><td class='table_col1'  width='250'>$row[description]</td><td class='table_col2' width='45' align='center'>$row[sort]</td><td class='table_col1' width='45'>$category</td>\n";
             echo "<td class='table_col2' width='18' align='center'><a href='/admincp?action=forum&amp;do=edit_forum&amp;id=$row[id]'>[".T_("EDIT")."]</a></td>\n";
-            echo "<td class='table_col1' width='18' align='center'><a href='/admincp?action=forum&amp;do=del_forum&amp;id=$row[id]'><img src='images/delete.gif' alt='".T_("FORUM_DELETE_CATEGORY")."' width='17' height='17' border='0' /></a></td></tr>\n";
+            echo "<td class='table_col1' width='18' align='center'><a href='/admincp?action=forum&amp;do=del_forum&amp;id=$row[id]'><img src='images/delete.png' alt='".T_("FORUM_DELETE_CATEGORY")."' width='17' height='17' border='0' /></a></td></tr>\n";
     }
 }
 echo "</table>
@@ -365,7 +365,7 @@ if ($allcat == 0) {
     foreach ($forumcat as $row) {
         echo "<tr><td class='table_col1' width='60'><font size='2'><b>ID($row[id])</b></font></td><td class='table_col2' width='120'> $row[name]</td><td class='table_col1' width='18'>$row[sort]</td>\n";
         echo "<td class='table_col2' width='18'><a href='/admincp?action=forum&amp;do=edit_forumcat&amp;id=$row[id]'>[".T_("EDIT")."]</a></td>\n";
-        echo "<td class='table_col1' width='18'><a href='/admincp?action=forum&amp;do=del_forumcat&amp;id=$row[id]'><img src='images/delete.gif' alt='".T_("FORUM_DELETE_CATEGORY")."' width='17' height='17' border='0' /></a></td></tr>\n";
+        echo "<td class='table_col1' width='18'><a href='/admincp?action=forum&amp;do=del_forumcat&amp;id=$row[id]'><img src='images/delete.png' alt='".T_("FORUM_DELETE_CATEGORY")."' width='17' height='17' border='0' /></a></td></tr>\n";
     }
 }
 echo "</table>\n";

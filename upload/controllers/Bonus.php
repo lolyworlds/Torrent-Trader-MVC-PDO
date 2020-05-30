@@ -11,7 +11,7 @@
   dbconn();
   global $site_config, $CURUSER;
   loggedinonly();
-  
+  $_POST['id'] = (int) ($_POST['id'] ?? 0);
   if ( is_valid_id($_POST['id']) )
   {
        $row = $this->bonusModel->getBonusByPost($_POST['id']);

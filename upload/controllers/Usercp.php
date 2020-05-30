@@ -11,7 +11,7 @@ global $site_config, $CURUSER, $pdo;
 loggedinonly();
 
 stdhead(T_("USERCP"));
-$do = $_REQUEST["do"];
+$do = $_REQUEST["do"] ?? '';
 
 
 	begin_frame(T_("USER").": $CURUSER[username] (".T_("ACCOUNT_PROFILE").")");
@@ -470,11 +470,11 @@ $do = $_REQUEST["do"];
     <table border="0" align="center" cellpadding="10">
     <tr class="alt3">
         <td align="right"><b><?php echo T_("NEW_PASSWORD"); ?>:</b></td>
-        <td align="left"><input type="password" name="chpassword" size="50" /></td>
+        <td align="left"><input type="password" name="chpassword" size="40" /></td>
     </tr>
     <tr class="alt3">
         <td align="right"><b><?php echo T_("REPEAT"); ?>:</b></td>
-        <td align="left"><input type="password" name="passagain" size="50" /></td>
+        <td align="left"><input type="password" name="passagain" size="40" /></td>
     </tr>
     <tr class="alt2">
         <td colspan="2" align="center">

@@ -11,7 +11,7 @@ if (!$site_config["MEMBERSONLY"] || $CURUSER) {
 			$catdropdown = "";
 			foreach ($cats as $cat) {
 				$catdropdown .= "<option value=\"" . $cat["id"] . "\"";
-				if ($cat["id"] == $_GET["cat"])
+				if ($cat["id"] == @$_GET["cat"])
 					$catdropdown .= " selected=\"selected\"";
 				$catdropdown .= ">" . htmlspecialchars($cat["parent_cat"]) . ": " . htmlspecialchars($cat["name"]) . "</option>\n";
 			}
