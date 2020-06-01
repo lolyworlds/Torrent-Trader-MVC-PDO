@@ -1,12 +1,4 @@
 <?php
-
-require_once "functions_connect.php";
-
-// Insertion of Smilies function
-function insert_smilies_frame()
-{
-    global $site_config;
-// Summary Table of Emotions
 $smilies = array
     (
     ":)" => "smile.png",
@@ -49,13 +41,3 @@ $smilies = array
     ":confos" => "confound.png",
     ":fire" => "fire.png",
 );
-    echo "<table><tr><td>Type...</td><td>To make a...</td></tr>";
-    foreach ($smilies as $code => $url) {
-        echo "<tr><td>$code</td><td><a href=\"javascript:window.opener.SmileIT('$code', '" . cleanstr($_GET["form"]) . "', '" . htmlspecialchars($_GET["text"]) . "')\"><img src=\"$site_config[SITEURL]/images/smilies/$url\" alt=\"$code\" title=\"$code\" border=\"0\"></a></td></tr>";
-    }
-    echo "</table>";
-}
-
-if (isset($_GET['action']) == "display") {
-    insert_smilies_frame();
-}

@@ -127,7 +127,7 @@ function format_comment($text)
     $s = str_replace("  ", " &nbsp;", $s);
 
     // Smilies
-    require_once "smilies_helper.php";
+    // require_once "smilies_helper.php";
     reset($smilies);
     while (list($code, $url) = thisEach($smilies)) {
         $s = str_replace($code, '<img border="0" src="' . $site_config["SITEURL"] . '/images/smilies/' . $url . '" alt="' . $code . '" title="' . $code . '" />', $s);
