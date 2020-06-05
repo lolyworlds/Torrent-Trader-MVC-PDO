@@ -315,7 +315,7 @@ function torrenttable($res)
                     if($like){
                     print("<td class='ttable_col$x' align='center'><a href=\"magnet:?xt=urn:btih:" . $magnet["info_hash"] . "&dn=" . rawurlencode($row['name']) . "&tr=" . $row['announce'] . "?passkey=" . $CURUSER['passkey'] . "\"><img src='" . $site_config['SITEURL'] . "/images/magnetique.png' border='0' title='Download via Magnet' /></a></td>");
                     }else {
-                    print ("<td class='ttable_col$x' align='center'><a href='$site_config[SITEURL]/likes/index?id=$id' ><img src='/images/star.png' width='20' height='20' border='0'></td>");
+                    print ("<td class='ttable_col$x' align='center'><a href='$site_config[SITEURL]/likes/index?id=$id' ><button  class='btn btn-sm btn-danger'>Thanks</button></a></td>");
                     }
                     }
                     break;

@@ -87,7 +87,7 @@
     public function _destroy($sess_id) {
       global $pdo;
       $statement = DB::run("DELETE FROM sessions WHERE sess_id=?", [$sess_id]);
-      $old = time() - 1200;
+      $old = time() - 300; // 5 min
       DB::run("DELETE FROM sessions WHERE _access=?", [$old]);
       if ($statement === true) {
         return true;
