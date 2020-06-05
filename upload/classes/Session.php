@@ -85,9 +85,10 @@
     } // end function _write()
     
     public function _destroy($sess_id) {
-      $sql= "delete from sessions where sess_id=:id";
-      $statement = $this->pdo->prepare($sql);
-      $statement->execute(array(':id' => $sess_id));
+      global $pdo;
+      $statement = DB::run("DELETE FROM sessions WHERE sess_id=?", [$sess_id]);
+      $old = time() - 1200;
+      DB::run("DELETE FROM sessions WHERE _access=?", [$old]);
       if ($statement === true) {
         return true;
       }

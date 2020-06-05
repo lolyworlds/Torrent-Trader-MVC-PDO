@@ -50,6 +50,10 @@ $site_config['add_bonus'] = 3600; // time to add bonus (1 hour)
 // cleanup sessions
 $site_config["session_time"] = 1800; // default above 30 mins
 
+// likes
+$site_config["forcethanks"] = true;     // force members to thank to download
+$site_config['allowlikes'] = true;          // allow likes/unlikes
+
 //AGENT BANS (MUST BE AGENT ID, USE FULL ID FOR SPECIFIC VERSIONS)
 $site_config['BANNED_AGENTS'] = "-AZ21, -BC, LIME";
 

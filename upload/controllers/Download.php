@@ -20,6 +20,15 @@ if ($site_config["MEMBERSONLY"]){
 		show_error_msg(T_("ERROR"), T_("NO_PERMISSION_TO_DOWNLOAD"), 1);
 }
 
+    // LIKE MOD
+    if($site_config["forcethanks"]) {
+    $data = DB::run("SELECT user FROM thanks WHERE thanked = ? & type = ? & user = ?", [$id, 'torrent', $CURUSER['id']]);
+    $like = $data->fetch(PDO::FETCH_ASSOC);
+    if(!$like){
+        show_error_msg(T_("ERROR"), T_("PLEASE_THANK"), 1);
+    }
+    }
+
 $id = (int)$_GET["id"];
 
 if (!$id)

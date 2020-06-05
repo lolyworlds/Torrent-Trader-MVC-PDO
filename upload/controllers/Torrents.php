@@ -773,11 +773,29 @@ if ($row["banned"] == "yes"){
 }else{
 		print ("<table border='0' width='100%'><tr>");
 	
-	// Magnet
-	if ($row["external"] == 'yes'){
+    // Like Mod
+    if(!$site_config["forcethanks"]) {
+    // Magnet
+    if ($row["external"] == 'yes'){
     print ("<a href=\"magnet:?xt=urn:btih:".$row["info_hash"]."&dn=".$row["filename"]."&tr=udp://tracker.openbittorrent.com&tr=udp://tracker.publicbt.com\"><button type='button' class='btn btn-sm btn-danger'>Magnet Download</button></a>");
     }else{
     print ("<a href=\"magnet:?xt=urn:btih:".$row["info_hash"]."&dn=".$row["filename"]."&tr=".$site_config['SITEURL']."/announce.php?passkey=".$CURUSER["passkey"]."\"><button type='button' class='btn btn-sm btn-danger'>Magnet Download</button></a>");
+    }
+    }
+    if($site_config["forcethanks"]) {
+    $data = DB::run("SELECT user FROM thanks WHERE thanked = ? AND type = ? AND user = ?", [$id, 'torrent', $CURUSER['id']]);
+    $like = $data->fetch(PDO::FETCH_ASSOC);
+    var_dump($like);
+    if($like){
+    // Magnet
+    if ($row["external"] == 'yes'){
+    print ("<a href=\"magnet:?xt=urn:btih:".$row["info_hash"]."&dn=".$row["filename"]."&tr=udp://tracker.openbittorrent.com&tr=udp://tracker.publicbt.com\"><button type='button' class='btn btn-sm btn-danger'>Magnet Download</button></a>");
+    }else{
+    print ("<a href=\"magnet:?xt=urn:btih:".$row["info_hash"]."&dn=".$row["filename"]."&tr=".$site_config['SITEURL']."/announce.php?passkey=".$CURUSER["passkey"]."\"><button type='button' class='btn btn-sm btn-danger'>Magnet Download</button></a>");
+    }
+    }else {
+       print("<a href='$site_config[SITEURL]/likes/index?id=$id'><img src='/images/star.png' width='20' height='20' border='0'>&nbsp;");
+    }
     }
 	
 	print ("<a href=\"/download?id=$id&amp;name=" . rawurlencode($row["filename"]) . "\"><button type='button' class='btn btn-sm btn-success'>".T_("DOWNLOAD_TORRENT")."</button></a></br>");
@@ -892,6 +910,16 @@ else
 print("<tr><td align='left'><b>" .T_("DATE_ADDED"). ":</b></td><td>" . date("d-m-Y H:i:s", utc_to_tz_time($row["added"])) . "</td></tr>\n");
 print("<tr><td align='left'><b>" .T_("VIEWS"). ":</b></td><td>" . number_format($row["views"]) . "</td></tr>\n");
 print("<tr><td align='left'><b>".T_("HITS").":</b></td><td>" . number_format($row["hits"]) . "</td></tr>\n");
+    // LIKE MOD
+    if($site_config["allowlikes"]) {
+    $data = DB::run("SELECT user FROM likes WHERE liked=? AND type=? AND user=? AND reaction=?", [$id, 'torrent', $CURUSER['id'], 'like']);
+    $likes = $data->fetch(PDO::FETCH_ASSOC);
+    if($likes){
+        print("<tr><td align='left'><b>Reaction:</b></td><td><a href='$site_config[SITEURL]/likes/unliketorrent?id=$id'><img src='/images/unlike.png' width='20' height='20' border='0'></a></td></tr>\n");
+    }else{
+        print("<tr><td align='left'><b>Reaction:</b></td><td><a href='$site_config[SITEURL]/likes/liketorrent?id=$id'><img src='/images/like.png' width='20' height='20' border='0'></a></td></tr>\n");
+    }
+    }
 echo "</table></fieldset><br /><br />";
 
 // $srating IS RATING VARIABLE

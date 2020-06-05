@@ -6,6 +6,29 @@ create table sessions(
   primary key (id)
 );
 
+CREATE TABLE `thanks` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `user` int(10) unsigned NOT NULL default '0',
+  `thanked` int(10) unsigned NOT NULL default '0',
+  `added` datetime NOT NULL default '0000-00-00 00:00:00',
+  `type` text NOT NULL,
+  PRIMARY KEY  (`id`),
+  KEY `user` (`user`),
+  KEY `thanked` (`thanked`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 ;
+
+CREATE TABLE `likes` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `user` int(10) unsigned NOT NULL default '0',
+  `liked` int(10) unsigned NOT NULL default '0',
+  `added` datetime NOT NULL default '0000-00-00 00:00:00',
+  `reaction` text NOT NULL,
+  `type` text NOT NULL,
+  PRIMARY KEY  (`id`),
+  KEY `user` (`user`),
+  KEY `liked` (`liked`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 ;
+
 DROP TABLE IF EXISTS `bonus`;
 CREATE TABLE `bonus` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,

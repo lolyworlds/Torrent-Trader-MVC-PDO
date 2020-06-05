@@ -20,14 +20,14 @@ function logoutcookie()
     $sid = session_id();
     // reset cookie to session 
     setcookie("PHPSESSID", $sid, "0", "/");
-    // super sess todo
-    $test = array();
-    $_SESSION = $test;
+    session_start();
+    session_destroy();
 }
 
 function setsess($id, $password, $secret)
 {
-    // encrypt pass
+    session_start();
+	// encrypt pass
     $hash = $id . $secret . $password . getip() . $secret;
     // set session handler
     $_SESSION['id'] = $id;
