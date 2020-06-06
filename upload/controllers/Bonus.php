@@ -93,6 +93,7 @@
         'usersbonus' => $CURUSER['seedbonus'],
         'configbonuspertime' => $site_config['bonuspertime'],
         'configautoclean_interval' => floor($site_config['add_bonus'] / 60),
+        'usersid' => $CURUSER['id'],
       ];
 
       $this->view('bonus/index', $data);

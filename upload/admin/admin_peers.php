@@ -42,7 +42,7 @@ if ($action=="peers"){
 			}
 
 			if ($row1['username'])
-				print'<tr><td class="table_col1"><a href="'.TTURL.'/accountdetails?id=' . $row['userid'] . '">' . class_user($row1['username']) . '</a></td>';
+				print'<tr><td class="table_col1"><a href="'.TTURL.'/users?id=' . $row['userid'] . '">' . class_user($row1['username']) . '</a></td>';
 			else
 				print'<tr><td class="table_col1">'.$row["ip"].'</td>';
 

@@ -111,7 +111,7 @@ if ($tid > 0) {
 				?>
 				
 				<tr align="center">
-					<td class="table_col1" align="left"><a href="$site_config[SITEURL]/accountdetails?id=<?php echo $row[0];?>"><?php echo "<b>".$row[1]."</b>";?></a></td>
+					<td class="table_col1" align="left"><a href="$site_config[SITEURL]/users?id=<?php echo $row[0];?>"><?php echo "<b>".$row[1]."</b>";?></a></td>
 					<td class="table_col2"><font color="#27B500"><?php echo mksize($row[5]);?></font></td>
 					<td class="table_col1"><font color="#FF1200"><?php echo mksize($row[6]);?></font></td>
 					<td class="table_col2"><?php echo $ratio;?></td>
@@ -206,33 +206,12 @@ if ($tid > 0) {
 
 			if ( $uid == $CURUSER['id'] )
 			{
-				?>
-	<br />
-      <div class="f-border">
-		<table cellpadding='0' cellspacing='3' width='100%'>
-		<tr class="f-title">
-		<th width='100%' height="32" align='center'>
-		<?php print("<a href='$site_config[SITEURL]/usercp'><b>".T_("YOUR_PROFILE")."</b></a>");?>
-		&nbsp;|&nbsp;
-		<?php print("<a href='$site_config[SITEURL]/usercp/edit_settings&amp;do=edit'><b>".T_("YOUR_SETTINGS")."</b></a>");?>
-		&nbsp;|&nbsp;
-		<?php print("<a href='$site_config[SITEURL]/usercp/changepw'><b>".T_("CHANGE_PASS")."</b></a>");?>
-		&nbsp;|&nbsp;
-		<?php print("<a href='$site_config[SITEURL]/usercp/mytorrents'><b>".T_("YOUR_TORRENTS")."</b></a>");?>
-		&nbsp;|&nbsp;
-		<?php print("<a href='$site_config[SITEURL]/mailbox'><b>".T_("YOUR_MESSAGES")."</b></a>");?>
-		 &nbsp;|&nbsp;
-        <?php print("<a href='$site_config[SITEURL]/snatched'><b>".T_("YOUR_SNATCHLIST")."</b></a>");?>
-		</th>
-        </tr>
-		</table>
-	  </div>
-	<?php
+usermenu();
 				print("<div style='margin-top:20px; margin-bottom:20px' align='center'><font size='2'>".T_("SNATCHED_MESSAGE")."</font></div>");
 			}
 			
 			if ( $uid != $CURUSER['id'] )
-				print("<div style='margin-top:10px; margin-bottom:5px'><a href=$site_config[SITEURL]/accountdetails?id=$uid><b><input type='submit' value='".T_("GO_TO_USER_ACCOUNT")."'></b></a></div>");
+				print("<div style='margin-top:10px; margin-bottom:5px'><a href=$site_config[SITEURL]/users?id=$uid><b><input type='submit' value='".T_("GO_TO_USER_ACCOUNT")."'></b></a></div>");
 			
 			if ($count_uid > $perpage) { echo $pagertop; }
 
@@ -302,7 +281,7 @@ if ($tid > 0) {
 			if ($count_uid > $perpage) { echo $pagerbottom; }
 			
 			if ( $uid != $CURUSER['id'] )
-				print("<div style='margin-top:5px; margin-bottom:10px' align='right'><a href=$site_config[SITEURL]/accountdetails?id=$uid><b><input type='submit' value='".T_("GO_TO_USER_ACCOUNT")."'></b></a></div>");
+				print("<div style='margin-top:5px; margin-bottom:10px' align='right'><a href=$site_config[SITEURL]/users?id=$uid><b><input type='submit' value='".T_("GO_TO_USER_ACCOUNT")."'></b></a></div>");
 			
 			endif;
 			end_frame();
@@ -335,9 +314,9 @@ if ($tid > 0) {
 		//	if ($users->rowCount() > 0)
 			{
 				if ( $uid != $CURUSER['id'] ) {
-					print("<div style='margin-bottom:10px' align='center'><a href=$site_config[SITEURL]/accountdetails?id=$uid><b><button type='submit' class='btn btn-sm btn-primary'>".T_("GO_TO_USER_ACCOUNT")."</button></b></a></div>");
+					print("<div style='margin-bottom:10px' align='center'><a href=$site_config[SITEURL]/users?id=$uid><b><button type='submit' class='btn btn-sm btn-primary'>".T_("GO_TO_USER_ACCOUNT")."</button></b></a></div>");
 				} else {
-					print("<div style='margin-bottom:10px' align='center'>[<a href=$site_config[SITEURL]/users><b>".T_("GO_TO_YOUR_PROFILE")."</b></a>]</div>");
+					print("<div style='margin-bottom:10px' align='center'>[<a href=$site_config[SITEURL]/users/all><b>".T_("GO_TO_YOUR_PROFILE")."</b></a>]</div>");
 				}
 			}
 			end_frame();

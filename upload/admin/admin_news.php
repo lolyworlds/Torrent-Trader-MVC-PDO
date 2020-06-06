@@ -25,7 +25,7 @@ if ($action=="news" && $do=="view"){
 			if ($postername == "")
 				$by = "Unknown";
 			else
-				$by = "<a href='".TTURL."/accountdetails?id=$userid'><b>$postername</b></a>";
+				$by = "<a href='".TTURL."/users?id=$userid'><b>$postername</b></a>";
 			
 			print("<table border='0' cellspacing='0' cellpadding='0'><tr><td>");
 			print("$added&nbsp;---&nbsp;by&nbsp;$by");

@@ -143,7 +143,7 @@ while ($row = $result->fetch(PDO::FETCH_LAZY)) {
 	echo "</div>";
 
     // message part
-    echo	'</td><td><a href="'.$site_config['SITEURL'].'/accountdetails?id='.$row['userid'].'" target="_parent"><b>'.class_user($row['user']).':</b></a>&nbsp;&nbsp;'.nl2br(format_comment($row['message']));
+    echo	'</td><td><a href="'.$site_config['SITEURL'].'/users?id='.$row['userid'].'" target="_parent"><b>'.class_user($row['user']).':</b></a>&nbsp;&nbsp;'.nl2br(format_comment($row['message']));
 	echo	'</td></tr>';
 }
 

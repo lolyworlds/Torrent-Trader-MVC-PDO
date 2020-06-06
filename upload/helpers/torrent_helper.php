@@ -326,7 +326,7 @@ function torrenttable($res)
                     if (($row["anon"] == "yes" || $row["privacy"] == "strong") && $CURUSER["id"] != $row["owner"] && $CURUSER["edit_torrents"] != "yes") {
                         echo "Anonymous";
                     } elseif ($row["username"]) {
-                        echo "<a href='".$site_config['SITEURL']."/accountdetails?id=$row[owner]'>" . class_user($row['username']) . "</a>";
+                        echo "<a href='".$site_config['SITEURL']."/users?id=$row[owner]'>" . class_user($row['username']) . "</a>";
                     } else {
                         echo "Unknown";
                     }

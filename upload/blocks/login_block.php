@@ -26,7 +26,7 @@ begin_block($CURUSER["username"]);
 		<li class="list-group-item"><?php echo T_("RATIO");?>: <?php echo $userratio;?></span></li>
 	</ul>
 	<div class="text-center">
-		<a href="<?php echo TTURL; ?>/usercp" class="btn btn-primary"><?php echo T_("ACCOUNT"); ?></a>
+	<a href='<?php echo TTURL; ?>/users?id=<?php echo $CURUSER["id"]; ?>'><button class="btn btn-primary"><?php echo T_("ACCOUNT"); ?></button></a>
 		<?php if ($CURUSER["control_panel"]=="yes") { ?>
 		<a href="<?php echo TTURL; ?>/admincp" class="btn btn-warning"><?php echo T_("STAFFCP");?></a>
 		<?php } ?>

@@ -23,7 +23,7 @@ if ($action=="avatars"){
 	$res = DB::run($query);
 
 	while($arr = $res->fetch(PDO::FETCH_ASSOC)){
-			echo("<tr><td class='table_col1'><b><a href=\"".TTURL."/accountdetails?id=" . $arr['id'] . "\">" . class_user($arr['username']) . "</a></b></td><td class='table_col2'>");
+			echo("<tr><td class='table_col1'><b><a href=\"".TTURL."/users?id=" . $arr['id'] . "\">" . class_user($arr['username']) . "</a></b></td><td class='table_col2'>");
 
 			if (!$arr['avatar'])
 				echo "<img width=\"80\" src='images/default_avatar.png' alt='' /></td></tr>";

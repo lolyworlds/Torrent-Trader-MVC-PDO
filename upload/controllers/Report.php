@@ -138,7 +138,7 @@ if ($user !=""){
 
     $arr = $res->fetch(PDO::FETCH_ASSOC);
     
-    print("<b>Are you sure you would like to report user:</b><br /><a href='$site_config[SITEURL]/accountdetails?id=$user'><b>" . class_user($arr['username']) . "</b></a>?<br />");
+    print("<b>Are you sure you would like to report user:</b><br /><a href='$site_config[SITEURL]/users?id=$user'><b>" . class_user($arr['username']) . "</b></a>?<br />");
     print("<p>Please note, this is <b>not</b> to be used to report leechers, we have scripts in place to deal with them</p>");
     print("<b>Reason</b> (required): <form method='post' action='$site_config[SITEURL]/report'><input type='hidden' name='user' value='$user' /><input type='text' size='100' name='reason' /><input type='submit' value='Confirm' /></form>");
     end_frame();

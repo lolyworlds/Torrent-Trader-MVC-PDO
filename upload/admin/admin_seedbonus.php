@@ -24,7 +24,7 @@ if ($action == "seedbonus" && $do != "change")
     $res = DB::run("SELECT id, title, cost, value, descr, type FROM `bonus` ORDER BY `type` $limit");
 
     stdhead("Seedbonus Manager");
-    navmenu();
+    usermenu();
                                                         
     begin_frame("Management of Seed Bonus");
     ?>
@@ -113,7 +113,7 @@ $_POST["value"] = ( $_POST["type"] == "traffic" ) ? strtobytes( $_POST["value"] 
     }
         
     stdhead("Seedbonus Management");
-    navmenu();
+    usermenu();
 
     begin_frame("Seedbonus Management");
     ?>

@@ -47,7 +47,7 @@ if ($action=="polls" && $do=="results"){
 		
 		echo '<tr>';
 		echo '<td class="table_col1" align="left"><b>';
-		echo '<a href="'.TTURL.'/accountdetails?id='.$user["id"].'">';
+		echo '<a href="'.TTURL.'/users?id='.$user["id"].'">';
 		echo '&nbsp;&nbsp;'.class_user($user['username']);
 		echo '</a>';
 		echo '</b></td>';

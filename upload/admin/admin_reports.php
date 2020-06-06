@@ -127,7 +127,7 @@ if ($action == "reports" && $do == "view") {
       if ($row["dealtby"] > 0)
       {
           $r = DB::run("SELECT username FROM users WHERE id = '$row[dealtby]'")->fetch();
-          $dealtwith = 'By <a href="'.TTURL.'/accountdetails?id='.$row['dealtby'].'">'.$r['username'].'</a>';
+          $dealtwith = 'By <a href="'.TTURL.'/users?id='.$row['dealtby'].'">'.$r['username'].'</a>';
       }    
       
       switch ( $row["type"] )
@@ -149,7 +149,7 @@ if ($action == "reports" && $do == "view") {
       $r = $q->fetch(PDO::FETCH_LAZY);
       
       if ($row["type"] == "user")
-          $link = "/accountdetails?id=$row[votedfor]";
+          $link = "/users?id=$row[votedfor]";
       else if ($row["type"] == "torrent")
           $link = "torrents/details?id=$row[votedfor]";
       else if ($row["type"] == "comment")
@@ -158,7 +158,7 @@ if ($action == "reports" && $do == "view") {
           $link = "/forums/viewtopic&amp;topicid=$row[votedfor]&amp;page=last#post$row[votedfor_xtra]";
       ?>
       <tr>
-          <td class="table_col1" align="center" width="10%"><a href="<?php echo TTURL; ?>/accountdetails?id=<?php echo $row['addedby']; ?>"><?php echo class_user($row['username']); ?></a></td>
+          <td class="table_col1" align="center" width="10%"><a href="<?php echo TTURL; ?>/users?id=<?php echo $row['addedby']; ?>"><?php echo class_user($row['username']); ?></a></td>
           <td class="table_col2" align="center" width="15%"><a href="<?php echo $link; ?>"><?php echo CutName($r[0], 40); ?></a></td>
           <td class="table_col1" align="center" width="10%"><?php echo $row['type']; ?></td>
           <td class="table_col2" align="center" width="50%"><?php echo htmlspecialchars($row['reason']); ?></td>

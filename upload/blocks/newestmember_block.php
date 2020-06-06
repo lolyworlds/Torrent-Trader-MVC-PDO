@@ -19,7 +19,7 @@ if ($CURUSER) {
 <?php } else { ?>
 		<div class="list-group">
 	<?php foreach ($rows as $row) { ?>
-			<a href='<?php echo TTURL; ?>/accountdetails?id=<?php echo $row["id"];?>' class="list-group-item"><?php echo class_user($row["username"]);?></a>
+			<a href='<?php echo TTURL; ?>/users?id=<?php echo $row["id"];?>' class="list-group-item"><?php echo class_user($row["username"]);?></a>
 	<?php } ?>
 		</div>
 <?php }

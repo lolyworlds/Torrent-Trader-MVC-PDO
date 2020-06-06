@@ -143,7 +143,7 @@ stdhead($pagename, false);
 if (isset($_REQUEST['compose']))
 {
     begin_frame("Compose");
-    navmenu ();
+    usermenu ();
     $userid = @$_REQUEST['id'];
     $subject = ''; $msg = ''; $to = ''; $hidden = ''; $output = ''; $reply = false;
 	$sreplay = T_("REPLY");//bugfix
@@ -276,7 +276,7 @@ if (isset($_REQUEST['compose']))
 }
 
 begin_frame($pagename);
-navmenu ();
+usermenu ();
 echo "<center>";
 ?>
 <style>
@@ -356,7 +356,7 @@ begin_form();
         {
             $res2 = DB::run("SELECT username FROM users WHERE `id` = $arr[sender]");
             $arr2 = $res2->fetch(PDO::FETCH_ASSOC);
-            $sender = "<a href=\"/accountdetails?id=$arr[sender]\">".($arr2["username"] ? $arr2["username"] : "[Deleted]")."</a>";
+            $sender = "<a href=\"/users?id=$arr[sender]\">".($arr2["username"] ? $arr2["username"] : "[Deleted]")."</a>";
         }
         else $sender = T_("SYSTEM");
 //    $sender = $arr['sendername'];
@@ -366,7 +366,7 @@ begin_form();
         {
             $res2 = DB::run("SELECT username FROM users WHERE `id` = $arr[receiver]");
             $arr2 = $res2->fetch(PDO::FETCH_ASSOC);
-            $sentto = "<a href=\"/accountdetails?id=$arr[receiver]\">".($arr2["username"] ? $arr2["username"] : "[Deleted]")."</a>";
+            $sentto = "<a href=\"/users?id=$arr[receiver]\">".($arr2["username"] ? $arr2["username"] : "[Deleted]")."</a>";
         }
         else $sentto = T_("SYSTEM");
 

@@ -229,7 +229,7 @@ global $site_config, $CURUSER, $pdo;
         if ($row["anon"] == "yes" && ($CURUSER["edit_torrents"] == "no" || $CURUSER["id"] != $row["owner"]))
             $owner = T_("ANONYMOUS");
         elseif ($row["username"])
-            $owner = "<a href='$site_config[SITEURL]/accountdetails?id=".$row["owner"]."'>" . class_user($row["username"]) . "</a>";
+            $owner = "<a href='$site_config[SITEURL]/users?id=".$row["owner"]."'>" . class_user($row["username"]) . "</a>";
         else
             $owner = T_("UNKNOWN_USER");
 
@@ -908,7 +908,7 @@ print("");
 if ($row["anon"] == "yes" && !$owned)
 	print("<tr><td align='left'><b>" .T_("ADDED_BY"). ":</b></td><td>Anonymous</td></tr>");
 elseif ($row["username"])
-	print("<tr><td align='left'><b>" .T_("ADDED_BY"). ":</b></td><td><a href='$site_config[SITEURL]/accountdetails?id=" . $row["owner"] . "'>" . class_user($row["username"]) . "</a></td></tr>");
+	print("<tr><td align='left'><b>" .T_("ADDED_BY"). ":</b></td><td><a href='$site_config[SITEURL]/users?id=" . $row["owner"] . "'>" . class_user($row["username"]) . "</a></td></tr>");
 else
 	print("<tr><td align='left'><b>" .T_("ADDED_BY"). ":</b></td><td>Unknown</td></tr>");
 
@@ -1053,7 +1053,7 @@ if ($row["external"]!='yes'){
 					$res = $pdo->run("SELECT id, username, privacy FROM users WHERE id=".$row1["userid"]."");
 					$arr = $res->fetch(PDO::FETCH_LAZY);
                     
-                    $arr["username"] = "<a href='$site_config[SITEURL]/accountdetails?id=$arr[id]'>".class_user($arr['username'])."</a>";
+                    $arr["username"] = "<a href='$site_config[SITEURL]/users?id=$arr[id]'>".class_user($arr['username'])."</a>";
 				}
                 
                 # With $site_config["MEMBERSONLY"] off this will be shown.
@@ -1177,7 +1177,7 @@ $db = new Database;
            $peers = (get_row_count("peers", "WHERE torrent = '$id' AND userid = '$row[id]' AND seeder = 'yes'")) ? "<font color='green'>" . T_("YES") . "</font>" : "<font color='#ff0000'>" . T_("NO") . "</font>";
   ?>
        <tr>
-           <td class="table_col1"><a href="<?php echo TTURL; ?>/accountdetails?id=<?php echo $row["id"]; ?>"><?php echo class_user($row['username']); ?></a></td>
+           <td class="table_col1"><a href="<?php echo TTURL; ?>/users?id=<?php echo $row["id"]; ?>"><?php echo class_user($row['username']); ?></a></td>
            <td class="table_col2"><?php echo $peers; ?></td>
            <td class="table_col1"><?php echo utc_to_tz($row["date"]); ?></td>
            <td class="table_col2"><?php echo number_format($ratio, 2); ?></td>

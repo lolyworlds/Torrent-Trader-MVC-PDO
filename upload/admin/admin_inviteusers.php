@@ -57,12 +57,12 @@ if ($action == "invited")
     </tr></thead>
     <?php while ($row = $res->fetch(PDO::FETCH_ASSOC)): ?>
     <tbody><tr>
-        <td><a href="<?php echo TTURL; ?>/accountdetails?id=<?php echo $row["id"]; ?>"><?php echo class_user($row["username"]); ?></a></td>
+        <td><a href="<?php echo TTURL; ?>/users?id=<?php echo $row["id"]; ?>"><?php echo class_user($row["username"]); ?></a></td>
         <td><?php echo $row["email"]; ?></td>
         <td><?php echo get_user_class_name($row["class"]); ?></td>     
         <td><?php echo utc_to_tz($row["added"]); ?></td>
         <td><?php echo utc_to_tz($row["last_access"]); ?></td>  
-        <td><?php echo ( $row['inviter'] ) ? '<a href="'.TTURL.'/accountdetails?id='.$row["invited_by"].'">'.$row["inviter"].'</a>' : 'Unknown User'; ?></td>
+        <td><?php echo ( $row['inviter'] ) ? '<a href="'.TTURL.'/users?id='.$row["invited_by"].'">'.$row["inviter"].'</a>' : 'Unknown User'; ?></td>
         <td><input type="checkbox" name="users[]" value="<?php echo $row["id"]; ?>" /></td>
     </tr>
     <?php endwhile; ?>

@@ -25,7 +25,7 @@ global $site_config, $CURUSER, $pdo;
   {
       $table[$row['class']] = ($table[$row['class']] ?? '').
         "<td><img src='".$site_config['SITEURL']."/images/button_o".($row["last_access"] > $dt ? "n" : "ff")."line.png' alt='' /> ". 
-        "<a href='".$site_config['SITEURL']."/accountdetails?id=".$row["id"]."'>" . class_user($row["username"]) . "</a> ".       
+        "<a href='".$site_config['SITEURL']."/users?id=".$row["id"]."'>" . class_user($row["username"]) . "</a> ".       
         "<a href='".$site_config['SITEURL']."/mailbox?compose&amp;id=".$row["id"]."'><img src='".$site_config['SITEURL']."/images/button_pm.gif' border='0' alt='' /></a></td>";
         
        $col[$row['class']] = ($col[$row['class']] ?? 0) + 1;

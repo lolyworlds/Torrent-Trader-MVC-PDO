@@ -106,7 +106,7 @@ function forumpostertable($res)
     $num = 0;
     while ($a = $res->fetch(PDO::FETCH_ASSOC)) {
         ++$num;
-        print("$num &nbsp; <a href='".$site_config['SITEURL']."/accountdetails?id=$a[id]'><b>$a[username]</b></a> $a[num]");
+        print("$num &nbsp; <a href='".$site_config['SITEURL']."/users?id=$a[id]'><b>$a[username]</b></a> $a[num]");
     }
 
     if ($num == 0) {
@@ -244,7 +244,7 @@ function latestforumposts()
             $res = $pdo->run("SELECT id, username FROM users WHERE id=$userid");
             if ($res->rowCount() == 1) {
                 $arr = $res->fetch(PDO::FETCH_ASSOC);
-                $username = "<a href='".$site_config['SITEURL']."/accountdetails?id=$userid'>" . class_user($arr['username']) . "</a>";
+                $username = "<a href='".$site_config['SITEURL']."/users?id=$userid'>" . class_user($arr['username']) . "</a>";
             } else {
                 $username = "Unknown[$topic_userid]";
             }
@@ -253,7 +253,7 @@ function latestforumposts()
             $res = $pdo->run("SELECT username FROM users WHERE id=?", [$topic_userid]);
             if ($res->rowCount() == 1) {
                 $arr = $res->fetch(PDO::FETCH_ASSOC);
-                $author = "<a href='".$site_config['SITEURL']."/accountdetails?id=$topic_userid'>" . class_user($arr['username']) . "</a>";
+                $author = "<a href='".$site_config['SITEURL']."/users?id=$topic_userid'>" . class_user($arr['username']) . "</a>";
             } else {
                 $author = "Unknown[$topic_userid]";
             }

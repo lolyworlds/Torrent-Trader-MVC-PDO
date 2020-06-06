@@ -21,7 +21,7 @@ if ($CURUSER) {
 	<?php for ($i = 0, $cnt = count($rows), $n = $cnt - 1; $i < $cnt; $i++) {
         $row = &$rows[$i]; ?>
 
-			<a href='<?php echo TTURL; ?>/accountdetails?id=<?php echo $row["id"]; ?>'><?php echo class_user($row["username"]); ?></a><?php echo($i < $n ? ", " : ""); ?>
+			<a href='<?php echo TTURL; ?>/users?id=<?php echo $row["id"]; ?>'><?php echo class_user($row["username"]); ?></a><?php echo($i < $n ? ", " : ""); ?>
 			
 	<?php
     }

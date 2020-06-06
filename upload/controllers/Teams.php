@@ -28,7 +28,7 @@ global $site_config, $CURUSER, $pdo;
  <div class='table-responsive'><table class='table table-striped'>
 <thead><tr>
      <th></th>
-     <th>Owner: <?php echo ( $row["username"] ) ? '<a href="$site_config[SITEURL]/accountdetails?id='.$row["owner"].'">' . class_user($row["username"]) . '</a>' : "Unknown User"; ?> - Added: <?php echo utc_to_tz($row["added"]); ?></th>
+     <th>Owner: <?php echo ( $row["username"] ) ? '<a href="$site_config[SITEURL]/users?id='.$row["owner"].'">' . class_user($row["username"]) . '</a>' : "Unknown User"; ?> - Added: <?php echo utc_to_tz($row["added"]); ?></th>
  </tr></thead>
  <tbody><tr>
      <td><img src="<?php echo htmlspecialchars($row["image"]); ?>" border="0" alt="<?php echo htmlspecialchars($row["name"]); ?>" title="<?php echo htmlspecialchars($row["name"]); ?>" /></td>
@@ -38,7 +38,7 @@ global $site_config, $CURUSER, $pdo;
     <td class="table_col1" colspan="2">
     <b>Members:</b> 
     <?php foreach ( explode(',', $row['members']) as $member ): $member = explode(" ", $member); ?>
-    <a href="$site_config[SITEURL]/accountdetails?id=<?php echo $member[0]; ?>"><?php echo htmlspecialchars($member[1]); ?></a>,
+    <a href="$site_config[SITEURL]/users?id=<?php echo $member[0]; ?>"><?php echo htmlspecialchars($member[1]); ?></a>,
     <?php endforeach; ?>
     </td>
  </tr><tbody>
@@ -166,7 +166,7 @@ if($editmembers > 0) {
 		$uploaded = mksize($row['uploaded']);
 		$downloaded = mksize($row['downloaded']);
 		
-		echo("<tr><td class='table_col1'><a href='$site_config[SITEURL]/accountdetails?id=$row[id]'>$username</a></td><td class='table_col2'>$uploaded</td><td class='table_col1'>$downloaded</td></tr>");
+		echo("<tr><td class='table_col1'><a href='$site_config[SITEURL]/users?id=$row[id]'>$username</a></td><td class='table_col2'>$uploaded</td><td class='table_col1'>$downloaded</td></tr>");
 	}
 	echo "</table></center>";
 	end_frame();
@@ -250,7 +250,7 @@ while ($row = $sql->fetch(PDO::FETCH_LAZY)) {
 	$OWNERNAME2 = DB::run("SELECT username, class FROM users WHERE id=$owner")->fetch();
 	$OWNERNAME = class_user($OWNERNAME2['username']);
 
-	echo("<tbody><tr><td><b>$id</b> </td> <td><img src='$image' alt='' /></td> <td><b>$name</b></td><td><a href='$site_config[SITEURL]/accountdetails/?id=$owner'>$OWNERNAME</a></td><td>$info</td><td><a href='$site_config[SITEURL]/teams/create?editmembers=$id'>[Members]</a>&nbsp;<a href='$site_config[SITEURL]/teams/create?editid=$id&amp;name=$name&amp;image=$image&amp;info=$info&amp;owner=$OWNERNAME'>[".T_("EDIT")."]</a>&nbsp;<a href='$site_config[SITEURL]/teams/create?del=$id&amp;team=$name'>[Delete]</a></td></tr></tbody>");
+	echo("<tbody><tr><td><b>$id</b> </td> <td><img src='$image' alt='' /></td> <td><b>$name</b></td><td><a href='$site_config[SITEURL]/users?id=$owner'>$OWNERNAME</a></td><td>$info</td><td><a href='$site_config[SITEURL]/teams/create?editmembers=$id'>[Members]</a>&nbsp;<a href='$site_config[SITEURL]/teams/create?editid=$id&amp;name=$name&amp;image=$image&amp;info=$info&amp;owner=$OWNERNAME'>[".T_("EDIT")."]</a>&nbsp;<a href='$site_config[SITEURL]/teams/create?del=$id&amp;team=$name'>[Delete]</a></td></tr></tbody>");
 }
 echo "</table></center>";
 

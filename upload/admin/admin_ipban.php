@@ -78,7 +78,7 @@ if ($action == "ipbans") {
                 <td align='center' class='table_col1'>".date('d/m/Y H:i:s', utc_to_tz_time($arr["added"]))."</td>
                 <td align='center' class='table_col2'>$arr[first]</td>
                 <td align='center' class='table_col1'>$arr[last]</td>
-                <td align='center' class='table_col2'><a href='".TTURL."/accountdetails?id=$arr[addedby]'>$arr[username]</a></td>
+                <td align='center' class='table_col2'><a href='".TTURL."/users?id=$arr[addedby]'>$arr[username]</a></td>
                 <td align='center' class='table_col1'>$arr[comment]</td>
                 <td align='center' class='table_col2'><input type='checkbox' name='delids[]' value='$arr[id]' /></td>
             </tr>";

@@ -94,7 +94,7 @@ while ($forums_arr = $forums_res->fetch(PDO::FETCH_ASSOC)){
 		//cut last topic
 		$latestleng = 10;
 
-		$lastpost = "<small><a href='$site_config[SITEURL]/forums/viewtopic&amp;topicid=$lasttopicid&amp;page=last#last'>" . CutName($lasttopic, $latestleng) . "</a> by <a href='$site_config[SITEURL]/accountdetails?id=$lastposterid'>$lastposter</a><br />$lastpostdate</small>";
+		$lastpost = "<small><a href='$site_config[SITEURL]/forums/viewtopic&amp;topicid=$lasttopicid&amp;page=last#last'>" . CutName($lasttopic, $latestleng) . "</a> by <a href='$site_config[SITEURL]/users?id=$lastposterid'>$lastposter</a><br />$lastpostdate</small>";
 
 
 		if ($CURUSER) {
@@ -237,7 +237,7 @@ $themedir = $site_config['SITEURL']."/views/themes/".$THEME."/forums/";
 				$user = $res2->fetch(PDO::FETCH_ASSOC);
 				if ($user["username"] == "")
 					$user["username"] = "Deluser";
-				print("<tr><td>$post[id]</td><td align='left'><a href='$site_config[SITEURL]/forums/viewtopic&amp;topicid=$post[topicid]#post$post[id]'><b>" . htmlspecialchars($topic["subject"]) . "</b></a></td><td align='left'><a href='$site_config[SITEURL]/forums/viewforum&amp;forumid=$topic[forumid]'><b>" . htmlspecialchars($forum["name"]) . "</b></a></td><td align='left'><a href='$site_config[SITEURL]/accountdetails?id=$post[userid]'><b>$user[username]</b></a><br />at ".utc_to_tz($post["added"])."</td></tr>\n");
+				print("<tr><td>$post[id]</td><td align='left'><a href='$site_config[SITEURL]/forums/viewtopic&amp;topicid=$post[topicid]#post$post[id]'><b>" . htmlspecialchars($topic["subject"]) . "</b></a></td><td align='left'><a href='$site_config[SITEURL]/forums/viewforum&amp;forumid=$topic[forumid]'><b>" . htmlspecialchars($forum["name"]) . "</b></a></td><td align='left'><a href='$site_config[SITEURL]/users?id=$post[userid]'><b>$user[username]</b></a><br />at ".utc_to_tz($post["added"])."</td></tr>\n");
 			}
 			print("</table></div></center></p>\n");
 			print("<p><b>Search again</b></p>\n");
@@ -457,7 +457,7 @@ $maxsubjectlength = 50;
         $res = DB::run("SELECT * FROM users WHERE id=$lpuserid");
         if ($res->rowCount() == 1) {
           $arr = $res->fetch(PDO::FETCH_ASSOC);
-          $lpusername = "<a href='$site_config[SITEURL]/accountdetails?id=$lpuserid'>".class_user($arr['username'])."</a>";
+          $lpusername = "<a href='$site_config[SITEURL]/users?id=$lpuserid'>".class_user($arr['username'])."</a>";
         }
         else
           $lpusername = "Deluser";
@@ -470,7 +470,7 @@ $maxsubjectlength = 50;
         $res = DB::run("SELECT username FROM users WHERE id=$topic_userid");
         if ($res->rowCount() == 1) {
           $arr = $res->fetch(PDO::FETCH_ASSOC);
-          $lpauthor = "<a href='$site_config[SITEURL]/accountdetails?id=$topic_userid'>".class_user($arr['username'])."</a>";
+          $lpauthor = "<a href='$site_config[SITEURL]/users?id=$topic_userid'>".class_user($arr['username'])."</a>";
         }
         else
           $lpauthor = "Deluser";
@@ -897,7 +897,7 @@ $maxsubjectlength = 50;
 
 				$title = format_comment($arr2["title"]);
 				$donated = $arr2['donated'];
-				$by = "<a href='$site_config[SITEURL]/accountdetails?id=$posterid'>$postername</a>" . ($donated > 0 ? "<img src='".$site_config['SITEURL']."/images/star.png' alt='Donated' />" : "") . "";
+				$by = "<a href='$site_config[SITEURL]/users?id=$posterid'>$postername</a>" . ($donated > 0 ? "<img src='".$site_config['SITEURL']."/images/star.png' alt='Donated' />" : "") . "";
 			}
 
 		 if (!$avatar)
@@ -925,7 +925,7 @@ $maxsubjectlength = 50;
 			if ($res2->rowCount() == 1) {
 				$arr2 = $res2->fetch(PDO::FETCH_ASSOC);
 				//edited by comment out if needed
-				$body .= "<br /><br /><small><i>Last edited by <a href='$site_config[SITEURL]/accountdetails?id=$arr[editedby]'>$arr2[username]</b></a> on ".utc_to_tz($arr["editedat"])."</i></small><br />\n";
+				$body .= "<br /><br /><small><i>Last edited by <a href='$site_config[SITEURL]/users?id=$arr[editedby]'>$arr2[username]</b></a> on ".utc_to_tz($arr["editedat"])."</i></small><br />\n";
 				$body .= "\n";
 			}
 		}
@@ -956,7 +956,7 @@ $maxsubjectlength = 50;
 
 //Post Bottom
 
-	print("<tr class='p-foot'><td width='150' align='center'><a href='$site_config[SITEURL]/accountdetails?id=$posterid'><img src='".$themedir."icon_profile.png' border='0' alt='' /></a> <a href='$site_config[SITEURL]/mailbox?compose&amp;id=$posterid'><img src='".$themedir."icon_pm.png' border='0' alt='' /></a></td><td>");
+	print("<tr class='p-foot'><td width='150' align='center'><a href='$site_config[SITEURL]/users?id=$posterid'><img src='".$themedir."icon_profile.png' border='0' alt='' /></a> <a href='$site_config[SITEURL]/mailbox?compose&amp;id=$posterid'><img src='".$themedir."icon_pm.png' border='0' alt='' /></a></td><td>");
 
 	print ("<div style='float: left;'><a href='$site_config[SITEURL]/report?forumid=$topicid&amp;forumpost=$postid'><img src='".$themedir."p_report.png' border='0' alt='".T_("FORUMS_REPORT_POST")."' /></a>&nbsp;<a href='javascript:scroll(0,0);'><img src='".$themedir."p_up.png'  alt='".T_("FORUMS_GOTO_TOP_PAGE")."' /></a></div><div align='right'>");
 	
