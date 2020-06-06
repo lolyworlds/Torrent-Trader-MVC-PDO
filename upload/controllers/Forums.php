@@ -32,21 +32,22 @@ $postsperpage = 20;
 $maxsubjectlength = 50;
 
 
-///////////////////////////////////////////////////////// Action: DEFAULT ACTION (VIEW FORUMS)
+// Action: DEFAULT ACTION (VIEW FORUMS)
 if (isset($_GET["catchup"]))
 	catch_up();
 
-///////////////////////////////////////////////////////// Action: SHOW MAIN FORUM INDEX
+// Action: SHOW MAIN FORUM INDEX
 $forums_res = DB::run("SELECT forumcats.id AS fcid, forumcats.name AS fcname, forum_forums.* FROM forum_forums LEFT JOIN forumcats ON forumcats.id = forum_forums.category ORDER BY forumcats.sort, forum_forums.sort, forum_forums.name");
 
 stdhead("Forums");
 begin_frame("Forum Home");
 forumheader("Index");
 latestforumposts();
+// MAIN LAYOUT
+print("<div class='table'><table class='table table-striped'>
+    <thead><tr>");
 
-print("<div class='f-border f-forums'><table width='100%' cellspacing='0'>");// MAIN LAYOUT
-
-print("<tr class='f-title'><th align='left' colspan='2'>Forum</th><th width='37' align='right'>Topics</th><th width='47' align='right'>Posts</th><th align='right' width='180'>Last post</th></tr>\n");// head of forum index
+print("<th align='left' colspan='2'>Forum</th><th width='37' align='right'>Topics</th><th width='47' align='right'>Posts</th><th align='right' width='180'>Last post</th></tr></thead><tbody>");// head of forum index
   
 if ($forums_res->rowCount() == 0)
     print("<tr class='f-cat'><td colspan='5' align='center'>No Forum Categories</td></tr>\n");  
@@ -59,7 +60,7 @@ while ($forums_arr = $forums_res->fetch(PDO::FETCH_ASSOC)){
         continue;
         
     if ($forums_arr['fcid'] != $fcid) {// add forum cat headers
-		print("<tr class='f-cat'><td colspan='5' align='center'>".htmlspecialchars($forums_arr['fcname'])."</td></tr>\n");
+		print("<tr class='f-cat'><td colspan='5' align='center'>".htmlspecialchars($forums_arr['fcname'])."</td></tr>");
 
 		$fcid = $forums_arr['fcid'];
 	}
@@ -110,11 +111,11 @@ while ($forums_arr = $forums_res->fetch(PDO::FETCH_ASSOC)){
 		$img = "folder";
     }
 	//following line is each forums display
-    print("<tr class='f-row'><td class='f-img'><img src='". $themedir ."$img.png' alt='' /></td><td align='left' width='100%' class='alt1'><a href='$site_config[SITEURL]/forums/viewforum&amp;forumid=$forumid'><b>$forumname</b></a><br />\n" .
-    "<small>- $forumdescription</small></td><td class='alt2' align='center' width='40'>$topiccount</td><td class='alt3' align='center' width='40'>$postcount</td>" .
-    "<td class='alt2' align='right' width='110'><small style='white-space: nowrap'>$lastpost</small></td></tr>\n");
+    print("<tr><td><img src='". $themedir ."$img.png' alt='' /></td><td><a href='$site_config[SITEURL]/forums/viewforum&amp;forumid=$forumid'><b>$forumname</b></a><br />\n" .
+    "<small>- $forumdescription</small></td><td>$topiccount</td><td>$postcount</td>" .
+    "<td><small style='white-space: nowrap'>$lastpost</small></td></tr>\n");
 }
-print("</table></div>");
+print("</tbody></table></div>");
 //forum Key
 print("<table cellspacing='0' cellpadding='3'><tr valign='middle'>\n");
 print("<td><img src='". $themedir ."folder_new.png' style='margin: 5px' alt='' /></td><td>New posts</td>\n");
@@ -216,8 +217,9 @@ $themedir = $site_config['SITEURL']."/views/themes/".$THEME."/forums/";
 		if ($num == 0)
 			print("<p><b>Sorry, nothing found!</b></p>");
 		else {
-			print("<p><center><div class='f-border f-srch_results'><table width='100%' cellspacing='0'>\n");
-			print("<tr class='f-title'><th>Post ID</th><th align='left'>Topic</th><th align='left'>Forum</th><th align='left'>Posted by</th></tr>\n");
+			print("<p><center><div class='table'><table class='table table-striped'>
+			<thead>");
+			print("<tr><th>Post ID</th><th align='left'>Topic</th><th align='left'>Forum</th><th align='left'>Posted by</th></tr></tbody>");
 
 			for ($i = 0; $i < $num; ++$i){
 				$post = $res->fetch(PDO::FETCH_ASSOC);
@@ -235,7 +237,7 @@ $themedir = $site_config['SITEURL']."/views/themes/".$THEME."/forums/";
 				$user = $res2->fetch(PDO::FETCH_ASSOC);
 				if ($user["username"] == "")
 					$user["username"] = "Deluser";
-				print("<tr class='f-row'><td>$post[id]</td><td align='left'><a href='$site_config[SITEURL]/forums/viewtopic&amp;topicid=$post[topicid]#post$post[id]'><b>" . htmlspecialchars($topic["subject"]) . "</b></a></td><td align='left'><a href='$site_config[SITEURL]/forums/viewforum&amp;forumid=$topic[forumid]'><b>" . htmlspecialchars($forum["name"]) . "</b></a></td><td align='left'><a href='$site_config[SITEURL]/accountdetails?id=$post[userid]'><b>$user[username]</b></a><br />at ".utc_to_tz($post["added"])."</td></tr>\n");
+				print("<tr><td>$post[id]</td><td align='left'><a href='$site_config[SITEURL]/forums/viewtopic&amp;topicid=$post[topicid]#post$post[id]'><b>" . htmlspecialchars($topic["subject"]) . "</b></a></td><td align='left'><a href='$site_config[SITEURL]/forums/viewforum&amp;forumid=$topic[forumid]'><b>" . htmlspecialchars($forum["name"]) . "</b></a></td><td align='left'><a href='$site_config[SITEURL]/accountdetails?id=$post[userid]'><b>$user[username]</b></a><br />at ".utc_to_tz($post["added"])."</td></tr>\n");
 			}
 			print("</table></div></center></p>\n");
 			print("<p><b>Search again</b></p>\n");
@@ -297,15 +299,16 @@ $themedir = $site_config['SITEURL']."/views/themes/".$THEME."/forums/";
         break;
       $forumname = $a['name'];
       if ($n == 1) {
-        print("<div class='f-border f-unread'><table width='100%' cellspacing='0'>\n");
-        print("<tr class='f-title'><th align='left'>Topic</th><th align='left' colspan='2'>Forum</th></tr>\n");
+        print("<div class='table'><table class='table table-striped'>
+    <thead>");
+        print("<tr><th align='left'>Topic</th><th align='left' colspan='2'>Forum</th></tr></thead><tbody>");
       }
-      print("<tr class='f-row'><td class='f-img' valign='middle'>" .
+      print("<tr><td valign='middle'>" .
        "<img src='". $themedir ."folder_unlocked_new.png' style='margin: 5px' alt='' /></td><td class='alt1'>" .
        "<a href='$site_config[SITEURL]/forums/viewtopic&amp;topicid=$topicid&amp;page=last#last'><b>" . stripslashes(htmlspecialchars($arr["subject"])) ."</b></a></td><td class='alt2' align='left'><a href='$site_config[SITEURL]/forums/viewforum&amp;forumid=$forumid'><b>$forumname</b></a></td></tr>\n");
     }
     if ($n > 0) {
-      print("</table></div><br />\n");
+      print("</tbody></table></div><br />\n");
       if ($n > $maxresults)
         print("<p>More than $maxresults items found, displaying first $maxresults.</p>\n");
       print("<center><a href='$site_config[SITEURL]/forums?catchup'><b>Mark All Forums Read.</b></a></center><br />\n");
@@ -407,15 +410,18 @@ $maxsubjectlength = 50;
 	forumheader("<a href='$site_config[SITEURL]/forums/viewforum&amp;forumid=$forumid'>$forumname</a>");
 	
 	if ($CURUSER)
-		print ("<table cellpadding='0' cellspacing='5' width='100%'><tr><td><div align='right'><a href='$site_config[SITEURL]/forums/newtopic&amp;forumid=$forumid'><img src='". $themedir. "button_new_post.png' alt='' /></a></div></td></tr></table>");
+		print ("<table class='table table-striped'>
+    <tr><td><div align='right'><a href='$site_config[SITEURL]/forums/newtopic&amp;forumid=$forumid'><img src='". $themedir. "button_new_post.png' alt='' /></a></div></td></tr></table>");
 
     if ($topicsres > 0) {
-	print("<div class='f-border f-sub_forum'> <table width='100%' cellspacing='0'>");
+	print("<div class='table-responsive'><table class='table table-striped'>
+    <thead>
+    <tr>");
 
-	print("<tr class='f-title'><th align='left' colspan='2' width='100%'>Topic</th><th>Replies</th><th>Views</th><th>Author</th><th align='right'>Last post</th>\n");
+	print("<th align='left' colspan='2' width='100%'>Topic</th><th>Replies</th><th>Views</th><th>Author</th><th align='right'>Last post</th>\n");
 		if ($CURUSER["edit_forum"] == "yes" || $CURUSER["delete_forum"] == "yes")
 			print("<th>Moderator</th>");
-      print("</tr>\n");
+      print("</tr></thead></tbody>");
       foreach ($topicsres as $topicarr) {
 			$topicid = $topicarr["id"];
 			$topic_userid = $topicarr["userid"];
@@ -487,14 +493,14 @@ $maxsubjectlength = 50;
         $topicpic = ($locked ? ($new ? "folder_locked_new" : "folder_locked") : ($new ? "folder_new" : "folder"));
         $subject = ($sticky ? "<b>".T_("FORUMS_STICKY").": </b>" : "") . "<a href='$site_config[SITEURL]/forums/viewtopic&amp;topicid=$topicid'><b>" .
         encodehtml(stripslashes($topicarr["subject"])) . "</b></a>$topicpages";
-        print("<tr class='f-row'><td class='f-img' valign='middle'><img src='". $themedir ."$topicpic.png' alt='' />" .
-         "</td><td class='alt1' align='left' width='100%'>\n" .
-         "$subject</td><td class='alt2' align='center'>$replies</td>\n" .
-		 "<td class='alt3' align='center'>$views</td>\n" .
-         "<td class='alt2' align='center'>$lpauthor</td>\n" .
-         "<td class='alt3' align='right'><span class='small'>by&nbsp;$lpusername<br /><span style='white-space: nowrap'>$lpadded</span></span></td>\n");
+        print("<tr><td valign='middle'><img src='". $themedir ."$topicpic.png' alt='' />" .
+         "</td><td align='left' width='100%'>\n" .
+         "$subject</td><td  align='center'>$replies</td>\n" .
+		 "<td  align='center'>$views</td>\n" .
+         "<td  align='center'>$lpauthor</td>\n" .
+         "<td  align='right'><span class='small'>by&nbsp;$lpusername<br /><span style='white-space: nowrap'>$lpadded</span></span></td>\n");
 	     if ($CURUSER["edit_forum"] == "yes" || $CURUSER["delete_forum"] == "yes") {
-			  print("<td class='alt2' align='center'><span style='white-space: nowrap'>\n");
+			  print("<td align='center'><span style='white-space: nowrap'>\n");
 			if ($locked)
 				print("<a href='$site_config[SITEURL]/forums/unlocktopic&amp;forumid=$forumid&amp;topicid=$topicid&amp;page=$page' title='Unlock'><img src='". $themedir ."topic_unlock.png' alt='UnLock Topic' /></a>\n");
 			else
@@ -506,7 +512,7 @@ $maxsubjectlength = 50;
 			   print("<a href='$site_config[SITEURL]/forums/setsticky&amp;forumid=$forumid&amp;topicid=$topicid&amp;page=$page' title='Stick'><img src='". $themedir ."folder_sticky.png' alt='Stick Topic' /></a>\n");
 			  print("</span></td>\n");
         }
-        print("</tr>\n");
+        print("</tr></tbody>");
       } // while
    //   end_table();
    print("</table></div>");
@@ -519,7 +525,7 @@ $maxsubjectlength = 50;
 	 print("<td><img src='". $themedir ."folder.png' style='margin-left: 10px; margin-right: 5px' alt='' />" .
      "</td><td>No New posts</td>\n");
     print("<td><img src='".$site_config['SITEURL']."/". $themedir ."folder_locked.png' style='margin-left: 10px; margin-right: 5px' alt='' />" .
-     "</td><td>".T_("FORUMS_LOCKED")." topic</td></tr></table>\n");
+     "</td><td>".T_("FORUMS_LOCKED")." topic</td></tr></tbody></table>\n");
     $arr = get_forum_access_levels($forumid) or die;
     $maypost = get_user_class() >= $arr["write"];
     if (!$maypost)
@@ -906,7 +912,8 @@ $maxsubjectlength = 50;
 //working here
 //Post Top
 
-		print("<div class='f-border f-post'><table width='100%' cellspacing='0'><tr class='p-title'><th width='150'>$by</th><th align='left'><small>Posted at $added </small></th></tr>");
+		print("<div class='table'><table class='table table-striped'><thead>
+		<tr><th width='150'>$by</th><th align='left'><small>Posted at $added </small></th></tr></thead><tbody>");
 
 //Post Middle
 
@@ -964,7 +971,7 @@ $maxsubjectlength = 50;
 		print ("<a href=\"javascript:SmileIT('[quote=$postername] $quote [/quote]', 'Form', 'body');\"><img src='".$themedir."p_quote.png' border='0' alt='' /></a>&nbsp;");
 		print ("<a href='#bottom'><img src='".$themedir."p_reply.png' alt='' /></a>");
 	}
-		print("&nbsp;</div></td></tr></table></div>");
+		print("&nbsp;</div></td></tr></tbody></table></div>");
 	}
 //-------- end posts table ---------//
 	print($pagemenu);

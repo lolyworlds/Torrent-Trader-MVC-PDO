@@ -782,7 +782,7 @@ if ($row["banned"] == "yes"){
     print ("<a href=\"magnet:?xt=urn:btih:".$row["info_hash"]."&dn=".$row["filename"]."&tr=".$site_config['SITEURL']."/announce.php?passkey=".$CURUSER["passkey"]."\"><button type='button' class='btn btn-sm btn-danger'>Magnet Download</button></a>");
     }
     }
-    if($site_config["forcethanks"]) {
+    if($CURUSER["id"] != $row["owner"] && $site_config["forcethanks"]) {
     $data = DB::run("SELECT user FROM thanks WHERE thanked = ? AND type = ? AND user = ?", [$id, 'torrent', $CURUSER['id']]);
     $like = $data->fetch(PDO::FETCH_ASSOC);
     if($like){
@@ -794,6 +794,12 @@ if ($row["banned"] == "yes"){
     }
     }else {
        print("<a href='$site_config[SITEURL]/likes/index?id=$id'><button  class='btn btn-sm btn-danger'>Thanks</button></a>&nbsp;");
+    }
+    }else{
+    if ($row["external"] == 'yes'){
+    print ("<a href=\"magnet:?xt=urn:btih:".$row["info_hash"]."&dn=".$row["filename"]."&tr=udp://tracker.openbittorrent.com&tr=udp://tracker.publicbt.com\"><button type='button' class='btn btn-sm btn-danger'>Magnet Download</button></a>");
+    }else{
+    print ("<a href=\"magnet:?xt=urn:btih:".$row["info_hash"]."&dn=".$row["filename"]."&tr=".$site_config['SITEURL']."/announce.php?passkey=".$CURUSER["passkey"]."\"><button type='button' class='btn btn-sm btn-danger'>Magnet Download</button></a>");
     }
     }
 	

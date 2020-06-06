@@ -1,3 +1,14 @@
+.f-cat {
+	background-color: #DE9000;
+    background-image: -webkit-linear-gradient(top, #ff9900, #DE9000);
+    background-image: linear-gradient(to bottom, #ff9900, #DE9000);
+    background-repeat: repeat-x;
+	background-position: top;
+	margin: 0px;
+	padding: 0px;
+	height: 28px;
+}
+
 /* Styles ShoutBox */
 .shoutbox_body {
 	color: yellow;

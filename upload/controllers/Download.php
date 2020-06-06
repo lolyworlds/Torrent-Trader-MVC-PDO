@@ -20,22 +20,22 @@ if ($site_config["MEMBERSONLY"]){
 		show_error_msg(T_("ERROR"), T_("NO_PERMISSION_TO_DOWNLOAD"), 1);
 }
 
+$id = (int)$_GET["id"];
+
+if (!$id)
+	show_error_msg(T_("ID_NOT_FOUND"), T_("ID_NOT_FOUND_MSG_DL"), 1);
+
+$res = DB::run("SELECT filename, banned, external, announce, owner FROM torrents WHERE id =".intval($id));
+$row = $res->fetch(PDO::FETCH_ASSOC);
+
     // LIKE MOD
-    if($site_config["forcethanks"]) {
+    if($CURUSER["id"] != $row["owner"] && $site_config["forcethanks"]) {
     $data = DB::run("SELECT user FROM thanks WHERE thanked = ? & type = ? & user = ?", [$id, 'torrent', $CURUSER['id']]);
     $like = $data->fetch(PDO::FETCH_ASSOC);
     if(!$like){
         show_error_msg(T_("ERROR"), T_("PLEASE_THANK"), 1);
     }
     }
-
-$id = (int)$_GET["id"];
-
-if (!$id)
-	show_error_msg(T_("ID_NOT_FOUND"), T_("ID_NOT_FOUND_MSG_DL"), 1);
-
-$res = DB::run("SELECT filename, banned, external, announce FROM torrents WHERE id =".intval($id));
-$row = $res->fetch(PDO::FETCH_ASSOC);
 
 $torrent_dir = $site_config["torrent_dir"];
 

@@ -4,22 +4,15 @@
 function forumheader($location)
 {
   global $site_config;
-    echo "<div class='f-header'>
-  <div class='f-logo'>
-  <table width='100%' cellspacing='6'>
-    <tr>
-      <td align='left' valign='top'><a href='$site_config[SITEURL]/forums'>" . T_("FORUM_WELCOME") . "</a></td>
-      <td align='right' valign='top'><img src='$site_config[SITEURL]/images/forum/help.png'  alt='' />&nbsp;<a href='$site_config[SITEURL]/faq'>" . T_("FORUM_FAQ") . "</a>&nbsp; &nbsp;&nbsp;<img src='$site_config[SITEURL]/images/forum/search.png' alt='' />&nbsp;<a href='$site_config[SITEURL]/forums/search'>" . T_("SEARCH") . "</a></td>
-    </tr>
-    <tr>
-      <td align='left' valign='bottom'>&nbsp;</td>
-      <td align='right' valign='bottom'><b>" . T_("FORUM_CONTROL") . "</b> &middot; <a href='$site_config[SITEURL]/forums/viewunread'>" . T_("FORUM_NEW_POSTS") . "</a> &middot; <a href='$site_config[SITEURL]/forums?catchup'>" . T_("FORUM_MARK_READ") . "</a></td>
-    </tr>
-  </table>
-  </div>
-</div>
-<br />";
-    print("<div class='f-location'><div class='f-nav'>" . T_("YOU_ARE_IN") . ": &nbsp;<a href='$site_config[SITEURL]/forums'>" . T_("FORUMS") . "</a> <b style='vertical-align:middle'>/ $location</b></div></div>");
+    echo "<div>
+    <img src='$site_config[SITEURL]/images/forum/help.png'  alt='' />&nbsp;<a href='$site_config[SITEURL]/faq'>" . T_("FORUM_FAQ") . "</a>&nbsp; &nbsp;&nbsp;
+    <img src='$site_config[SITEURL]/images/forum/search.png' alt='' />&nbsp;<a href='$site_config[SITEURL]/forums/search'>" . T_("SEARCH") . "</a>&nbsp; &nbsp;
+    <b>" . T_("FORUM_CONTROL") . "</b> 
+    &middot; <a href='$site_config[SITEURL]/forums/viewunread'>" . T_("FORUM_NEW_POSTS") . "</a> 
+    &middot; <a href='$site_config[SITEURL]/forums?catchup'>" . T_("FORUM_MARK_READ") . "</a>
+   </div>
+    <br />";
+    print("<div>" . T_("YOU_ARE_IN") . ": &nbsp;<a href='$site_config[SITEURL]/forums'>" . T_("FORUMS") . "</a> <b style='vertical-align:middle'>/ $location</b></div>");
 }
 
 // Mark all forums as read
@@ -100,40 +93,27 @@ function get_forum_last_post($forumid)
 }
 
 //Top forum posts
-
 function forumpostertable($res)
 {
-    print("<br /><table class='f-topten' width='160' cellspacing='0'><tr><td>\n");
-    print("<table class='ttable_headinner' width='100%'>");
-
+    print("<br /><div>");
     ?>
-
-    <tr class='ttable_head'>
-      <th width='10' align='center'>
-      <font size='1'><?php echo T_("FORUM_RANK"); ?></font>
-      </th>
-      <th width='140' align='center'>
-      <font size='1'><?php echo T_("FORUM_USER"); ?></font>
-      </th>
-      <th width='10' align='center'>
-      <font size='1'><?php echo T_("FORUM_POST"); ?></font>
-      </th>
-    </tr>
-
+      <font><?php echo T_("FORUM_RANK"); ?></font>
+      <font><?php echo T_("FORUM_USER"); ?></font>
+      <font><?php echo T_("FORUM_POST"); ?></font>
+      <br>
     <?php
     global $site_config, $pdo;
     $num = 0;
     while ($a = $res->fetch(PDO::FETCH_ASSOC)) {
         ++$num;
-        print("<tr class='t-row'><td align='center' class='ttable_col1'>$num</td><td class='ttable_col2' style='text-align: justify'><a href='".$site_config['SITEURL']."/accountdetails?id=$a[id]'><b>$a[username]</b></a></td><td align='center' class='ttable_col1'>$a[num]</td></tr>\n");
+        print("$num &nbsp; <a href='".$site_config['SITEURL']."/accountdetails?id=$a[id]'><b>$a[username]</b></a> $a[num]");
     }
 
     if ($num == 0) {
-        print("<tr class='t-row'><td align='center' class='ttable_col1' colspan='3'><b>No Forum Posters</b></td></tr>");
+        print("<b>No Forum Posters</b>");
     }
 
-    print("</table>");
-    print("</td></tr></table>\n");
+    print("</div>");
 }
 
 // Inserts a quick jump menu
@@ -186,9 +166,8 @@ function insert_compose_frame($id, $newtopic = true)
     print("<br />" . T_("FORUM_RULES2") . "<br /></p>\n");
 
     #begin_frame("Compose Message", true);
-    print("<fieldset class='download'>");
-    print("<legend><b>Compose Message</b></legend>");
-    print("<div>");
+    print("<div class='jumbotron'>");
+    print("<center><<b>Compose Message</b></center>");
     print("<form name='Form' method='post' action='$site_config[SITEURL]/forums/post'>\n");
     if ($newtopic) {
         print("<input type='hidden' name='forumid' value='$id' />\n");
@@ -197,7 +176,7 @@ function insert_compose_frame($id, $newtopic = true)
     }
 
     if ($newtopic) {
-        print("<center><br /><table cellpadding='3' cellspacing='0'><tr><td><strong>Subject:</strong>  <input type='text' size='70' maxlength='$maxsubjectlength' name='subject' /></td></tr>");
+        print("<center><br /><table class='table'><tr><td align='center'><strong>Subject:</strong>  <input type='text' maxlength='$maxsubjectlength' name='subject' /></td></tr>");
         print("<tr><td align='center'>");
         textbbcode("Form", "body");
         print("</td></tr><tr><td align='center'><br /><button type='submit' class='btn btn-sm btn-primary'>" . T_("SUBMIT") . "</button><br /><br /></td></tr></table>
@@ -206,8 +185,7 @@ function insert_compose_frame($id, $newtopic = true)
     }
     print("<br /></center>");
     print("</form>\n");
-    print("</div>");
-    print("</fieldset><br />");
+    print("</div><br />");
     #end_frame();
 
     insert_quick_jump_menu();
@@ -218,19 +196,20 @@ function latestforumposts()
 {
     global $pdo, $site_config;
     
-    print("<div class='f-border f-latestpost'><table width='100%' cellspacing='0'><tr class='f-title'>" .
-        "<th align='left'  width=''>Latest Topic Title</th>" .
-        "<th align='center' width='47'>Replies</th>" .
-        "<th align='center' width='47'>Views</th>" .
-        "<th align='center' width='85'>Author</th>" .
-        "<th align='right' width='150'>Last Post</th>" .
-        "</tr>");
+    print("<div class='table'><table class='table table-striped'>
+    <thead><tr>
+        <th>Latest Topic Title</th>
+        <th>Replies</th>
+        <th>Views</th>
+        <th>Author</th>
+        <th>Last Post</th>
+    </tr></thead>");
 
 /// HERE GOES THE QUERY TO RETRIEVE DATA FROM THE DATABASE AND WE START LOOPING ///
     $for = $pdo->run("SELECT * FROM forum_topics ORDER BY lastpost DESC LIMIT 5");
 
     if ($for->rowCount() == 0) {
-        print("<tr class='f-row'><td class='alt1' align='center' colspan='5'><b>No Latest Topics</b></td></tr>");
+        print("<tr><td class='alt1' align='center' colspan='5'><b>No Latest Topics</b></td></tr>");
     }
 
     while ($topicarr = $for->fetch(PDO::FETCH_ASSOC)) {
@@ -296,4 +275,3 @@ function latestforumposts()
     }
     print("</table></div><br />");
 } // end function
- 
