@@ -793,7 +793,7 @@ if ($row["banned"] == "yes"){
     print ("<a href=\"magnet:?xt=urn:btih:".$row["info_hash"]."&dn=".$row["filename"]."&tr=".$site_config['SITEURL']."/announce.php?passkey=".$CURUSER["passkey"]."\"><button type='button' class='btn btn-sm btn-danger'>Magnet Download</button></a>");
     }
     }else {
-       print("<a href='$site_config[SITEURL]/likes/index?id=$id'><button  class='btn btn-sm btn-danger'>Thanks</button></a>&nbsp;");
+       print("<a href='$site_config[SITEURL]/likes/details?id=$id'><button  class='btn btn-sm btn-danger'>Thanks</button></a>&nbsp;");
     }
     }else{
     if ($row["external"] == 'yes'){
