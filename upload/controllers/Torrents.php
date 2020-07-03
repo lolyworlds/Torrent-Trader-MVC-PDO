@@ -803,7 +803,7 @@ if ($row["banned"] == "yes"){
     }
     }
 	
-	print ("<a href=\"/download?id=$id&amp;name=" . rawurlencode($row["filename"]) . "\"><button type='button' class='btn btn-sm btn-success'>".T_("DOWNLOAD_TORRENT")."</button></a></br>");
+	print ("<a href=\"$site_config[SITEURL]/download?id=$id&amp;name=" . rawurlencode($row["filename"]) . "\"><button type='button' class='btn btn-sm btn-success'>".T_("DOWNLOAD_TORRENT")."</button></a></br>");
 	print ("<b>" .T_("HEALTH"). ": </b><img src='".$site_config["SITEURL"]."/images/health/health_".health($row["leechers"], $row["seeders"]).".gif' alt='' /><br />");
 	print ("<b>" .T_("SEEDS"). ": </b><font color='green'>" . number_format($row["seeders"]) . "</font><br />");
 	print ("<b>".T_("LEECHERS").": </b><font color='#ff0000'>" .  number_format($row["leechers"]) . "</font><br />");

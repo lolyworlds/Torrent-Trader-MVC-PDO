@@ -32,7 +32,7 @@ if ($site_config['NEWSON'] && $CURUSER['view_news'] == "yes"){
 	begin_frame(T_("NEWS"));
 	$res = DB::run("SELECT news.id, news.title, news.added, news.body, users.username FROM news LEFT JOIN users ON news.userid = users.id ORDER BY added DESC LIMIT 10");
 	if ($res->rowCount() > 0){
-		print("<table width='100%' border='0' cellspacing='0' cellpadding='0'><tr><td>\n<ul>");
+		print("<div class='container'><table class='table table-striped'><tr><td>\n<ul>");
 		$news_flag = 0;
 
 		while($array = $res->fetch(PDO::FETCH_LAZY)){
@@ -58,7 +58,7 @@ if ($site_config['NEWSON'] && $CURUSER['view_news'] == "yes"){
 
 			$news_flag++;
 		}
-		print("</ul></td></tr></table>\n");
+		print("</ul></td></tr></table></div>\n");
 	}else{
 		echo "<br /><b>".T_("NO_NEWS")."</b>";
 	}

@@ -38,9 +38,9 @@ if (!$row){
 	if ($site_config["ttversion"] != "PDO") {  
         $file = @file_get_contents('https://www.torrenttradertest.uk/ttversion.php');
         if ($site_config['ttversion'] >= $file){
-			echo "<br /><center><b>".T_("YOU_HAVE_LATEST_VER_INSTALLED")." v$site_config[ttversion]</b></center>";
+			echo "<br /><center><b>".T_("YOU_HAVE_LATEST_VER_INSTALLED")." $site_config[ttversion]</b></center>";
 		}else{
-			echo "<br /><center><b><font class='error'>".T_("NEW_VERSION_OF_TT_NOW_AVAIL").": v".$file." you have v".$site_config['ttversion']."<br /> Please visit <a href=http://www.torrenttrader.xyz/>TorrentTrader.xyz</a> to upgrade.</font></b></center>";
+			echo "<br /><center><b><font class='error'>".T_("NEW_VERSION_OF_TT_NOW_AVAIL").": v".$file." you have ".$site_config['ttversion']."<br /> Please visit <a href=http://www.torrenttrader.xyz/>TorrentTrader.xyz</a> to upgrade.</font></b></center>";
 		}
 	}
 
