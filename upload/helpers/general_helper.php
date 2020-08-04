@@ -102,7 +102,6 @@ function CutName($vTxt, $Car)
     return $vTxt;
 }
 
-// torrent search clean function
 function searchfield($s)
 {
     return preg_replace(array('/[^a-z0-9]/si', '/^\s*/s', '/\s*$/s', '/\s+/s'), array(" ", "", "", " "), $s);
@@ -136,66 +135,23 @@ function usermenu()
 {
     global $site_config, $CURUSER;
     $id = (int) $_GET["id"];
-
-    if ($CURUSER['class'] > 6) {
-    ?>
-    <div class="f-border">
-        <table cellpadding='0' cellspacing='3' width='100%'>
-        <tr class="f-title">
-        <th width='100%' height='32' align='center'>
-        <?php if ($CURUSER['id'] == $id) { ?>
-        <?php print("<a href='$site_config[SITEURL] ./users?id=". $CURUSER['id'] ."'><button  class='btn btn-sm btn-success'>" . T_("YOUR_PROFILE") . "</button></a>");?>
-        &nbsp;
-        <?php print("<a href='". $site_config['SITEURL'] ."/users/editsettings&amp;do=edit'><button  class='btn btn-sm btn-success'>" . T_("YOUR_SETTINGS") . "</button></a>");?>
-        &nbsp;
-        <?php print("<a href='". $site_config['SITEURL'] ."/users/changepw'><button  class='btn btn-sm btn-success'>" . T_("CHANGE_PASS") . "</button></a>");?>
-        &nbsp;
-        <?php print("<a href='". $site_config['SITEURL'] ."/users/mytorrents'><button  class='btn btn-sm btn-success'>" . T_("YOUR_TORRENTS") . "</button></a>");?>
-        &nbsp;
-        <?php print("<a href='". $site_config['SITEURL'] ."/mailbox'><button  class='btn btn-sm btn-success'>" . T_("YOUR_MESSAGES") . "</button></a>");?>
-         &nbsp;
-        <?php print("<a href='". $site_config['SITEURL'] ."/snatched'><button  class='btn btn-sm btn-success'>" . T_("YOUR_SNATCHLIST") . "</button></a>");?>
-        &nbsp;
-        <?php print("<a href='". $site_config['SITEURL'] ."/bonus'><button  class='btn btn-sm btn-success'>Seedbonus</button></a>");?>
-        &nbsp;
-        <?php } ?>
-        <?php print("<a href='". $site_config['SITEURL'] ."/users/warning?id=". $id ."'><button  class='btn btn-sm btn-danger'>Warnings</button></a>");?>
-        &nbsp;
-        <?php print("<a href='". $site_config['SITEURL'] ."/users/edit?id=". $id ."'><button  class='btn btn-sm btn-danger'>Edit</button></a>");?>
-        &nbsp;
-        </th>
-        </tr>
-        </table>
-    </div>
-    <?php
-}else{
-    if ($CURUSER['id'] == $id) {
-        ?>
-    <div class="f-border">
-        <table cellpadding='0' cellspacing='3' width='100%'>
-        <tr class="f-title">
-        <th width='100%' height='32' align='center'>
-        <?php print("<a href='$site_config[SITEURL] ./users?id=". $CURUSER['id'] ."'><button  class='btn btn-sm btn-success'>" . T_("YOUR_PROFILE") . "</button></a>");?>
-        &nbsp;
-        <?php print("<a href='". $site_config['SITEURL'] ."/users/editsettings&amp;do=edit'><button  class='btn btn-sm btn-success'>" . T_("YOUR_SETTINGS") . "</button></a>");?>
-        &nbsp;
-        <?php print("<a href='". $site_config['SITEURL'] ."/users/changepw'><button  class='btn btn-sm btn-success'>" . T_("CHANGE_PASS") . "</button></a>");?>
-        &nbsp;
-        <?php print("<a href='". $site_config['SITEURL'] ."/users/mytorrents'><button  class='btn btn-sm btn-success'>" . T_("YOUR_TORRENTS") . "</button></a>");?>
-        &nbsp;
-        <?php print("<a href='". $site_config['SITEURL'] ."/mailbox'><button  class='btn btn-sm btn-success'>" . T_("YOUR_MESSAGES") . "</button></a>");?>
-         &nbsp;
-        <?php print("<a href='". $site_config['SITEURL'] ."/snatched'><button  class='btn btn-sm btn-success'>" . T_("YOUR_SNATCHLIST") . "</button></a>");?>
-        &nbsp;
-        <?php print("<a href='". $site_config['SITEURL'] ."/bonus'><button  class='btn btn-sm btn-success'>Seedbonus</button></a>");?>
-        &nbsp;
-        </th>
-        </tr>
-        </table>
-    </div>
-    <?php
-    }
-}
+?>
+    <a href='<?php echo TTURL; ?>/users/profile?id=<?php echo $id; ?>'><button type="button" class="btn btn-sm btn-primary">Profile</button></a>
+    <?php if ($CURUSER["id"] == $id OR $CURUSER["class"] > $site_config['Uploader']) { ?>
+    <a href='<?php echo TTURL; ?>/users/details?id=<?php echo $id; ?>'><button type="button" class="btn btn-sm btn-primary">Edit</button></a>
+    <?php } ?>
+    <?php if ($CURUSER["id"] == $id ) { ?>
+    <a href='<?php echo TTURL; ?>/users/changepw?id=<?php echo $id; ?>'><button type="button" class="btn btn-sm btn-primary">Password</button></a>
+    <a href='<?php echo TTURL; ?>/users/email?id=<?php echo $id; ?>'><button type="button" class="btn btn-sm btn-primary">Email</button></a>
+    <a href='<?php echo TTURL; ?>/messages'><button type="button" class="btn btn-sm btn-primary">Messages</button></a>
+    <a href='<?php echo TTURL; ?>/bonus'><button type="button" class="btn btn-sm btn-primary">Seed Bonus</button></a>
+    <?php } ?>
+    <?php if ($CURUSER["view_torrents"]) { ?>
+    <a href='<?php echo TTURL; ?>/peers/seeding?id=<?php echo $id; ?>'><button type="button" class="btn btn-sm btn-primary">Seeding</button></a>
+    <?php } ?>
+    <?php if ($CURUSER["class"] > $site_config['Uploader']) { ?>
+    <a href='<?php echo TTURL; ?>/users/admin?id=<?php echo $id; ?>'><button type="button" class="btn btn-sm btn-success">Admin</button></a>
+    <?php } 
 } //end func
 
 function uploadimage($x, $imgname, $tid)

@@ -1,46 +1,4 @@
 <?php
-// Login User Function
-function userlogin()
-{
-    $ip = getip();
-    // If there's no IP a script is being ran from CLI. Any checks here will fail, skip all.
-    if ($ip == '') {
-        return;
-    }
-    checkipban($ip);
-
-    global $CURUSER, $pdo;
-
-    unset($GLOBALS["CURUSER"]);
-
-    // Check The Cookies and Sessions details
-    if (!$_SESSION["password"] || !is_numeric($_SESSION["id"])) {     // todo
-        logoutcookie();
-        return;
-    }
-    
-    //Get User Details And Permissions
-    $res = $pdo->run("SELECT * FROM users INNER JOIN groups ON users.class=groups.group_id WHERE id=$_SESSION[id] AND users.enabled='yes' AND users.status = 'confirmed'");
-    $row = $res->fetch(PDO::FETCH_ASSOC);
-
-    $hash = $row["id"] . $row["secret"] . $row["password"] . $ip . $row["secret"];
-    if (!$row || !$_SESSION['password'] == $hash){
-    		logoutcookie();
-		return;
-        
-    } else {
-    // success - need else to match hash & session above
-    }
-
-    $where = where($_SERVER['REQUEST_URI'], $row["id"], 0);
-    $id = $row['id'];
-
-    $stmt = $pdo->run("UPDATE users SET last_access=?,ip=?,page=? WHERE id=?", [get_date_time(), $ip, $where, $id]);
-    $GLOBALS["CURUSER"] = $row;
-    // super sess for test todo
-	// $_SESSION = $row;
-	unset($row);
-}
 
 // Connection Verification Function Otherwise Connection Page
 function loggedinonly()
@@ -93,7 +51,7 @@ function where ($where, $userid, $update=1){
                 $where = "Unknown Location...";
 
         if ($update)
-                $stmt = $pdo->run("UPDATE users SET page=? WHERE id=?", [$where, $userid]);
+                $stmt = DB::run("UPDATE users SET page=? WHERE id=?", [$where, $userid]);
 
         if (!$update){
                 return $where;
@@ -142,23 +100,23 @@ function priv($name, $descr)
     return "<input type=\"radio\" name=\"privacy\" value=\"$name\" /> $descr";
 }
 
-// Start class_user colour function
-function class_user($name)
+// Start class_user_colour colour function
+function class_user_colour($name)
 {
     global $site_config, $pdo;
     $classy = $pdo->run("SELECT u.class, u.donated, u.warned, u.enabled, g.Color, g.level, u.uploaded, u.downloaded FROM `users` `u` INNER JOIN `groups` `g` ON g.group_id=u.class WHERE username ='" . $name . "'")->fetch();
-    $gcolor = $classy['Color'];
-    if ($classy['donated'] > 0) {
+    $gcolor = $classy->Color;
+    if ($classy->donated > 0) {
         $star = "<img src='" . $site_config['SITEURL'] . "/images/donor.png' alt='donated' border='0' width='15' height='15'>";
     } else {
         $star = "";
     }
-    if ($classy['warned'] == "yes") {
+    if ($classy->warned == "yes") {
         $warn = "<img src='" . $site_config['SITEURL'] . "/images/warn.png' alt='Warn' border='0'>";
     } else {
         $warn = "";
     }
-    if ($classy['enabled'] == "no") {
+    if ($classy->enabled == "no") {
         $disabled = "<img src='" . $site_config['SITEURL'] . "/images/disabled.png' title='Disabled' border='0'>";
     } else {
         $disabled = "";

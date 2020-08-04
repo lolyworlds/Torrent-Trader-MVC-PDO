@@ -1,10 +1,4 @@
 <?php
-   /*
-   * PDO Database Class
-   * Connect to database
-   * Create & chain prepared statements
-   * Return rows and results
-   */
 include ( 'config/config.php');
 define('DB_HOSTT', $site_config['mysql_host']);
 define('DB_NAMET', $site_config['mysql_db']);
@@ -12,42 +6,56 @@ define('DB_USERT', $site_config['mysql_user']);
 define('DB_PASST', $site_config['mysql_pass']);
 define('DB_CHART', 'utf8');
 
-  class Database {
-    
-    private $host = DB_HOSTT;
-    private $user = DB_USERT;
-    private $pass = DB_PASST;
-    private $dbname = DB_NAMET;
+class Database
+{
+    protected static $instance;
+    protected $pdo;
 
-    private $dbh;
-    private $stmt;
-    private $error;
+    public function __construct() {
+        $opt  = array(
+            PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
+            PDO::ATTR_EMULATE_PREPARES   => FALSE,
+        );
+        $dsn = 'mysql:host='.DB_HOSTT.';dbname='.DB_NAMET.';charset='.DB_CHART;
+        $this->pdo = new PDO($dsn, DB_USERT, DB_PASST, $opt);
 
-    public function __construct(){
-      // Set DSN
-      $dsn = 'mysql:host=' . $this->host . ';dbname=' . $this->dbname;
-      $options = array(
-        PDO::ATTR_PERSISTENT => true,
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
-      );
-
-      // Create PDO instance
-      try{
-        $this->dbh = new PDO($dsn, $this->user, $this->pass, $options);
-      } catch(PDOException $e){
-        $this->error = $e->getMessage();
-        echo $this->error;
-      }
     }
 
-    // Chained Prepared Statements
-    public function run($sql, $bind = NULL){
-        if (!$bind)
+    // a classical static method to make it universally available
+    public static function instance()
+    {
+        if (self::$instance === null)
         {
-            return $this->dbh->query($sql);
+            self::$instance = new self;
         }
-        $stmt = $this->dbh->prepare($sql);
-        $stmt->execute($bind);
+        return self::$instance;
+    }
+
+    // a proxy to native PDO methods
+    public function __call($method, $args)
+    {
+        return call_user_func_array(array($this->pdo, $method), $args);
+    }
+
+    // a helper function to run prepared statements smoothly
+    public function run($sql, $args = [])
+    {
+        if (!$args)
+        {
+             return $this->query($sql);
+        }
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($args);
         return $stmt;
     }
-  }
+
+    // Function To Count A Data Established In A Data Table
+    public function get_row_count($table, $suffix = "")
+{
+    $suffix = !empty($suffix) ? ' ' . $suffix : '';
+    $row = $this->run("SELECT COUNT(*) FROM $table $suffix")->fetchColumn();
+    return $row;
+}
+
+}
