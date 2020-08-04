@@ -141,7 +141,7 @@ while ($row = $res->fetch(PDO::FETCH_LAZY)){
 		else
 			$link = "$site_config[SITEURL]/download?id=$id"; 
 	} else {
-		$link = $site_config["SITEURL"]."/torrents/details?id=$id&amp;hit=1"; 
+		$link = $site_config["SITEURL"]."/torrents/read?id=$id&amp;hit=1"; 
 	}
 
 	$pubdate = date("r", sql_timestamp_to_unix_timestamp($added));

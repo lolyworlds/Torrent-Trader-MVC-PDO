@@ -5,7 +5,7 @@
        begin_block("AdminCP");
        ?>
        
-       <select name="admin" class="form-control" onchange="if(this.options[this.selectedIndex].value != -1){ window.location = this.options[this.selectedIndex].value; }">
+       <select name="admin" style="width: 95%" onchange="if(this.options[this.selectedIndex].value != -1){ window.location = this.options[this.selectedIndex].value; }">
        <option value="-1">Navigation</option>
        <option value="<?php echo TTURL; ?>/admincp?action=usersearch">Advanced User Search</option>
        <option value="<?php echo TTURL; ?>/admincp?action=avatars">Avatar Log</option>

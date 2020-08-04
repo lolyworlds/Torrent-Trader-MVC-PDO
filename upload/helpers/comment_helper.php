@@ -6,7 +6,7 @@ function commenttable($res, $type = null)
 
     while ($row = $res->fetch(PDO::FETCH_LAZY)) {
 
-        $postername = class_user($row["username"]);
+        $postername = class_user_colour($row["username"]);
         if ($postername == "") {
             $postername = T_("DELUSER");
             $title = T_("DELETED_ACCOUNT");
@@ -45,21 +45,20 @@ function commenttable($res, $type = null)
             $delete = '[<a href="'.$site_config['SITEURL'].'/comments?id=' . $row["id"] . '&amp;type=' . $type . '&amp;delete=1">Delete</a>]&nbsp;';
         }
 
-        print('<div class="container"><table class="table table-striped">');
-        print('<tr">');
+        print('<div class="container"><table class="table table-striped" style="border: 1px solid black" >');
+        print('<thead><tr">');
         print('<th align="center" width="150"></th>');
-        print('<th align="right">' . $edit . $delete . '[<a href="$site_config[SITEURL]/report?comment=' . $row["id"] . '">Report</a>] Posted: ' . date("d-m-Y \\a\\t H:i:s", utc_to_tz_time($row["added"])) . '<a id="comment' . $row["id"] . '"></a></th>');
-        print('</tr>');
+        print('<th align="right">' . $edit . $delete . '[<a href="' . TTURL . '/report/comment?comment=' . $row["id"] . '">Report</a>] Posted: ' . date("d-m-Y \\a\\t H:i:s", utc_to_tz_time($row["added"])) . '<a id="comment' . $row["id"] . '"></a></th>');
+        print('</tr></thead>');
         print('<tr valign="top">');
         if ($CURUSER['edit_users'] == 'no' && $privacylevel == 'strong') {
-            print('<td align="left" width="150"><center><b>' . $postername . '</b><br /><i>' . $title . '</i><br /><img width="80" height="80" src="' . $avatar . '" alt="" /><br /><br />Uploaded: ---<br />Downloaded: ---<br />Ratio: ---<br /><br /><a href="$site_config[SITEURL]/users?id=' . $row["user"] . '"><img src="themes/' . $THEME . '/forums/icon_profile.png" border="" alt="" /></a> <a href="$site_config[SITEURL]/mailbox?compose&amp;id=' . $row["user"] . '"><img src="themes/' . $THEME . '/forums/icon_pm.png" border="0" alt="" /></a></center></td>');
+            print('<td align="left" width="150"><center><a href="'.$site_config['SITEURL'].'/users/profile?id='.$row['id'].'"><b>' . $postername . '</b></a><br /><i>' . $title . '</i><br /><img width="80" height="80" src="' . $avatar . '" alt="" /><br /><br />Uploaded: ---<br />Downloaded: ---<br />Ratio: ---<br /><br /><a href="$site_config[SITEURL]/users/profile?id=' . $row["user"] . '"><img src="themes/' . $THEME . '/forums/icon_profile.png" border="" alt="" /></a> <a href="$site_config[SITEURL]/messages/create?id=' . $row["user"] . '"><img src="themes/' . $THEME . '/forums/icon_pm.png" border="0" alt="" /></a></center></td>');
         } else {
-            print('<td align="left" width="150"><center><b>' . $postername . '</b><br /><i>' . $title . '</i><br /><img width="80" height="80" src="' . $avatar . '" alt="" /><br /><br />Uploaded: ' . $useruploaded . '<br />Downloaded: ' . $userdownloaded . '<br />Ratio: ' . $userratio . '<br /><br /><a href="$site_config[SITEURL]/users?id=' . $row["user"] . '"><img src="themes/' . $THEME . '/forums/icon_profile.png" border="0" alt="" /></a> <a href="/mailbox?compose&amp;id=' . $row["user"] . '"><img src="themes/' . $THEME . '/forums/icon_pm.png" border="0" alt="" /></a></center></td>');
+            print('<td align="left" width="150"><center><a href="'.$site_config['SITEURL'].'/users/profile?id='.$row['id'].'"><b>' . $postername . '</b></a><br /><i>' . $title . '</i><br /><img width="80" height="80" src="' . $avatar . '" alt="" /><br /><br />Uploaded: ' . $useruploaded . '<br />Downloaded: ' . $userdownloaded . '<br />Ratio: ' . $userratio . '<br /><br /><a href="$site_config[SITEURL]/users/profile?id=' . $row["user"] . '"><img src="themes/' . $THEME . '/forums/icon_profile.png" border="0" alt="" /></a> <a href="/messages/create?id=' . $row["user"] . '"><img src="themes/' . $THEME . '/forums/icon_pm.png" border="0" alt="" /></a></center></td>');
         }
 
         print('<td>' . $commenttext . '<hr />' . $usersignature . '</td>');
         print('</tr>');
         print('</table></div>');
-        print('<br />');
     }
 }

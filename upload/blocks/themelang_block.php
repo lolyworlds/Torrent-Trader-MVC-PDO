@@ -41,16 +41,12 @@ $languages = '';
  
  <form method="post" action="<?php echo TTURL; ?>/stylesheet" class="form-horizontal">
  	<div class="form-group">
-		<label class="col-sm-4 control-label"><?php echo T_("THEME"); ?></label>
-		<div class="col-sm-8">
-			<select name="stylesheet" class="form-control"><?php echo $stylesheets; ?></select>
-  		</div>
+		<label><?php echo T_("THEME"); ?></label>
+		<select name="stylesheet" style="width: 95%" ><?php echo $stylesheets; ?></select>
   	</div>
 	<div class="form-group">
-		<label class="col-sm-4 control-label"><?php echo T_("LANGUAGE"); ?></label>
-		<div class="col-sm-8">
-			<select name="language" class="form-control"><?php echo $languages; ?></select></td>
-  		</div>
+		<label><?php echo T_("LANGUAGE"); ?></label>
+		<select name="language" style="width: 95%" ><?php echo $languages; ?></select></td>
   	</div>
 	<button type="submit" class="btn btn-primary center-block" value="" /><?php echo T_("APPLY"); ?></button>
   </form>  

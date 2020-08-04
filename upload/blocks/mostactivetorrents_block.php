@@ -23,7 +23,7 @@ if (!$site_config["MEMBERSONLY"] || $CURUSER) {
 				$char1 = 20; //cut length 
 				$smallname = htmlspecialchars(CutName($row["name"], $char1)); ?>
 
-				<div class="pull-left"><a href='torrentsdetails?id=<?php echo $row["id"]; ?>' title='<?php echo htmlspecialchars($row["name"]); ?>'><?php echo $smallname; ?></a></div>
+				<div class="pull-left"><a href='<?php echo TTURL; ?>/torrents/read?id=<?php echo $row["id"]; ?>' title='<?php echo htmlspecialchars($row["name"]); ?>'><?php echo $smallname; ?></a></div>
 				<div class="pull-right"><span class="label label-success">S: <?php echo number_format($row["seeders"]); ?></span> <span class="label label-warning">L: <?php echo number_format($row["leechers"]); ?></span></div>
 		<?php }
 

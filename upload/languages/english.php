@@ -49,7 +49,7 @@ $LANG["PLEASE_NOW_LOGIN"] = "Please now login";
 $LANG["PLEASE_NOW_LOGIN_REST"] = "Please now login, there is no confirmation email to activate your account";
 $LANG["RECOVER_ACCOUNT"] = "Recover Account";
 $LANG["REPLY_TO_CONFIRM_EMAIL"] = "You will need to reply to the confirmation email";
-$LANG["REPORT_MEMBER_MSG"] = "<b>This member has elected to keep their details private</b><br /><br /><a href='$site_config[SITEURL]/report?user=%s'>Report.</a><br />";
+$LANG["REPORT_MEMBER_MSG"] = "<b>This member has elected to keep their details private</b><br /><br /><a href='$site_config[SITEURL]/report/user?user=%s'>Report.</a><br />";
 $LANG["TIMES_USED"] = "Times Used";
 $LANG["USE_FORM_FOR_ACCOUNT_DETAILS"] = "Use the form below to have your account details <br /> (with a new password) mailed back to you.";
 $LANG["YEARS"] = "Years";
@@ -609,7 +609,7 @@ $LANG["RATING"] = "Rating";
 $LANG["SEEDERS_WANTED"] = "Seeders Wanted";
 $LANG["SHOUTBOX_REFRESH"] = "(Shoutbox will auto-refresh every %d minutes)";
 $LANG["UPLOAD_TORRENT"] = "Upload Torrent";
-$LANG["USERCP"] = "Your Control Panel";
+$LANG["user"] = "Your Control Panel";
 $LANG["YOUR_MESSAGES"] = "Your Messages";
 $LANG["YOUR_TORRENTS"] = "Your Torrents";
 
@@ -870,7 +870,7 @@ $LANG["RATING_THANK"] = "Thank you for rating this torrent!";
 $LANG["REASON_FOR_DELETE"] = "Reason for deletion:";
 $LANG["REPORT_TORRENT"] = "Report Torrent";
 $LANG["REQUEST_A_RE_SEED"] = "Request a RE-Seed";
-$LANG['RESEED_MESSAGE'] = "%s has requested a re-seed on the torrent below because there are currently no or few seeds:\n\n %s/torrents/details?id=%d\n Thank You!";
+$LANG['RESEED_MESSAGE'] = "%s has requested a re-seed on the torrent below because there are currently no or few seeds:\n\n %s/torrents/read?id=%d\n Thank You!";
 $LANG["RESEED_REQUEST"] = "Reseed Request";
 $LANG["SEED"] = "Seed";
 $LANG["SEEDS"] = "Seeds";
@@ -915,8 +915,8 @@ $LANG["NFO_VIEW"] = "View NFO";
 $LANG["NO_NFO"] = "This torrent does not have a NFO.";
 $LANG["NO_NFO_SIZE"] = "0-byte NFO";
 $LANG["NO_NFO_UPLOADED"] = "No Nfo.";
-$LANG["TORRENT_UPLOAD_EXTERNAL"] = "Torrent Uploaded OK:<br /><br />%s was uploaded.<br /><br /><a href='$site_config[SITEURL]/torrents/details?id=%d'>View Uploaded Torrent</a><br /><br />";
-$LANG["TORRENT_UPLOAD_LOCAL"] = "Torrent Uploaded OK:<br /><br />%s was uploaded.<br /><br />  Please remember to re-download so that your passkey is added and you can seed this torrent.<br /><br /><a href='$site_config[SITEURL]/download?id=%d'>Download Now</a><br /><a href='$site_config[SITEURL]/torrents/details?id=%d'>View Uploaded Torrent</a><br /><br />";
+$LANG["TORRENT_UPLOAD_EXTERNAL"] = "Torrent Uploaded OK:<br /><br />%s was uploaded.<br /><br /><a href='$site_config[SITEURL]/torrents/read?id=%d'>View Uploaded Torrent</a><br /><br />";
+$LANG["TORRENT_UPLOAD_LOCAL"] = "Torrent Uploaded OK:<br /><br />%s was uploaded.<br /><br />  Please remember to re-download so that your passkey is added and you can seed this torrent.<br /><br /><a href='$site_config[SITEURL]/download?id=%d'>Download Now</a><br /><a href='$site_config[SITEURL]/torrents/read?id=%d'>View Uploaded Torrent</a><br /><br />";
 $LANG["TORRENT_UPLOADED"] = "Torrent %s uploaded by %s";
 
 // Upload Errors. (http://www.php.net/manual/en/features.file-upload.errors.php)

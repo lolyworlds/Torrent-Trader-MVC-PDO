@@ -52,7 +52,7 @@ if ($site_config['NEWSON'] && $CURUSER['view_news'] == "yes"){
 			}
 
 			print("<br /><a href=\"javascript: klappe_news('a".$array['id']."')\"><img border=\"0\" src=\"".$site_config["SITEURL"]."/images/$pic.gif\" id=\"pica".$array['id']."\" alt=\"Show/Hide\" />");
-			print("&nbsp;<b>". $array['title'] . "</b></a> - <b>".T_("POSTED").":</b> " . date("d-M-y", utc_to_tz_time($array['added'])) . " <b>".T_("BY").":</b> ".class_user($array['username'])."");
+			print("&nbsp;<b>". $array['title'] . "</b></a> - <b>".T_("POSTED").":</b> " . date("d-M-y", utc_to_tz_time($array['added'])) . " <b>".T_("BY").":</b><a href='$site_config[SITEURL]/users/profile?id=$CURUSER[id]'>  ".class_user_colour($array['username'])."</a>");
 
 			print("<div id=\"ka".$array['id']."\" style=\"display: $disp;\"> ".format_comment($array["body"])." <br /><br />".T_("COMMENTS")." (<a href='$site_config[SITEURL]/comments?type=news&amp;id=".$array['id']."'>".number_format($numcomm)."</a>)</div><br /> ");
 
@@ -74,10 +74,17 @@ if ($site_config['SHOUTBOX'] && !($CURUSER['hideshoutbox'] == 'yes')){
 	end_frame();
 }
 
+// Last forum post on index
+if ($site_config['FORUMONINDEX']) {
+    begin_frame("Recent Fourum Post ");
+    latestforumposts();
+    end_frame();
+}
+
 // latest torrents
 begin_frame(T_("LATEST_TORRENTS"));
 
-print("<br /><center><a href='$site_config[SITEURL]/torrents/browse'>".T_("BROWSE_TORRENTS")."</a> - <a href='$site_config[SITEURL]/torrentssearch'>".T_("SEARCH_TORRENTS")."</a></center><br />");
+print("<br /><center><a href='$site_config[SITEURL]/torrents/browse'>".T_("BROWSE_TORRENTS")."</a> - <a href='$site_config[SITEURL]/torrents/search'>".T_("SEARCH_TORRENTS")."</a></center><br />");
 
 if ($site_config["MEMBERSONLY"] && !$CURUSER) {
 	echo "<br /><br /><center><b>".T_("BROWSE_MEMBERS_ONLY")."</b></center><br /><br />";

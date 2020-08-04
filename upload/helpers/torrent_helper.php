@@ -35,6 +35,7 @@ function health($leechers, $seeders)
 // Transformation Function For Torrent URL
 function torrent_scrape_url($scrape, $hash)
 {
+    
     if (function_exists("curl_exec")) {
         $ch = curl_init();
         $timeout = 5;
@@ -106,7 +107,7 @@ function genrelist()
 {
     global $pdo;
     $ret = array();
-    $res = $pdo->run("SELECT id, name, parent_cat FROM categories ORDER BY parent_cat ASC, sort_index ASC");
+    $res = DB::run("SELECT id, name, parent_cat FROM categories ORDER BY parent_cat ASC, sort_index ASC");
     while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
         $ret[] = $row;
     }
@@ -138,7 +139,7 @@ function peerstable($res)
         } else {
             $ratio = "---";
         }
-        $ret .= "<tr><td class='table_col1'><a href='$site_config[SITEURL]/torrents/details?id=$arr[torrent]&amp;hit=1'><b>" . htmlspecialchars($arr2["name"]) . "</b></a></td><td align='center' class='table_col2'>" . mksize($arr2["size"]) . "</td><td align='center' class='table_col1'>" . mksize($arr["uploaded"]) . "</td><td align='center' class='table_col2'>" . mksize($arr["downloaded"]) . "</td><td align='center' class='table_col1'>$ratio</td></tr>\n";
+        $ret .= "<tr><td class='table_col1'><a href='$site_config[SITEURL]/torrents/read?id=$arr[torrent]&amp;hit=1'><b>" . htmlspecialchars($arr2["name"]) . "</b></a></td><td align='center' class='table_col2'>" . mksize($arr2["size"]) . "</td><td align='center' class='table_col1'>" . mksize($arr["uploaded"]) . "</td><td align='center' class='table_col2'>" . mksize($arr["downloaded"]) . "</td><td align='center' class='table_col1'>$ratio</td></tr>\n";
     }
     $ret .= "</table>\n";
     return $ret;
@@ -297,7 +298,7 @@ function torrenttable($res)
                         $dispname .= " <img src='images/free.gif' border='0' alt='' />";
                     }
 
-                    print("<td class='ttable_col$x' nowrap='nowrap'>" . (count($expandrows) ? "<a href=\"javascript: klappe_torrent('t" . $row['id'] . "')\"><img border=\"0\" src=\"" . $site_config["SITEURL"] . "/images/plus.gif\" id=\"pict" . $row['id'] . "\" alt=\"Show/Hide\" class=\"showthecross\" /></a>" : "") . "&nbsp;<a title=\"" . $row["name"] . "\" href=\"".$site_config['SITEURL']."/torrents/details?id=$id&amp;hit=1\">$dispname</a></td>");
+                    print("<td class='ttable_col$x' nowrap='nowrap'>" . (count($expandrows) ? "<a href=\"javascript: klappe_torrent('t" . $row['id'] . "')\"><img border=\"0\" src=\"" . $site_config["SITEURL"] . "/images/plus.gif\" id=\"pict" . $row['id'] . "\" alt=\"Show/Hide\" class=\"showthecross\" /></a>" : "") . "&nbsp;<a title=\"" . $row["name"] . "\" href=\"".$site_config['SITEURL']."/torrents/read?id=$id&amp;hit=1\">$dispname</a></td>");
 
                     break;
                 case 'dl':
@@ -318,7 +319,7 @@ function torrenttable($res)
                     print ("<td class='ttable_col$x' align='center'><a href='$site_config[SITEURL]/likes/index?id=$id' ><button  class='btn btn-sm btn-danger'>Thanks</button></td>");
                     }
                     }else{
-                        print("<td class='ttable_col$x' align='center'><a href=\"magnet:?xt=urn:btih:" . $magnet["info_hash"] . "&dn=" . rawurlencode($row['name']) . "&tr=" . $row['announce'] . "?passkey=" . $CURUSER['passkey'] . "\"><img src='" . $site_config['SITEURL'] . "/images/magnetique.png' border='0' title='Download via Magnet' /></a></td>");
+                        print("<td class='ttable_col$x' align='center'><a href=\"magnet:?xt=urn:btih:" . $magnet->info_hash . "&dn=" . rawurlencode($row['name']) . "&tr=" . $row['announce'] . "?passkey=" . $CURUSER->passkey . "\"><img src='" . $site_config['SITEURL'] . "/images/magnetique.png' border='0' title='Download via Magnet' /></a></td>");
                     }
                     break;
                 case 'uploader':
@@ -326,7 +327,7 @@ function torrenttable($res)
                     if (($row["anon"] == "yes" || $row["privacy"] == "strong") && $CURUSER["id"] != $row["owner"] && $CURUSER["edit_torrents"] != "yes") {
                         echo "Anonymous";
                     } elseif ($row["username"]) {
-                        echo "<a href='".$site_config['SITEURL']."/users?id=$row[owner]'>" . class_user($row['username']) . "</a>";
+                        echo "<a href='".$site_config['SITEURL']."/users/profile?id=$row[owner]'>" . class_user_colour($row['username']) . "</a>";
                     } else {
                         echo "Unknown";
                     }

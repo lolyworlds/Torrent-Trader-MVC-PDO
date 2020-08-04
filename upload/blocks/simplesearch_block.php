@@ -2,7 +2,7 @@
 if ($CURUSER) {
     $_GET['search'] = $_GET['search'] ?? '';
 	begin_block(T_("SEARCH")); ?>
-	<form method="get" action="<?php echo TTURL; ?>/torrentssearch" class="form-inline">
+	<form method="get" action="<?php echo TTURL; ?>/torrents/search" class="form-inline">
 		<div class="input-group">
 			<input type="text" name="search" class="form-control" value="<?php echo htmlspecialchars($_GET['search']); ?>" />
 			<span class="input-group-btn">

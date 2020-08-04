@@ -42,7 +42,7 @@ if ($action=="peers"){
 			}
 
 			if ($row1['username'])
-				print'<tr><td class="table_col1"><a href="'.TTURL.'/users?id=' . $row['userid'] . '">' . class_user($row1['username']) . '</a></td>';
+				print'<tr><td class="table_col1"><a href="'.TTURL.'/users/profile?id=' . $row['userid'] . '">' . class_user_colour($row1['username']) . '</a></td>';
 			else
 				print'<tr><td class="table_col1">'.$row["ip"].'</td>';
 
@@ -51,7 +51,7 @@ if ($action=="peers"){
 
 			while ($row2 = $result2->fetch(PDO::FETCH_ASSOC)) {
                 $smallname = CutName(htmlspecialchars($row2["name"]), 40);
-				print'<td class="table_col2"><a href="torrents/details?id=' . $row['torrent'] . '">' . $smallname . '</a></td>';
+				print'<td class="table_col2"><a href="torrents/read?id=' . $row['torrent'] . '">' . $smallname . '</a></td>';
 				print'<td align="center" class="table_col1">' . $row['ip'] . '</td>';
 				print'<td align="center" class="table_col2">' . $row['port'] . '</td>';
 

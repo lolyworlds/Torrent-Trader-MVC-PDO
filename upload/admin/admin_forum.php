@@ -197,7 +197,7 @@ if ($_GET["do"] == "del_forum") {
     
     begin_frame(T_("CONFIRM")); 
 ?>
-    <form class='a-form' action="/admincp?action=forum" method="post">
+    <form class='a-form' action="<?php echo TTURL; ?>/admincp?action=forum" method="post">
     <input type="hidden" name="do" value="delete_forum" />
     <input type="hidden" name="id" value="<?php echo $id; ?>" />
     <?php echo T_("CP_FORUM_REALY_DEL");?> <?php echo "<b>$v[name] with ID$v[id] ???</b>"; ?> <?php echo T_("CP_FORUM_THIS_WILL_REALLY_DEL");?>.
@@ -267,7 +267,7 @@ if ($_GET["do"] == "edit_forumcat") {
             $forumcat[] = $row;
 
         echo "
-    <form action='/admincp' method='post'>   
+    <form action='admincp' method='post'>   
     <input type='hidden' name='sid' value='$sid' />
 <input type='hidden' name='action' value='forum' />
 <input type='hidden' name='do' value='add_this_forum' />
@@ -351,8 +351,8 @@ if ($allforums == 0) {
                 $category = $cat['name'];
             
             echo "<tr><td class='table_col1' width='60' align='center'><font size='2'><b>ID($row[id])</b></font></td><td class='table_col2' width='120'> $row[name]</td><td class='table_col1'  width='250'>$row[description]</td><td class='table_col2' width='45' align='center'>$row[sort]</td><td class='table_col1' width='45'>$category</td>\n";
-            echo "<td class='table_col2' width='18' align='center'><a href='/admincp?action=forum&amp;do=edit_forum&amp;id=$row[id]'>[".T_("EDIT")."]</a></td>\n";
-            echo "<td class='table_col1' width='18' align='center'><a href='/admincp?action=forum&amp;do=del_forum&amp;id=$row[id]'><img src='images/delete.png' alt='".T_("FORUM_DELETE_CATEGORY")."' width='17' height='17' border='0' /></a></td></tr>\n";
+            echo "<td class='table_col2' width='18' align='center'><a href='admincp?action=forum&amp;do=edit_forum&amp;id=$row[id]'>[".T_("EDIT")."]</a></td>\n";
+            echo "<td class='table_col1' width='18' align='center'><a href='admincp?action=forum&amp;do=del_forum&amp;id=$row[id]'><img src='images/delete.png' alt='".T_("FORUM_DELETE_CATEGORY")."' width='17' height='17' border='0' /></a></td></tr>\n";
     }
 }
 echo "</table>
@@ -364,14 +364,14 @@ if ($allcat == 0) {
 } else {
     foreach ($forumcat as $row) {
         echo "<tr><td class='table_col1' width='60'><font size='2'><b>ID($row[id])</b></font></td><td class='table_col2' width='120'> $row[name]</td><td class='table_col1' width='18'>$row[sort]</td>\n";
-        echo "<td class='table_col2' width='18'><a href='/admincp?action=forum&amp;do=edit_forumcat&amp;id=$row[id]'>[".T_("EDIT")."]</a></td>\n";
-        echo "<td class='table_col1' width='18'><a href='/admincp?action=forum&amp;do=del_forumcat&amp;id=$row[id]'><img src='images/delete.png' alt='".T_("FORUM_DELETE_CATEGORY")."' width='17' height='17' border='0' /></a></td></tr>\n";
+        echo "<td class='table_col2' width='18'><a href='admincp?action=forum&amp;do=edit_forumcat&amp;id=$row[id]'>[".T_("EDIT")."]</a></td>\n";
+        echo "<td class='table_col1' width='18'><a href='admincp?action=forum&amp;do=del_forumcat&amp;id=$row[id]'><img src='images/delete.png' alt='".T_("FORUM_DELETE_CATEGORY")."' width='17' height='17' border='0' /></a></td></tr>\n";
     }
 }
 echo "</table>\n";
 
 echo "<br />
-<form action='/admincp?action=forum' method='post'>
+<form action='admincp?action=forum' method='post'>
 <input type='hidden' name='do' value='add_this_forumcat' /> 
 <table class='table_table' align='center' width='80%' cellspacing='2' cellpadding='5'>
 <tr>

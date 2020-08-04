@@ -44,7 +44,7 @@ if($res["nfo"] == "yes"){
     if ($nfo) {
 		$nfo = my_nfo_translate($nfo);
 		if($CURUSER["edit_torrents"]=="yes")
-            begin_frame(T_("NFO_FILE_FOR").": <a href='".$site_config["SITEURL"]."/torrents/details?id=$id'>$shortname</a> - <a href='$site_config[SITEURL]/nfo/edit?id=$id'>".T_("NFO_EDIT")."</a>");
+            begin_frame(T_("NFO_FILE_FOR").": <a href='".$site_config["SITEURL"]."/torrents/read?id=$id'>$shortname</a> - <a href='$site_config[SITEURL]/nfo/edit?id=$id'>".T_("NFO_EDIT")."</a>");
         else
             begin_frame(T_("NFO_FILE_FOR").": $shortname");
 

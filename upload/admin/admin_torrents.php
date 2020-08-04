@@ -53,7 +53,7 @@
         <?php while ($row = $res->fetch(PDO::FETCH_LAZY)) { ?>
         
         <tr>
-            <td class='table_col1'><a href='<?php echo TTURL; ?>/torrents/details?id=<?php echo $row["id"]; ?>'><?php echo CutName(htmlspecialchars($row["name"]), 40); ?></a></td>
+            <td class='table_col1'><a href='<?php echo TTURL; ?>/torrents/read?id=<?php echo $row["id"]; ?>'><?php echo CutName(htmlspecialchars($row["name"]), 40); ?></a></td>
             <td class='table_col2'><?php echo $row["visible"]; ?></td>
             <td class='table_col1'><?php echo $row["banned"]; ?></td>
             <td class='table_col2'><?php echo number_format($row["seeders"]); ?></td>

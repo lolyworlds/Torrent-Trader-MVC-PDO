@@ -32,6 +32,7 @@ $dbh = new PDO('mysql:host='.$site_config['mysql_host'].';dbname='.$site_config[
 require "classes/dbclass.php"; // DB::run Static prepared atatements
 require "classes/cache.php"; // Caching
 require "classes/mail.php"; // Mail functions
+require "classes/Cookie.php"; // Mail functions
 
 // Session Handler
 require "classes/Session.php";

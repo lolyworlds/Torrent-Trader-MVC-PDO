@@ -54,10 +54,10 @@ if ($action == "pendinginvite")
     </tr>
     <?php while ($row = $res->fetch(PDO::FETCH_ASSOC)): ?>
     <tr>
-        <td class="table_col1" align="center"><?php echo class_user($row["username"]); ?></td>
+        <td class="table_col1" align="center"><?php echo class_user_colour($row["username"]); ?></td>
         <td class="table_col2" align="center"><?php echo $row["email"]; ?></td>
         <td class="table_col1" align="center"><?php echo utc_to_tz($row["added"]); ?></td>
-        <td class="table_col2" align="center"><a href="<?php echo TTURL; ?>/users?id=<?php echo $row["invited_by"]; ?>"><?php echo $row["inviter"]; ?></a></td>
+        <td class="table_col2" align="center"><a href="<?php echo TTURL; ?>/users/profile?id=<?php echo $row["invited_by"]; ?>"><?php echo $row["inviter"]; ?></a></td>
         <td class="table_col1" align="center"><input type="checkbox" name="users[]" value="<?php echo $row["id"]; ?>" /></td>
     </tr>
     <?php endwhile; ?>

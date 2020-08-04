@@ -106,7 +106,7 @@ function forumpostertable($res)
     $num = 0;
     while ($a = $res->fetch(PDO::FETCH_ASSOC)) {
         ++$num;
-        print("$num &nbsp; <a href='".$site_config['SITEURL']."/users?id=$a[id]'><b>$a[username]</b></a> $a[num]");
+        print("$num &nbsp; <a href='".$site_config['SITEURL']."/users/profile?id=$a[id]'><b>$a[username]</b></a> $a[num]");
     }
 
     if ($num == 0) {
@@ -166,20 +166,25 @@ function insert_compose_frame($id, $newtopic = true)
     print("<br />" . T_("FORUM_RULES2") . "<br /></p>\n");
 
     #begin_frame("Compose Message", true);
-    print("<div class='jumbotron'>");
+    print("<div class=table>");
     print("<center><b>Compose Message</b></center>");
     print("<form name='Form' method='post' action='$site_config[SITEURL]/forums/post'>\n");
-    
     if ($newtopic) {
+        print("<table class='table'>
+        <tr>
+        <td align='center'><strong>Subject:</strong>
+        <input type='text' maxlength='$maxsubjectlength' name='subject' /></td></tr>");
         print("<input type='hidden' name='forumid' value='$id' />\n");
     } else {
         print("<input type='hidden' name='topicid' value='$id' />\n");
     }
 
     if ($newtopic) {
-        print("<center><strong>Subject:</strong>  <input type='text' size='50' maxlength='$maxsubjectlength' name='subject' /></center>");
+        print("<tr><td align='center'>");
         textbbcode("Form", "body");
-        print("<center><button type='submit' class='btn btn-sm btn-primary'>" . T_("SUBMIT") . "</button></center>");
+        print("</td></tr><tr><td align='center'><br /><button type='submit' class='btn btn-sm btn-primary'>" . T_("SUBMIT") . "</button><br /><br /></td></tr></table>
+			");
+
     }
     print("<br /></center>");
     print("</form>\n");
@@ -194,7 +199,7 @@ function latestforumposts()
 {
     global $pdo, $site_config;
     
-    print("<div class='table'><table class='table table-striped'>
+    print("<div><table style='border: 1px solid black;'>
     <thead><tr>
         <th>Latest Topic Title</th>
         <th>Replies</th>
@@ -242,7 +247,7 @@ function latestforumposts()
             $res = $pdo->run("SELECT id, username FROM users WHERE id=$userid");
             if ($res->rowCount() == 1) {
                 $arr = $res->fetch(PDO::FETCH_ASSOC);
-                $username = "<a href='".$site_config['SITEURL']."/users?id=$userid'>" . class_user($arr['username']) . "</a>";
+                $username = "<a href='".$site_config['SITEURL']."/users/profile?id=$userid'>" . class_user_colour($arr['username']) . "</a>";
             } else {
                 $username = "Unknown[$topic_userid]";
             }
@@ -251,7 +256,7 @@ function latestforumposts()
             $res = $pdo->run("SELECT username FROM users WHERE id=?", [$topic_userid]);
             if ($res->rowCount() == 1) {
                 $arr = $res->fetch(PDO::FETCH_ASSOC);
-                $author = "<a href='".$site_config['SITEURL']."/users?id=$topic_userid'>" . class_user($arr['username']) . "</a>";
+                $author = "<a href='".$site_config['SITEURL']."/users/profile?id=$topic_userid'>" . class_user_colour($arr['username']) . "</a>";
             } else {
                 $author = "Unknown[$topic_userid]";
             }
@@ -262,11 +267,12 @@ function latestforumposts()
             $new = !$a || $postid > $a[0];
             $subject = "<a href='".$site_config['SITEURL']."/forums/viewtopic&amp;topicid=$topicid'><b>" . stripslashes(encodehtml($topicarr["subject"])) . "</b></a>";
 
-            print("<tr class='f-row'><td class='f-img' width='100%'>$subject</td>" .
-                "<td class='alt2' align='center'>$replies</td>" .
-                "<td class='alt3' align='center'>$views</td>" .
-                "<td class='alt2' align='center'>$author</td>" .
-                "<td class='alt3' align='right'><small>by&nbsp;$username<br /></small><small style='white-space: nowrap'>$added</small></td>");
+            print("<tr style='border: 1px solid black;'>
+                 <td class='f-img' width='100%'>$subject</td>" .
+                "<td style='plainborder' align='center'>$replies</td>" .
+                "<td style='border: 1px solid black' align='center'>$views</td>" .
+                "<td style='border: 1px solid black' align='center'>$author</td>" .
+                "<td style='border: 1px solid black'  align='right'><font size=1>$subject</font><small>&nbsp;by&nbsp;$username<br /></small><small style='white-space: nowrap'>$added</small></td>");
 
             print("</tr>");
         } // while

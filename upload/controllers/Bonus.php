@@ -54,7 +54,7 @@
 				$username = htmlspecialchars($row1["username"]);
 				$torname = htmlspecialchars($row2["name"]);
 			
-				write_log ("The HnR of <a href='users?id=".$uid."'>".class_user($username)."</a> on the torrent <a href='torrents/details?id=".$tid."'>".$torname."</a> has been cleared by <a href='users?id=".$CURUSER['id']."'>".class_user($CURUSER['username'])."</a>");
+				write_log ("The HnR of <a href='users/profile?id=".$uid."'>".class_user_colour($username)."</a> on the torrent <a href='torrents/read?id=".$tid."'>".$torname."</a> has been cleared by <a href='users/profile?id=".$CURUSER['id']."'>".class_user_colour($CURUSER['username'])."</a>");
 				
 				$new_modcomment = gmdate("d-m-Y \à H:i") . " - ";
 				if ( $uid == $CURUSER["id"] )

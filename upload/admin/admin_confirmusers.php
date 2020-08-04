@@ -48,7 +48,7 @@ if ($action == "confirmreg")
     </tr>
     <?php while ($row = $res->fetch(PDO::FETCH_LAZY)): ?>
     <tr>
-        <td class="table_col1" align="center"><?php echo class_user($row["username"]); ?></td>
+        <td class="table_col1" align="center"><?php echo class_user_colour($row["username"]); ?></td>
         <td class="table_col2" align="center"><?php echo $row["email"]; ?></td>
         <td class="table_col1" align="center"><?php echo utc_to_tz($row["added"]); ?></td>
         <td class="table_col2" align="center"><?php echo $row["ip"]; ?></td>

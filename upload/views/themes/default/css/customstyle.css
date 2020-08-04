@@ -9,6 +9,13 @@
 	height: 28px;
 }
 
+.tr {
+border: 1px solid black;
+}
+.plainborder {
+	border: 1px solid black;
+	}
+	
 /* Styles ShoutBox */
 .shoutbox_body {
 	color: yellow;

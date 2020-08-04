@@ -14,16 +14,16 @@
   $res = $this->rulesModel->getRules();
   foreach ($res as $row)
   {
-      if ($row["public"] == "yes")
+      if ($row->public == "yes")
       {
-          begin_frame($row["title"]);
-          echo format_comment($row["text"]); 
+          begin_frame($row->title);
+          echo format_comment($row->text); 
           end_frame();
       }
-      else if ($row["public"] == "no" && $row["class"] <= $CURUSER["class"])
+      else if ($row->public == "no" && $row->class <= $CURUSER["class"])
       {
-          begin_frame($row["title"]);
-          echo format_comment($row["text"]);
+          begin_frame($row->title);
+          echo format_comment($row->text);
           end_frame();
       }
   }

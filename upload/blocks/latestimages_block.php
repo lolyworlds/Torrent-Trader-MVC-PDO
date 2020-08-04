@@ -11,9 +11,9 @@ if (!$site_config["MEMBERSONLY"] || $CURUSER) {
 				$name = htmlspecialchars($row["name"]);
 
 				if ($row["image1"]) { ?>
-					<center><div class="col-lg-6"><a href="<?php echo TTURL; ?>/torrents/details?id=<?php echo $row["id"];?>" title="<?php echo $name ." / ". $cat;?>"><img src="<?php echo TTURL; ?>/uploads/images/<?php echo $row["image1"];?>" alt="<?php echo $name ." / ". $cat;?>" class="img-thumbnail" /></a></div></center>
+					<center><div class="col-lg-6"><a href="<?php echo TTURL; ?>/torrents/read?id=<?php echo $row["id"];?>" title="<?php echo $name ." / ". $cat;?>"><img src="<?php echo TTURL; ?>/uploads/images/<?php echo $row["image1"];?>" alt="<?php echo $name ." / ". $cat;?>" class="img-thumbnail" /></a></div></center>
 				<?php } else { ?>
-					<center><div class="col-lg-6"><a href="<?php echo TTURL; ?>/torrents/details?id=<?php echo $row["id"];?>" title="<?php echo $name ." / ". $cat;?>"><img src="<?php echo TTURL; ?>/uploads/images/<?php echo $row["image2"];?>" alt="<?php echo $name ." / ". $cat;?>" class="img-thumbnail" /></a></div></center>
+					<center><div class="col-lg-6"><a href="<?php echo TTURL; ?>/torrents/read?id=<?php echo $row["id"];?>" title="<?php echo $name ." / ". $cat;?>"><img src="<?php echo TTURL; ?>/uploads/images/<?php echo $row["image2"];?>" alt="<?php echo $name ." / ". $cat;?>" class="img-thumbnail" /></a></div></center>
 				<?php }
 		}
 
