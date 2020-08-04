@@ -158,4 +158,5 @@ $site_config['Moderator'] = "5";
 $site_config['SuperModerator'] = "6";
 $site_config['Administrator'] = "7";
 
-?>
+// FORUM POST ON INDEX
+$site_config['FORUMONINDEX'] = true;
