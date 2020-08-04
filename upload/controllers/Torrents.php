@@ -956,7 +956,7 @@ echo "</table></fieldset><br /><br />";
 				if ($xrow)
 					$srating .= "<br /><i>(".T_("YOU_RATED")." \"" . $xrow["rating"] . " - " . $ratings[$xrow["rating"]] . "\")</i>";
 				else {
-					$srating .= "<form style=\"display:inline;\" method=\"post\" action=\"torrents/details?id=$id&amp;takerating=yes\"><input type=\"hidden\" name=\"id\" value=\"$id\" />\n";
+					$srating .= "<form style=\"display:inline;\" method=\"post\" action=\"$site_config[SITEURL]/torrents/details?id=$id&amp;takerating=yes\"><input type=\"hidden\" name=\"id\" value=\"$id\" />\n";
 					$srating .= "<select name=\"rating\">\n";
 					$srating .= "<option value=\"0\">(".T_("ADD_RATING").")</option>\n";
 					foreach ($ratings as $k => $v) {

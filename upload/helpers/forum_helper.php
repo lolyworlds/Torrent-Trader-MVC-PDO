@@ -167,8 +167,9 @@ function insert_compose_frame($id, $newtopic = true)
 
     #begin_frame("Compose Message", true);
     print("<div class='jumbotron'>");
-    print("<center><<b>Compose Message</b></center>");
+    print("<center><b>Compose Message</b></center>");
     print("<form name='Form' method='post' action='$site_config[SITEURL]/forums/post'>\n");
+    
     if ($newtopic) {
         print("<input type='hidden' name='forumid' value='$id' />\n");
     } else {
@@ -176,12 +177,9 @@ function insert_compose_frame($id, $newtopic = true)
     }
 
     if ($newtopic) {
-        print("<center><br /><table class='table'><tr><td align='center'><strong>Subject:</strong>  <input type='text' maxlength='$maxsubjectlength' name='subject' /></td></tr>");
-        print("<tr><td align='center'>");
+        print("<center><strong>Subject:</strong>  <input type='text' size='50' maxlength='$maxsubjectlength' name='subject' /></center>");
         textbbcode("Form", "body");
-        print("</td></tr><tr><td align='center'><br /><button type='submit' class='btn btn-sm btn-primary'>" . T_("SUBMIT") . "</button><br /><br /></td></tr></table>
-			");
-
+        print("<center><button type='submit' class='btn btn-sm btn-primary'>" . T_("SUBMIT") . "</button></center>");
     }
     print("<br /></center>");
     print("</form>\n");

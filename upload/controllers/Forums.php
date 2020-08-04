@@ -632,7 +632,7 @@ $themedir = $site_config['SITEURL']."/views/themes/".$THEME."/forums/";
     stdhead();
 
     begin_frame(T_("FORUMS_EDIT_POST"));
-    print("<form name='Form' method='post' action='forums/editpost&amp;postid=$postid'>\n");
+    print("<form name='Form' method='post' action='".$site_config['SITEURL']."/forums/editpost&amp;postid=$postid'>\n");
     print("<input type='hidden' name='returnto' value='" . htmlspecialchars($_SERVER["HTTP_REFERER"]) . "' />\n");
     print("<center><table  cellspacing='0' cellpadding='5'>\n");
     print("<tr><td colspan='2'>\n");
