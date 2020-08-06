@@ -5,15 +5,15 @@ if ($action=="polls" && $do=="view"){
 	adminnavmenu();
 	begin_frame(T_("POLLS_MANAGEMENT"));
 
-	echo "<center><a href='/admincp?action=polls&amp;do=add'>Add New Poll</a>";
-	echo "<a href='/admincp?action=polls&amp;do=results'>View Poll Results</a></center>";
+	echo "<center><a href='$site_config[SITEURL]/admincp?action=polls&amp;do=add'>Add New Poll</a>";
+	echo "<a href='$site_config[SITEURL]/admincp?action=polls&amp;do=results'>View Poll Results</a></center>";
 
 	echo "<br /><br /><b>Polls</b> (Top poll is current)<br />";
 
 	$query = DB::run("SELECT id,question,added FROM polls ORDER BY added DESC");
 
 	while($row = $query->fetch(PDO::FETCH_ASSOC)){
-		echo "<a href='/admincp?action=polls&amp;do=add&amp;subact=edit&amp;pollid=$row[id]'>".stripslashes($row["question"])."</a> - ".utc_to_tz($row['added'])." - <a href='/admincp?action=polls&amp;do=delete&amp;id=$row[id]'>Delete</a><br />\n\n";
+		echo "<a href='$site_config[SITEURL]/admincp?action=polls&amp;do=add&amp;subact=edit&amp;pollid=$row[id]'>".stripslashes($row["question"])."</a> - ".utc_to_tz($row['added'])." - <a href='$site_config[SITEURL]/admincp?action=polls&amp;do=delete&amp;id=$row[id]'>Delete</a><br />\n\n";
 	}
 
 	end_frame();

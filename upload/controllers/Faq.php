@@ -107,7 +107,7 @@ while ($arr = $res->fetch(PDO::FETCH_BOTH)) {
 $arr['question'] = stripslashes(htmlspecialchars($arr['question']));
 $arr['answer'] = stripslashes(htmlspecialchars($arr['answer']));
 if ($arr['type'] == "item") {
- print("<form method=\"post\" action=\"/faq/actions?action=edititem\">");
+ print("<form method=\"post\" action=\"$site_config[SITEURL]/faq/actions?action=edititem\">");
  print("<table border=\"0\" class=\"table_table\" cellspacing=\"0\" cellpadding=\"10\" align=\"center\">\n");
  print("<tr><td class='table_col1'>ID:</td><td class='table_col1'>$arr[id] <input type=\"hidden\" name=\"id\" value=\"$arr[id]\" /></td></tr>\n");
  print("<tr><td class='table_col2'>Question:</td><td class='table_col2'><input style=\"width: 300px;\" type=\"text\" name=\"question\" value=\"$arr[question]\" /></td></tr>\n");
@@ -127,7 +127,7 @@ if ($arr['type'] == "item") {
  print("</table></form>");
 }
 elseif ($arr['type'] == "categ") {
- print("<form method=\"post\" action=\"/faq/actions?action=editsect\">");
+ print("<form method=\"post\" action=\"$site_config[SITEURL]/faq/actions?action=editsect\">");
  print("<table border=\"0\" cellspacing=\"0\" cellpadding=\"10\" align=\"center\">\n");
  print("<tr><td class='table_col1'>ID:</td><td class='table_col1'>$arr[id] <input type=\"hidden\" name=\"id\" value=\"$arr[id]\" /></td></tr>\n");
  print("<tr><td class='table_col2'>Title:</td><td class='table_col2'><input style=\"width: 300px;\" type=\"text\" name=\"title\" value=\"$arr[question]\" /></td></tr>\n");
@@ -167,7 +167,7 @@ else {
 stdhead(T_("FAQ_MANAGEMENT"));
 begin_frame();
 print("<h1 align=\"center\">Confirmation required</h1>");
-print("<table border=\"0\" cellspacing=\"0\" cellpadding=\"5\" align=\"center\" width=\"95%\">\n<tr><td align=\"center\">Please click <a href=\"/faq/actions?action=delete&amp;id=$_GET[id]&amp;confirm=yes\">here</a> to confirm.</td></tr>\n</table>\n");
+print("<table border=\"0\" cellspacing=\"0\" cellpadding=\"5\" align=\"center\" width=\"95%\">\n<tr><td align=\"center\">Please click <a href=\"$site_config[SITEURL]/faq/actions?action=delete&amp;id=$_GET[id]&amp;confirm=yes\">here</a> to confirm.</td></tr>\n</table>\n");
 end_frame();
 stdfoot();
 }
@@ -178,7 +178,7 @@ elseif ($_GET['action'] == "additem" && $_GET['inid']) {
 stdhead(T_("FAQ_MANAGEMENT"));
 begin_frame();
 print("<h1 align=\"center\">Add Item</h1>");
-print("<form method=\"post\" action=\"/faq/actions?action=addnewitem\">");
+print("<form method=\"post\" action=\"$site_config[SITEURL]/faq/actions?action=addnewitem\">");
 print("<table border=\"0\" cellspacing=\"0\" cellpadding=\"10\" align=\"center\">\n");
 print("<tr><td class='table_col1'>Question:</td><td class='table_col1'><input style=\"width: 300px;\" type=\"text\" name=\"question\" value=\"\" /></td></tr>\n");
 print("<tr><td class='table_col2' style=\"vertical-align: top;\">Answer:</td><td class='table_col2'><textarea rows='3' cols='35' name=\"answer\"></textarea></td></tr>\n");
@@ -201,7 +201,7 @@ elseif ($_GET['action'] == "addsection") {
 stdhead(T_("FAQ_MANAGEMENT"));
 begin_frame();
 print("<h1 align=\"center\">Add Section</h1>");
-print("<form method=\"post\" action=\"/faq/actions?action=addnewsect\">");
+print("<form method=\"post\" action=\"$site_config[SITEURL]/faq/actions?action=addnewsect\">");
 print("<table border=\"0\" class=\"table_table\" cellspacing=\"0\" cellpadding=\"10\" align=\"center\">\n");
 print("<tr><td class='table_col1'>Title:</td><td class='table_col1'><input style=\"width: 300px;\" type=\"text\" name=\"title\" value=\"\" /></td></tr>\n");
 print("<tr><td class='table_col2'>Status:</td><td class='table_col2'><select name=\"flag\" style=\"width: 110px;\"><option value=\"0\" style=\"color: #ff0000;\">Hidden</option><option value=\"1\" style=\"color: #000000;\" selected=\"selected\">Normal</option></select></td></tr>");
@@ -278,7 +278,7 @@ if (!array_key_exists("title", $faq_categ[$id])) {
 }
 
 // print the faq table
-print("<form method=\"post\" action=\"/faq/actions?action=reorder\">");
+print("<form method=\"post\" action=\"$site_config[SITEURL]/faq/actions?action=reorder\">");
 
 foreach ($faq_categ as $id => $temp) {
 print("<br />\n<table border=\"0\" class=\"table_head\" cellspacing=\"0\" cellpadding=\"5\" align=\"center\" width=\"95%\">\n");
@@ -290,7 +290,7 @@ for ($n=1; $n <= count($faq_categ); $n++) {
  print("<option value=\"$n\"". $sel .">". $n ."</option>");
 }
 $status = ($faq_categ[$id]['flag'] == "0") ? "<font color=\"red\">Hidden</font>" : "Normal";
-print("</select></td><td class=\"table_col2\" align=\"center\" width=\"40px\">&nbsp;</td><td class=\"table_col1\"><b>". stripslashes($faq_categ[$id]['title']) ."</b></td><td class=\"ttable_col2\" align=\"center\" width=\"60px\">". $status ."</td><td class=\"ttable_col1\" align=\"center\" width=\"60px\"><a href=\"/faq/actions?action=edit&amp;id=". $id ."\">edit</a> <a href=\"/faq/actions?action=delete&amp;id=". $id ."\">delete</a></td></tr>\n");
+print("</select></td><td class=\"table_col2\" align=\"center\" width=\"40px\">&nbsp;</td><td class=\"table_col1\"><b>". stripslashes($faq_categ[$id]['title']) ."</b></td><td class=\"ttable_col2\" align=\"center\" width=\"60px\">". $status ."</td><td class=\"ttable_col1\" align=\"center\" width=\"60px\"><a href=\"$site_config[SITEURL]/faq/actions?action=edit&amp;id=". $id ."\">edit</a> <a href=\"$site_config[SITEURL]/faq/actions?action=delete&amp;id=". $id ."\">delete</a></td></tr>\n");
 
 if (array_key_exists("items", $faq_categ[$id])) {
  foreach ($faq_categ[$id]['items'] as $id2 => $temp) {
@@ -303,11 +303,11 @@ if (array_key_exists("items", $faq_categ[$id])) {
   elseif ($faq_categ[$id]['items'][$id2]['flag'] == "2") $status = "<font color=\"#0000FF\">Updated</font>";
   elseif ($faq_categ[$id]['items'][$id2]['flag'] == "3") $status = "<font color=\"#008000\">New</font>";
   else $status = "Normal";
-  print("</select></td><td class=\"ttable_col1\">". stripslashes($faq_categ[$id]['items'][$id2]['question']) ."</td><td class=\"table_col2\" align=\"center\" width=\"60px\">". $status ."</td><td class=\"ttable_col1\" align=\"center\" width=\"60px\"><a href=\"/faq/actions?action=edit&amp;id=". $id2 ."\">edit</a> <a href=\"/faq/actions?action=delete&amp;id=". $id2 ."\">delete</a></td></tr>\n");
+  print("</select></td><td class=\"ttable_col1\">". stripslashes($faq_categ[$id]['items'][$id2]['question']) ."</td><td class=\"table_col2\" align=\"center\" width=\"60px\">". $status ."</td><td class=\"ttable_col1\" align=\"center\" width=\"60px\"><a href=\"$site_config[SITEURL]/faq/actions?action=edit&amp;id=". $id2 ."\">edit</a> <a href=\"$site_config[SITEURL]/faq/actions?action=delete&amp;id=". $id2 ."\">delete</a></td></tr>\n");
  }
 }
 
-print("<tr><td colspan=\"5\" align=\"center\"><a href=\"/faq/actions?action=additem&amp;inid=". $id ."\">Add new item</a></td></tr>\n");
+print("<tr><td colspan=\"5\" align=\"center\"><a href=\"$site_config[SITEURL]/faq/actions?action=additem&amp;inid=". $id ."\">Add new item</a></td></tr>\n");
 print("</table>\n");
 }
 }
@@ -322,12 +322,12 @@ if ($faq_orphaned[$id]['flag'] == "0") $status = "<font color=\"#ff0000\">Hidden
 elseif ($faq_orphaned[$id]['flag'] == "2") $status = "<font color=\"#0000FF\">Updated</font>";
 elseif ($faq_orphaned[$id]['flag'] == "3") $status = "<font color=\"#008000\">New</font>";
 else $status = "Normal";
-print("<tr><td>". stripslashes($faq_orphaned[$id]['question']) ."</td><td align=\"center\" width=\"60px\">". $status ."</td><td align=\"center\" width=\"60px\"><a href=\"/faq/actions?action=edit&amp;id=". $id ."\">edit</a> <a href=\"/faq/actions?action=delete&amp;id=". $id ."\">delete</a></td></tr>\n");
+print("<tr><td>". stripslashes($faq_orphaned[$id]['question']) ."</td><td align=\"center\" width=\"60px\">". $status ."</td><td align=\"center\" width=\"60px\"><a href=\"/aq/actions?action=edit&amp;id=". $id ."\">edit</a> <a href=\"$site_config[SITEURL]/faq/actions?action=delete&amp;id=". $id ."\">delete</a></td></tr>\n");
 }
 print("</table>\n");
 }
 
-print("<br />\n<table border=\"0\" cellspacing=\"0\" cellpadding=\"5\" align=\"center\" width=\"95%\">\n<tr><td align=\"center\"><a href=\"/faq/actions?action=addsection\">Add new section</a></td></tr>\n</table>\n");
+print("<br />\n<table border=\"0\" cellspacing=\"0\" cellpadding=\"5\" align=\"center\" width=\"95%\">\n<tr><td align=\"center\"><a href=\"$site_config[SITEURL]/faq/actions?action=addsection\">Add new section</a></td></tr>\n</table>\n");
 print("<p align=\"center\"><input type=\"submit\" name=\"reorder\" value=\"Reorder\" /></p>\n");
 print("</form>\n");
 print("When the position numbers don't reflect the position in the table, it means the order id is bigger than the total number of sections/items and you should check all the order id's in the table and click \"reorder\"\n");

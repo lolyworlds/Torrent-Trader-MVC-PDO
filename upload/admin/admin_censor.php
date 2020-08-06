@@ -76,7 +76,7 @@ switch ($to)
       $badwords=@fread($f,filesize("censor.txt"));
       @fclose($f);
 	  begin_frame($LANG['ACP_CENSORED']);
-      echo'<form action="/admincp?action=censor&to=write" method="post" enctype="multipart/form-data">
+      echo'<form action="admincp?action=censor&to=write" method="post" enctype="multipart/form-data">
   <table width="100%" align="center">
     <tr>
       <td align="center">'.$LANG['ACP_CENSORED_NOTE'].'</td>

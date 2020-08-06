@@ -23,7 +23,7 @@ if ($action=="lastcomm"){
         
         if ( $nid > 0 )
         {
-             $type = 'News: <a href="/comments?id='.$nid.'&amp;type=news">'.$title.'</a>';
+             $type = 'News: <a href="comments?id='.$nid.'&amp;type=news">'.$title.'</a>';
         }
                        
 		echo "<table class='table_table' align='center' cellspacing='0' width='100%'><tr><th class='table_head' align='center'>".$type."</td></tr><tr><td class='table_col2'>".$comentario."</th></tr><tr><td class='table_col1' align='center'>Posted in <b>".$data."</b> by <a href=\"".TTURL."/users/profile?id=".$userid."\">".$username."</a><!--  [ <a href=\"edit-/comments?cid=".$cid."\">edit</a> | <a href=\"edit-/comments?action=delete&amp;cid=".$cid."\">delete</a> ] --></td></tr></table><br />";

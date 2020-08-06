@@ -35,7 +35,7 @@ This page displays all available options trade which users can exchange for seed
 
     <?php if ($count > 0): ?>
     <br />
-    <form id="seedbonus" method="post" action="admincp?action=seedbonus">
+    <form id="seedbonus" method="post" action="<?php echo TTURL; ?>/admincp?action=seedbonus">
     <input type="hidden" name="do" value="del" />
     <div class='table-responsive'> <table class='table table-striped'><thead><tr>
         <th>Title</th>
@@ -118,7 +118,7 @@ $_POST["value"] = ( $_POST["type"] == "traffic" ) ? strtobytes( $_POST["value"] 
     begin_frame("Seedbonus Management");
     ?>
 
-    <form method="post" action="admincp?action=seedbonus&amp;do=change">
+    <form method="post" action="<?php echo TTURL; ?>/admincp?action=seedbonus&amp;do=change">
 
     <?php if ($row != null): ?>
     <input type="hidden" name="id" value="<?php echo $row->id; ?>" />

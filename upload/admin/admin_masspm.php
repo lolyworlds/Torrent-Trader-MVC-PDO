@@ -33,7 +33,7 @@ if ($action=="masspm"){
 
 	begin_frame("Mass Private Message");
     
-    print("<form name='masspm' method='post' action='/admincp?action=masspm&amp;send=1'>\n"); 
+    print("<form name='masspm' method='post' action='$site_config[SITEURL]/admincp?action=masspm&amp;send=1'>\n"); 
 	print("<table border='0' cellspacing='0' cellpadding='5' align='center' width='90%'>\n");
 	
 
@@ -49,7 +49,7 @@ if ($action=="masspm"){
     <td><b>Subject:</b><br /><input type="text" name="subject" size="30" /></td>
     </tr>
 	<tr>
-	<td><br /><b>Message: </b><br /> <?php print textbbcode("masspm", "msg"); ?></td>
+	<td><b>Message: </b><br /> <?php textbbcode("masspm", "msg"); ?></td>
 	</tr>
     
 	<tr>

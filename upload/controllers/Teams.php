@@ -166,7 +166,7 @@ if($editmembers > 0) {
 		$uploaded = mksize($row['uploaded']);
 		$downloaded = mksize($row['downloaded']);
 		
-		echo("<tr><td class='table_col1'><a href='$site_config[SITEURL]/users/profile?id=$row[id]'>$username</a></td><td class='table_col2'>$uploaded</td><td class='table_col1'>$downloaded</td></tr>");
+		echo("<tr><td class='table_col1'><a href='$site_config[SITEURL]/users/profile?id=$row[id]'>".class_user_colour($username)."</a></td><td class='table_col2'>$uploaded</td><td class='table_col1'>$downloaded</td></tr>");
 	}
 	echo "</table></center>";
 	end_frame();
@@ -248,7 +248,7 @@ while ($row = $sql->fetch(PDO::FETCH_LAZY)) {
 	$owner = (int)$row['owner'];
 	$info = format_comment($row['info']);
 	$OWNERNAME2 = DB::run("SELECT username, class FROM users WHERE id=$owner")->fetch();
-	$OWNERNAME = class_user_colour($OWNERNAME2['username']);
+	$OWNERNAME = $OWNERNAME2['username'];
 
 	echo("<tbody><tr><td><b>$id</b> </td> <td><img src='$image' alt='' /></td> <td><b>$name</b></td><td><a href='$site_config[SITEURL]/users/profile?id=$owner'>$OWNERNAME</a></td><td>$info</td><td><a href='$site_config[SITEURL]/teams/create?editmembers=$id'>[Members]</a>&nbsp;<a href='$site_config[SITEURL]/teams/create?editid=$id&amp;name=$name&amp;image=$image&amp;info=$info&amp;owner=$OWNERNAME'>[".T_("EDIT")."]</a>&nbsp;<a href='$site_config[SITEURL]/teams/create?del=$id&amp;team=$name'>[Delete]</a></td></tr></tbody>");
 }

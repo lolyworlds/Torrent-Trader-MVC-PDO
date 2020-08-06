@@ -45,7 +45,7 @@ if ($action == "sitelog") {
 	echo $pagertop;
 	?>
                            
-    <form id='sitelog' action='/admincp?action=sitelog&amp;do=del' method='post'>
+    <form id='sitelog' action='<?php echo TTURL; ?>/admincp?action=sitelog&amp;do=del' method='post'>
     <table border="0" cellpadding="0" cellspacing="0" width="100%" align="center" class="table_table">
     <tr>
         <th class="table_head"><input type="checkbox" name="checkall" onclick="checkAll(this.form.id)" /></th>

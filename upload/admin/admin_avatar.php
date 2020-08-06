@@ -26,7 +26,7 @@ if ($action=="avatars"){
 			echo("<tr><td class='table_col1'><b><a href=\"".TTURL."/users/profile?id=" . $arr['id'] . "\">" . class_user_colour($arr['username']) . "</a></b></td><td class='table_col2'>");
 
 			if (!$arr['avatar'])
-				echo "<img width=\"80\" src='images/default_avatar.png' alt='' /></td></tr>";
+				echo "<img width=\"80\" src='$site_config[SITEURL]/images/default_avatar.png' alt='' /></td></tr>";
 			else
 				echo "<img width=\"80\" src=\"".htmlspecialchars($arr["avatar"])."\" alt='' /></td></tr>";
 	}

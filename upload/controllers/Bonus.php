@@ -49,8 +49,10 @@
 					autolink("bonus", "No HnR found with this information.");
 				$res1 = DB::run("SELECT `username` FROM `users` WHERE `id` = '$uid'");
 				$row1 = $res1->fetch(PDO::FETCH_ASSOC);
-				$res2 = DB::run("SELECT `name` FROM `torrents` WHERE `id` = '$tid'");
-				$row2 = $res2->fetch(PDO::FETCH_ASSOC);
+				//$res2 = DB::run("SELECT `name` FROM `torrents` WHERE `id` = '$tid'");
+                    //$row2 = $res2->fetch(PDO::FETCH_LAZY);
+                    $row2 = DB::run("SELECT `name` FROM `torrents` WHERE `id` = '$tid'")->fetchColumn();
+
 				$username = htmlspecialchars($row1["username"]);
 				$torname = htmlspecialchars($row2["name"]);
 			

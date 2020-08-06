@@ -496,7 +496,7 @@ $user = DB::run("SELECT id, title, signature FROM users WHERE id=?", [$id])->fet
              */    
                   // Save New Avatar.
                   DB::run("UPDATE users SET avatar=? WHERE id=?", [$avatar, $id]);
-                  autolink(TTURL."/users/avatar?id=$id", T_("SUCCESS"));
+                  autolink(TTURL."/users/details?id=$id", T_("SUCCESS"));
               }
           }
 

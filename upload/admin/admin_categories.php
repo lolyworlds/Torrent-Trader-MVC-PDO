@@ -5,7 +5,7 @@ if ($action=="categories" && $do=="view"){
 	adminnavmenu();
 
 	begin_frame(T_("TORRENT_CATEGORIES"));
-	echo "<center><a href='/admincp?action=categories&amp;do=add'><b>Add New Category</b></a></center><br />";
+	echo "<center><a href='admincp?action=categories&amp;do=add'><b>Add New Category</b></a></center><br />";
 
 	print("<i>Please note that if no image is specified, the category name will be displayed</i><br /><br />");
 
@@ -24,7 +24,7 @@ if ($action=="categories" && $do=="view"){
 			print("<img border=\"0\" src=\"" . $site_config['SITEURL'] . "/images/categories/" . $row["image"] . "\" alt=\"" . $row["name"] . "\" />");
 		else
 			print("-");	
-		print("</td><td class='table_col1'><a href='/admincp?action=categories&amp;do=edit&amp;id=$id'>[EDIT]</a> <a href='/admincp?action=categories&amp;do=delete&amp;id=$id'>[DELETE]</a></td></tr>");
+		print("</td><td class='table_col1'><a href='$site_config[SITEURL]/admincp?action=categories&amp;do=edit&amp;id=$id'>[EDIT]</a> <a href='admincp?action=categories&amp;do=delete&amp;id=$id'>[DELETE]</a></td></tr>");
 	}
 	echo("</table></center>");
 	end_frame();
@@ -144,7 +144,7 @@ if ($action=="categories" && $do=="add"){
 	adminnavmenu();
 
 	begin_frame(T_("CATEGORY_ADD"));
-	print("<center><form method='post' action='/admincp'>\n");
+	print("<center><form method='post' action='admincp'>\n");
 	print("<input type='hidden' name='action' value='categories' />\n");
 	print("<input type='hidden' name='do' value='takeadd' />\n");
                        

@@ -16,7 +16,7 @@
     
                   $sender = "<a href='" . TTURL . "/users/profile?id=" . $row["sender"] . "'><b>" . class_user_colour($arr3["username"]) . "</b></a>";
                   if ($row["sender"] == 0) {
-                      $sender = "<font class='error'><b>System</b></font>";
+                    $sender = "<font class='error'><b>System</b></font>";
                   }
                   $added = utc_to_tz($row["added"]); ?>
     <div class='table'><table class='table table-striped'><thead>

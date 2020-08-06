@@ -4,12 +4,12 @@
         
         if ($_POST["do"] == "delete") {
             if (!@count($_POST["torrentids"]))
-                  show_error_msg(T_("ERROR"), "Nothing selected click <a href='/admincp?action=torrentmanage'>here</a> to go back.", 1);
+                  show_error_msg(T_("ERROR"), "Nothing selected click <a href='admincp?action=torrentmanage'>here</a> to go back.", 1);
             foreach ($_POST["torrentids"] as $id) {
                 deletetorrent(intval($id));
                 write_log("Torrent ID $id was deleted by $CURUSER[username]");
             }
-            show_error_msg("Torrents Deleted", "Go <a href='/admincp?action=torrentmanage'>back</a>?", 1);
+            show_error_msg("Torrents Deleted", "Go <a href='admincp?action=torrentmanage'>back</a>?", 1);
         }
         
         $search = (!empty($_GET["search"])) ? htmlspecialchars(trim($_GET["search"])) : "";
@@ -18,7 +18,7 @@
         
         $count = get_row_count("torrents", $where);
         
-        list($pagertop, $pagerbottom, $limit) = pager(25, $count, "/admincp?action=torrentmanage&amp;");
+        list($pagertop, $pagerbottom, $limit) = pager(25, $count, "admincp?action=torrentmanage&amp;");
         
         $res = DB::run("SELECT id, name, seeders, leechers, visible, banned, external FROM torrents $where ORDER BY name $limit");
         

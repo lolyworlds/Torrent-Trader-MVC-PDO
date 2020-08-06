@@ -88,7 +88,7 @@ class Messages extends Controller
             DB::run("UPDATE messages SET `unread` = 'no' WHERE `id` = $arr[id] AND `receiver` = $CURUSER[id]");
         }
         // get history
-        $arr4 = DB::run("SELECT * FROM messages WHERE subject=? AND added <=?  ORDER BY id DESC ", [$arr["subject"], $arr['added']])->fetchAll();
+        $arr4 = DB::run("SELECT * FROM messages WHERE subject=? AND added <=?  ORDER BY id DESC ", [$arr["subject"], $arr['added']]);
 
         // $lastposter get sender of message
         $arr5 = DB::run("SELECT username FROM users WHERE id=?", [$arr["sender"]])->fetch();

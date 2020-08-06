@@ -246,7 +246,7 @@ if ($_REQUEST["edit"] == "true")
 	resortright();
 }// == end edit
 
-echo "<center><a href=\"index.php\">".T_("HOME")."</a>&nbsp;&#8226;&nbsp;<a href=\"/admincp\">".T_("ADMIN_CP")."</a>&nbsp;&#8226;&nbsp;<a href=\"/admincp?action=blocks&amp;do=view\">".T_("_BLC_MAN_")."</a></center>";
+echo "<center><a href=\"index.php\">".T_("HOME")."</a>&nbsp;&#8226;&nbsp;<a href=\"$site_config[SITEURL]/admincp\">".T_("ADMIN_CP")."</a>&nbsp;&#8226;&nbsp;<a href=\"$site_config[SITEURL]/admincp?action=blocks&amp;do=view\">".T_("_BLC_MAN_")."</a></center>";
 
 // ---- <table> for blocks in database -----------------------------------------
 print("<hr />");

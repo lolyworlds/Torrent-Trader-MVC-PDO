@@ -33,7 +33,7 @@ if ($action=="emailbans"){
 
 	begin_frame(T_("EMAILS_OR_DOMAINS_BANS"));
 	print(T_("EMAIL_BANS_INFO") . "<br /><br /><br /><b>".T_("ADD_EMAIL_BANS")."</b>\n");
-	print("<form method='post' action='/admincp?action=emailbans&amp;add=1'>\n"); 
+	print("<form method='post' action='admincp?action=emailbans&amp;add=1'>\n"); 
     print("<table border='0' cellspacing='0' cellpadding='5' align='center'>\n");
 	print("<tr><td align='right'>".T_("EMAIL_ADDRESS") . T_("DOMAIN_BANS")."</td><td><input type='text' name='mail_domain' size='40' /></td></tr>\n");
 	print("<tr><td align='right'>".T_("ADDCOMMENT")."</td><td><input type='text' name='comment' size='40' /></td></tr>\n");

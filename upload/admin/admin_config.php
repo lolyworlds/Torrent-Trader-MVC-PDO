@@ -104,7 +104,7 @@ jQuery(document).ready(function() {
 });
      </script>
 
-     <form id="dd-form" method="post" action="/admincp?action=settings&amp;do=save">
+     <form id="dd-form" method="post" action="admincp?action=settings&amp;do=save">
      <input type="hidden" name="sort_order" id="sort_order" value="<?php echo $site_config['torrenttable_columns']; ?>" />
      <table border="0" width="100%" cellpadding="3" cellspacing="3">
  

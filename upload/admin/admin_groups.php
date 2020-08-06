@@ -6,7 +6,7 @@ if ($action=="groups" && $do=="view"){
 
 	begin_frame(T_("USER_GROUPS"));
 	
-    print("<center><a href='/admincp?action=groups&amp;do=add'>".T_("GROUPS_ADD_NEW")."</a></center>\n");
+    print("<center><a href='admincp?action=groups&amp;do=add'>".T_("GROUPS_ADD_NEW")."</a></center>\n");
 
 	print("<br /><br />\n<table width=\"100%\" align=\"center\" border=\"0\" class=\"table_table\">\n");
 	print("<tr>\n");
@@ -27,7 +27,7 @@ if ($action=="groups" && $do=="view"){
 	$getlevel=DB::run("SELECT * from groups ORDER BY group_id");
 	while ($level=$getlevel->fetch(PDO::FETCH_LAZY)) {
 		 print("<tr>\n");
-		 print("<td class='table_col1'><a href=/admincp?action=groups&do=edit&group_id=".$level["group_id"]."><font color=\"$level[Color]\">".$level["level"]."</font></td>\n");
+		 print("<td class='table_col1'><a href=admincp?action=groups&do=edit&group_id=".$level["group_id"]."><font color=\"$level[Color]\">".$level["level"]."</font></td>\n");
 		 print("<td class='table_col2'>".$level["view_torrents"]."/".$level["edit_torrents"]."/".$level["delete_torrents"]."</td>\n");
 		 print("<td class='table_col1'>".$level["view_users"]."/".$level["edit_users"]."/".$level["delete_users"]."</td>\n");
 		 print("<td class='table_col2'>".$level["view_news"]."/".$level["edit_news"]."/".$level["delete_news"]."</td>\n");
@@ -38,7 +38,7 @@ if ($action=="groups" && $do=="view"){
          print("<td class='table_col1'>".$level["staff_page"]."</td>\n");
          print("<td class='table_col2'>".$level["staff_public"]."</td>\n");  
          print("<td class='table_col1'>".$level["staff_sort"]."</td>\n");  
-		 print("<td class='table_col1'><a href='/admincp?action=groups&amp;do=delete&amp;group_id=".$level["group_id"]."'>Del</a></td>\n");
+		 print("<td class='table_col1'><a href='admincp?action=groups&amp;do=delete&amp;group_id=".$level["group_id"]."'>Del</a></td>\n");
 
 		 print("</tr>\n");
 	}
@@ -62,7 +62,7 @@ if ($action=="groups" && $do=="edit"){
 
 	begin_frame(T_("CP_EDIT_GROUP"));
 	?>
-	<form action="/admincp?action=groups&amp;do=update&amp;group_id=<?php echo $level["group_id"]; ?>" name="level" method="post">
+	<form action="<?php echo TTURL; ?>/admincp?action=groups&amp;do=update&amp;group_id=<?php echo $level["group_id"]; ?>" name="level" method="post">
 	<table width="100%" align="center">
 	<tr><td>Name:</td><td><input type="text" name="gname" value="<?php echo $level["level"];?>" size="40" /></td></tr>
 	<tr><td>Group Colour:</td><td><input type="text" name="gcolor" value="<?php echo $level["Color"];?>" size="10" /></td></tr>
@@ -172,36 +172,25 @@ if ($action=="groups" && $do=="addnew") {
 
 	begin_frame(T_("GROUPS_ADD_NEW"));
 
-	$group_id=intval($_POST["getlevel"]);
+	$gname= $_POST["gname"];
+	$gcolor= $_POST["gcolor"];
+	$group_id= $_POST["getlevel"];
 
 	$rlevel = DB::run("SELECT * FROM groups WHERE group_id=?", [$group_id]);
 	$level = $rlevel->fetch(PDO::FETCH_ASSOC);
 	if (!$level)
 	   show_error_msg(T_("ERROR"),T_("CP_INVALID_ID"),1);
 
-	$update = array();
-	$update[] = "level = " . sqlesc($level["level"]);
-	$update[] = "Color = ". sqlesc($level["gcolor"]);
-	$update[] = "view_torrents = " . sqlesc($level["view_torrents"]);
-	$update[] = "edit_torrents = " . sqlesc($level["edit_torrents"]);
-	$update[] = "delete_torrents = " . sqlesc($level["delete_torrents"]);
-	$update[] = "view_users = " . sqlesc($level["view_users"]);
-	$update[] = "edit_users = " . sqlesc($level["edit_users"]);
-	$update[] = "delete_users = " . sqlesc($level["delete_users"]);
-	$update[] = "view_news = " . sqlesc($level["view_news"]);
-	$update[] = "edit_news = " . sqlesc($level["edit_news"]);
-	$update[] = "delete_news = " . sqlesc($level["delete_news"]);
-	$update[] = "view_forum = " . sqlesc($level["view_forum"]);
-	$update[] = "edit_forum = " . sqlesc($level["edit_forum"]);
-	$update[] = "delete_forum = " . sqlesc($level["delete_forum"]);
-	$update[] = "can_upload = " . sqlesc($level["can_upload"]);
-	$update[] = "can_download = " . sqlesc($level["can_download"]);
-	$update[] = "control_panel = " . sqlesc($level["control_panel"]);
-    $update[] = "staff_page = " . sqlesc($level["staff_page"]);
-    $update[] = "staff_public = " . sqlesc($level["staff_public"]);
-    $update[] = "staff_sort = " . intval($level["staff_sort"]);
-	$strupdate = implode(",", $update);
-	DB::run("INSERT INTO groups SET $strupdate");
+$test =	DB::run("INSERT INTO groups 
+  (level, color, view_torrents, edit_torrents, delete_torrents, view_users, edit_users, delete_users,
+	view_news, edit_news, delete_news, view_forum, edit_forum, delete_forum, can_upload, can_download,
+	control_panel, staff_page, staff_public, staff_sort) 
+VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", 
+	[$gname, $gcolor, $level['view_torrents'], $level["edit_torrents"], $level["delete_torrents"], $level["view_users"],
+	$level["edit_users"], $level["delete_users"], $level["view_news"], $level["edit_news"], $level["delete_news"],
+	$level["edit_forum"], $level["edit_forum"], $level["delete_forum"], $level["can_upload"], $level["can_download"], $level["control_panel"],
+	$level["staff_page"], $level["staff_public"], $level["staff_sort"]]);
+
 	autolink(TTURL."/admincp?action=groups&do=view", T_("SUCCESS"),"Groups Updated!");
 	end_frame();
 	stdfoot();	

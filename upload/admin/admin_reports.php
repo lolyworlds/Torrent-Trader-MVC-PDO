@@ -2,7 +2,7 @@
 
 if ($action == "reports" && $do == "view") {
 
-      $page = '/admincp?action=reports&amp;do=view&amp;';
+      $page = 'admincp?action=reports&amp;do=view&amp;';
       $pager[] = substr($page, 0, -4);
 
       if ($_POST["mark"])
@@ -155,7 +155,7 @@ if ($action == "reports" && $do == "view") {
       else if ($row["type"] == "comment")
           $link = "/comments?type=".($r[1] > 0 ? "news" : "torrent")."&amp;id=".($r[1] > 0 ? $r[1] : $r[2])."#comment$row[votedfor]";
       else if ($row["type"] == "forum")
-          $link = "/forums/viewtopic&amp;topicid=$row[votedfor]&amp;page=last#post$row[votedfor_xtra]";
+          $link = "forums/viewtopic&amp;topicid=$row[votedfor]&amp;page=last#post$row[votedfor_xtra]";
       ?>
       <tr>
           <td class="table_col1" align="center" width="10%"><a href="<?php echo TTURL; ?>/users/profile?id=<?php echo $row['addedby']; ?>"><?php echo class_user_colour($row['username']); ?></a></td>

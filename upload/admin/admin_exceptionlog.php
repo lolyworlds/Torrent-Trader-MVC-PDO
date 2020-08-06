@@ -27,7 +27,7 @@
       begin_frame('SQL Error');
       
       if ($count > 0): ?>
-      <form id="sqlerr" method="post" action="/admincp?action=sqlerr">
+      <form id="sqlerr" method="post" action="admincp?action=sqlerr">
       <input type="hidden" name="do" value="delete" />
       <table cellpadding="5" class="table_table" width="100%">
       <tr>

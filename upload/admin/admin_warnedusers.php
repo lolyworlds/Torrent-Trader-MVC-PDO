@@ -50,7 +50,7 @@ if ($action == "warned")
     <br />
     <?php if ($count > 0): ?>
     <br />
-    <form id="warned" method="post" action="/admincp?action=warned&amp;do=delete">
+    <form id="warned" method="post" action="<?php echo TTURL; ?>/admincp?action=warned&amp;do=delete">
     <table cellpadding="3" cellspacing="0" width="100%" align="center" class="table_table">
     <tr>
         <th class="table_head">Username</th>
