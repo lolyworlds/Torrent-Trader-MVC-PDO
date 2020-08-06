@@ -1,7 +1,7 @@
 <?php
 if ($CURUSER) {
     begin_block(T_("ONLINE_USERS"));
-
+    $TTCache = new Cache();
     $expires = 600; // Cache time in seconds
 
     if (($rows = $TTCache->Get("usersonline_block", $expires)) === false) {

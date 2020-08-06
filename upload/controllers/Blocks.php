@@ -7,7 +7,7 @@
     
     public function edit(){
 dbconn();
-global $site_config, $CURUSER, $TTCache, $pdo;
+global $site_config, $CURUSER, $pdo;
 loggedinonly();
 
 if (!$CURUSER || $CURUSER["control_panel"]!="yes"){
@@ -151,6 +151,7 @@ if($_POST["upload"] == "true"){
 if ($_REQUEST["edit"] == "true")
 {
     # Prune Block Cache.
+	$TTCache = new Cache();
 	$TTCache->Delete("blocks_left");
 	$TTCache->Delete("blocks_middle");
 	$TTCache->Delete("blocks_right");

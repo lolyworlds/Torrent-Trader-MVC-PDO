@@ -5,7 +5,7 @@ if (!$site_config["MEMBERSONLY"] || $CURUSER) {
 	$external = "external = 'no'";
 	// Uncomment below to include external torrents
 	$external = 1;
-
+	$TTCache = new Cache();
 	$expires = 600; // Cache time in seconds
 	if (($rows = $TTCache->Get("seedwanted_block", $expires)) === false) {
 		$res = $pdo->run("SELECT id, name, seeders, leechers FROM torrents WHERE seeders = ? AND leechers > ? AND banned = ? AND ? ORDER BY leechers DESC LIMIT 5", [0, 0, 'no', $external]);

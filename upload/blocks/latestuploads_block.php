@@ -3,7 +3,7 @@ if (!$site_config["MEMBERSONLY"] || $CURUSER) {
 	begin_block(T_("LATEST_TORRENTS"));
 
 	$expire = 900; // time in seconds
-
+    $TTCache = new Cache();
 	if (($latestuploadsrecords = $TTCache->Get("latestuploadsblock", $expire)) === false) {
 		$latestuploadsquery = $pdo->run("SELECT id, name, size, seeders, leechers FROM torrents WHERE banned='no' AND visible = 'yes' ORDER BY id DESC LIMIT 5");
 

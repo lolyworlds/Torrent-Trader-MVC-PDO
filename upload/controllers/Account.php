@@ -77,7 +77,8 @@ class Account extends Controller
 
                     $body = T_("SOMEONE_FROM") . " " . $_SERVER["REMOTE_ADDR"] . " " . T_("MAILED_BACK") . " ($email) " . T_("BE_MAILED_BACK") . " \r\n\r\n " . T_("ACCOUNT_INFO") . " \r\n\r\n " . T_("USERNAME") . ": " . $arr->username . " \r\n " . T_("CHANGE_PSW") . "\n\n$site_config[SITEURL]/account/confirmrecover?id=$id&secret=$sec\n\n\n" . $site_config["SITENAME"] . "\r\n";
 
-                    @sendmail($arr->email, T_("ACCOUNT_DETAILS"), $body, "", "-f" . $site_config['SITEEMAIL']);
+                    $TTMail = new TTMail();
+                    @$TTMail->Send($arr->email, T_("ACCOUNT_DETAILS"), $body, "", "-f" . $site_config['SITEEMAIL']);
                     $res2 = $this->userModel->setSecret($sec, $email);
                     $msg = sprintf(T_('MAIL_RECOVER'), htmlspecialchars($email));
                     $kind = T_("SUCCESS");
@@ -155,13 +156,13 @@ class Account extends Controller
             show_error_msg(T_("ERROR"), T_("NOTHING_FOUND"), 1);
         }
 
-        $sec = $row["editsecret"];
+        $sec = $row->editsecret;
 
-        if ($md5 != md5($sec . $email . $sec)) {
+        if ($md5 != $sec) {
             show_error_msg(T_("ERROR"), T_("NOTHING_FOUND"), 1);
         }
 
-        $pdo->run("UPDATE `users` SET `editsecret` =?, `email` =? WHERE `id` =? AND `editsecret` =?", ['', $email, $id, $row["editsecret"]]);
+        $pdo->run("UPDATE `users` SET `editsecret` =?, `email` =? WHERE `id` =? AND `editsecret` =?", ['', $email, $id, $row->editsecret]);
 
         header("Refresh: 0; url=" . TTURL . "/account");
         header("Location: " . TTURL . "/account");
@@ -410,7 +411,8 @@ class Account extends Controller
                 }
 
                 if ($site_config["CONFIRMEMAIL"]) { //email confirmation is on
-                    sendmail($email, "Your $site_config[SITENAME] User Account", $body, "", "-f$site_config[SITEEMAIL]");
+                    $TTMail = new TTMail();
+$TTMail->Send($email, "Your $site_config[SITENAME] User Account", $body, "", "-f$site_config[SITEEMAIL]");
                     header("Refresh: 0; url=" . TTURL . "/account/confirmok?type=signup&email=" . urlencode($email));
                 } else { //email confirmation is off
                     header("Refresh: 0; url=" . TTURL . "/account/confirmok?type=noconf");

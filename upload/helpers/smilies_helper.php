@@ -1,6 +1,6 @@
 <?php
 
-require_once "functions_connect.php";
+require_once "a_start_function.php";
 
 // Insertion of Smilies function
 function insert_smilies_frame()

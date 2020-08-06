@@ -2,8 +2,8 @@
 // Function For Left Blocks
 function leftblocks()
 {
-    global $site_config, $CURUSER, $THEME, $LANGUAGE, $TTCache, $pdo, $blockfilename; //Define globals
-
+    global $site_config, $CURUSER, $THEME, $LANGUAGE, $pdo, $blockfilename; //Define globals
+    $TTCache = new Cache();
     if (($blocks = $TTCache->get("blocks_left", 900)) === false) {
         $res = $pdo->run("SELECT * FROM blocks WHERE position='left' AND enabled=1 ORDER BY sort");
         $blocks = array();
@@ -20,8 +20,8 @@ function leftblocks()
 // Function For Right Blocks
 function rightblocks()
 {
-    global $site_config, $CURUSER, $THEME, $LANGUAGE, $TTCache, $pdo, $blockfilename; //Define globals
-
+    global $site_config, $CURUSER, $THEME, $LANGUAGE, $pdo, $blockfilename; //Define globals
+    $TTCache = new Cache();
     if (($blocks = $TTCache->get("blocks_right", 900)) === false) {
         $res = $pdo->run("SELECT * FROM blocks WHERE position='right' AND enabled=1 ORDER BY sort");
         $blocks = array();
@@ -38,8 +38,8 @@ function rightblocks()
 // Function For Middle Blocks
 function middleblocks()
 {
-    global $site_config, $CURUSER, $THEME, $LANGUAGE, $pdo, $TTCache; //Define globals
-
+    global $site_config, $CURUSER, $THEME, $LANGUAGE, $pdo; //Define globals
+    $TTCache = new Cache();
     if (($blocks = $TTCache->get("blocks_middle", 900)) === false) {
         $res = $pdo->run("SELECT * FROM blocks WHERE position='middle' AND enabled=1 ORDER BY sort");
         $blocks = array();

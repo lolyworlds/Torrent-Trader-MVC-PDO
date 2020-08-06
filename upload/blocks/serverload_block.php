@@ -1,7 +1,6 @@
 <?php
 if ($CURUSER) {
 begin_block(T_("SERVER_LOAD"));
-echo 'Removed for xamp';
 
 //Get average CPU usage 
 $cpuUsage = sys_getloadavg(); 

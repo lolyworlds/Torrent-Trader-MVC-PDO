@@ -54,6 +54,7 @@ return ($ver[0] . " " . $ver[1]);
 	$pending = get_row_count("users", "WHERE status = 'pending' AND invited_by = '0'");
 	echo "<center><b>".T_("USERS_AWAITING_VALIDATION").":</b> <a href='/admincp?action=confirmreg'>($pending)</a></center><br />";
 	echo "<center>".T_("VERSION_MYSQL").": <b>" . $mysqlver . "</b>&nbsp;-&nbsp;".T_("VERSION_PHP").": <b>" . phpversion() . "</b>&nbsp;-&nbsp;".T_("Apache Version").": <b>" . apache_version() . "</b></center>";
+    echo "<center><a href=$site_config[SITEURL]/admincp?action=prune>Prune Cache</a><br></center>";
 ?>
 </br><div class="row">
     <div class="col"><td><a href="<?php echo TTURL; ?>/admincp?action=seedbonus"><img src="images/admin/seedbonus.png" border=0 width=32 height=32><br>Management of Seed Bonus</a><br /><td></div>
@@ -114,7 +115,7 @@ if ($action=="forceclean"){
 
 
 
-
+include("admin/admin_cache.php");
 include("admin/admin_confirmusers.php");
 include("admin/admin_seedbonus.php");
 include("admin/admin_advancedsearch.php");

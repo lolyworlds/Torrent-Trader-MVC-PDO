@@ -110,21 +110,4 @@
       }
     } // end function _gc
   }
-  $sess = new Session();
-  session_set_save_handler(
-    array($sess,'_open'),
-    array($sess,'_close'),
-    array($sess,'_read'),
-    array($sess,'_write'),
-    array($sess,'_destroy'),
-    array($sess,'_gc')
-    );
-  register_shutdown_function('session_write_close');
-  /*
-  // change php.ini
-  ini_set('session.cookie_lifetime', 60 * 60 * 24 * 90); // 3months
-  ini_set('session.gc_maxlifetime', 60 * 60 * 24 * 90); // 3 months
-  */
-  // start
-  session_start();
 ?>

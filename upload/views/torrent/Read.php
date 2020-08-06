@@ -134,7 +134,9 @@ if (isset($row["lang_image"]) && $row["lang_image"] != "") {
         <?php if ($CURUSER["edit_users"] == "yes") {?>
       <a href="<?php echo $site_config['SITEURL']; ?>/snatched?tid=<?php echo $row['id']; ?>"><button type='button' class='btn btn-sm btn-warning'><?php echo T_("SNATCHLIST") ?></button></a>
     <?php }?>
-
+    <?php if ($CURUSER["delete_torrents"] == "yes") {?>
+      <a href="<?php echo $site_config['SITEURL']; ?>/torrents/delete?id=<?php echo $row['id']; ?>"><button type='button' class='btn btn-sm btn-warning'><?php echo T_("Delete") ?></button></a>
+    <?php }?>
 
 <!--buttonsstart-->
 <td align="left"> <?php

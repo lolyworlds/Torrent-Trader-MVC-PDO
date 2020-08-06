@@ -79,4 +79,3 @@ if ($action=="blocks" && $do=="view") {
     end_frame();
     stdfoot();    
 }
-

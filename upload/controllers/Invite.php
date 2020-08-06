@@ -90,7 +90,8 @@ After you do this, you will be able to use your new account. If you fail to
 do this, your account will be deleted within a few days. We urge you to read
 the RULES and FAQ before you start using $site_config[SITENAME].
 EOD;
-	sendmail($email, "$site_config[SITENAME] user registration confirmation", $body, "", "-f$site_config[SITEEMAIL]");
+$TTMail = new TTMail();
+$TTMail->Send($email, "$site_config[SITENAME] user registration confirmation", $body, "", "-f$site_config[SITEEMAIL]");
 
 	header("Refresh: 0; url=".TTURL."/account/confirmok?type=invite&email=" . urlencode($email));
 	die;

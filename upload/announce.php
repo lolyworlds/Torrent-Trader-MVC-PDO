@@ -4,7 +4,7 @@
 error_reporting(E_ALL ^ E_NOTICE);
 
 require_once("config/config.php");
-require_once("classes/dbclass.php");
+require_once("classes/DB.php"); // Lets Use Static For Now
 
 $MEMBERSONLY = $site_config["MEMBERSONLY"];
 $MEMBERSONLY_WAIT = $site_config["MEMBERSONLY_WAIT"];

@@ -1,7 +1,7 @@
 <?php
 if ($CURUSER) {
     begin_block(T_("NEWEST_MEMBERS"));
-
+    $TTCache = new Cache();
     $expire = 600; // time in seconds
     if (($rows = $TTCache->Get("newestmember_block", $expire)) === false) {
         $res = $pdo->run("SELECT id, username FROM users WHERE enabled =?  AND status=? AND privacy !=?  ORDER BY id DESC LIMIT 5", ['yes', 'confirmed', 'strong']);

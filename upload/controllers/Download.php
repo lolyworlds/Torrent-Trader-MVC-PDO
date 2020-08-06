@@ -58,8 +58,6 @@ $name = $friendlyname ."[". $friendlyurl ."]". $friendlyext;
 
 DB::run("UPDATE torrents SET hits = hits + 1 WHERE id = $id");
 
-require_once("classes/BEcode.php");
-
 // if user dont have a passkey generate one, only if current member, note - it was membersonly
 if ($CURUSER){
 	if (strlen($CURUSER['passkey']) != 32) {
@@ -68,13 +66,19 @@ if ($CURUSER){
 		DB::run("UPDATE users SET passkey=? WHERE id=?", [$CURUSER['passkey'], $CURUSER['id']]);
 	}
 }
+
+require_once("classes/BDecode.php");
+require_once("classes/BEncode.php");
+
 // if not external and current member, note - it was membersonly
 if ($row["external"]!='yes' && $CURUSER){// local torrent so add passkey
+	// BDe Class
 	$dict = BDecode(file_get_contents($fn));
 	$dict['announce'] = sprintf($site_config["PASSKEYURL"], $CURUSER["passkey"]);
 	unset($dict['announce-list']);
 
-    $data = BEncode($dict);
+	// BEn Class
+	$data = BEncode($dict);
     
 	header('Content-Disposition: attachment; filename="'.$name.'"');
 

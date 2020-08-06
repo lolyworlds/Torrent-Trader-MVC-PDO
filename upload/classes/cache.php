@@ -1,8 +1,5 @@
 <?php
-// Global Variables Declaration
-$GLOBALS["TTCache"] = new TTCache;
-// Cache Class
-class TTCache
+class Cache
 {
     // Fonction Constructeur De La Classe Cache
     public function __construct()
@@ -10,7 +7,7 @@ class TTCache
         global $site_config, $pdo;
         $this->cachedir = $site_config["cache_dir"];
         $this->type = strtolower(trim($site_config["cache_type"]));
-// Cache Connection
+        // Cache Connection
         switch ($this->type) {
             case "memcache":
                 $this->obj = new Memcache;
@@ -33,7 +30,7 @@ class TTCache
                 $this->type = "disk";
         }
     }
-// Caching Function According to the Type of Cache Used
+    // Caching Function According to the Type of Cache Used
     public function Set($var, $val, $expire = 0)
     {
         global $site_config;
@@ -59,7 +56,7 @@ class TTCache
                 break;
         }
     }
-// Function Delete Memcache According To Its Type
+    // Function Delete Memcache According To Its Type
     public function Delete($var)
     {
         global $site_config;
@@ -79,8 +76,7 @@ class TTCache
                 break;
         }
     }
-
-// Get Memcache Type Function Used
+    // Get Memcache Type Function Used
     public function Get($var, $expire = 0)
     {
         global $site_config;
@@ -112,39 +108,4 @@ class TTCache
                 break;
         }
     }
-}
-
-// Cached PDO Functions
-function get_row_count_cached($table, $suffix = "")
-{
-    global $TTCache;
-
-    $query = "SELECT COUNT(*) FROM $table $suffix";
-    $cache = "get_row_count/" . sha1($query);
-    if (($ret = $TTCache->Get($cache, 300)) === false) {
-        $row = $pdo->run($query)->fetch();
-        $ret = $row[0];
-        $TTCache->Set($cache, $ret, 300);
-    }
-    return $ret;
-}
-// todo
-function SQL_Query_exec_cached($query, $cache_time = 300, $cache_blank = 1)
-{
-    global $TTCache;
-
-    $cache = "queries/" . sha1($query);
-    if (($rows = $TTCache->Get($cache, $cache_time)) === false) {
-        $res = $pdo->run($query);
-        $rows = array();
-        while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
-            $rows[] = $row;
-        }
-
-        if (count($rows) || $cache_blank) {
-            $TTCache->Set($cache, $rows, $cache_time);
-        }
-
-    }
-    return count($rows) ? $rows : false;
 }

@@ -531,7 +531,7 @@ $user = DB::run("SELECT id, title, signature FROM users WHERE id=?", [$id])->fet
           global $site_config, $THEME, $CURUSER, $pdo;
           loggedinonly();
           $id = (int)$_GET["id"];
-          if ($CURUSER['class'] < 5 && $id != $CURUSER['id']) {
+          if ($id != $CURUSER['id']) {
             autolink(TTURL."/index", T_("You dont have permission"));
           } else {
            //   echo 'im staff or curuser';
@@ -539,9 +539,9 @@ $user = DB::run("SELECT id, title, signature FROM users WHERE id=?", [$id])->fet
           if ($_POST) {
                    $email = $_POST["email"];  
             $sec = mksecret();
-                    $hash = md5($sec . $email . $sec);
+                    //$hash = md5($sec . $email . $sec);
                     $obemail = rawurlencode($email);
-                    $updateset[] = "editsecret = " . sqlesc($sec);
+                    //$updateset[] = "editsecret = " . sqlesc($sec);
                     $thishost = $_SERVER["HTTP_HOST"];
                     $thisdomain = preg_replace('/^www\./is', "", $thishost);
                     $body = <<<EOD
@@ -551,13 +551,17 @@ user contact.
 If you did not do this, please ignore this email. The person who entered your
 email address had the IP address {$_SERVER["REMOTE_ADDR"]}. Please do not reply.
 To complete the update of your user profile, please follow this link:
-{$site_config["SITEURL"]}/account/ce?id={$CURUSER["id"]}&secret=$hash&email=$obemail
+{$site_config["SITEURL"]}/account/ce?id={$CURUSER["id"]}&secret=$sec&email=$obemail
 Your new email address will appear in your profile after you do this. Otherwise
 your profile will remain unchanged.
 EOD;
 
-                    sendmail($email, "$site_config[SITENAME] profile update confirmation", $body, "From: $site_config[SITEEMAIL]", "-f$site_config[SITEEMAIL]");
+$TTMail = new TTMail();
+$var = $TTMail->Send($email, "$site_config[SITENAME] profile update confirmation", $body, "From: $site_config[SITEEMAIL]", "-f$site_config[SITEEMAIL]");
 
+DB::run("UPDATE users SET editsecret =? WHERE id =?", [$sec, $CURUSER['id']]);
+
+autolink(TTURL."/users/profile?id=$id", T_("Email Edited"));
 
         }
         $user = DB::run("SELECT email FROM users WHERE id=?", [$id])->fetch(PDO::FETCH_ASSOC);

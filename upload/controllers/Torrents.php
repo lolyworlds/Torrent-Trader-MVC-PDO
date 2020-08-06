@@ -25,7 +25,8 @@ end_frame();
     {
         dbconn();
         global $site_config, $CURUSER, $pdo;
-        require_once("classes/BEcode.php");
+        require_once("classes/BDecode.php");
+        require_once("classes/BEncode.php");;
         $torrent_dir = $site_config["torrent_dir"];
         $nfo_dir = $site_config["nfo_dir"];
 

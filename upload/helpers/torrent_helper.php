@@ -51,6 +51,7 @@ function torrent_scrape_url($scrape, $hash)
     }
     $ret = array();
     if ($fp) {
+        // BDe Class
         $stats = BDecode($fp);
         $binhash = pack("H*", $hash);
         $binhash = addslashes($binhash);
@@ -559,7 +560,8 @@ filelist
 // Torrent Information Retrieval Function With File Decoding
 function ParseTorrent($filename)
 {
-    require_once "classes/BEcode.php";
+    require_once("classes/BDecode.php");
+    require_once("classes/BEncode.php");
 
     $TorrentInfo = array();
 
@@ -580,6 +582,7 @@ function ParseTorrent($filename)
         if (!isset($parseme)) {
             show_error_msg(T_("ERROR"), T_("PARSE_OPEN"), 1);
         } else {
+            // BDe Class
             $array = BDecode($parseme);
             if ($array === false) {
                 show_error_msg(T_("ERROR"), T_("PARSE_DECODE"), 1);
@@ -599,6 +602,7 @@ function ParseTorrent($filename)
                     $infovariable = $array["info"];
 
                     // Calculates SHA1 Hash
+                    // BEn Class
                     $infohash = sha1(BEncode($infovariable));
                     $TorrentInfo[1] = $infohash;
 
