@@ -589,7 +589,7 @@ CREATE TABLE `shoutbox` (
   `message` text,
   `date` datetime NOT NULL default '0000-00-00 00:00:00',
   `userid` int(8) unsigned NOT NULL default '0',
-  `staff` tinyint(3) unsigned NOT NULL default '0';
+  `staff` tinyint(3) unsigned NOT NULL default '0',
   PRIMARY KEY  (`msgid`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 ;
 
