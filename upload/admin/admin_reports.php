@@ -71,7 +71,8 @@ if ($action == "reports" && $do == "view") {
       
       $res = DB::run("SELECT reports.id, reports.dealtwith, reports.dealtby, reports.addedby, reports.votedfor, reports.votedfor_xtra, reports.reason, reports.type, users.username, reports.complete FROM `reports` INNER JOIN users ON reports.addedby = users.id WHERE $where ORDER BY reports.id DESC $limit");
       
-      stdhead("Reported Items");
+	$title = T_("Reported Items");
+    require 'views/admin/header.php';
       adminnavmenu();    
 
       begin_frame("Reported Items");
@@ -99,11 +100,11 @@ if ($action == "reports" && $do == "view") {
       </tr>
       </table>
       <br />
-      <br />
-      <br />
+
       
       <form id="reports" method="post" action="<?php echo TTURL; ?>/admincp?action=reports&amp;do=view">
-      <table cellpadding="3" cellspacing="3" class="table_table" width="100%" align="center">
+      <table class='table table-striped table-bordered table-hover'>
+        <thead>
       <tr>
           <th class="table_head">Reported By</th>
           <th class="table_head">Subject</th>
@@ -111,7 +112,7 @@ if ($action == "reports" && $do == "view") {
           <th class="table_head">Reason</th>
           <th class="table_head">Dealt With</th>
           <th class="table_head"><input type="checkbox" name="checkall" onclick="checkAll(this.form.id);" /></th>
-      </tr>
+      </tr><thead>
       
       <?php if ($res->rowCount() <= 0): ?>
       <tr>
@@ -166,16 +167,14 @@ if ($action == "reports" && $do == "view") {
           <td class="table_col2" align="center" width="5%"><input type="checkbox" name="reports[]" value="<?php echo $row["id"]; ?>" /></td>
       </tr>
       <?php endwhile; ?>
-      
-      <tr>
-          <td colspan="6" align="center" class="table_head">
+    </tbody></table>
+>
           <?php if ($_GET["completed"] != 1): ?>
           <input type="submit" name="mark" value="Mark Completed" />
           <?php endif; ?>
           <input type="submit" name="del" value="Delete" />
-          </td>
-      </tr>
-      </table>
+
+ 
       </form>
   
       <?php
@@ -183,5 +182,5 @@ if ($action == "reports" && $do == "view") {
       print $pagerbottom;
       
       end_frame();
-      stdfoot();
+      require 'views/admin/footer.php';
   }

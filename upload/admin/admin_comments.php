@@ -3,7 +3,8 @@
 if ($action=="lastcomm"){
     $count = get_row_count("comments");
     list($pagertop, $pagerbottom, $limit) = pager(10, $count, "/admincp?action=lastcomm&amp;");
-	stdhead("Latest Comments");
+	$title = "Latest Comments";
+	require 'views/admin/header.php';
 	adminnavmenu();
 
 	begin_frame("Last Comments");
@@ -33,5 +34,5 @@ if ($action=="lastcomm"){
     if ($count > 10) echo $pagerbottom;
     
 	end_frame();
-	stdfoot();
+	require 'views/admin/footer.php';
 }

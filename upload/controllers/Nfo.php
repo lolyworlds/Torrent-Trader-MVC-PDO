@@ -4,8 +4,11 @@
     public function __construct(){
         // $this->userModel = $this->model('User');
     }
-    
-    public function view(){
+    public function index(){
+        // $this->userModel = $this->model('User');
+    }
+
+public function read(){
 dbconn();
 global $site_config, $CURUSER;
 // check access and rights
@@ -18,7 +21,6 @@ if ($site_config["MEMBERSONLY"]){
 
 
 $id = (int)$_GET["id"];
-
 if (!$id)
 	show_error_msg(T_("ID_NOT_FOUND"), T_("ID_NOT_FOUND_MSG_VIEW"), 1);
 
@@ -109,7 +111,7 @@ begin_frame(T_("NFO_EDIT"));
 ?>
 
 <center>
-<form method="post" action="/nfo/edit">
+<form method="post" action="nfo/edit">
 <input type="hidden" name="id" value="<?php echo $id; ?>" />
 <input type="hidden" name="do" value="update" />
 <textarea class="nfo" name="content" cols="100%" rows="80"><?php echo htmlspecialchars(stripslashes($contents)); ?></textarea><br />

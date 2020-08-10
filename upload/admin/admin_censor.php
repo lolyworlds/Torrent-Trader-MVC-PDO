@@ -3,7 +3,8 @@
 # Word Censor Filter
 #======================================================================#
 if($action == "censor") {
-stdhead("Censor");
+	$title = T_("Censor");
+	require 'views/admin/header.php';
 adminnavmenu();
 if($site_config["OLD_CENSOR"])
 {
@@ -96,6 +97,6 @@ break;
 }
 }
 end_frame();
-stdfoot();
+require 'views/admin/footer.php';
 }
 // End forum Censored Words

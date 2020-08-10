@@ -103,8 +103,8 @@ if ($action == "forum") {
         
         autolink(TTURL."/admincp?action=forum", T_("CP_FORUM_CAT_DELETED"));
     }
-    
-    stdhead(T_("FORUM_MANAGEMENT"));
+          	$title = T_("FORUM_MANAGEMENT");
+    require 'views/admin/header.php';
     
     $groupsres = DB::run("SELECT group_id, level FROM groups ORDER BY group_id ASC");
     while ($groupsrow = $groupsres->fetch())
@@ -120,6 +120,7 @@ if ($action == "forum") {
         
         begin_frame(T_("FORUM_MANAGEMENT_EDIT"));   
     ?>
+<div class="jumbotron">
           <form action="<?php echo TTURL; ?>/admincp?action=forum" method="post">
           <input type="hidden" name="do" value="save_edit" />
           <input type="hidden" name="id" value="<?php echo $id; ?>" />
@@ -167,7 +168,7 @@ while ($row = $query->fetch()) {
 <option value='<? echo $site_config['SuperModerator']; ?>'>Super Moderator</option>
 <option value='<? echo $site_config['Administrator']; ?>'>Administrator</option>
 
-<</select></td>
+</select></td>
 </tr>".
 <tr>
 <td class='table_col1'>Allow Guest Read:</td>
@@ -181,10 +182,10 @@ while ($row = $query->fetch()) {
 </tr>
 
 </table>
-</form>
+</form></div>
     <?php
         end_frame();
-        stdfoot();
+        require 'views/admin/footer.php';
     }
 
 if ($_GET["do"] == "del_forum") {
@@ -205,7 +206,7 @@ if ($_GET["do"] == "del_forum") {
     </form>
 <?php
           end_frame();
-          stdfoot();
+          require 'views/admin/footer.php';
 }
 
 if ($_GET["do"] == "del_forumcat") {
@@ -228,7 +229,7 @@ if ($_GET["do"] == "del_forumcat") {
       </form>
 <?php
           end_frame();
-          stdfoot();
+          require 'views/admin/footer.php';
 }
 
 if ($_GET["do"] == "edit_forumcat") {
@@ -254,7 +255,7 @@ if ($_GET["do"] == "edit_forumcat") {
     </form>
     <?php
     end_frame();
-    stdfoot();
+    require 'views/admin/footer.php';
 }
     
     if (!$do) {
@@ -267,7 +268,8 @@ if ($_GET["do"] == "edit_forumcat") {
             $forumcat[] = $row;
 
         echo "
-    <form action='admincp' method='post'>   
+        <div class='border border-warning'>
+        <form action='admincp' method='post'>   
     <input type='hidden' name='sid' value='$sid' />
 <input type='hidden' name='action' value='forum' />
 <input type='hidden' name='do' value='add_this_forum' />
@@ -334,12 +336,12 @@ echo "</select></td>
 #if($error_ac != "") echo "<tr><td colspan='2' align='center' style='background:#eeeeee;border:2px red solid'><b>COULD  NOT ADD NEW forum:</b><br /><ul>$error_ac</ul></td></tr>\n";
 
 echo "</table>
-</form>
+</form></div><br>
 
-<b>".T_("FORUM_CURRENT").":</b>
-<table class='table_table' align='center' width='80%' cellspacing='0' cellpadding='4'>";
+<b>".T_("FORUM_CURRENT").":</b><br>
+<table class='table table-striped table-bordered table-hover'><thead>";
 
-echo "<tr><th class='table_head' width='60'><font size='2'><b>".T_("ID")."</b></font></th><th class='table_head' width='120'>".T_("NAME")."</th><th class='table_head' width='250'>DESC</th><th class='table_head' width='45'>".T_("SORT")."</th><th class='table_head' width='45'>CATEGORY</th><th class='table_head' width='18'>".T_("EDIT")."</th><th class='table_head' width='18'>".T_("DEL")."</th></tr>\n";
+echo "<tr><th class='table_head' width='60'><font size='2'><b>".T_("ID")."</b></font></th><th class='table_head' width='120'>".T_("NAME")."</th><th class='table_head' width='250'>DESC</th><th class='table_head' width='45'>".T_("SORT")."</th><th class='table_head' width='45'>CATEGORY</th><th class='table_head' width='18'>".T_("EDIT")."</th><th class='table_head' width='18'>".T_("DEL")."</th></tr></thead><tbody>\n";
 $query = DB::run("SELECT * FROM forum_forums ORDER BY sort, name");
 $allforums = $query->rowCount();
 if ($allforums == 0) {
@@ -355,9 +357,9 @@ if ($allforums == 0) {
             echo "<td class='table_col1' width='18' align='center'><a href='admincp?action=forum&amp;do=del_forum&amp;id=$row[id]'><img src='images/delete.png' alt='".T_("FORUM_DELETE_CATEGORY")."' width='17' height='17' border='0' /></a></td></tr>\n";
     }
 }
-echo "</table>
-<br /><b>".T_("FORUM_CURRENT_CATS").":</b><table class='table_table' align='center' width='80%' cellspacing='0' cellpadding='4'>
-<tr><th class='table_head' width='60'><font size='2'><b>".T_("ID")."</b></font></th><th class='table_head' width='120'>".T_("NAME")."</th><th class='table_head' width='18'>".T_("SORT")."</th><th class='table_head' width='18'>".T_("EDIT")."</th><th class='table_head' width='18'>".T_("DEL")."</th></tr>\n";
+echo "</tbody></table>
+<b>".T_("FORUM_CURRENT_CATS").":</b><table class='table table-striped table-bordered table-hover'><thead>
+<tr><th class='table_head' width='60'><font size='2'><b>".T_("ID")."</b></font></th><th class='table_head' width='120'>".T_("NAME")."</th><th class='table_head' width='18'>".T_("SORT")."</th><th class='table_head' width='18'>".T_("EDIT")."</th><th class='table_head' width='18'>".T_("DEL")."</th></tr></thead><tbody>\n";
 
 if ($allcat == 0) {
     echo "<tr class='table_col1'><td class='f-border' colspan='7' align='center'>".T_("FORUM_NO_CAT_FOUND")."</td></tr>\n"; 
@@ -368,9 +370,9 @@ if ($allcat == 0) {
         echo "<td class='table_col1' width='18'><a href='admincp?action=forum&amp;do=del_forumcat&amp;id=$row[id]'><img src='images/delete.png' alt='".T_("FORUM_DELETE_CATEGORY")."' width='17' height='17' border='0' /></a></td></tr>\n";
     }
 }
-echo "</table>\n";
+echo "</tbody></table>\n";
 
-echo "<br />
+echo "<div class='border border-warning'>
 <form action='admincp?action=forum' method='post'>
 <input type='hidden' name='do' value='add_this_forumcat' /> 
 <table class='table_table' align='center' width='80%' cellspacing='2' cellpadding='5'>
@@ -390,9 +392,9 @@ echo "<br />
 </th>
 </tr>
 </table>
-</form>";
+</form></div>";
 end_frame();
-stdfoot();
+require 'views/admin/footer.php';
     } // End New Forum
 
 

@@ -3,7 +3,8 @@
 
 /////////////////////// NEWS ///////////////////////
 if ($action=="news" && $do=="view"){
-	stdhead(T_("NEWS_MANAGEMENT"));
+	$title = T_("NEWS_MANAGEMENT");
+    require 'views/admin/header.php';
 	adminnavmenu();
 
 	begin_frame(T_("NEWS"));
@@ -41,7 +42,7 @@ if ($action=="news" && $do=="view"){
 	}
 
 	end_frame();
-	stdfoot();
+	require 'views/admin/footer.php';
 }
 
 if ($action=="news" && $do=="takeadd"){
@@ -68,7 +69,8 @@ if ($action=="news" && $do=="takeadd"){
 }
 
 if ($action=="news" && $do=="add"){
-	stdhead(T_("NEWS_MANAGEMENT"));
+	$title = T_("NEWS_MANAGEMENT");
+    require 'views/admin/header.php';
 	adminnavmenu();
 
 	begin_frame(T_("CP_NEWS_ADD"));
@@ -84,11 +86,12 @@ if ($action=="news" && $do=="add"){
 
 	print("</form><br /><br /></center>\n");
 	end_frame();
-	stdfoot();
+	require 'views/admin/footer.php';
 }
 
 if ($action=="news" && $do=="edit"){
-	stdhead(T_("NEWS_MANAGEMENT"));
+	$title = T_("NEWS_MANAGEMENT");
+    require 'views/admin/header.php';
 	adminnavmenu();
 
 	$newsid = (int)$_GET["newsid"];
@@ -137,7 +140,7 @@ if ($action=="news" && $do=="edit"){
 		print("</form>\n");
 	}
 	end_frame();
-	stdfoot();
+	require 'views/admin/footer.php';
 }
 
 if ($action=="news" && $do=="delete"){

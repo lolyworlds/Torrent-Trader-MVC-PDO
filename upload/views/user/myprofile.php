@@ -11,9 +11,9 @@
 			<tr valign="top">
 				<td align="left">
                 <?php echo T_("USERNAME"); ?>: <?php echo class_user_colour($user["username"])?><br />
-                <?php echo T_("EMAIL"); ?>: <?php echo $CURUSER["email"]; ?><br />
-	            <?php echo T_("PASSKEY"); ?>: <?php echo $CURUSER["passkey"]; ?><br />
-                <?php echo T_("IP"); ?>: <?php echo $CURUSER["ip"]; ?><br />
+                <?php echo T_("EMAIL"); ?>: <?php echo $user["email"]; ?><br />
+	            <?php echo T_("PASSKEY"); ?>: <?php echo $user["passkey"]; ?><br />
+                <?php echo T_("IP"); ?>: <?php echo $user["ip"]; ?><br />
 				<?php echo T_("USERCLASS"); ?>: <?php echo get_user_class_name($user["class"])?><br />
 				<?php echo T_("TITLE"); ?>: <i><?php echo format_comment($user["title"])?></i><br />
 				<?php echo T_("JOINED"); ?>: <?php echo htmlspecialchars(utc_to_tz($user["added"]))?><br />
@@ -23,7 +23,7 @@
 		
 				<td align="left">
                 <?php echo T_("AGE"); ?>: <?php echo htmlspecialchars($user["age"])?><br />
-                <?php echo T_("GENDER"); ?>: <?php echo T_($CURUSER["gender"]); ?><br />
+                <?php echo T_("GENDER"); ?>: <?php echo T_($user["gender"]); ?><br />
 				<?php echo T_("CLIENT"); ?>: <?php echo htmlspecialchars($user["client"])?><br />
 				<?php echo T_("COUNTRY"); ?>: <?php echo $country?><br />
 				<?php echo T_("DONATED"); ?>  <?php echo $site_config['currency_symbol']; ?><?php echo number_format($user["donated"], 2); ?><br /> 

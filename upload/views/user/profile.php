@@ -21,7 +21,7 @@
 		
 				<td align="left">
                 <?php echo T_("AGE"); ?>: <?php echo htmlspecialchars($user["age"])?><br />
-                <?php echo T_("GENDER"); ?>: <?php echo T_($CURUSER["gender"]); ?><br />
+                <?php echo T_("GENDER"); ?>: <?php echo T_($user["gender"]); ?><br />
 				<?php echo T_("CLIENT"); ?>: <?php echo htmlspecialchars($user["client"])?><br />
 				<?php echo T_("COUNTRY"); ?>: <?php echo $country?><br />
 				<?php echo T_("DONATED"); ?>  <?php echo $site_config['currency_symbol']; ?><?php echo number_format($user["donated"], 2); ?><br /> 

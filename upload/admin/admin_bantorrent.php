@@ -1,7 +1,8 @@
 <?php
 
 if ($action=="bannedtorrents"){
-	stdhead("Banned Torrents");
+	$title = "Banned Torrents";
+	require 'views/admin/header.php';
 	adminnavmenu();
 		
 	$res2 = DB::run("SELECT COUNT(*) FROM torrents WHERE banned=?", ['yes']);
@@ -22,7 +23,7 @@ if ($action=="bannedtorrents"){
 
 	echo $pagertop;
 	?>
-	<table align="center" cellpadding="0" cellspacing="0" class="table_table" width="100%" border="0">
+	<table class='table table-striped table-bordered table-hover'><thead>
 	<tr>
 	<th class="table_head"><?php echo T_("NAME"); ?></th>
 	<th class="table_head">Visible</th>
@@ -30,7 +31,7 @@ if ($action=="bannedtorrents"){
 	<th class="table_head">Leechers</th>
 	<th class="table_head">External?</th>
 	<th class="table_head">Edit?</th>
-	</tr>
+	</tr></thead><tbody>
 	<?php
 	$resqq = DB::run("SELECT id, name, seeders, leechers, visible, banned, external FROM torrents WHERE banned=? ORDER BY name", ['yes']);
 	while ($row = $resqq->fetch(PDO::FETCH_ASSOC)){
@@ -40,10 +41,10 @@ if ($action=="bannedtorrents"){
 		echo "<tr><td class='table_col1'>" . $smallname . "</td><td class='table_col2'>$row[visible]</td><td class='table_col1'>".number_format($row["seeders"])."</td><td class='table_col2'>".number_format($row["leechers"])."</td><td class='table_col1'>$row[external]</td><td class='table_col2'><a href=\"torrents/edit?returnto=" . urlencode($_SERVER["REQUEST_URI"]) . "&amp;id=" . $row["id"] . "\"><font size='1' face='verdana'>EDIT</font></a></td></tr>\n";
 	}
 
-	echo "</table>\n";
+	echo "</tbody></table>\n";
 
 	print($pagerbottom);
 
 	end_frame();
-	stdfoot();
+	require 'views/admin/footer.php';
 }

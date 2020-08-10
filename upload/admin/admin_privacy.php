@@ -30,7 +30,8 @@ if ($action == "privacylevel")
                                                                      
     $res = DB::run("SELECT id, username, class, email, ip, added, last_access FROM users WHERE $where ORDER BY username DESC $limit");
     
-    stdhead("Privacy Level");
+    $title = T_("PRIVACY_LEVEL");
+    require 'views/admin/header.php';
     adminnavmenu();
     
     begin_frame("Privacy Level");
@@ -40,7 +41,6 @@ if ($action == "privacylevel")
     This page displays all users which are enabled, confirmed grouped by their privacy level.
     </center>
 
-    <br />
     <table align="right">
     <tr>
         <td valign="top">
@@ -56,8 +56,6 @@ if ($action == "privacylevel")
     </td>
     </tr>
     </table>
-    <br />
-    <br />
     
     <?php if ($count > 0): ?>
     <br />
@@ -89,5 +87,5 @@ if ($action == "privacylevel")
     if ($count > 25) echo $pagerbottom;
     
     end_frame();
-    stdfoot(); 
+    require 'views/admin/footer.php'; 
 }

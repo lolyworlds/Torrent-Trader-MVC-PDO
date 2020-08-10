@@ -87,7 +87,7 @@ you should not see this, there is a issue with a link try
               $avatar = $site_config["SITEURL"] . "/images/default_avatar.png";
           }
   
-          $usersignature = stripslashes($CURUSER["signature"]); // todo
+          $usersignature = stripslashes($user["signature"]); // todo
   
           stdhead("User CP");
           // im staff i see all details

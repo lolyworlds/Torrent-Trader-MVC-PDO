@@ -1,7 +1,8 @@
 <?php
 // IP Bans (TorrentialStorm)
 if ($action == "ipbans") {
-    stdhead(T_("BANNED_IPS"));
+    $title = T_("BANNED_IPS");
+    require 'views/admin/header.php';
     adminnavmenu();
 
     if ($do == "del") {
@@ -98,6 +99,6 @@ if ($action == "ipbans") {
     print("</table></form><br />\n");
 
     end_frame();
-    stdfoot();
+    require 'views/admin/footer.php';
 }
 // End IP Bans (TorrentialStorm)

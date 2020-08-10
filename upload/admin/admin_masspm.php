@@ -1,7 +1,9 @@
 <?php
-
+	require 'helpers/bbcode_helper.php';
 if ($action=="masspm"){
-	stdhead("Mass Private Message");
+	$title = T_("Mass Private Message");
+	require 'views/admin/header.php';
+	
 	adminnavmenu();
 
     # Tidy Up...
@@ -49,7 +51,7 @@ if ($action=="masspm"){
     <td><b>Subject:</b><br /><input type="text" name="subject" size="30" /></td>
     </tr>
 	<tr>
-	<td><b>Message: </b><br /> <?php textbbcode("masspm", "msg"); ?></td>
+	<td><b>Message: </b><br /> <?php echo textbbcode("masspm", "msg"); ?></td>
 	</tr>
     
 	<tr>
@@ -64,5 +66,5 @@ if ($action=="masspm"){
 	</table></form>
 	<?php
 	end_frame();
-	stdfoot();
+	require 'views/admin/footer.php';
 }

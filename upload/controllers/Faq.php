@@ -281,8 +281,8 @@ if (!array_key_exists("title", $faq_categ[$id])) {
 print("<form method=\"post\" action=\"$site_config[SITEURL]/faq/actions?action=reorder\">");
 
 foreach ($faq_categ as $id => $temp) {
-print("<br />\n<table border=\"0\" class=\"table_head\" cellspacing=\"0\" cellpadding=\"5\" align=\"center\" width=\"95%\">\n");
-print("<tr><th class=\"table_head\" colspan=\"2\">Position</th><th class=\"table_head\">Section/Item ".T_("TITLE").": </th><th class=\"table_head\">Status</th><th class=\"table_head\">Actions</th></tr>\n");
+print("<br />\n<table class='table table-striped table-bordered table-hover'><thead>\n");
+print("<tr><th class=\"table_head\" colspan=\"2\">Position</th><th class=\"table_head\">Section/Item ".T_("TITLE").": </th><th class=\"table_head\">Status</th><th class=\"table_head\">Actions</th></tr></thead><tbody>\n");
 
 print("<tr><td class=\"table_col1\" align=\"center\" width=\"40px\"><select name=\"order[". $id ."]\">");
 for ($n=1; $n <= count($faq_categ); $n++) {
@@ -308,7 +308,7 @@ if (array_key_exists("items", $faq_categ[$id])) {
 }
 
 print("<tr><td colspan=\"5\" align=\"center\"><a href=\"$site_config[SITEURL]/faq/actions?action=additem&amp;inid=". $id ."\">Add new item</a></td></tr>\n");
-print("</table>\n");
+print("</tbody></table>\n");
 }
 }
 

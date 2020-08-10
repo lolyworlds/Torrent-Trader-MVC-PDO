@@ -7,7 +7,8 @@ if ($action=="freetorrents"){
     *  Optimize Query show freeleech ONLY!
     */
     
-	stdhead("Free Leech ".T_("TORRENT_MANAGEMENT"));
+	$title = T_("Free Leech");
+    require 'views/admin/header.php';
 	adminnavmenu();
 
 	$search = trim($_GET['search']);
@@ -34,7 +35,7 @@ if ($action=="freetorrents"){
 
 	echo $pagertop;
 	?>
-	<table align="center" cellpadding="0" cellspacing="0" class="table_table" width="100%" border="0">
+	<table class='table table-striped table-bordered table-hover'><thead>
 	<tr> 
         <th class="table_head"><?php echo T_("NAME"); ?></th>
         <th class="table_head"><?php echo T_("VISIBLE"); ?></th>
@@ -42,7 +43,7 @@ if ($action=="freetorrents"){
         <th class="table_head"><?php echo T_("SEEDERS"); ?></th>
         <th class="table_head"><?php echo T_("LEECHERS"); ?></th>
         <th class="table_head"><?php echo T_("EDIT"); ?></th>
-	</tr>
+	</tr></thead><tbody>
 	<?php
 	$rqq = "SELECT id, name, seeders, leechers, visible, banned FROM torrents WHERE freeleech='1' $whereand ORDER BY name $limit";
 	$resqq = DB::run($rqq);
@@ -55,10 +56,10 @@ if ($action=="freetorrents"){
 		echo "<tr><td class='table_col1'>" . $smallname . "</td><td class='table_col2'>$row[visible]</td><td class='table_col1'>$row[banned]</td><td class='table_col2'>".number_format($row["seeders"])."</td><td class='table_col1'>".number_format($row["leechers"])."</td><td class='table_col2'><a href=\"torrents/edit?returnto=" . urlencode($_SERVER["REQUEST_URI"]) . "&amp;id=" . $row["id"] . "\"><font size='1' face='verdana'>EDIT</font></a></td></tr>\n";
 	}
 
-	echo "</table>\n";
+	echo "</tbody></table>\n";
 
 	print($pagerbottom);
 
 	end_frame();
-	stdfoot();
+	require 'views/admin/footer.php';
 }

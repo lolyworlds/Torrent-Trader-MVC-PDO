@@ -13,7 +13,8 @@
          die;
      }                               
      
-     stdhead("Site Configuration");
+	$title = "Site Configuration";
+	require 'views/admin/header.php';
      adminnavmenu();
      
      begin_frame("Site Configuration - Incompleted!");
@@ -410,6 +411,6 @@ jQuery(document).ready(function() {
 
      <?php 
      end_frame();
-     stdfoot();
+     require 'views/admin/footer.php';
  }
  

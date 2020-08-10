@@ -25,7 +25,8 @@ if ($action == "confirmreg")
     
     $res = DB::run("SELECT `id`, `username`, `email`, `added`, `ip` FROM `users` WHERE `status` = 'pending' AND `invited_by` = '0' ORDER BY `added` DESC $limit");
 
-    stdhead("Manual Registration Confirm");
+    $title = "Manual Registration Confirm";
+	require 'views/admin/header.php';
     adminnavmenu();
     
     begin_frame("Manual Registration Confirm");
@@ -69,5 +70,5 @@ if ($action == "confirmreg")
     if ($count > 25) echo $pagerbottom;
     
     end_frame();
-    stdfoot(); 
+    require 'views/admin/footer.php'; 
 }

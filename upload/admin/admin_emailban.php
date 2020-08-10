@@ -1,7 +1,8 @@
 <?php
 
 if ($action=="emailbans"){
-	stdhead(T_("EMAIL_BANS"));
+	$title = T_("EMAIL_BANS");
+    require 'views/admin/header.php';
 	adminnavmenu();
 
 	$remove = (int) $_GET['remove'];
@@ -17,7 +18,7 @@ if ($action=="emailbans"){
 
 		if (!$mail_domain || !$comment){
 			show_error_msg(T_("ERROR"), T_("MISSING_FORM_DATA").".",0);
-			stdfoot();
+			require 'views/admin/footer.php';
 			die;
 		}
 		$mail_domain= $mail_domain;
@@ -27,7 +28,7 @@ if ($action=="emailbans"){
 		$ins = DB::run("INSERT INTO email_bans (added, addedby, mail_domain, comment) VALUES(?,?,?,?)", [$added, $CURUSER['id'], $mail_domain, $comment]);
 		write_log(sprintf(T_("EMAIL_BANS_ADD"), $mail_domain, $CURUSER["username"]));
 		show_error_msg(T_("COMPLETE"), T_("EMAIL_BAN_ADDED"), 0);
-		stdfoot();
+		require 'views/admin/footer.php';
 		die;
 	}
 
@@ -70,5 +71,5 @@ if ($action=="emailbans"){
 		echo "<br />";
 	}
 	end_frame();
-	stdfoot();
+	require 'views/admin/footer.php';
 }

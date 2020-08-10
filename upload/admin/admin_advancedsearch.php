@@ -56,7 +56,8 @@ if ($action == "usersearch") {
 		autolink("$_POST[referer]", "Redirecting back");
 		die;
 	}
-	stdhead(T_("ADVANCED_USER_SEARCH"));
+	$title = T_("ADVANCED_USER_SEARCH");
+    require 'views/admin/header.php';
 	adminnavmenu();
 	begin_frame("Search");
 	if ($_GET['h']) {
@@ -81,7 +82,7 @@ if ($action == "usersearch") {
 		echo "&nbsp;-&nbsp;[<a href='".TTURL."/admincp?action=usersearch'>Reset</a>]</p>\n";
 	}
 ?>
-    <br />
+    <div class="border border-warning">
 	<form method="get" action="<?php echo TTURL; ?>/admincp">
 	<input type="hidden" name="action" value="usersearch" />
 	<table border="0" class="table_table" cellspacing="0" cellpadding="0" width="100%">
@@ -226,9 +227,8 @@ if ($action == "usersearch") {
 	</select></td></tr>
 	<tr><td colspan="6" align="center"><input name="submit" value="Search" type="submit" /></td></tr>
 	</table>
-	<br /><br />
 	</form>
-
+</div>
 <?php
 	// Validates date in the form [yy]yy-mm-dd;
 	// Returns date if valid, 0 otherwise.
@@ -617,7 +617,7 @@ if ($action == "usersearch") {
 		}
 		$from_is = "users AS u".$join_is;
 		$distinct = isset($distinct)?$distinct:"";
-        # To Avoid Confusion we skip invite_* which are invited users which haven't confirmed yet, visit /admincp?action=pendinginvited
+        # To Avoid Confusion we skip invite_* which are invited users which haven't confirmed yet, visit admincp?action=pendinginvited
         $where_is .= (isset($where_is))?" AND ":"";   
         $where_is .= "u.username NOT LIKE '%invite_%'";
         
@@ -630,7 +630,7 @@ if ($action == "usersearch") {
 		$count = DB::run($queryc, $params)->fetchColumn();
 		$q = isset($q)?($q."&amp;"):"";
 		$perpage = 25;
-		list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, "/admincp?action=usersearch&amp;$q");
+		list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, "admincp?action=usersearch&amp;$q");
 		$query .= $limit;
 		$res = DB::run($query, $params)->fetchAll();
 
@@ -640,8 +640,8 @@ if ($action == "usersearch") {
 			if ($count > $perpage) {
 				echo $pagertop;
 			}
-            echo "<form action='/admincp?action=usersearch&amp;do=warndisable' method='post'>";
-			echo "<table border='0' class='table_table' cellspacing='0' cellpadding='0' width='100%'>\n";
+            echo "<br><form action='admincp?action=usersearch&amp;do=warndisable' method='post'>";
+			echo "<table class='table table-striped table-bordered table-hover'><thead>\n";
 			echo "<tr><th class='table_head'>".T_("NAME")."</th>
 			<th class='table_head'>IP</th>
 			<th class='table_head'>".T_("EMAIL")."</th>".
@@ -653,7 +653,7 @@ if ($action == "usersearch") {
 			"<th class='table_head'>Uploaded</th>".
 			"<th class='table_head'>Downloaded</th>".
 			"<th class='table_head'>History</th>".
-			"<th class='table_head' colspan='2'>Status</th></tr>\n";
+			"<th class='table_head' colspan='2'>Status</th></tr></thead>\n";
 
 			foreach ($res as $user) {
 				if ($user['added'] == '0000-00-00 00:00:00')
@@ -692,10 +692,10 @@ if ($action == "usersearch") {
             <br />
 			<table border='0' align='center' cellspacing='0' cellpadding='0'>
 			<tr><td colspan='2'></td></tr>
-			<tr><td align='right'><img src=\"images/disable.png\" alt=\"Disabled\" /> <input type='submit' name='disable' value=\"Disable Selected Accounts\" /></td><td style=\"border: none; padding: 2px;\" align='left'><input type='submit' name='enable' value=\"Enable Selected Accounts\" /> <img src=\"images/disable.png\" alt=\"Disabled\" /> <img src=\"images/check.gif\" alt=\"Ok\" /></td></tr>
-			<tr><td colspan='2'><br /><br /></td></tr>
-			<tr><td align='center'><img src=\"images/warned.png\" alt=\"Warned\" /> <input type='submit' name='warn' value=\"Warn Selected\" /></td><td align='left'><input type='submit' name='unwarn' value=\"Remove Warning Selected\" /> <img src=\"images/warned.png\" alt=\"Warned\" /> <img src=\"images/check.gif\" alt=\"Ok\" /></td></tr>
-			<tr><td align='center' colspan='2'>Mod Comment (reason):<input type='text' size='30' name='warnpm' /></td></tr>
+			<tr><td align='right'><img src=\"images/disable.png\" alt=\"Disabled\" /><input type='submit' name='disable' value=\"Disable Selected Accounts\" /></td><td style=\"border: none; padding: 2px;\" align='left'>&nbsp<input type='submit' name='enable' value=\"Enable Selected Accounts\" /> <img src=\"images/disable.png\" alt=\"Disabled\" /> <img src=\"images/check.gif\" alt=\"Ok\" /></td></tr>
+			<tr><td colspan='2'><br /></td></tr>
+			<tr><td align='center'><img src=\"images/warned.png\" alt=\"Warned\" /><input type='submit' name='warn' value=\"Warn Selected\" /></td><td><input type='submit' name='unwarn' value=\"Remove Warning Selected\" /> <img src=\"images/warned.png\" alt=\"Warned\" /> <img src=\"images/check.gif\" alt=\"Ok\" /></td></tr>
+			<tr><td align='center' colspan='2'><br />Mod Comment (reason):<input type='text' size='30' name='warnpm' /></td></tr>
 			</table></form>\n";
    
 			if ($count > $perpage) {
@@ -704,6 +704,6 @@ if ($action == "usersearch") {
 		}
 	}
 	end_frame();
-	stdfoot();
+	require 'views/admin/footer.php';
 }
 // End Advanced User Search

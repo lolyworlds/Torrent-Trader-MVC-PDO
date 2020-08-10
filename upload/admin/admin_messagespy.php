@@ -10,14 +10,15 @@ if ($action=="messagespy"){
 			DB::run("DELETE FROM `messages` WHERE `id` IN ($ids)");
 		}
 		autolink(TTURL."/admincp?action=messagespy", T_("CP_DELETED_ENTRIES")); 
-		stdhead();
+	$title = T_("Message Spy");
+    require 'views/admin/header.php';
 		show_error_msg(T_("SUCCESS"), T_("CP_DELETED_ENTRIES"), 0);
-		stdfoot();
+		require 'views/admin/footer.php';
 		die;
 	}
 
-
-	stdhead("Message Spy");
+	$title = T_("Message Spy");
+    require 'views/admin/header.php';
 	adminnavmenu();
 
 	$row = DB::run("SELECT COUNT(*) FROM messages WHERE location in ('in', 'both')")->fetch(PDO::FETCH_LAZY);
@@ -33,9 +34,9 @@ if ($action=="messagespy"){
 
 	$res = DB::run("SELECT * FROM messages WHERE location in ('in', 'both') ORDER BY id DESC $limit");
 
-	print("<form id='messagespy' method='post' action='?action=messagespy&amp;do=del'><table border='0' cellspacing='0' cellpadding='3' align='center' class='table_table'>\n");
+	print("<form id='messagespy' method='post' action='?action=messagespy&amp;do=del'><table class='table table-striped table-bordered table-hover'><thead>\n");
 
-	print("<tr><th class='table_head' align='left'><input type='checkbox' name='checkall' onclick='checkAll(this.form.id);' /></th><th class='table_head' align='left'>Sender</th><th class='table_head' align='left'>Receiver</th><th class='table_head' align='left'>Text</th><th class='table_head' align='left'>Date</th></tr>\n");
+	print("<tr><th class='table_head' align='left'><input type='checkbox' name='checkall' onclick='checkAll(this.form.id);' /></th><th class='table_head' align='left'>Sender</th><th class='table_head' align='left'>Receiver</th><th class='table_head' align='left'>Text</th><th class='table_head' align='left'>Date</th></tr></thead><tbody>\n");
 
 	while ($arr = $res->fetch(PDO::FETCH_ASSOC)){
 		$res2 = DB::run("SELECT username FROM users WHERE id=?", [$arr["receiver"]]);
@@ -57,12 +58,12 @@ if ($action=="messagespy"){
 		print("<tr><td class='table_col2'><input type='checkbox' name='del[]' value='$arr[id]' /></td><td align='left' class='table_col1'>$sender</td><td align='left' class='table_col2'>$receiver</td><td align='left' class='table_col1'>$msg</td><td align='left' class='table_col2'>$added</td></tr>");
 	}
 
-	print("</table><br />");
-	echo "<input type='submit' value='Delete Checked' /> <input type='submit' value='Delete All' name='delall' /></form>";
+	print("</tbody></table><br />");
+	echo "<center><input type='submit' value='Delete Checked' /> <input type='submit' value='Delete All' name='delall' /></center></form>";
 
 
 	print($pagerbottom);
 
 	end_frame();
-	stdfoot();
+	require 'views/admin/footer.php';
 }

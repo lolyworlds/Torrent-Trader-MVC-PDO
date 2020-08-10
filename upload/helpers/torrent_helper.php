@@ -340,7 +340,7 @@ function torrenttable($res)
                     break;
                 case 'nfo':
                     if ($row["nfo"] == "yes") {
-                        print("<td class='ttable_col$x' align='center'><a href='$site_config[SITEURL]/nfo/view?id=$row[id]'><img src='" . $site_config['SITEURL'] . "/images/icon_nfo.gif' border='0' alt='View NFO' /></a></td>");
+                        print("<td class='ttable_col$x' align='center'><a href='$site_config[SITEURL]/nfo/read?id=$row[id]'><img src='" . $site_config['SITEURL'] . "/images/icon_nfo.gif' border='0' alt='View NFO' /></a></td>");
                     } else {
                         print("<td class='ttable_col$x' align='center'>-</td>");
                     }

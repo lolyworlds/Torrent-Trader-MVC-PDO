@@ -23,18 +23,19 @@ if ($action == "seedbonus" && $do != "change")
                                                                                                                                                                                                                                                                 
     $res = DB::run("SELECT id, title, cost, value, descr, type FROM `bonus` ORDER BY `type` $limit");
 
-    stdhead("Seedbonus Manager");
-    usermenu();
-                                                        
+	$title = T_("Seedbonus Manager");
+    require 'views/admin/header.php';                                                      
+    echo '<br>';
     begin_frame("Management of Seed Bonus");
     ?>
 
     <center>
-This page displays all available options trade which users can exchange for seedbonus.<?php echo number_format($count); ?> ; <br><br><a href="admincp?action=seedbonus&amp;do=change&amp;id=null">Add</a> a new option?
+This page displays all available options trade which users can exchange for seedbonus <?php echo number_format($count); ?>
     </center>
-
+    <center>
+<a href="admincp?action=seedbonus&amp;do=change&amp;id=null">Add</a> a new option?
+    </center>
     <?php if ($count > 0): ?>
-    <br />
     <form id="seedbonus" method="post" action="<?php echo TTURL; ?>/admincp?action=seedbonus">
     <input type="hidden" name="do" value="del" />
     <div class='table-responsive'> <table class='table table-striped'><thead><tr>
@@ -75,7 +76,7 @@ This page displays all available options trade which users can exchange for seed
     if ($count > 25) echo $pagerbottom;
 
     end_frame();
-    stdfoot();
+    require 'views/admin/footer.php';
 }
         
 if ($action == "seedbonus" && $do == "change")
@@ -112,9 +113,9 @@ $_POST["value"] = ( $_POST["type"] == "traffic" ) ? strtobytes( $_POST["value"] 
         autolink("admincp?action=seedbonus", "Updating the bonus seed.");
     }
         
-    stdhead("Seedbonus Management");
-    usermenu();
-
+	$title = T_("Seedbonus Manager");
+    require 'views/admin/header.php';
+    echo '<br>';
     begin_frame("Seedbonus Management");
     ?>
 
@@ -160,5 +161,5 @@ $_POST["value"] = ( $_POST["type"] == "traffic" ) ? strtobytes( $_POST["value"] 
 
     <?php
     end_frame();
-    stdfoot();
+    require 'views/admin/footer.php';
 }

@@ -36,7 +36,8 @@ if ($action == "warned")
     
     $res = DB::run("SELECT `id`, `username`, `class`, `added`, `last_access` FROM `users` WHERE `enabled` = 'yes' AND `status` = 'confirmed' AND `warned` = 'yes' ORDER BY `added` DESC $limit");
 
-    stdhead("Warned Users");
+    $title = "Warned Users";
+    require 'views/admin/header.php';
     adminnavmenu();
     
     begin_frame("Warned Users");
@@ -51,7 +52,7 @@ if ($action == "warned")
     <?php if ($count > 0): ?>
     <br />
     <form id="warned" method="post" action="<?php echo TTURL; ?>/admincp?action=warned&amp;do=delete">
-    <table cellpadding="3" cellspacing="0" width="100%" align="center" class="table_table">
+    <table class='table table-striped table-bordered table-hover'><thead>
     <tr>
         <th class="table_head">Username</th>
         <th class="table_head"><?php echo T_("CLASS");?></th>   
@@ -59,7 +60,7 @@ if ($action == "warned")
         <th class="table_head">Last Access</th>
         <th class="table_head">Warnings</th>
         <th class="table_head"><input type="checkbox" name="checkall" onclick="checkAll(this.form.id);" /></th>
-    </tr>
+    </tr></thead><tbody>
     <?php while ($row = $res->fetch(PDO::FETCH_ASSOC)): ?>
     <tr>
         <td class="table_col1" align="center"><a href="<?php echo TTURL; ?>/users/profile?id=<?php echo $row["id"]; ?>"><?php echo class_user_colour($row["username"]); ?></a></td>
@@ -76,7 +77,7 @@ if ($action == "warned")
         <input type="submit" name="removeall" value="Remove All" />
         </td>
     </tr>
-    </table>         
+    </tbody></table>         
     </form>
     <?php else: ?>
     <center><b>No Warned Users...</b></center>
@@ -86,5 +87,5 @@ if ($action == "warned")
     if ($count > 25) echo $pagerbottom;
 
     end_frame();
-    stdfoot(); 
+    require 'views/admin/footer.php'; 
 }

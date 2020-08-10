@@ -1,16 +1,17 @@
 <?php
 ////////// categories /////////////////////
 if ($action=="categories" && $do=="view"){
-	stdhead(T_("Categories Management"));
+	$title = T_("Categories Management");
+	require 'views/admin/header.php';
 	adminnavmenu();
 
 	begin_frame(T_("TORRENT_CATEGORIES"));
 	echo "<center><a href='admincp?action=categories&amp;do=add'><b>Add New Category</b></a></center><br />";
 
-	print("<i>Please note that if no image is specified, the category name will be displayed</i><br /><br />");
+	print("<i>Please note that if no image is specified, the category name will be displayed</i><br />");
 
-	echo("<center><table width='95%' class='table_table'>");
-	echo("<tr><th width='10' class='table_head'>Sort</th><th class='table_head'>Parent Cat</th><th class='table_head'>Sub Cat</th><th class='table_head'>Image</th><th width='30' class='table_head'></th></tr>");
+	echo("<table class='table table-striped table-bordered table-hover'><thead>");
+	echo("<tr><th width='10' class='table_head'>Sort</th><th class='table_head'>Parent Cat</th><th class='table_head'>Sub Cat</th><th class='table_head'>Image</th><th width='30' class='table_head'></th></tr></thead></tbody>");
 	$query = "SELECT * FROM categories ORDER BY parent_cat ASC, sort_index ASC";
 	$sql = DB::run($query);
 	while ($row = $sql->fetch(PDO::FETCH_ASSOC)) {
@@ -26,14 +27,15 @@ if ($action=="categories" && $do=="view"){
 			print("-");	
 		print("</td><td class='table_col1'><a href='$site_config[SITEURL]/admincp?action=categories&amp;do=edit&amp;id=$id'>[EDIT]</a> <a href='admincp?action=categories&amp;do=delete&amp;id=$id'>[DELETE]</a></td></tr>");
 	}
-	echo("</table></center>");
+	echo("</tbody></table></center>");
 	end_frame();
-	stdfoot();
+	require 'views/admin/footer.php';
 }
 
 
 if ($action=="categories" && $do=="edit"){
-	stdhead(T_("Categories Management"));
+	$title = T_("Categories Management");
+	require 'views/admin/header.php';
 	adminnavmenu();
 
 	$id = (int)$_GET["id"];
@@ -79,11 +81,12 @@ if ($action=="categories" && $do=="edit"){
 		print("</form>\n");
 	}
 	end_frame();
-	stdfoot();
+	require 'views/admin/footer.php';
 }
 
 if ($action=="categories" && $do=="delete"){
-	stdhead(T_("Categories Management"));
+	$title = T_("Categories Management");
+	require 'views/admin/header.php';
 	adminnavmenu();
 
 	$id = (int)$_GET["id"];
@@ -111,7 +114,7 @@ if ($action=="categories" && $do=="delete"){
 		print("</form>\n");
 	}
 	end_frame();
-	stdfoot();
+	require 'views/admin/footer.php';
 }
 
 if ($action=="categories" && $do=="takeadd"){
@@ -140,7 +143,8 @@ if ($action=="categories" && $do=="takeadd"){
 }
 
 if ($action=="categories" && $do=="add"){
-	stdhead(T_("CATEGORY_MANAGEMENT"));
+	$title = T_("Categories Management");
+	require 'views/admin/header.php';;
 	adminnavmenu();
 
 	begin_frame(T_("CATEGORY_ADD"));
@@ -159,6 +163,6 @@ if ($action=="categories" && $do=="add"){
 
 	print("</table></form></center>\n");
 	end_frame();
-	stdfoot();
+	require 'views/admin/footer.php';
 }
 

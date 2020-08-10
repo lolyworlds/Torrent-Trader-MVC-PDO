@@ -2,7 +2,7 @@
             include 'views/message/usernavbar.php';
             include 'views/message/messagenavbar.php';
             ?>
-            <form id='messages' method='post' action='messages&amp;do=del'>
+            <form id='messages' method='post' action='<?php echo TTURL;?>/messages/inbox?do=del'>
             
                    
             <div class='table-responsive'><table class='table table-striped'>

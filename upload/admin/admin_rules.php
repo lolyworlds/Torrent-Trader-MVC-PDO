@@ -1,15 +1,16 @@
 <?php
 
 if ($action=="rules" && $do=="view"){
-	stdhead(T_("SITE_RULES_EDITOR"));
+	$title = T_("SITE_RULES_EDITOR");
+    require 'views/admin/header.php';
 	adminnavmenu();
 
 	begin_frame(T_("SITE_RULES_EDITOR"));
 
 	$res = DB::run("SELECT * FROM rules ORDER BY id");
-	print("<center><a href='$site_config[SITEURL]/admincp?action=rules&amp;do=addsect'>Add New Rules Section</a></center><br />\n");
+	print("<center><a href='$site_config[SITEURL]/admincp?action=rules&amp;do=addsect'>Add New Rules Section</a></center>\n");
 	while ($arr=$res->fetch(PDO::FETCH_LAZY)){
-		
+		echo '<div class="border border-warning">';		
 		print("<table width='100%' cellspacing='0' class='table_table'><tr>");
         print("<th class='table_head'>".$arr["title"]."</th>");
         print("</tr><tr><td class='table_col1'>");
@@ -18,10 +19,10 @@ if ($action=="rules" && $do=="view"){
 		print("</td></tr><tr><td class='table_head' align='center'><input type='hidden' value='$arr[id]' name='id' /><input type='submit' value='Edit' /></form>");
 		print("</td>");
         print("</tr></table>");
-        print("<br />");
+        print("</div><br>");
 	}
 	end_frame();
-	stdfoot();
+	require 'views/admin/footer.php';
 }
 
 if ($action=="rules" && $do=="edit"){
@@ -38,8 +39,8 @@ if ($action=="rules" && $do=="edit"){
 		die;
 	}
 
-
-	stdhead(T_("SITE_RULES_EDITOR"));
+	$title = T_("SITE_RULES_EDITOR");
+    require 'views/admin/header.php';
 	adminnavmenu();
 	
 	begin_frame("Edit Rule Section");
@@ -55,7 +56,7 @@ if ($action=="rules" && $do=="edit"){
 	print("<tr><td colspan=\"2\" align=\"center\"><input type=\"hidden\" value=\"$res[id]\" name=\"id\" /><input type=\"submit\" value=\"".T_("SAVE")."\" style=\"width: 60px;\" /></td></tr>\n");
 	print("</table></form>");
 	end_frame();
-	stdfoot();
+	require 'views/admin/footer.php';
 }
 
 if ($action=="rules" && $do=="addsect"){
@@ -69,7 +70,8 @@ if ($action=="rules" && $do=="addsect"){
 		show_error_msg(T_("COMPLETE"), "New Section Added<br /><br /><a href='$site_config[SITEURL]/admincp?action=rules&amp;do=view'>Back To Rules</a>",1);
 		die();
 	}
-	stdhead(T_("SITE_RULES_EDITOR"));
+	$title = T_("SITE_RULES_EDITOR");
+    require 'views/admin/header.php';
 	adminnavmenu();
 	begin_frame(T_("ADD_NEW_RULES_SECTION"));
 	print("<form method=\"post\" action=\"$site_config[SITEURL]/admincp?action=rules&amp;do=addsect&amp;save=1\">");
@@ -82,5 +84,5 @@ if ($action=="rules" && $do=="addsect"){
 	print("<tr><td colspan=\"2\" align=\"center\"><input type=\"submit\" value=\"Add\" style=\"width: 60px;\" /></td></tr>\n");
 	print("</table></form>");
 	end_frame();
-	stdfoot();
+	require 'views/admin/footer.php';
 }

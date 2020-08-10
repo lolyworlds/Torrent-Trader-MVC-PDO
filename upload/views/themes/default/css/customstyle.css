@@ -9,13 +9,20 @@
 	height: 28px;
 }
 
-.tr {
-border: 1px solid black;
+.border-warning {
+	border-radius: 9px 9px 9px 9px !IMPORTANT;
+-moz-border-radius: 9px 9px 9px 9px !IMPORTANT;
+-webkit-border-radius: 9px 9px 9px 9px !IMPORTANT;
+border: 5px solid #ff9900 !IMPORTANT;
 }
-.plainborder {
-	border: 1px solid black;
-	}
-	
+
+.border-primary {
+	border-radius: 9px 9px 9px 9px !IMPORTANT;
+-moz-border-radius: 9px 9px 9px 9px !IMPORTANT;
+-webkit-border-radius: 9px 9px 9px 9px !IMPORTANT;
+border: 10px solid #3895D3 !IMPORTANT;
+}
+
 /* Styles ShoutBox */
 .shoutbox_body {
 	color: yellow;

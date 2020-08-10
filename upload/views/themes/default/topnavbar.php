@@ -30,10 +30,9 @@
 
                     // check for new pm's
                     global $pdo;
-                    $arr = DB::run("SELECT COUNT(*) FROM messages WHERE receiver=" . $CURUSER["id"] . " and unread='yes' AND location IN ('in','both')");
-                    // offset fix
-                    $unreadmail = $arr->rowCount();
-                    if ($unreadmail){
+                    $arr = DB::run("SELECT * FROM messages WHERE receiver=" . $CURUSER["id"] . " and unread='yes' AND location IN ('in','both')")->fetchAll(); ;
+                    $unreadmail = count($arr);
+                    if ($unreadmail !== 0){
                         print(" &nbsp//&nbsp<a href='$site_config[SITEURL]/messages/inbox'><b><font color='#fff'>$unreadmail</font> ".P_("NEWPM", $unreadmail)."</b></a>");  
                     }else{
                         print(" &nbsp//&nbsp<a href='$site_config[SITEURL]/messages'><font color='#fff'>".T_("YOUR_MESSAGES")."</font></a>");
@@ -45,7 +44,7 @@
           <img src='$site_config[SITEURL]/images/up.gif' border='none' height='20' width='20' alt='Uploaded' title='Uploaded'> <font color='#33CCCC'><b>$useruploaded</b></font> 
           <img src='$site_config[SITEURL]/images/button_online.png' border='none' height='20' width='20' alt='Ratio' title='Ratio'> (<b><font color='#FFF'>$userratio</font></b>)&nbsp
           //&nbsp;Bonus points:&nbsp;<a href='" .$site_config["SITEURL"]. "/bonus' title='Seed Bonus Points'><font color=#00cc00>$CURUSER[seedbonus]</font></a>&nbsp
-          //&nbsp;Donated: <a href='" .$site_config["SITEURL"]. "/donate' title='Donated Amount'><font color=gold>&nbsp;$CURUSER[donated]</font>&nbsp;");
+          //&nbsp;Donated: <a href='" .$site_config["SITEURL"]. "/donate' title='Donated Amount'><font color=#ffff00>&nbsp;$CURUSER[donated]</font>&nbsp;");
 //////connectable yes or know////////
 if ($CURUSER["view_torrents"]=="yes") {
   $activeseed = get_row_count("peers", "WHERE userid = '$CURUSER[id]' AND seeder = 'yes'");
@@ -55,15 +54,15 @@ if ($CURUSER["view_torrents"]=="yes") {
   if($connect == 'yes') {
   $connectable = "<b><font face=\"Verdana\" style=\"font-size: 10px\" color=\"#00FF00\">YES</font></b>";
   } elseif($connect == 'no') {
-  $connectable = "<b><font face=\"Verdana\" style=\"font-size: 10px\" color=\"FFCCFF\">NO</font></b>";
+  $connectable = "<b><font face=\"Verdana\" style=\"font-size: 10px\" color=\"FF0000\">NO</font></b>";
   } else {
       $connectable ="<b><font face=\"Verdana\" style=\"font-size: 10px\" color=\"99CCFF\">Check Settings</font></b>";
  }    
 }
 
-print("&nbsp;(<font color=#C0C0C0><i>Seeding:</i></font> <a href=\"javascript:popout(0)\"onclick=\"window.open('" .$site_config["SITEURL"]. "/peers/seeding1?id=" . $CURUSER["id"] . "','Seeding','width=350,height=350,scrollbars=yes')\"><font color='#EB7F27'><b>".$activeseed."</b></font></a>&nbsp;");
-print("<font color=#C0C0C0><i>Leeching:</i> </font><a href=\"javascript:popout(0)\"onclick=\"window.open('" .$site_config["SITEURL"]. "/peers/leeching?id=" . $CURUSER["id"] . "','Seeding','width=350,height=350,scrollbars=yes')\"><font color='#EB7F27'><b>".$activeleech."</b></font></a>&nbsp;");
-print("<font color=#C0C0C0><i>Connected:</i></font> ".$connectable.")");
+print("&nbsp;<font color=#fff>(<i>Seeding:</i></font> <a href=\"javascript:popout(0)\"onclick=\"window.open('" .$site_config["SITEURL"]. "/peers/seeding1?id=" . $CURUSER["id"] . "','Seeding','width=350,height=350,scrollbars=yes')\"><font color='#ffff00'><b>".$activeseed."</b></font></a>&nbsp;");
+print("<font color=#fff><i>Leeching:</i> </font><a href=\"javascript:popout(0)\"onclick=\"window.open('" .$site_config["SITEURL"]. "/peers/leeching?id=" . $CURUSER["id"] . "','Seeding','width=350,height=350,scrollbars=yes')\"><font color='#ffff00'><b>".$activeleech."</b></font></a>&nbsp;");
+print("<font color=#fff><i>Connected:</i></font> ".$connectable.")");
 //////connectable yes or know end of mod////////					
 					
                 }

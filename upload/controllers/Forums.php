@@ -4,15 +4,16 @@
     public function __construct(){
        
     }
-    
+     /**
+     * View Forum Index.
+     */
     public function index(){
 require_once("helpers/bbcode_helper.php");
 dbconn();
 global $site_config, $CURUSER, $THEME;
-if (!$site_config["FORUMS_GUESTREAD"])
-	loggedinonly();
-
-
+if (!$site_config["FORUMS_GUESTREAD"]) {
+    loggedinonly();
+}
 
 $action = strip_tags($_REQUEST["action"]);
     
@@ -25,12 +26,6 @@ if ($CURUSER["forumbanned"] == "yes" || $CURUSER["view_forum"] == "no")
 //Here we decide if the forums is on or off
 if ($site_config["FORUMS"]) {
 $themedir = $site_config['SITEURL']."/views/themes/".$THEME."/forums/";
-
-
-//Global variables
-$postsperpage = 20;
-$maxsubjectlength = 50;
-
 
 // Action: DEFAULT ACTION (VIEW FORUMS)
 if (isset($_GET["catchup"]))
@@ -138,7 +133,7 @@ forumpostertable($r);
 //topic count and post counts
 $postcount = number_format(get_row_count("forum_posts"));
 $topiccount = number_format(get_row_count("forum_topics"));
-print("<br /><center>Our members have made " . $postcount . " posts in  " . $topiccount . " topics</center><br />");
+print("<center>Our members have made " . $postcount . " posts in  " . $topiccount . " topics</center>");
 
 insert_quick_jump_menu();
 end_frame();
@@ -149,9 +144,11 @@ stdfoot();
 }
 }
 
-
+     /**
+     * Post New Topic.
+     */
     public function newtopic(){
-require_once("helpers/bbcode_helper.php");
+
 dbconn();
 global $site_config, $CURUSER, $THEME;
 if (!$site_config["FORUMS_GUESTREAD"])
@@ -171,7 +168,7 @@ $themedir = $site_config['SITEURL']."/views/themes/".$THEME."/forums/";
     begin_frame("New topic");
 
 	forumheader("Compose New Thread");
-
+  require_once("helpers/bbcode_helper.php");
     insert_compose_frame($forumid);
     end_frame();
     stdfoot();
@@ -179,7 +176,9 @@ $themedir = $site_config['SITEURL']."/views/themes/".$THEME."/forums/";
 }
 	}
 	
-	
+     /**
+     * Search Forum.
+     */
 	    public function search(){
 require_once("helpers/bbcode_helper.php");
 dbconn();
@@ -262,7 +261,9 @@ $themedir = $site_config['SITEURL']."/views/themes/".$THEME."/forums/";
 	die;
 	}
 
-
+     /**
+     * View Unread Topics.
+     */
 	    public function viewunread(){
 require_once("helpers/bbcode_helper.php");
 dbconn();
@@ -316,10 +317,10 @@ $themedir = $site_config['SITEURL']."/views/themes/".$THEME."/forums/";
        <td style='border: 1px solid black' class='alt2' align='left'><a href='$site_config[SITEURL]/forums/viewforum&amp;forumid=$forumid'><b>$forumname</b></a></td></tr>\n");
     }
     if ($n > 0) {
-      print("</tbody></table></div><br />\n");
+      print("</tbody></table></div>\n");
       if ($n > $maxresults)
         print("<p>More than $maxresults items found, displaying first $maxresults.</p>\n");
-      print("<center><a href='$site_config[SITEURL]/forums?catchup'><b>Mark All Forums Read.</b></a></center><br />\n");
+      print("<center><a href='$site_config[SITEURL]/forums?catchup'><b>Mark All Forums Read.</b></a></center>\n");
     }
     else
       print("<b>Nothing found</b>");
@@ -328,7 +329,9 @@ $themedir = $site_config['SITEURL']."/views/themes/".$THEME."/forums/";
     die;
 }
 	
-	
+     /**
+     * View Forum.
+     */	
 		    public function viewforum(){
 require_once("helpers/bbcode_helper.php");
 dbconn();
@@ -552,7 +555,9 @@ $maxsubjectlength = 50;
     stdfoot();
     die;
 }	
-
+     /**
+     * Set Topic Sticky.
+     */
 public function setsticky(){	
 require_once("helpers/bbcode_helper.php");
 dbconn();
@@ -577,7 +582,9 @@ $themedir = $site_config['SITEURL']."/views/themes/".$THEME."/forums/";
    die;
 }	
 
-
+     /**
+     *Reply To Post.
+     */
 public function reply(){
     require_once("helpers/bbcode_helper.php");
 dbconn();
@@ -602,7 +609,9 @@ $themedir = $site_config['SITEURL']."/views/themes/".$THEME."/forums/";
 	stdfoot();
 	die;
 }
-
+     /**
+     * Edit a Post.
+     */
 public function editpost(){
     require_once("helpers/bbcode_helper.php");
 dbconn();
@@ -659,7 +668,9 @@ $themedir = $site_config['SITEURL']."/views/themes/".$THEME."/forums/";
     stdfoot();
     die;
 }
-
+     /**
+     * Confirm Post/Reply.
+     */
 public function post(){
     require_once("helpers/bbcode_helper.php");
 dbconn();
@@ -734,7 +745,9 @@ $themedir = $site_config['SITEURL']."/views/themes/".$THEME."/forums/";
     die;
 }
 
-
+     /**
+     * View Forum Topic.
+     */
 public function viewtopic(){
     require_once("helpers/bbcode_helper.php");
 dbconn();
@@ -829,7 +842,22 @@ $maxsubjectlength = 50;
     $pagemenu .= "</small>";
       
 //Get topic posts
+
+// Hide Reply Mod
+$data = DB::run("SELECT * FROM forum_posts WHERE topicid=$topicid ORDER BY id LIMIT 1");
+$mypost = $data->fetch(PDO::FETCH_ASSOC);
+$data1 = DB::run("SELECT user FROM thanks WHERE thanked = ? AND type = ? AND user = ?", [$topicid, 'forum', $CURUSER['id']]);
+$like = $data1->fetch(PDO::FETCH_ASSOC);
+if ($forumid == $site_config['hideforum'] && $CURUSER['id'] !== $mypost['userid']) {
+  if (!$like) {
+      $res = DB::run("SELECT * FROM forum_posts WHERE topicid=$topicid ORDER BY id LIMIT 1");
+  } elseif ($like) {
     $res = DB::run("SELECT * FROM forum_posts WHERE topicid=$topicid ORDER BY id LIMIT $offset,$perpage");
+  }
+} else {	
+    $res = DB::run("SELECT * FROM forum_posts WHERE topicid=$topicid ORDER BY id LIMIT $offset,$perpage");	
+}	
+
     stdhead("View Topic: $subject");
     begin_frame("$forum &gt; $subject");
 	forumheader("<a href='$site_config[SITEURL]/forums/viewforum&amp;forumid=$forumid'>$forum</a> <b style='font-size:16px; vertical-align:middle'>/</b> $subject");
@@ -944,7 +972,7 @@ $maxsubjectlength = 50;
 
 		$quote = htmlspecialchars($arr["body"]);
 
-		$postcount1 = DB::run("SELECT COUNT(forum_posts.userid) FROM forum_posts WHERE id=$posterid") or forumsqlerr();
+		$postcount1 = DB::run("SELECT COUNT(forum_posts.userid) FROM forum_posts WHERE id=$posterid");
 
 		while($row = $postcount1->fetch(PDO::FETCH_LAZY)) {
 
@@ -971,7 +999,13 @@ $maxsubjectlength = 50;
 	print("<tr class='p-foot'><td width='150' align='center'><a href='$site_config[SITEURL]/users/profile?id=$posterid'><img src='".$themedir."icon_profile.png' border='0' alt='' /></a> <a href='$site_config[SITEURL]/messages/create?id=$posterid'><img src='".$themedir."icon_pm.png' border='0' alt='' /></a></td><td>");
 
 	print ("<div style='float: left;'><a href='$site_config[SITEURL]/report/forum?forumid=$topicid&amp;forumpost=$postid'><img src='".$themedir."p_report.png' border='0' alt='".T_("FORUMS_REPORT_POST")."' /></a>&nbsp;<a href='javascript:scroll(0,0);'><img src='".$themedir."p_up.png'  alt='".T_("FORUMS_GOTO_TOP_PAGE")."' /></a></div><div align='right'>");
-	
+    
+  // Hide Reply Mod	
+    if ($CURUSER["id"] !== $posterid){	
+      // say thanks	
+      print ("<a href='$site_config[SITEURL]/likes/likeforum?id=$topicid'><button class='btn btn-sm btn-success'>Say Thanks</button></a>&nbsp;");	
+    }	
+
 	//define buttons and who can use them
 	if ($CURUSER["id"] == $posterid || $CURUSER["edit_forum"] == "yes" || $CURUSER["delete_forum"] == "yes"){
 		print ("<a href='$site_config[SITEURL]/forums/editpost&amp;postid=$postid'><img src='".$themedir."p_edit.png' border='0' alt='' /></a>&nbsp;");
@@ -1026,7 +1060,7 @@ $maxsubjectlength = 50;
 
 	// MODERATOR OPTIONS
      if ($CURUSER["delete_forum"] == "yes" || $CURUSER["edit_forum"] == "yes") {
-      print("<br /><div class='f-border f-mod_options' align='center'><table width='100%' cellspacing='0'><tr class='f-title'><th>".T_("FORUMS_MOD_OPTIONS")."</th></tr>\n");
+      print("<div class='f-border f-mod_options' align='center'><table width='100%' cellspacing='0'><tr class='f-title'><th><center>".T_("FORUMS_MOD_OPTIONS")."</center></th></tr>\n");
      $res = DB::run("SELECT id,name,minclasswrite FROM forum_forums ORDER BY name");
       print("<tr><td class='ttable_col2'>\n");
       print("<form method='post' action='/forums/renametopic'>\n");
@@ -1052,7 +1086,7 @@ $maxsubjectlength = 50;
 			   print(T_("FORUMS_STICKY").": <a href='$site_config[SITEURL]/forums/unsetsticky&amp;forumid=$forumid&amp;topicid=$topicid&amp;page=$page' title='UnStick'><img src='". $themedir ."folder_sticky_new.png' alt='UnStick Topic' /></a>\n");
 			else
 			   print(T_("FORUMS_STICKY").": <a href='$site_config[SITEURL]/forums/setsticky&amp;forumid=$forumid&amp;topicid=$topicid&amp;page=$page' title='Stick'><img src='". $themedir ."folder_sticky.png' alt='Stick Topic' /></a>\n");
-			print("</div><br /></td></tr></table></div>\n");
+			print("</div></td></tr></table></div>\n");
 
     }
     end_frame();
@@ -1060,7 +1094,10 @@ $maxsubjectlength = 50;
     stdfoot();
     die;
 }
-///////////////////////////////////////////////////////// Action: DELETE TOPIC
+
+     /**
+     * Delete a Topic.
+     */
 public function deletetopic(){
     require_once("helpers/bbcode_helper.php");
 dbconn();
@@ -1090,7 +1127,9 @@ $themedir = $site_config['SITEURL']."/views/themes/".$THEME."/forums/";
 	die;
 }
 
-///////////////////////////////////////////////////////// Action: RENAME TOPIC
+     /**
+     * Rename a Topic.
+     */
 public function renametopic(){
     require_once("helpers/bbcode_helper.php");
 dbconn();
@@ -1121,6 +1160,9 @@ $themedir = $site_config['SITEURL']."/views/themes/".$THEME."/forums/";
   	die;
 }
 
+     /**
+     * Move a Topic.
+     */
 public function movetopic(){
     require_once("helpers/bbcode_helper.php");
 dbconn();
@@ -1159,6 +1201,9 @@ $themedir = $site_config['SITEURL']."/views/themes/".$THEME."/forums/";
     die;
 }
 
+     /**
+     * Lock a Topic.
+     */
 public function locktopic(){
     require_once("helpers/bbcode_helper.php");
 dbconn();
@@ -1183,6 +1228,9 @@ $themedir = $site_config['SITEURL']."/views/themes/".$THEME."/forums/";
 	die;
 }
 
+     /**
+     * Delete a Post.
+     */
 public function deletepost(){
     require_once("helpers/bbcode_helper.php");
 dbconn();
@@ -1228,7 +1276,9 @@ $themedir = $site_config['SITEURL']."/views/themes/".$THEME."/forums/";
     die;
 }
 
-    
+     /**
+     * Unlock a Topic.
+     */  
  public function unlocktopic(){
     require_once("helpers/bbcode_helper.php");
 dbconn();
@@ -1255,9 +1305,9 @@ $themedir = $site_config['SITEURL']."/views/themes/".$THEME."/forums/";
     die;
 }
 
-///////////////////////////////////////////////////////// Action: STICK TOPIC
-
-
+     /**
+     * Unstick a Topic.
+     */
 public function unsetsticky(){
     require_once("helpers/bbcode_helper.php");
 dbconn();

@@ -1,12 +1,9 @@
 <?php
 
-#====================================#
-#		Theme Management		#
-#====================================#
-
 if ($action == "style") {
 	if ($do == "add") {
-		stdhead();
+    $title = T_("Theme");
+    require 'views/admin/header.php';
 		adminnavmenu();
 		if ($_POST) {
 			if (empty($_POST['name']))
@@ -47,7 +44,7 @@ if ($action == "style") {
 		<br /><?php echo T_("THEME_PLEASE_NOTE_ALL_THEMES_MUST"); ?>
 		<?php
 		end_frame();
-		stdfoot();
+		require 'views/admin/footer.php';
    } elseif ($do == "del") {
 
         if (!@count($_POST["ids"])) show_error_msg(T_("ERROR"), T_("NOTHING_SELECTED"), 1);
@@ -82,22 +79,24 @@ if ($action == "style") {
 			show_error_msg(T_("FAILED"), sprintf(T_("THEME_THE_FOLLOWING_THEMES_WAS_NOT_ADDED"), $error), 1);
         
 	}else{
-		stdhead(T_("THEME_MANAGEMENT"));
+    $title = T_("Theme");
+    require 'views/admin/header.php';
 		adminnavmenu();
 		begin_frame(T_("THEME_MANAGEMENT"));
 		$res = DB::run("SELECT * FROM stylesheets");
-		echo "<center><a href='$site_config[SITEURL]/admincp?action=style&amp;do=add'>".T_("THEME_ADD")."</a><!-- - <b>".T_("THEME_CLICK_A_THEME_TO_EDIT")."</b>--></center><br />";
-		echo T_("THEME_CURRENT").":<form id='deltheme' method='post' action='$site_config[SITEURL]/admincp?action=style&amp;do=del'><table width='60%' class='table_table' align='center'>".
-			"<tr><th class='table_head'>ID</th><th class='table_head'>".T_("NAME")."</th><th class='table_head'>".T_("THEME_FOLDER_NAME")."</th><th width='5%' class='table_head'><input type='checkbox' name='checkall' onclick='checkAll(this.form.id);' /></th></tr>";
+		echo "<center><a href='$site_config[SITEURL]/admincp?action=style&amp;do=add'>".T_("THEME_ADD")."</a><!-- - <b>".T_("THEME_CLICK_A_THEME_TO_EDIT")."</b>--></center>";
+		echo "<center>".T_("THEME_CURRENT").":<form id='deltheme' method='post' action='$site_config[SITEURL]/admincp?action=style&amp;do=del'></center><table class='table table-striped table-bordered table-hover'>
+        <thead>".
+			"<tr><th>ID</th><th>".T_("NAME")."</th><th>".T_("THEME_FOLDER_NAME")."</th><th><input type='checkbox' name='checkall' onclick='checkAll(this.form.id);' /></th></tr></thead<tbody>";
 		while ($row=$res->fetch(PDO::FETCH_ASSOC)) {
 			if (!is_dir("views/themes/$row[uri]"))
 				$row['uri'] .= " <b>- ".T_("THEME_DIR_DONT_EXIST")."</b>";
 			echo "<tr><td class='table_col1' align='center'>$row[id]</td><td class='table_col2' align='center'>$row[name]</td><td class='table_col1' align='center'>$row[uri]</td><td class='table_col2' align='center'><input name='ids[]' type='checkbox' value='$row[id]' /></td></tr>";
 		}
-		echo "<tr><td colspan='4' align='right'><input type='submit' value='".T_("SELECTED_DELETE")."' /></td></tr></table></form>";
+		echo "</tbody></table></form><center><input type='submit' value='".T_("SELECTED_DELETE")."' /><center><br>";
 		
-		echo "<p>".T_("THEME_IN_THEMES_BUT_NOT_IN_DB")."</p><form id='addtheme' action='admincp?action=style&amp;do=add2' method='post'><table width='60%' class='table_table' align='center'>".
-			"<tr><th class='table_head'>".T_("NAME")."</th><th class='table_head'>".T_("THEME_FOLDER_NAME")."</th><th width='5%' class='table_head'><input type='checkbox' name='checkall' onclick='checkAll(this.form.id);' /></th></tr>";
+		echo "<p>".T_("THEME_IN_THEMES_BUT_NOT_IN_DB")."</p><form id='addtheme' action='admincp?action=style&amp;do=add2' method='post'><table class='table table-striped table-bordered table-hover'><thead>".
+			"<tr><th>".T_("NAME")."</th><t>".T_("THEME_FOLDER_NAME")."</th><th><input type='checkbox' name='checkall' onclick='checkAll(this.form.id);' /></th></tr></thead><tbody>";
 		$dh = opendir("views/themes/");
 		$i=0;
 		while (($file = readdir($dh)) !== false) {
@@ -112,8 +111,8 @@ if ($action == "style") {
 				}
 		}
 		if (!$i) echo "<tr><td class='table_col1' align='center' colspan='3'>".T_("THEME_NOTHING_TO_SHOW")."</td></tr>";
-		echo "</table><p align='center'>".($i?"<input type='submit' value='".T_("SELECTED_ADD")."' />":"")."</p></form>";
+		echo "</tbody></table><p align='center'>".($i?"<input type='submit' value='".T_("SELECTED_ADD")."' />":"")."</p></form>";
 		end_frame();
-		stdfoot();
+		require 'views/admin/footer.php';
 	}
 }

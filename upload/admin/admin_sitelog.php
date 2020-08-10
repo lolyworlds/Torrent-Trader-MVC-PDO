@@ -11,13 +11,15 @@ if ($action == "sitelog") {
 			DB::run("DELETE FROM `log` WHERE `id` IN ($ids)");
 		}
 		autolink(TTURL."/admincp?action=sitelog", T_("CP_DELETED_ENTRIES"));
-		stdhead();
+    $title = T_("Log");
+    require 'views/admin/header.php';
 		show_error_msg(T_("SUCCESS"), T_("CP_DELETED_ENTRIES"), 0);
-		stdfoot();
+		require 'views/admin/footer.php';
 		die;
 	}
 
-	stdhead("Site Log");
+    $title = T_("Site Log");
+    require 'views/admin/header.php';
 	adminnavmenu();
 
     $search = trim($_GET['search']);
@@ -40,19 +42,17 @@ if ($action == "sitelog") {
 	print("<input type='hidden' name='action' value='sitelog' />\n");
 	print(T_("SEARCH").": <input type='text' size='30' name='search' />\n");
 	print("<input type='submit' value='Search' />\n");
-	print("</center></form><br />\n");
-
-	echo $pagertop;
+	print("</center></form><br>\n");
 	?>
                            
     <form id='sitelog' action='<?php echo TTURL; ?>/admincp?action=sitelog&amp;do=del' method='post'>
-    <table border="0" cellpadding="0" cellspacing="0" width="100%" align="center" class="table_table">
+    <table class='table table-striped table-bordered table-hover'><thead>
     <tr>
         <th class="table_head"><input type="checkbox" name="checkall" onclick="checkAll(this.form.id)" /></th>
         <th class="table_head">Date</th>
         <th class="table_head">Time</th>
         <th class="table_head">Event</th>
-    </tr>
+    </tr></thead<tbody>
 
 	<?php
 	
@@ -65,11 +65,11 @@ if ($action == "sitelog") {
 		$time = substr($arr['added'], strpos($arr['added'], " ") + 1);
 		print("<tr><td class='table_col2' align='center'><input type='checkbox' name='del[]' value='$arr[id]' /></td><td class='table_col1' align='center'>$date</td><td class='table_col2' align='center'>$time</td><td class='table_col1' align='left'>".stripslashes($arr["txt"])."</td><!--<td class='table_col2'><a href='staffcp.php?act=view_log&amp;do=del_log&amp;lid=$arr[id]' title='delete this entry'>delete</a></td>--></tr>\n");
 	 }
-	echo "<tr><td class='table_head' align='center' colspan='4'>\n";
-	echo "<input type='submit' value='Delete Checked' /> <input type='submit' value='Delete All' name='delall' /></td></tr></table></form>";
+	echo '</tbody></table>';
+	echo "<input type='submit' value='Delete Checked' /> <input type='submit' value='Delete All' name='delall' /></form>";
 
 	print($pagerbottom);
 
 	end_frame();
-	stdfoot();
+	require 'views/admin/footer.php';
 }

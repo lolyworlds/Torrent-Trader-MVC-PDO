@@ -30,7 +30,8 @@ if ($action == "invited")
                                                                      
     $res = DB::run("SELECT u.id, u.username, u.email, u.added, u.last_access, u.class, u.invited_by, i.username as inviter FROM users u LEFT JOIN users i ON u.invited_by = i.id WHERE u.status = 'confirmed' AND u.invited_by != '0' ORDER BY u.added DESC $limit");
     
-    stdhead("Invited Users");
+    $title = T_("Invited Users");
+    require 'views/admin/header.php';
     adminnavmenu();
                     
     begin_frame("Invited Users");
@@ -80,5 +81,5 @@ if ($action == "invited")
     if ($count > 25) echo $pagerbottom;
     
     end_frame();
-    stdfoot(); 
+    require 'views/admin/footer.php'; 
 }

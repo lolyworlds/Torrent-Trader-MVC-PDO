@@ -1,7 +1,8 @@
 <?php
 
 if ($action == "cheats") {
-	stdhead("Possible Cheater Detection");
+	$title = "Possible Cheater Detection";
+	require 'views/admin/header.php';
 	adminnavmenu();
 
     $megabts = (int) $_POST['megabts'];
@@ -107,5 +108,5 @@ if ($action == "cheats") {
 		</form></center><?php
 	end_frame();
 	}
-	stdfoot();
+	require 'views/admin/footer.php';
 }

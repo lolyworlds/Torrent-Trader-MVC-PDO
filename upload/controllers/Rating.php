@@ -21,7 +21,6 @@ class Rating extends Controller
         $res = DB::run("SELECT torrents.anon, torrents.seeders, torrents.banned, torrents.leechers, torrents.info_hash, torrents.filename, torrents.nfo, torrents.last_action, torrents.numratings, torrents.name, torrents.owner, torrents.save_as, torrents.descr, torrents.visible, torrents.size, torrents.added, torrents.views, torrents.hits, torrents.times_completed, torrents.id, torrents.type, torrents.external, torrents.image1, torrents.image2, torrents.announce, torrents.numfiles, torrents.freeleech, IF(torrents.numratings < 2, NULL, ROUND(torrents.ratingsum / torrents.numratings, 1)) AS rating, torrents.numratings, categories.name AS cat_name, torrentlang.name AS lang_name, torrentlang.image AS lang_image, categories.parent_cat as cat_parent, users.username, users.privacy FROM torrents LEFT JOIN categories ON torrents.category = categories.id LEFT JOIN torrentlang ON torrents.torrentlang = torrentlang.id LEFT JOIN users ON torrents.owner = users.id WHERE torrents.id = $id");
         $row = $res->fetch(PDO::FETCH_ASSOC);
         
-        
         //take rating
         if ($_GET["takerating"] == 'yes') {
             $rating = (int) $_POST['rating'];
@@ -46,19 +45,24 @@ class Rating extends Controller
         }
 
         
+        
+$xres = DB::run("SELECT rating, added FROM ratings WHERE torrent = $id AND user = " . $CURUSER["id"]);
+$xrow = $xres->fetch(PDO::FETCH_ASSOC);
         stdhead(T_("Torrents"));
         begin_frame(T_("Torrents"));
       // $srating IS RATING VARIABLE
       $srating = "";
-      $srating .= "<table class='f-border' cellspacing=\"1\" cellpadding=\"4\" width='100%'><tr><td class='f-title' width='60'><b>" . T_("RATINGS") . ":</b></td><td class='f-title' valign='middle'>";
-      if (!isset($row["rating"])) {
-          $srating .= "Not Yet Rated";
+      $srating .= "<table class='f-border' cellspacing=\"1\" cellpadding=\"4\" width='100%'>
+      <tr><th><b>" . T_("RATINGS") . ":</b></th></tr>
+      <tr><td class='f-title' valign='middle'>";
+      if (!isset($xrow["rating"])) {
+          $srating .= "Not Yet Rated<br>";
       } else {
-          $rpic = ratingpic($row["rating"]);
+          $rpic = ratingpic($xrow["rating"]);
           if (!isset($rpic)) {
               $srating .= "invalid?";
           } else {
-              $srating .= "$rpic (" . $row["rating"] . " " . T_("OUT_OF") . " 5) " . $row["numratings"] . " " . T_("USERS_HAVE_RATED");
+              $srating .= "$rpic (" . $xrow["rating"] . " " . T_("OUT_OF") . " 5) " . $xrow["numratings"] . " " . T_("USERS_HAVE_RATED");
           }
 
       }
@@ -98,11 +102,6 @@ class Rating extends Controller
       //END DEFINE RATING VARIABLE
 
       echo "<br />";
-
-
-
-
-      echo "<br /><br />";
         end_frame();
 
         stdfoot();

@@ -1,6 +1,7 @@
 <?php
 if ($action == "prune") {
-    stdhead(T_("_BLC_MAN_"));
+    $title = T_("_BLC_MAN_");
+	require 'views/admin/header.php';
     adminnavmenu();
     begin_frame(T_("BLC_VIEW"));
 
@@ -16,5 +17,5 @@ if ($action == "prune") {
     $TTCache->Delete("usersonline_block");
     echo 'success';
     end_frame();
-    stdfoot();
+    require 'views/admin/footer.php';
 }

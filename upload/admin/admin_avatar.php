@@ -1,7 +1,8 @@
 <?php
 
 if ($action=="avatars"){
-	stdhead("Avatar Log");
+	$title = "Avatar Log";
+	require 'views/admin/header.php';
 	adminnavmenu();
 
 	begin_frame("Avatar Log");
@@ -35,5 +36,5 @@ if ($action=="avatars"){
 	<?php
 	echo ($pagerbottom);
 	end_frame();
-	stdfoot();
+	require 'views/admin/footer.php';
 }

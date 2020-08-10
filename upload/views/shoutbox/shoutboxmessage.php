@@ -17,7 +17,7 @@ while ($row = $result->fetch(PDO::FETCH_LAZY)) {
     }
 
     // below shouts
-    echo '<td style="font-size: 12px; width: 70px;">';
+    echo '<td style="font-size: 12px; width: 11%;">';
     // date, time, delete, user part
     echo "<div align='left' style='float: left'>";
     echo date('jS M,  g:ia', utc_to_tz_time($row['date']));
@@ -38,6 +38,7 @@ while ($row = $result->fetch(PDO::FETCH_LAZY)) {
     if ($CURUSER['class'] > $site_config['Uploader']) {
         echo "&nbsp<a href='" . $site_config['SITEURL'] . "/shoutbox?delete=" . $row['msgid'] . "' style='font-size: 12px'>[D]</a>";
         echo "&nbsp<a href='" . $site_config['SITEURL'] . "/shoutbox?edit=" . $row['msgid'] . "' style='font-size: 12px'>[E]</a>";
+        echo "&nbsp<a href='" . $site_config['SITEURL'] . "/shoutbox?reply=" . $row['msgid'] . "' style='font-size: 12px'>[R]</a>";
     }
     echo "</div>";
     

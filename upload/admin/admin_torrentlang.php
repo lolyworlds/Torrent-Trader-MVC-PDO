@@ -1,15 +1,16 @@
 <?php
 
 if ($action=="torrentlangs" && $do=="view"){
-	stdhead(T_("TORRENT_LANGUAGES"));
+	$title = T_("TORRENT_LANGUAGES");
+    require 'views/admin/header.php';
 	adminnavmenu();
 	begin_frame(T_("TORRENT_LANGUAGES"));
-	echo "<center><a href='$site_config[SITEURL]/admincp?action=torrentlangs&amp;do=add'><b>Add New Language</b></a></center><br />";
+	echo "<center><a href='$site_config[SITEURL]/admincp?action=torrentlangs&amp;do=add'><b>Add New Language</b></a></center>";
 
-	print("<i>Please note that language image is optional</i><br /><br />");
+	print("<i>Please note that language image is optional</i><br />");
 
-	echo("<center><table width='650' class='table_table'><tr>");
-	echo("<th width='10' class='table_head'><b>Sort</b></th><th class='table_head'><b>".T_("NAME")."</b></th><th class='table_head'><b>Image</b></th><th width='30' class='table_head'></th></tr>");
+	echo("<center><table class='table table-striped table-bordered table-hover'><thead><tr>");
+	echo("<th width='10' class='table_head'><b>Sort</b></th><th class='table_head'><b>".T_("NAME")."</b></th><th class='table_head'><b>Image</b></th><th width='30' class='table_head'></th></tr></thead><tbody>");
 	$sql = DB::run("SELECT * FROM torrentlang ORDER BY sort_index ASC");
 	while ($row = $sql->fetch(PDO::FETCH_LAZY)) {
 		$id = $row['id'];
@@ -23,14 +24,15 @@ if ($action=="torrentlangs" && $do=="view"){
 			print("-");	
 		print("</td><td class='table_col1'><a href='$site_config[SITEURL]/admincp?action=torrentlangs&amp;do=edit&amp;id=$id'>[EDIT]</a> <a href='$site_config[SITEURL]/admincp?action=torrentlangs&amp;do=delete&amp;id=$id'>[DELETE]</a></td></tr>");
 	}
-	echo("</table></center>");
+	echo("</tbody></table></center>");
 	end_frame();
-	stdfoot();
+	require 'views/admin/footer.php';
 }
 
 
 if ($action=="torrentlangs" && $do=="edit"){
-	stdhead(T_("TORRENT_LANG_MANAGEMENT"));
+	$title = T_("TORRENT_LANGUAGES");
+    require 'views/admin/header.php';
 	adminnavmenu();
 
 	$id = (int)$_GET["id"];
@@ -74,11 +76,12 @@ if ($action=="torrentlangs" && $do=="edit"){
 		print("</form>\n");
         end_frame();
 	}
-	stdfoot();
+	require 'views/admin/footer.php';
 }
 
 if ($action=="torrentlangs" && $do=="delete"){
-	stdhead(T_("TORRENT_LANG_MANAGEMENT"));
+	$title = T_("TORRENT_LANGUAGES");
+    require 'views/admin/header.php';
 	adminnavmenu();
 
 	$id = (int)$_GET["id"];
@@ -106,7 +109,7 @@ if ($action=="torrentlangs" && $do=="delete"){
 		print("</form>\n");
 	}
 	end_frame();
-	stdfoot();
+	require 'views/admin/footer.php';
 }
 
 if ($action=="torrentlangs" && $do=="takeadd"){
@@ -130,7 +133,8 @@ if ($action=="torrentlangs" && $do=="takeadd"){
 }
 
 if ($action=="torrentlangs" && $do=="add"){
-	stdhead(T_("TORRENT_LANG_MANAGEMENT"));
+	$title = T_("TORRENT_LANGUAGES");
+    require 'views/admin/header.php';
 	adminnavmenu();
 
 	begin_frame("Add Language");
@@ -148,5 +152,5 @@ if ($action=="torrentlangs" && $do=="add"){
 
 	print("</table></form><br /><br /></center>\n");
 	end_frame();
-	stdfoot();
+	require 'views/admin/footer.php';
 }

@@ -1,4 +1,6 @@
 <?php
+
+
 // Function that calculates the Hours Minutes Seconds of a Timestamp
 function mkprettytime($s)
 {

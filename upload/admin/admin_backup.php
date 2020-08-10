@@ -9,7 +9,8 @@ if ($action=="backups" && $do=="delete"){
 //   if (!unlink('backups/'.$filename.'.gz')) { $delete_error = true; }
    header("Refresh: 3 ;url=".TTURL."/admincp?action=backups");
 //   end_frame();
-stdhead();
+	$title = "Back up";
+	require 'views/admin/header.php';
 show_error_msg(T_("SUCCESS"), "Selected Backup Files deleted", 0);
     if ($delete_error) {
           echo("<br><center><b>Has encountered a problem during the deletion</b></center><br><br><br>");
@@ -17,10 +18,11 @@ show_error_msg(T_("SUCCESS"), "Selected Backup Files deleted", 0);
           echo("<br><center><b>$filename<br><br><br>DELETED !!!</b></center><br><br><br>");
    }
           echo("<center>You'll be redirected in about 3 secs. If not, click <a href='/admincp?action=backups'>here</a></center>");
-   stdfoot();
+   require 'views/admin/footer.php';
 }
 if ($action=="backups"){
-  stdhead("Backups");
+	$title = "Back ups";
+	require 'views/admin/header.php';
   adminnavmenu();
   begin_frame("Backups");
   $Namebk = array();
@@ -70,5 +72,5 @@ if ($action=="backups"){
   // CREATE BACKUP LINK
   echo ("<br><br><center><a href='".$site_config['SITEURL']."/backupdatabase'>Backup Database</a> (or create a CRON task on ".$site_config["SITEURL"]."/backupdatabase)</center>");
   end_frame();
-  stdfoot();
+  require 'views/admin/footer.php';
 }

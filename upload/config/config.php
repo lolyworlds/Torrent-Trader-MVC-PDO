@@ -158,5 +158,7 @@ $site_config['Moderator'] = "5";
 $site_config['SuperModerator'] = "6";
 $site_config['Administrator'] = "7";
 
-// FORUM POST ON INDEX
+// FORUM POST ON INDEX & Hidden Replys
 $site_config['FORUMONINDEX'] = true;
+$site_config['hideforum'] = 2; // Hide replys until after member replys
+?>

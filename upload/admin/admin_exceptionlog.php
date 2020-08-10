@@ -20,8 +20,8 @@
       list($pagertop, $pagerbottom, $limit) = pager(25, $count, '/admincp?action=sqlerr&amp;');
       
       $res = DB::run("SELECT * FROM `sqlerr` ORDER BY `time` DESC $limit");
-      
-      stdhead('SQL Error');
+      	$title = T_("SQL Error");
+    require 'views/admin/header.php';
       adminnavmenu();
       
       begin_frame('SQL Error');
@@ -57,5 +57,5 @@
       if ($count > 25) echo($pagerbottom);
       
       end_frame();
-      stdfoot();
+      require 'views/admin/footer.php';
   }

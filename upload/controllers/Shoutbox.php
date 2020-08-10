@@ -17,6 +17,7 @@ class Shoutbox extends Controller
         $delete = isset($_GET['delete']) ? $_GET['delete'] : null;
         $edit = isset($_GET['edit']) ? $_GET['edit'] : null;
         $staff = isset($_GET['staff']) ? $_GET['staff'] : null;
+        $reply = isset($_GET['reply']) ? $_GET['reply'] : null;
 
         // Get theme & language
         if ($CURUSER) {
@@ -67,11 +68,21 @@ class Shoutbox extends Controller
             stdfoot();
 
         } elseif (isset($edit)) {
-            if ($CURUSER['class'] > $site_config['Uploader']) {
+            if ($CURUSER['class'] < $site_config['Uploader']) {
                 autolink(TTURL."/index", T_("You dont have permission"));
             }
             require 'views/shoutbox/shoutboxheader.php';
+            require 'views/shoutbox/shoutboxmessage.php';
             require 'views/shoutbox/shoutboxedit.php';
+            require 'views/shoutbox/shoutboxfooter.php';
+
+        } elseif (isset($reply)) {
+            if (!$CURUSER) {
+                autolink(TTURL."/index", T_("You dont have permission"));
+            }
+            require 'views/shoutbox/shoutboxheader.php';
+            require 'views/shoutbox/shoutboxmessage.php';
+            require 'views/shoutbox/shoutboxreply.php';
             require 'views/shoutbox/shoutboxfooter.php';
 
         } elseif (isset($staff)) {

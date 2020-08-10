@@ -50,7 +50,8 @@ if ($action == "users")
                                                                      
     $res = DB::run("SELECT id, username, class, email, ip, added, last_access FROM users WHERE enabled = 'yes' AND status = 'confirmed' $where ORDER BY username DESC $limit");
     
-    stdhead(T_("USERS_SEARCH_SIMPLE"));
+    $title = T_("USERS_SEARCH_SIMPLE");
+    require 'views/admin/header.php';
     adminnavmenu();
     
     begin_frame(T_("USERS_SEARCH_SIMPLE"));
@@ -70,10 +71,10 @@ if ($action == "users")
     </center>
 
     <?php if ($count > 0): ?>
-    <br />
     <form id="usersearch" method="post" action="/admincp?action=users">
     <input type="hidden" name="do" value="del" />
-    <table border="0" cellpadding="3" cellspacing="0" width="100%" align="center" class="table_table">
+    <table class='table table-striped table-bordered table-hover'><thead>
+    <thead>
     <tr>
         <th class="table_head">Username</th>
         <th class="table_head"><?php echo T_("CLASS");?></th>
@@ -82,7 +83,7 @@ if ($action == "users")
         <th class="table_head">Added</th>
         <th class="table_head">Last Visited</th>  
         <th class="table_head"><input type="checkbox" name="checkall" onclick="checkAll(this.form.id);" /></th>
-    </tr>
+    </tr></thead><tbody>
     <?php while ($row = $res->fetch(PDO::FETCH_ASSOC)): ?>
     <tr>
         <td class="table_col1" align="center"><a href="<?php echo TTURL; ?>/users/profile?id=<?php echo $row["id"]; ?>"><?php echo class_user_colour($row["username"]); ?></a></td>
@@ -94,13 +95,9 @@ if ($action == "users")
         <td class="table_col1" align="center"><input type="checkbox" name="users[]" value="<?php echo $row["id"]; ?>" /></td>
     </tr>
     <?php endwhile; ?>
-    <tr>
-        <td class="table_head" colspan="7" align="center">
+    </tbody></table>  
         <input type="submit" name="inc" value="Delete (inc. torrents)" />
-        <input type="submit" value="Delete" />
-        </td>
-    </tr>
-    </table>         
+        <input type="submit" value="Delete" />       
     </form>
     <?php 
     endif;
@@ -108,5 +105,5 @@ if ($action == "users")
     if ($count > 25) echo $pagerbottom;
     
     end_frame();
-    stdfoot(); 
+    require 'views/admin/footer.php'; 
 }

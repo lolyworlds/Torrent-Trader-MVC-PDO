@@ -182,13 +182,13 @@ function insert_compose_frame($id, $newtopic = true)
     if ($newtopic) {
         print("<tr><td align='center'>");
         textbbcode("Form", "body");
-        print("</td></tr><tr><td align='center'><br /><button type='submit' class='btn btn-sm btn-primary'>" . T_("SUBMIT") . "</button><br /><br /></td></tr></table>
+        print("</td></tr><tr><td align='center'><br /><button type='submit' class='btn btn-sm btn-primary'>" . T_("SUBMIT") . "</button></td></tr></table>
 			");
 
     }
-    print("<br /></center>");
+    print("</center>");
     print("</form>\n");
-    print("</div><br />");
+    print("</div>");
     #end_frame();
 
     insert_quick_jump_menu();

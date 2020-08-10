@@ -1,7 +1,8 @@
 <?php
 
 if ($action=="peers"){
-	stdhead("Peers List");
+	$title = T_("Peers List");
+    require 'views/admin/header.php';
 	adminnavmenu();
 
 	begin_frame("Peers List");
@@ -83,5 +84,5 @@ if ($action=="peers"){
 		print'<center><b>No Peers</b></center><br />';
 	}
 	end_frame();
-	stdfoot();
+	require 'views/admin/footer.php';
 }

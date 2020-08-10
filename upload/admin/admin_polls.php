@@ -1,30 +1,33 @@
 <?php
 
 if ($action=="polls" && $do=="view"){
-	stdhead(T_("POLLS_MANAGEMENT"));
+	$title = T_("POLLS_MANAGEMENT");
+    require 'views/admin/header.php';
 	adminnavmenu();
 	begin_frame(T_("POLLS_MANAGEMENT"));
 
-	echo "<center><a href='$site_config[SITEURL]/admincp?action=polls&amp;do=add'>Add New Poll</a>";
+	echo "<center><a href='$site_config[SITEURL]/admincp?action=polls&amp;do=add'>Add New Poll</a>&nbsp;/&nbsp;";
+	
 	echo "<a href='$site_config[SITEURL]/admincp?action=polls&amp;do=results'>View Poll Results</a></center>";
 
-	echo "<br /><br /><b>Polls</b> (Top poll is current)<br />";
+	echo "<b>Polls</b> (Top poll is current)<br />";
 
 	$query = DB::run("SELECT id,question,added FROM polls ORDER BY added DESC");
-
+	echo "<div class='border border-warning'>";
 	while($row = $query->fetch(PDO::FETCH_ASSOC)){
 		echo "<a href='$site_config[SITEURL]/admincp?action=polls&amp;do=add&amp;subact=edit&amp;pollid=$row[id]'>".stripslashes($row["question"])."</a> - ".utc_to_tz($row['added'])." - <a href='$site_config[SITEURL]/admincp?action=polls&amp;do=delete&amp;id=$row[id]'>Delete</a><br />\n\n";
 	}
-
+    echo '</div>';
 	end_frame();
 
-	stdfoot();
+	require 'views/admin/footer.php';
 }
 
 
 /////////////
 if ($action=="polls" && $do=="results"){
-	stdhead("Polls");
+	$title = T_("POLLS_MANAGEMENT");
+    require 'views/admin/header.php';
 	adminnavmenu();
 	begin_frame("Results");
 	echo "<table class=\"table_table\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\" width=\"95%\">";
@@ -62,7 +65,7 @@ if ($action=="polls" && $do=="results"){
 
 	echo '</table>';
 	end_frame();
-	stdfoot();
+	require 'views/admin/footer.php';
 }
 
 
@@ -79,7 +82,8 @@ if ($action=="polls" && $do=="delete"){
 }
 
 if ($action=="polls" && $do=="add"){
-	stdhead("Polls");
+	$title = T_("POLLS_MANAGEMENT");
+    require 'views/admin/header.php';
 	adminnavmenu();
 
 	$pollid = (int)$_GET["pollid"];
@@ -104,16 +108,6 @@ if ($action=="polls" && $do=="add"){
     <tr><td class="table_col1">Option 8</td><td class="table_col2" align="left"><input name="option7" size="60" maxlength="40" value="<?php echo $poll['option7']; ?>" /><br /></td></tr>
     <tr><td class="table_col1">Option 9</td><td class="table_col2" align="left"><input name="option8" size="60" maxlength="40" value="<?php echo $poll['option8']; ?>" /><br /></td></tr>
     <tr><td class="table_col1">Option 10</td><td class="table_col2" align="left"><input name="option9" size="60" maxlength="40" value="<?php echo $poll['option9']; ?>" /><br /></td></tr>
-    <tr><td class="table_col1">Option 11</td><td class="table_col2" align="left"><input name="option10" size="60" maxlength="40" value="<?php echo $poll['option10']; ?>" /><br /></td></tr>
-    <tr><td class="table_col1">Option 12</td><td class="table_col2" align="left"><input name="option11" size="60" maxlength="40" value="<?php echo $poll['option11']; ?>" /><br /></td></tr>
-    <tr><td class="table_col1">Option 13</td><td class="table_col2" align="left"><input name="option12" size="60" maxlength="40" value="<?php echo $poll['option12']; ?>" /><br /></td></tr>
-    <tr><td class="table_col1">Option 14</td><td class="table_col2" align="left"><input name="option13" size="60" maxlength="40" value="<?php echo $poll['option13']; ?>" /><br /></td></tr>
-    <tr><td class="table_col1">Option 15</td><td class="table_col2" align="left"><input name="option14" size="60" maxlength="40" value="<?php echo $poll['option14']; ?>" /><br /></td></tr>
-    <tr><td class="table_col1">Option 16</td><td class="table_col2" align="left"><input name="option15" size="60" maxlength="40" value="<?php echo $poll['option15']; ?>" /><br /></td></tr>
-    <tr><td class="table_col1">Option 17</td><td class="table_col2" align="left"><input name="option16" size="60" maxlength="40" value="<?php echo $poll['option16']; ?>" /><br /></td></tr>
-    <tr><td class="table_col1">Option 18</td><td class="table_col2" align="left"><input name="option17" size="60" maxlength="40" value="<?php echo $poll['option17']; ?>" /><br /></td></tr>
-    <tr><td class="table_col1">Option 19</td><td class="table_col2" align="left"><input name="option18" size="60" maxlength="40" value="<?php echo $poll['option18']; ?>" /><br /></td></tr>
-    <tr><td class="table_col1">Option 20</td class="table_col2"><td class="table_col2" align="left"><input name="option19" size="60" maxlength="40" value="<?php echo $poll['option19']; ?>" /><br /></td></tr>
     <tr><td class="table_col1">Sort</td><td class="table_col2">
     <input type="radio" name="sort" value="yes" <?php echo $poll["sort"] != "no" ? " checked='checked'" : "" ?> />Yes
     <input type="radio" name="sort" value="no" <?php echo $poll["sort"] == "no" ? " checked='checked'" : "" ?> /> No
@@ -126,7 +120,7 @@ if ($action=="polls" && $do=="add"){
     </form>
 	<?php
 	end_frame();
-	stdfoot();
+	require 'views/admin/footer.php';
 }
 
 if ($action=="polls" && $do=="save"){
@@ -146,15 +140,6 @@ if ($action=="polls" && $do=="save"){
 	$option8 = $_POST["option8"];
 	$option9 = $_POST["option9"];
 	$option10 = $_POST["option10"];
-	$option11 = $_POST["option11"];
-	$option12 = $_POST["option12"];
-	$option13 = $_POST["option13"];
-	$option14 = $_POST["option14"];
-	$option15 = $_POST["option15"];
-	$option16 = $_POST["option16"];
-	$option17 = $_POST["option17"];
-	$option18 = $_POST["option18"];
-	$option19 = $_POST["option19"];
 	$sort = (int)$_POST["sort"];
 
 	if (!$question || !$option0 || !$option1)
@@ -166,55 +151,27 @@ if ($action=="polls" && $do=="save"){
 			show_error_msg(T_("ERROR"),T_("INVALID_ID"),1);
 
 		DB::run("UPDATE polls SET " .
-		"question = " . sqlesc($question) . ", " .
-		"option0 = " . sqlesc($option0) . ", " .
-		"option1 = " . sqlesc($option1) . ", " .
-		"option2 = " . sqlesc($option2) . ", " .
-		"option3 = " . sqlesc($option3) . ", " .
-		"option4 = " . sqlesc($option4) . ", " .
-		"option5 = " . sqlesc($option5) . ", " .
-		"option6 = " . sqlesc($option6) . ", " .
-		"option7 = " . sqlesc($option7) . ", " .
-		"option8 = " . sqlesc($option8) . ", " .
-		"option9 = " . sqlesc($option9) . ", " .
-		"option10 = " . sqlesc($option10) . ", " .
-		"option11 = " . sqlesc($option11) . ", " .
-		"option12 = " . sqlesc($option12) . ", " .
-		"option13 = " . sqlesc($option13) . ", " .
-		"option14 = " . sqlesc($option14) . ", " .
-		"option15 = " . sqlesc($option15) . ", " .
-		"option16 = " . sqlesc($option16) . ", " .
-		"option17 = " . sqlesc($option17) . ", " .
-		"option18 = " . sqlesc($option18) . ", " .
-		"option19 = " . sqlesc($option19) . ", " .
-		"sort = " . sqlesc($sort) . " " .
-    "WHERE id = $pollid");
+		"question = ?, " .
+		"option0 = ?, " .
+		"option1 = ?, " .
+		"option2 = ?, " .
+		"option3 = ?, " .
+		"option4 = ?, " .
+		"option5 = ?, " .
+		"option6 = ?, " .
+		"option7 = ?, " .
+		"option8 = ?, " .
+		"option9 = ?, " .
+		"option10 =?, " .
+		"sort =? " .
+	"WHERE id = $pollid", [$question, $option0, $option1, $option2, $option3, $option4, $option5,
+	$option6, $option7, $option8, $option9, $option10, $sort]);
 	}else{
-  	DB::run("INSERT INTO polls VALUES(0" .
-		", '" . get_date_time() . "'" .
-    ", " . sqlesc($question) .
-    ", " . sqlesc($option0) .
-    ", " . sqlesc($option1) .
-    ", " . sqlesc($option2) .
-    ", " . sqlesc($option3) .
-    ", " . sqlesc($option4) .
-    ", " . sqlesc($option5) .
-    ", " . sqlesc($option6) .
-    ", " . sqlesc($option7) .
-    ", " . sqlesc($option8) .
-    ", " . sqlesc($option9) .
- 		", " . sqlesc($option10) .
-		", " . sqlesc($option11) .
-		", " . sqlesc($option12) .
-		", " . sqlesc($option13) .
-		", " . sqlesc($option14) .
-		", " . sqlesc($option15) .
-		", " . sqlesc($option16) .
-		", " . sqlesc($option17) .
-		", " . sqlesc($option18) .
-		", " . sqlesc($option19) . 
-    ", " . sqlesc($sort) .
-  	")");
+		DB::run("INSERT INTO polls (added,question,option0,option1,option2,option3,option4,option5,
+		option6,option7,option8,option9,sort)
+		VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)", [get_date_time(), $question, $option0, $option1,
+		 $option2, $option3, $option4, $option5,
+	$option6, $option7, $option8, $option9, $sort]);
 	}
 
 	autolink(TTURL."/admincp?action=polls&do=view", T_("COMPLETE"));

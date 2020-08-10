@@ -1,15 +1,15 @@
 <?php
-/////////////////////// GROUPS MANAGEMENT ///////////////////////
 if ($action=="groups" && $do=="view"){
-	stdhead(T_("GROUPS_MANAGEMENT"));
+	$title = T_("GROUPS_MANAGEMENT");
+    require 'views/admin/header.php';
 	adminnavmenu();
 
 	begin_frame(T_("USER_GROUPS"));
 	
-    print("<center><a href='admincp?action=groups&amp;do=add'>".T_("GROUPS_ADD_NEW")."</a></center>\n");
+    print("<center><a href='admincp?action=groups&amp;do=add'>".T_("Add New Group")."</a></center>\n");
 
-	print("<br /><br />\n<table width=\"100%\" align=\"center\" border=\"0\" class=\"table_table\">\n");
-	print("<tr>\n");
+	print("<table class='table table-striped table-bordered table-hover'><thead>");
+	print("<tr>");
 	print("<th class='table_head'>".T_("NAME")."</th>\n");
 	print("<th class='table_head'>".T_("TORRENTS")."<br />".T_("GROUPS_VIEW_EDIT_DEL")."</th>\n");
 	print("<th class='table_head'>".T_("MEMBERS")."<br />".T_("GROUPS_VIEW_EDIT_DEL")."</th>\n");
@@ -22,7 +22,7 @@ if ($action=="groups" && $do=="view"){
     print("<th class='table_head'>".T_("CP_STAFF_PUBLIC")."</th>");
     print("<th class='table_head'>".T_("CP_STAFF_SORT")."</th>");
 	print("<th class='table_head'>".T_("DEL")."</th>\n");
-	print("</tr>\n");
+	print("</tr></thead><tbody>");
 
 	$getlevel=DB::run("SELECT * from groups ORDER BY group_id");
 	while ($level=$getlevel->fetch(PDO::FETCH_LAZY)) {
@@ -43,9 +43,9 @@ if ($action=="groups" && $do=="view"){
 		 print("</tr>\n");
 	}
 
-	print("</table><br /><br />");
+	print("</tbody></table><br /><br />");
 	end_frame();
-	stdfoot();
+	require 'views/admin/footer.php';
 }
 
 if ($action=="groups" && $do=="edit"){
@@ -56,7 +56,8 @@ if ($action=="groups" && $do=="edit"){
 
 	$level=$rlevel->fetch(PDO::FETCH_ASSOC);
 
-	stdhead(T_("GROUPS_MANAGEMENT"));
+	$title = T_("GROUPS_MANAGEMENT");
+    require 'views/admin/header.php';
 	adminnavmenu();
 
 
@@ -88,11 +89,12 @@ if ($action=="groups" && $do=="edit"){
 	print("\n<tr><td align=\"center\" ><input type=\"submit\" name=\"write\" value=\"Confirm\" /></td></tr>");
 	print("</table></form><br /><br />");
 	end_frame();
-	stdfoot();
+	require 'views/admin/footer.php';
 }
 
 if ($action=="groups" && $do=="update"){
-		stdhead(T_("GROUPS_MANAGEMENT"));
+	$title = T_("GROUPS_MANAGEMENT");
+    require 'views/admin/header.php';
 		adminnavmenu();
 
 		begin_frame(T_("_BTN_UPDT_"));
@@ -125,7 +127,7 @@ if ($action=="groups" && $do=="update"){
                  
 		autolink(TTURL."/admincp?action=groups&do=view", T_("SUCCESS"),"Groups Updated!");
 		end_frame();
-		stdfoot();	
+		require 'views/admin/footer.php';	
 }
 
 if ($action=="groups" && $do=="delete"){
@@ -140,7 +142,8 @@ if ($action=="groups" && $do=="delete"){
 
 
 if ($action=="groups" && $do=="add") {
-	stdhead(T_("GROUPS_MANAGEMENT"));
+	$title = T_("GROUPS_MANAGEMENT");
+    require 'views/admin/header.php';
 
 	adminnavmenu();
 
@@ -161,12 +164,13 @@ if ($action=="groups" && $do=="add") {
 	print("\n<tr><td align=\"center\" ><input type=\"submit\" name=\"confirm\" value=\"Confirm\" /></td></tr>");
 	print("</table></form><br /><br />");
 	end_frame();
-	stdfoot();	
+	require 'views/admin/footer.php';	
 }
 
 if ($action=="groups" && $do=="addnew") {
 	
-	stdhead(T_("GROUPS_MANAGEMENT"));
+	$title = T_("GROUPS_MANAGEMENT");
+    require 'views/admin/header.php';
 
 	adminnavmenu();
 
@@ -193,5 +197,5 @@ VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
 
 	autolink(TTURL."/admincp?action=groups&do=view", T_("SUCCESS"),"Groups Updated!");
 	end_frame();
-	stdfoot();	
+	require 'views/admin/footer.php';	
 }

@@ -29,13 +29,16 @@
 		//Layout		
         begin_frame(sprintf(T_("USER_DETAILS_FOR"), class_user_colour($user["username"])));
         ?>
-		<a href='<?php echo TTURL; ?>/users/profile?id=<?php echo $user["id"]; ?>'><button type="button" class="btn btn-sm btn-primary">Details</button></a>
-		<a href='<?php echo TTURL; ?>/peers/seeding?id=<?php echo $user["id"]; ?>'><button type="button" class="btn btn-sm btn-primary">Seeding</button></a>
-		<a href='<?php echo TTURL; ?>/peers/uploaded?id=<?php echo $user["id"]; ?>'><button type="button" class="btn btn-sm btn-primary">Uploaded</button></a>		
-		<?php if($CURUSER["edit_users"]=="yes"){ ?>
-		<a href='<?php echo TTURL; ?>/users/details?id=<?php echo $user["id"]; ?>'><button type="button" class="btn btn-sm btn-primary">Edit</button></a>
-		<a href='<?php echo TTURL; ?>/warning?id=<?php echo $user["id"]; ?>'><button type="button" class="btn btn-sm btn-primary">Warn</button></a>
-		<?php } ?>
+<a href='<?php echo TTURL; ?>/users/profile?id=<?php echo $id; ?>'><button type="button" class="btn btn-sm btn-primary">Profile</button></a>&nbsp;
+<a href='<?php echo TTURL; ?>/users/details?id=<?php echo $id; ?>'><button type="button" class="btn btn-sm btn-primary">Edit</button></a>&nbsp;
+<a href='<?php echo TTURL; ?>/users/email?id=<?php echo $id; ?>'><button type="button" class="btn btn-sm btn-primary">Email</button></a>&nbsp;
+<a href='<?php echo TTURL; ?>/users/preferences?id=<?php echo $id; ?>'><button type="button" class="btn btn-sm btn-primary">Preferences</button></a>&nbsp;
+<a href='<?php echo TTURL; ?>/users/other?id=<?php echo $id; ?>'><button type="button" class="btn btn-sm btn-primary">Other</button></a>&nbsp;
+<a href='<?php echo TTURL; ?>/peers/uploaded?id=<?php echo $user["id"]; ?>'><button type="button" class="btn btn-sm btn-primary">Uploaded</button></a>
+<?php if ($CURUSER['class'] > $site_config['Vip']) { ?>
+<a href='<?php echo TTURL; ?>/warning?id=<?php echo $user["id"]; ?>'><button type="button" class="btn btn-sm btn-primary">Warn</button></a>
+<a href='<?php echo TTURL; ?>/users/admin?id=<?php echo $id; ?>'><button type="button" class="btn btn-sm btn-success">Admin</button></a>&nbsp;
+<?php } ?>
 		<?php
         if ($user["privacy"] != "strong" || ($CURUSER["control_panel"] == "yes") || ($CURUSER["id"] == $user["id"])) {
 		
@@ -49,13 +52,13 @@
 			  $leeching = peerstable($res);
 		
 			if ($seeding)
-				print("<b>" .T_("CURRENTLY_SEEDING"). ":</b><br />$seeding<br /><br />");
+				print("<br><b>" .T_("CURRENTLY_SEEDING"). ":</b><br />$seeding<br /><br />");
 		
 			if ($leeching)
-				print("<b>" .T_("CURRENTLY_LEECHING"). ":</b><br />$leeching<br /><br />");
+				print("<br><b>" .T_("CURRENTLY_LEECHING"). ":</b><br />$leeching<br /><br />");
 		
 			if (!$leeching && !$seeding)
-				print("<b>".T_("NO_ACTIVE_TRANSFERS")."</b><br />");
+				print("<br><b>".T_("NO_ACTIVE_TRANSFERS")."</b><br />");
 		
 		}
 			echo "</div>"; // start id1
@@ -113,13 +116,16 @@
 		//Layout		
 		begin_frame(sprintf(T_("USER_DETAILS_FOR"), class_user_colour($user["username"])));
 		?>
-		<a href='<?php echo TTURL; ?>/users/profile?id=<?php echo $user["id"]; ?>'><button type="button" class="btn btn-sm btn-primary">Details</button></a>
-		<a href='<?php echo TTURL; ?>/peers/seeding?id=<?php echo $user["id"]; ?>'><button type="button" class="btn btn-sm btn-primary">Seeding</button></a>
-		<a href='<?php echo TTURL; ?>/peers/uploaded?id=<?php echo $user["id"]; ?>'><button type="button" class="btn btn-sm btn-primary">Uploaded</button></a>		
-		<?php if($CURUSER["edit_users"]=="yes"){ ?>
-		<a href='<?php echo TTURL; ?>/users/details?id=<?php echo $user["id"]; ?>'><button type="button" class="btn btn-sm btn-primary">Edit</button></a>
-		<a href='<?php echo TTURL; ?>/warning?id=<?php echo $user["id"]; ?>'><button type="button" class="btn btn-sm btn-primary">Warn</button></a>
-		<?php } ?>
+<a href='<?php echo TTURL; ?>/users/profile?id=<?php echo $id; ?>'><button type="button" class="btn btn-sm btn-primary">Profile</button></a>&nbsp;
+<a href='<?php echo TTURL; ?>/users/details?id=<?php echo $id; ?>'><button type="button" class="btn btn-sm btn-primary">Edit</button></a>&nbsp;
+<a href='<?php echo TTURL; ?>/users/email?id=<?php echo $id; ?>'><button type="button" class="btn btn-sm btn-primary">Email</button></a>&nbsp;
+<a href='<?php echo TTURL; ?>/users/preferences?id=<?php echo $id; ?>'><button type="button" class="btn btn-sm btn-primary">Preferences</button></a>&nbsp;
+<a href='<?php echo TTURL; ?>/users/other?id=<?php echo $id; ?>'><button type="button" class="btn btn-sm btn-primary">Other</button></a>&nbsp;
+<a href='<?php echo TTURL; ?>/peers/uploaded?id=<?php echo $user["id"]; ?>'><button type="button" class="btn btn-sm btn-primary">Uploaded</button></a>
+<?php if ($CURUSER['class'] > $site_config['Vip']) { ?>
+<a href='<?php echo TTURL; ?>/warning?id=<?php echo $user["id"]; ?>'><button type="button" class="btn btn-sm btn-primary">Warn</button></a>
+<a href='<?php echo TTURL; ?>/users/admin?id=<?php echo $id; ?>'><button type="button" class="btn btn-sm btn-success">Admin</button></a>&nbsp;
+<?php } ?>
 		<?php
         $page = (int) $_GET["page"];
         $perpage = 25;
@@ -188,7 +194,7 @@
 		} else {
 			?>
 
-				<table border="0" cellpadding="3" cellspacing="0" width="100%" class="table_table">
+<table class='table table-striped table-bordered table-hover'><thead>
 				<tr>
 					<th class="table_head"><?php echo T_("PORT"); ?></th>
 					<th class="table_head"><?php echo T_("UPLOADED"); ?></th>
@@ -200,7 +206,7 @@
 					<th class="table_head"><?php echo T_("CONNECTED_SHORT"); ?></th>
 					<th class="table_head"><?php echo T_("CLIENT"); ?></th>
 					<th class="table_head"><?php echo T_("USER_SHORT"); ?></th>
-				</tr>
+				</tr></thead><tbody>
 
 				<?php
 while ($row1 = $query->fetch(PDO::FETCH_ASSOC)) {
@@ -233,7 +239,7 @@ while ($row1 = $query->fetch(PDO::FETCH_ASSOC)) {
 				}
 
 			}
-			echo "</table>";
+			echo "</tbody></table>";
 		}
 	}
 

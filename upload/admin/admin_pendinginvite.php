@@ -30,7 +30,8 @@ if ($action == "pendinginvite")
                                                                      
     $res = DB::run("SELECT u.id, u.username, u.email, u.added, u.invited_by, i.username as inviter FROM users u LEFT JOIN users i ON u.invited_by = i.id WHERE u.status = 'pending' AND u.invited_by != '0' ORDER BY u.added DESC $limit");
     
-    stdhead("Invited Pending Users");
+	$title = T_("Invited Pending User");
+    require 'views/admin/header.php';
     adminnavmenu();
     
     begin_frame("Invited Pending Users");
@@ -44,14 +45,14 @@ if ($action == "pendinginvite")
     <br />
     <form id="pendinginvite" method="post" action="/admincp?action=pendinginvite">
     <input type="hidden" name="do" value="del" />
-    <table border="0" cellpadding="3" cellspacing="0" width="100%" align="center" class="table_table">
+    <table class='table table-striped table-bordered table-hover'><thead>
     <tr>
         <th class="table_head">Username</th>
         <th class="table_head">E-mail</th>
         <th class="table_head">Invited</th>
         <th class="table_head">Invited By</th>
         <th class="table_head"><input type="checkbox" name="checkall" onclick="checkAll(this.form.id);" /></th>
-    </tr>
+    </tr></thead><tbody>
     <?php while ($row = $res->fetch(PDO::FETCH_ASSOC)): ?>
     <tr>
         <td class="table_col1" align="center"><?php echo class_user_colour($row["username"]); ?></td>
@@ -66,7 +67,7 @@ if ($action == "pendinginvite")
         <input type="submit" value="Delete Checked" />
         </td>
     </tr>
-    </table>         
+    </tbody></table>         
     </form>
     <?php 
     endif;
@@ -74,5 +75,5 @@ if ($action == "pendinginvite")
     if ($count > 25) echo $pagerbottom;
     
     end_frame();
-    stdfoot(); 
+    require 'views/admin/footer.php'; 
 }

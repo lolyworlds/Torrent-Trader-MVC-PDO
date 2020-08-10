@@ -226,7 +226,6 @@
 			}
             require_once("views/torrent/torrentnavbar.php");
 			require_once "helpers/bbcode_helper.php";
-	
 ?>
 				<center>
 				<form name="comment" method="post" action="<?php echo TTURL; ?>/comments/torrent?id=<?php echo $id; ?>&amp;takecomment=yes">

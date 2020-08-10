@@ -9,7 +9,8 @@
       // warn on account details
       public function index()
       {
-		  
+        $action = $_REQUEST["action"];
+        $do = $_REQUEST["do"];		  
         dbconn();
 		global $site_config, $CURUSER;
 		loggedinonly();
