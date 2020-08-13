@@ -1,4 +1,16 @@
 
+CREATE TABLE `staffmessages` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `sender` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `added` datetime DEFAULT NULL,
+  `msg` text DEFAULT NULL,
+  `subject` varchar(100) NOT NULL DEFAULT '',
+  `answeredby` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `answered` tinyint(1) NOT NULL DEFAULT 0,
+  `answer` text DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
 CREATE TABLE `agents` (
   `agent_id` int(10) unsigned NOT NULL auto_increment,
   `agent_name` varchar(255) NOT NULL DEFAULT '',

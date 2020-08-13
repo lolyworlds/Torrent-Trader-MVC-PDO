@@ -19,5 +19,6 @@
     <li class="list-group-item"><a href="<?php echo TTURL; ?>/admincp?action=privacylevel"><img src="images/admin/privacy_level.png" border="0" width="20" height="20" alt="" />&nbsp;<b>Privacy Level</b></a></li>    
     <li class="list-group-item"><a href="<?php echo TTURL; ?>/admincp?action=pendinginvite"><img src="images/admin/pending_invited_user.png" border="0" width="20" height="20" alt="" />&nbsp;<b>Pending Invited Users</b></b></a></li>
     <li class="list-group-item"><a href="<?php echo TTURL; ?>/client"><img src="images/admin/client.png" border="0" width="20" height="20" alt="" />&nbsp;<b>Client Ban</b></b></a></li>
+    <li class="list-group-item"><a href="<?php echo TTURL; ?>/client"><img src="images/admin/staffmess.png" border="0" width="20" height="20" alt="" />&nbsp;<b>Staff Messages</b></b></a></li>
     </ul>
 </div>
