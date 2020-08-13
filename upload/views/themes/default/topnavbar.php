@@ -126,7 +126,7 @@ print("<font color=#fff><i>Connected:</i></font> ".$connectable.")");
 	  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Contact Us</a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
 		    <a class="dropdown-item" href="<?php echo TTURL; ?>/group/staff">Our Staff</a> 
-		    <a class="dropdown-item" href="<?php echo TTURL; ?>/contactstaff/staffbox"><?php echo T_("Contact Staff");?></a> 
+		    <a class="dropdown-item" href="<?php echo TTURL; ?>/contactstaff/contactstaff"><?php echo T_("Contact Staff");?></a> 
 		    <a class="dropdown-item" href="#"><?php echo T_("TWITTER");?></a>
 		    <a class="dropdown-item" href="#"><?php echo T_("FACEBOOK");?></a>
 		</div>
