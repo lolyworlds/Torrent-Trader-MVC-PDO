@@ -27,7 +27,7 @@ class Messages extends Controller
         $draft = $res->fetchColumn();
         $res = DB::run("SELECT COUNT(*) AS count FROM messages WHERE `sender` = " . $CURUSER["id"] . " AND `location` = 'template'");
         $template = $res->fetchColumn(); //Mysqli Result Need to change It
-        include 'views/message/usernavbar.php';
+        usermenu($CURUSER["id"]);
         include 'views/message/messagenavbar.php';
         echo("<center><div id='tablebox'><table class='table_mb' align='center' border='1' width='60%' cellspacing='5' cellpadding='5'></center>");
         echo('<tr><td class="table_head" align="center" colspan="2"><b><i>'.T_("OVERVIEW_INFO").'</i></b></td></tr>');

@@ -1,4 +1,4 @@
-<?php require_once "views/user/userheader.php"; ?>
+<?php usermenu($id); ?>
           <div class="row">
             <div class="col-sm-2">
             <ul class="list-group">

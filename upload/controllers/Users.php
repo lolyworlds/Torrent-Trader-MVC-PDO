@@ -619,13 +619,13 @@ autolink(TTURL."/users/profile?id=$id", T_("Email Edited"));
             $uc = $arr['class'];
         
             // skip if class is same as current
-            if ($uc != $class && $class > 0) {
-                if ($CURUSER["id"] == 2) { // todo
-                    show_error_msg(T_("EDITING_FAILED"), T_("YOU_CANT_DEMOTE_YOURSELF"),1);
-                } elseif ($uc >= get_user_class()) {
-                    show_error_msg(T_("EDITING_FAILED"), T_("YOU_CANT_DEMOTE_SOMEONE_SAME_LVL"),1);
+            //if ($uc != $class && $class > 0) {
+                if ($uc <= get_others_class($id)) { // todo
+                    show_error_msg(T_("EDITING_FAILED"), T_("11111111   YOU_CANT_DEMOTE_YOURSELF"),1);
+                } elseif ($uc <= get_others_class($id)) {
+                    show_error_msg(T_("EDITING_FAILED"), T_("222222   YOU_CANT_DEMOTE_SOMEONE_SAME_LVL"),1);
                 } else {
-                    DB::run("UPDATE users SET class=? WHERE id=?",[$class ,$CURUSER["id"]]);
+                    DB::run("UPDATE users SET class=? WHERE id=?",[$class , $id]);
                     // Notify user
                     $prodemoted = ($class > $uc ? "promoted" : "demoted");
                     $msg = "You have been $prodemoted to " . get_user_class_name($class) . " by " . $CURUSER["username"] . "";
@@ -634,7 +634,7 @@ autolink(TTURL."/users/profile?id=$id", T_("Email Edited"));
                   //  DB::run("INSERT INTO messages (sender, receiver, msg, added) VALUES(0, $CURUSER[id], $msg, $added)");
                          
                 }
-            }
+           // }
             //continue updates
         
         
@@ -700,7 +700,7 @@ $user = DB::run("SELECT * FROM users WHERE id=?", [$id])->fetch(PDO::FETCH_ASSOC
                         print("<tr><td>" . T_("CLASS") . ": </td><td align='left'><select name='class'>\n");
                         $maxclass = $CURUSER["class"] + 1;
                         for ($i = 1; $i < $maxclass; ++$i) {
-                            print("<option value='$i' " . ($CURUSER["class"] == $i ? " selected='selected'" : "") . ">$prefix" . get_user_class_name($i) . "\n");
+                            print("<option value='$i' " . ($user["class"] == $i ? " selected='selected'" : "") . ">$prefix" . get_user_class_name($i) . "\n");
                         }
         
                         print("</select></td></tr>\n");

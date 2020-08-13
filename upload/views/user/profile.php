@@ -1,6 +1,4 @@
-<a href='<?php echo TTURL; ?>/users/profile?id=<?php echo $user["id"]; ?>'><button type="button" class="btn btn-sm btn-primary">Profile</button></a>
-		<?php 
-
+<?php usermenu($id);
 			if ($user["privacy"] != "strong" || ($CURUSER["control_panel"] == "yes") || ($CURUSER["id"] == $user["id"])) {
 			?>
 			<table align="center" border="0" cellpadding="6" cellspacing="1" width="100%">

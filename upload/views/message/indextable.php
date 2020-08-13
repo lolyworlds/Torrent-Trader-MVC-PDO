@@ -1,5 +1,5 @@
 <?php
-            include 'views/message/usernavbar.php';
+            usermenu($CURUSER["id"]);
             include 'views/message/messagenavbar.php';
             ?>
             <form id='messages' method='post' action='<?php echo TTURL;?>/messages/inbox?do=del'>

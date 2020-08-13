@@ -1,5 +1,5 @@
 <?php
-       include 'views/message/usernavbar.php';
+       usermenu($CURUSER["id"]);
         include 'views/message/messagenavbar.php';
     ?><br>
     <div class='table'><table class='table table-striped'><thead>

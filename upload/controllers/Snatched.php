@@ -206,7 +206,8 @@ if ($tid > 0) {
 
 			if ( $uid == $CURUSER['id'] )
 			{
-usermenu();
+				usermenu($id);
+
 				print("<div style='margin-top:20px; margin-bottom:20px' align='center'><font size='2'>".T_("SNATCHED_MESSAGE")."</font></div>");
 			}
 			

@@ -1,5 +1,4 @@
-<?php
-			usermenu();
+<?php usermenu($id);
 			if ($user["privacy"] != "strong" || ($CURUSER["control_panel"] == "yes") || ($CURUSER["id"] == $user["id"])) {
 			?>
 			<table align="center" border="0" cellpadding="6" cellspacing="1" width="100%">

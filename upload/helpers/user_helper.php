@@ -76,6 +76,10 @@ function get_user_class()
 {
     return $GLOBALS["CURUSER"]["class"];
 }
+function get_others_class($user)
+{
+    return $user["class"];
+}
 
 // Function To List Groups Of Members Of The Database
 function classlist()

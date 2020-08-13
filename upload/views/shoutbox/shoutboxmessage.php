@@ -35,11 +35,18 @@ while ($row = $result->fetch(PDO::FETCH_LAZY)) {
     echo '</td><td>'.$av.'<a href="' . $site_config['SITEURL'] . '/users/profile?id=' . $row['userid'] . '" target="_parent"><b>' . class_user_colour($row['user']) . ':</b></a>&nbsp;&nbsp;' . nl2br(format_comment($row['message']));
     
     echo '<divclass="float-right">';
-    if ($CURUSER['class'] > $site_config['Uploader']) {
-        echo "&nbsp<a href='" . $site_config['SITEURL'] . "/shoutbox?delete=" . $row['msgid'] . "' style='font-size: 12px'>[D]</a>";
-        echo "&nbsp<a href='" . $site_config['SITEURL'] . "/shoutbox?edit=" . $row['msgid'] . "' style='font-size: 12px'>[E]</a>";
-        echo "&nbsp<a href='" . $site_config['SITEURL'] . "/shoutbox?reply=" . $row['msgid'] . "' style='font-size: 12px'>[R]</a>";
-    }
+        //echo "&nbsp<a href='" . $site_config['SITEURL'] . "/shoutbox?reply=" . $row['msgid'] . "' style='font-size: 12px'>[R]</a>";        
+        if ($CURUSER['class'] > $site_config['Uploader']) {
+            echo "&nbsp<a href='" . $site_config['SITEURL'] . "/shoutbox?edit=" . $row['msgid'] . "' style='font-size: 12px'>[E]</a>";
+            echo "&nbsp<a href='" . $site_config['SITEURL'] . "/shoutbox?delete=" . $row['msgid'] . "' style='font-size: 12px'>[D]</a>";
+        } elseif ($CURUSER['username'] == $row['user']) {
+            $now = gmtime();
+            $ts = strtotime($row["date"]);
+            if ($ts + 300 > $now){
+                echo "&nbsp<a href='" . $site_config['SITEURL'] . "/shoutbox?quickedit=" . $row['msgid'] . "' style='font-size: 12px'>[E]</a>";  
+            }           
+        }
+
     echo "</div>";
     
     echo '</td></tr>';

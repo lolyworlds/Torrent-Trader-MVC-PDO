@@ -93,23 +93,13 @@
 		begin_frame(sprintf(T_("USER_DETAILS_FOR"), class_user_colour($user["username"])));
 
 			if($CURUSER["edit_users"]=="yes"){
-				?>
-		<a href='<?php echo TTURL; ?>/users/profile?id=<?php echo $user["id"]; ?>'><button type="button" class="btn btn-sm btn-primary">Details</button></a>
-		<a href='<?php echo TTURL; ?>/peers/seeding?id=<?php echo $user["id"]; ?>'><button type="button" class="btn btn-sm btn-primary">Seeding</button></a>
-		<a href='<?php echo TTURL; ?>/peers/uploaded?id=<?php echo $user["id"]; ?>'><button type="button" class="btn btn-sm btn-primary">Uploaded</button></a>		
-		<?php if($CURUSER["edit_users"]=="yes"){ ?>
-		<a href='<?php echo TTURL; ?>/users/details?id=<?php echo $user["id"]; ?>'><button type="button" class="btn btn-sm btn-primary">Edit</button></a>
-		<a href='<?php echo TTURL; ?>/warning?id=<?php echo $user["id"]; ?>'><button type="button" class="btn btn-sm btn-primary">Warn</button></a>
-		<?php } ?>
-		<?php
-		
-			print '<a name="warnings"></a>';
+			usermenu($id);
 			
 			$res = DB::run("SELECT * FROM warnings WHERE userid=? ORDER BY id DESC", [$id]);
 		
 			if ($res->rowCount() > 0){
 				?>
-				<b>Warnings:</b><br />
+				<br><center><b>Warnings:</b></center><br />
 				<table border="1" cellpadding="3" cellspacing="0" width="80%" align="center" class="table_table">
 				<tr>
 					<th class="table_head">Added</th>
@@ -138,7 +128,7 @@
 		
 				echo "</table>\n";
 			}else{
-				echo T_("NO_WARNINGS");
+				echo '<br><br><center><b>'.T_("NO_WARNINGS").'</b><br><center>';
 			}
 		
 		

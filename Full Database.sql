@@ -1,3 +1,13 @@
+
+CREATE TABLE `agents` (
+  `agent_id` int(10) unsigned NOT NULL auto_increment,
+  `agent_name` varchar(255) NOT NULL DEFAULT '',
+  `hits` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `ins_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`agent_id`),
+  UNIQUE KEY `agent_name` (`agent_name`) USING HASH
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+
 create table sessions(
   id serial,
   sess_id text not null,

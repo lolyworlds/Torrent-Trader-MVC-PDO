@@ -18,6 +18,7 @@ class Shoutbox extends Controller
         $edit = isset($_GET['edit']) ? $_GET['edit'] : null;
         $staff = isset($_GET['staff']) ? $_GET['staff'] : null;
         $reply = isset($_GET['reply']) ? $_GET['reply'] : null;
+        $quickedit = isset($_GET['quickedit']) ? $_GET['quickedit'] : null;
 
         // Get theme & language
         if ($CURUSER) {
@@ -59,6 +60,8 @@ class Shoutbox extends Controller
             $qry = DB::run("INSERT INTO shoutbox (msgid, user, message, date, userid, staff) VALUES (?, ?, ?, ?, ?, ?)", [null, $CURUSER['username'], $update, get_date_time(), $CURUSER['id'], 1]);
         }
 
+
+
         // Set some conditions
         if (isset($history)) {
             stdhead();
@@ -74,6 +77,17 @@ class Shoutbox extends Controller
             require 'views/shoutbox/shoutboxheader.php';
             require 'views/shoutbox/shoutboxmessage.php';
             require 'views/shoutbox/shoutboxedit.php';
+            require 'views/shoutbox/shoutboxfooter.php';
+
+        } elseif (isset($quickedit)) {
+            $stmt = DB::run("SELECT user, date FROM shoutbox WHERE msgid=?", [$quickedit]);
+            while ($row = $stmt->fetch(PDO::FETCH_LAZY));
+            if ($CURUSER['username'] == $stmt->user) {
+                autolink(TTURL."/index", T_("You dont have permission"));
+            }
+            require 'views/shoutbox/shoutboxheader.php';
+            require 'views/shoutbox/shoutboxmessage.php';
+            require 'views/shoutbox/shoutboxquickedit.php';
             require 'views/shoutbox/shoutboxfooter.php';
 
         } elseif (isset($reply)) {

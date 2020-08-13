@@ -28,18 +28,7 @@
 			show_error_msg(T_("ERROR"), T_("NO_ACCESS_ACCOUNT_DISABLED"), 1);
 		//Layout		
         begin_frame(sprintf(T_("USER_DETAILS_FOR"), class_user_colour($user["username"])));
-        ?>
-<a href='<?php echo TTURL; ?>/users/profile?id=<?php echo $id; ?>'><button type="button" class="btn btn-sm btn-primary">Profile</button></a>&nbsp;
-<a href='<?php echo TTURL; ?>/users/details?id=<?php echo $id; ?>'><button type="button" class="btn btn-sm btn-primary">Edit</button></a>&nbsp;
-<a href='<?php echo TTURL; ?>/users/email?id=<?php echo $id; ?>'><button type="button" class="btn btn-sm btn-primary">Email</button></a>&nbsp;
-<a href='<?php echo TTURL; ?>/users/preferences?id=<?php echo $id; ?>'><button type="button" class="btn btn-sm btn-primary">Preferences</button></a>&nbsp;
-<a href='<?php echo TTURL; ?>/users/other?id=<?php echo $id; ?>'><button type="button" class="btn btn-sm btn-primary">Other</button></a>&nbsp;
-<a href='<?php echo TTURL; ?>/peers/uploaded?id=<?php echo $user["id"]; ?>'><button type="button" class="btn btn-sm btn-primary">Uploaded</button></a>
-<?php if ($CURUSER['class'] > $site_config['Vip']) { ?>
-<a href='<?php echo TTURL; ?>/warning?id=<?php echo $user["id"]; ?>'><button type="button" class="btn btn-sm btn-primary">Warn</button></a>
-<a href='<?php echo TTURL; ?>/users/admin?id=<?php echo $id; ?>'><button type="button" class="btn btn-sm btn-success">Admin</button></a>&nbsp;
-<?php } ?>
-		<?php
+        usermenu($id);
         if ($user["privacy"] != "strong" || ($CURUSER["control_panel"] == "yes") || ($CURUSER["id"] == $user["id"])) {
 		
 			$res = DB::run("SELECT torrent, uploaded, downloaded FROM peers WHERE userid =? AND seeder =?", [$id, 'yes']);
@@ -115,18 +104,7 @@
 			show_error_msg(T_("ERROR"), T_("NO_ACCESS_ACCOUNT_DISABLED"), 1);
 		//Layout		
 		begin_frame(sprintf(T_("USER_DETAILS_FOR"), class_user_colour($user["username"])));
-		?>
-<a href='<?php echo TTURL; ?>/users/profile?id=<?php echo $id; ?>'><button type="button" class="btn btn-sm btn-primary">Profile</button></a>&nbsp;
-<a href='<?php echo TTURL; ?>/users/details?id=<?php echo $id; ?>'><button type="button" class="btn btn-sm btn-primary">Edit</button></a>&nbsp;
-<a href='<?php echo TTURL; ?>/users/email?id=<?php echo $id; ?>'><button type="button" class="btn btn-sm btn-primary">Email</button></a>&nbsp;
-<a href='<?php echo TTURL; ?>/users/preferences?id=<?php echo $id; ?>'><button type="button" class="btn btn-sm btn-primary">Preferences</button></a>&nbsp;
-<a href='<?php echo TTURL; ?>/users/other?id=<?php echo $id; ?>'><button type="button" class="btn btn-sm btn-primary">Other</button></a>&nbsp;
-<a href='<?php echo TTURL; ?>/peers/uploaded?id=<?php echo $user["id"]; ?>'><button type="button" class="btn btn-sm btn-primary">Uploaded</button></a>
-<?php if ($CURUSER['class'] > $site_config['Vip']) { ?>
-<a href='<?php echo TTURL; ?>/warning?id=<?php echo $user["id"]; ?>'><button type="button" class="btn btn-sm btn-primary">Warn</button></a>
-<a href='<?php echo TTURL; ?>/users/admin?id=<?php echo $id; ?>'><button type="button" class="btn btn-sm btn-success">Admin</button></a>&nbsp;
-<?php } ?>
-		<?php
+		usermenu($id);
         $page = (int) $_GET["page"];
         $perpage = 25;
         $where = "";
@@ -149,7 +127,7 @@
             torrenttable($res);
             print($pagerbottom);
         }else {
-            print("<b>".T_("UPLOADED_TORRENTS_ERROR")."</b><br />");
+            print("<br><br><center><b>".T_("UPLOADED_TORRENTS_ERROR")."</b></center><br />");
         }
     
 

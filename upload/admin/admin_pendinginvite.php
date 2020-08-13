@@ -43,7 +43,7 @@ if ($action == "pendinginvite")
 
     <?php  if ($count > 0): ?>
     <br />
-    <form id="pendinginvite" method="post" action="/admincp?action=pendinginvite">
+    <form id="pendinginvite" method="post" action="admincp?action=pendinginvite">
     <input type="hidden" name="do" value="del" />
     <table class='table table-striped table-bordered table-hover'><thead>
     <tr>

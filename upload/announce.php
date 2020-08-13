@@ -157,8 +157,8 @@ if (!isset($event))
 
 $seeder = ($left == 0) ? "yes" : "no";
 
-//Agent Ban
-$agentarray = array_map("trim", explode(",", $site_config["BANNED_AGENTS"]));
+//Agent Ban Moved To DB
+$agentarray = DB::run("SELECT agent_name FROM agents")->fetchAll(PDO::FETCH_COLUMN);
 $useragent = substr($peer_id, 0, 8);
 foreach($agentarray as $bannedclient)
 if (@strpos($useragent, $bannedclient) !== false)
