@@ -1,6 +1,6 @@
 <?php
 if ($CURUSER) {
-begin_block($CURUSER["username"]);
+begin_block(class_user_colour($CURUSER["username"]));
 
 	$avatar = htmlspecialchars($CURUSER["avatar"]);
 	if (!$avatar)

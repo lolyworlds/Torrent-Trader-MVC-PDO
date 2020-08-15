@@ -781,7 +781,7 @@ CREATE TABLE `users` (
   `seedbonus` decimal(10,1) NOT NULL default '0',
   `vipuntil` datetime NOT NULL default '0000-00-00 00:00:00',
   `oldclass` int(10) unsigned NOT NULL default '0',
-  `shoutboxpos` char(3) NOT NULL default 'yes',
+  `shoutboxpos` char(3) NOT NULL default 'no',
   `downloadbanned` char(3) NOT NULL default 'no',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `username` (`username`),

@@ -574,8 +574,11 @@ end_frame();
                         $anon = "no";
                     }
                 
-                 $inames = '';
-                 $filecounts = (int)$filecount;
+                 // $inames = ''; 
+				 //$fixnullimage = var_dump($inames);
+				 //die($fixnullimage);
+				 
+                    $filecounts = (int)$filecount;
                     $ret = DB::run("INSERT INTO torrents (filename, owner, name, descr, image1, image2, category, added, info_hash, size, numfiles, save_as, announce, external, nfo, torrentlang, anon, last_action) 
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                     [$fname, $CURUSER['id'], $name, $descr, $inames[0], $inames[1], $catid, get_date_time(), $infohash, $torrentsize, $filecounts, $fname, $announce, $external, $nfo, $langid, $anon, get_date_time()]);
