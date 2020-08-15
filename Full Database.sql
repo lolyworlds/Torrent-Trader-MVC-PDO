@@ -1,3 +1,11 @@
+CREATE TABLE `iplog` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `ip` varchar(15) NOT NULL DEFAULT '',
+  `userid` int(10) UNSIGNED NOT NULL DEFAULT '0',
+  `added` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `lastused` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `timesused` int(10) NOT NULL DEFAULT '1'
+) ENGINE=MyISAM;
 
 CREATE TABLE `staffmessages` (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -9,7 +17,7 @@ CREATE TABLE `staffmessages` (
   `answered` tinyint(1) NOT NULL DEFAULT 0,
   `answer` text DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM;
 
 CREATE TABLE `agents` (
   `agent_id` int(10) unsigned NOT NULL auto_increment,
@@ -18,7 +26,7 @@ CREATE TABLE `agents` (
   `ins_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`agent_id`),
   UNIQUE KEY `agent_name` (`agent_name`) USING HASH
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM;
 
 create table sessions(
   id serial,
@@ -692,7 +700,7 @@ CREATE TABLE `torrents` (
   `save_as` varchar(255) NOT NULL default '',
   `descr` text NOT NULL,
   `image1` text NOT NULL,
-  `image2` text NOT NULL,
+  `image2` text default NULL,
   `category` int(10) unsigned NOT NULL default '0',
   `size` bigint(20) unsigned NOT NULL default '0',
   `added` datetime NOT NULL default '0000-00-00 00:00:00',
@@ -773,6 +781,8 @@ CREATE TABLE `users` (
   `seedbonus` decimal(10,1) NOT NULL default '0',
   `vipuntil` datetime NOT NULL default '0000-00-00 00:00:00',
   `oldclass` int(10) unsigned NOT NULL default '0',
+  `shoutboxpos` char(3) NOT NULL default 'yes',
+  `downloadbanned` char(3) NOT NULL default 'no',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `username` (`username`),
   KEY `status_added` (`status`,`added`),
