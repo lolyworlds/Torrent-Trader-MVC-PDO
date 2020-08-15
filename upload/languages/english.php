@@ -1106,4 +1106,7 @@ $LANG["FREE"] = "Free";
 // exceptions
 $LANG["EXCEPTION_EDIT"] = "Edit the Exception log (";
 $LANG["EXCEPTION_READ"] = "Read the Exception Log";
+// ip
+$LANG['DUPLICATEIP'] = 'Duplicate IP\'s';
+$LANG['DUPLICATEIPINFO'] = "This page displays all users which the database shows them having more than one account associated by their ip.";
 ?>

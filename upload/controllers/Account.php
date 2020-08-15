@@ -33,6 +33,9 @@ class Account extends Controller
                 if (isset($cookie)) {
                     Cookie::set();
                 }
+                DB::run("UPDATE users SET last_login = ? WHERE id = ? ",[get_date_time(), $row->id]);
+                DB::run("INSERT INTO iplog (ip, userid, added, lastused) VALUES(?,?,?,?) ON DUPLICATE KEY UPDATE timesused=timesused+1, lastused=?", [getip(), $row->id, get_date_time(), get_date_time(), get_date_time()]);
+
                 header("Location: " . TTURL . "/index.php");
             } else {
                 show_error_msg(T_("ACCESS_DENIED"), $message, 1);
@@ -277,6 +280,14 @@ class Account extends Controller
         $username_length = 15; // Max username length. You shouldn't set this higher without editing the database first
         $password_minlength = 6;
         $password_maxlength = 60;
+            
+        //check if IP is already a peer
+        if ($site_config["ipcheck"] && $site_config["accountmax"] = "1") {
+                $ip = $_SERVER['REMOTE_ADDR'];
+                $ipq = get_row_count("users", "WHERE ip = '$ip'");
+                if ($ipq >= $site_config["accountmax"])
+                autolink(TTURL."/account/login", "This IP is already in use !");
+        }
 
         // Disable checks if we're signing up with an invite
         if (!is_valid_id($_REQUEST["invite"]) || strlen($_REQUEST["secret"]) != 20) {

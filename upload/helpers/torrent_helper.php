@@ -303,7 +303,7 @@ function torrenttable($res)
 
                     break;
                 case 'dl':
-                    print("<td class='ttable_col$x' align='center'><a href=\"/download?id=$id&amp;name=" . rawurlencode($row["filename"]) . "\"><img src='" . $site_config['SITEURL'] . "/images/icon_download.gif' border='0' alt=\"Download .torrent\" /></a></td>");
+                    print("<td class='ttable_col$x' align='center'><a href=\"download?id=$id&amp;name=" . rawurlencode($row["filename"]) . "\"><img src='" . $site_config['SITEURL'] . "/images/icon_download.gif' border='0' alt=\"Download .torrent\" /></a></td>");
                     break;
                 case 'magnet':
                     $magnet = $pdo->run("SELECT info_hash FROM torrents WHERE id=?", [$id])->fetch();

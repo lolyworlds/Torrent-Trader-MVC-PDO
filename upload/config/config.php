@@ -161,4 +161,8 @@ $site_config['Administrator'] = "7";
 // FORUM POST ON INDEX & Hidden Replys
 $site_config['FORUMONINDEX'] = true;
 $site_config['hideforum'] = 2; // Hide replys until after member replys
+
+// Ip Check
+$site_config["ipcheck"]  = true;
+$site_config["accountmax"] = "1";
 ?>

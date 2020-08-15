@@ -606,6 +606,8 @@ autolink(TTURL."/users/profile?id=$id", T_("Email Edited"));
             $password = $_POST["password"];
             $warned = $_POST["warned"];
             $forumbanned = $_POST["forumbanned"];
+            $downloadbanned = $_POST["downloadbanned"];
+            $shoutboxpos = $_POST["shoutboxpos"];
             $modcomment = $_POST["modcomment"];
             $enabled = $_POST["enabled"];
             $invites =(int) $_POST["invites"];
@@ -640,9 +642,9 @@ autolink(TTURL."/users/profile?id=$id", T_("Email Edited"));
         
             DB::run("UPDATE users 
             SET email=?, downloaded=?, uploaded=?, ip=?, donated=?, forumbanned=?, warned=?,
-             modcomment=?, enabled=?, invites=? 
+             modcomment=?, enabled=?, invites=? , downloadbanned=?, shoutboxpos=?
             WHERE id=?", [$email, $downloaded, $uploaded, $ip, $donated, $forumbanned, $warned, $modcomment,
-             $enabled, $invites,  $id]);
+             $enabled, $invites, $downloadbanned, $shoutboxpos, $id]);
          
         
             write_log($CURUSER['username']." has edited user: $id details");
@@ -677,6 +679,8 @@ $user = DB::run("SELECT * FROM users WHERE id=?", [$id])->fetch(PDO::FETCH_ASSOC
         $enabled = $user["enabled"] == 'yes';
         $warned = $user["warned"] == 'yes';
         $forumbanned = $user["forumbanned"] == 'yes';
+        $downloadbanned = $user["downloadbanned"] == 'yes';
+        $shoutboxpos = $user["shoutboxpos"] == 'yes';
         $modcomment = htmlspecialchars($user["modcomment"]);
 
           stdhead(T_("user"));
@@ -715,6 +719,8 @@ $user = DB::run("SELECT * FROM users WHERE id=?", [$id])->fetch(PDO::FETCH_ASSOC
                 print("<tr><td>" . T_("ACCOUNT_STATUS") . ": </td><td align='left'><input name='enabled' value='yes' type='radio' " . ($enabled ? " checked='checked'" : "") . " />Enabled <input name='enabled' value='no' type='radio' " . (!$enabled ? " checked='checked' " : "") . " />Disabled</td></tr>\n");
                 print("<tr><td>" . T_("WARNED") . ": </td><td align='left'><input name='warned' value='yes' type='radio' " . ($warned ? " checked='checked'" : "") . " />Yes <input name='warned' value='no' type='radio' " . (!$warned ? " checked='checked'" : "") . " />No</td></tr>\n");
                 print("<tr><td>" . T_("FORUM_BANNED") . ": </td><td align='left'><input name='forumbanned' value='yes' type='radio' " . ($forumbanned ? " checked='checked'" : "") . " />Yes <input name='forumbanned' value='no' type='radio' " . (!$forumbanned ? " checked='checked'" : "") . " />No</td></tr>\n");
+                print("<tr><td>Download Banned: </td><td align='left'><input name='downloadbanned' value='yes' type='radio' " . ($downloadbanned ? " checked='checked'" : "") . " />Yes <input name='downloadbanned' value='no' type='radio' " . (!$downloadbanned ? " checked='checked'" : "") . " />No</td></tr>\n");
+                print("<tr><td>Shoutbox Banned: </td><td align='left'><input name='shoutboxpos' value='yes' type='radio' " . ($shoutboxpos ? " checked='checked'" : "") . " />Yes <input name='shoutboxpos' value='no' type='radio' " . (!$shoutboxpos ? " checked='checked'" : "") . " />No</td></tr>\n");
                 print("<tr><td>" . T_("PASSKEY") . ": </td><td align='left'>$user[passkey]<br /><input name='resetpasskey' value='yes' type='checkbox' />" . T_("RESET_PASSKEY") . " (" . T_("RESET_PASSKEY_MSG") . ")</td></tr>\n");
                 print("<tr><td colspan='2' align='center'><input type='submit' value='" . T_("SUBMIT") . "' /></td></tr>\n");
                 print("</table>\n");
@@ -724,7 +730,31 @@ $user = DB::run("SELECT * FROM users WHERE id=?", [$id])->fetch(PDO::FETCH_ASSOC
             </div>
             </div>
     </div><br />
-<?php require_once "views/themes/" . $THEME . "/footer.php";
+    <?php
+    ///IP history///
+begin_frame( "IP History" );
+echo "<table align=center cellpadding=0 cellspacing=0 class='ttable_headinner' width='99%'>";
+$res = DB::run( "SELECT * FROM iplog WHERE userid=$id ORDER BY lastused DESC, timesused ASC" );
+echo "<tr><td class='ttable_head'>".T_("IP_ADDRESS")."</td><td class='ttable_head'>".T_("DATE_ADDED")."</td><td class='ttable_head'>".T_("LAST_ACCESS")."</td><td class='ttable_head'>".T_("TIMES_USED")."</td><td class='ttable_head'>Other Users</td></tr>";
+$x = 1;
+while ( $row = $res->fetch(PDO::FETCH_ASSOC) ) {
+    //Find other users with the same IP
+    $res2 = DB::run( "SELECT users.id AS id,users.username as username FROM users INNER JOIN iplog ON (iplog.ip = '$row[ip]' AND users.id=iplog.userid AND users.id<>$id)" );
+    $usersSame = "";
+    while ( $userrow = $res2->fetch(PDO::FETCH_ASSOC) ) {
+        $usersSame .= "<a href='$site_config[SITEURL]users?id=$userrow[id]'>".class_user_colour($userrow['username'])."</a>,&nbsp;";
+    }
+    echo "<tr align='center'><td>$row[ip]</td><td>" . date( "M d, Y H:i:s", utc_to_tz_time( $row[ 'added' ] ) ) . "</td><td>" . date( "M d, Y H:i:s", utc_to_tz_time( $row[ 'lastused' ] ) ) . "</td><td>" . number_format( $row[ 'timesused' ] ) . "</td><td>$usersSame</td></tr>";
+    if ( $x == 1 )
+        $x = 2;
+    else
+        $x = 1;
+}
+unset( $x );
+echo "</table>";
+end_frame();
+    ///end IP history///
+ require_once "views/themes/" . $THEME . "/footer.php";
       }
 
   }

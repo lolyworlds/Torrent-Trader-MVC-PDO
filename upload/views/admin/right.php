@@ -19,5 +19,6 @@
     <li class="list-group-item"><a href="<?php echo TTURL; ?>/admincp?action=peers"><img src="images/admin/peer_list.png" border="0" width="20" height="20" alt="" />&nbsp;<b><?php echo T_("PEERS_LIST"); ?></b></a></li>
     <li class="list-group-item"><a href="<?php echo TTURL; ?>/admincp?action=invited"><img src="images/admin/invited_user.png" border="0" width="20" height="20" alt="" />&nbsp;<b>Invited Users</b></a></li>   
     <li class="list-group-item"><a href="<?php echo TTURL; ?>/exceptions/admin"><img src="images/admin/sql_error.png" border="0" width="20" height="20" alt="" />&nbsp;<b>SQL Error</b></a></li> 
+    <li class="list-group-item"><a href="<?php echo TTURL; ?>/admincp?action=duplicateips"><img src="images/admin/double-ip.ico" border="0" width="20" height="20" alt="" />&nbsp;<b><?php echo T_("DUPLICATEIP"); ?></b></a></li> 
     </ul>
 </div>

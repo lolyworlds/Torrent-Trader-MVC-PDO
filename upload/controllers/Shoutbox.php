@@ -60,8 +60,6 @@ class Shoutbox extends Controller
             $qry = DB::run("INSERT INTO shoutbox (msgid, user, message, date, userid, staff) VALUES (?, ?, ?, ?, ?, ?)", [null, $CURUSER['username'], $update, get_date_time(), $CURUSER['id'], 1]);
         }
 
-
-
         // Set some conditions
         if (isset($history)) {
             stdhead();
@@ -72,7 +70,7 @@ class Shoutbox extends Controller
 
         } elseif (isset($edit)) {
             if ($CURUSER['class'] < $site_config['Uploader']) {
-                autolink(TTURL."/index", T_("You dont have permission"));
+                autolink(TTURL . "/index", T_("You dont have permission"));
             }
             require 'views/shoutbox/shoutboxheader.php';
             require 'views/shoutbox/shoutboxmessage.php';
@@ -83,7 +81,7 @@ class Shoutbox extends Controller
             $stmt = DB::run("SELECT user, date FROM shoutbox WHERE msgid=?", [$quickedit]);
             while ($row = $stmt->fetch(PDO::FETCH_LAZY));
             if ($CURUSER['username'] == $stmt->user) {
-                autolink(TTURL."/index", T_("You dont have permission"));
+                autolink(TTURL . "/index", T_("You dont have permission"));
             }
             require 'views/shoutbox/shoutboxheader.php';
             require 'views/shoutbox/shoutboxmessage.php';
@@ -92,7 +90,7 @@ class Shoutbox extends Controller
 
         } elseif (isset($reply)) {
             if (!$CURUSER) {
-                autolink(TTURL."/index", T_("You dont have permission"));
+                autolink(TTURL . "/index", T_("You dont have permission"));
             }
             require 'views/shoutbox/shoutboxheader.php';
             require 'views/shoutbox/shoutboxmessage.php';
@@ -101,7 +99,7 @@ class Shoutbox extends Controller
 
         } elseif (isset($staff)) {
             if ($CURUSER['class'] < $site_config['Uploader']) {
-                autolink(TTURL."/index", T_("You dont have permission"));
+                autolink(TTURL . "/index", T_("You dont have permission"));
             }
             require 'views/shoutbox/shoutboxheader.php';
             require 'views/shoutbox/shoutboxstaffmessage.php';
@@ -109,22 +107,28 @@ class Shoutbox extends Controller
             require 'views/shoutbox/shoutboxfooter.php';
 
         } else {
-            //INSERT MESSAGE
-            if (!empty($_POST['message']) && $CURUSER) {
-                $_POST['message'] = $_POST['message'];
-                $result = DB::run("SELECT COUNT(*) FROM shoutbox WHERE message=? AND user=? AND UNIX_TIMESTAMP(?)-UNIX_TIMESTAMP(date) < ?", [$_POST['message'], $CURUSER['username'], get_date_time(), 30]);
-                $row = $result->fetch(PDO::FETCH_LAZY);
-                if ($row[0] == '0') {
-                    $qry = DB::run("INSERT INTO shoutbox (msgid, user, message, date, userid) VALUES (?, ?, ?, ?, ?)", [null, $CURUSER['username'], $_POST['message'], get_date_time(), $CURUSER['id']]);
+            if ($CURUSER["shoutboxpos"] == 'no') {
+                //INSERT MESSAGE
+                if (!empty($_POST['message']) && $CURUSER) {
+                    $_POST['message'] = $_POST['message'];
+                    $result = DB::run("SELECT COUNT(*) FROM shoutbox WHERE message=? AND user=? AND UNIX_TIMESTAMP(?)-UNIX_TIMESTAMP(date) < ?", [$_POST['message'], $CURUSER['username'], get_date_time(), 30]);
+                    $row = $result->fetch(PDO::FETCH_LAZY);
+                    if ($row[0] == '0') {
+                        $qry = DB::run("INSERT INTO shoutbox (msgid, user, message, date, userid) VALUES (?, ?, ?, ?, ?)", [null, $CURUSER['username'], $_POST['message'], get_date_time(), $CURUSER['id']]);
+                    }
                 }
+                require 'views/shoutbox/shoutboxheader.php';
+                if ($CURUSER['class'] > $site_config['Uploader']) {
+                    echo "<center><a href='" . $site_config['SITEURL'] . "/shoutbox?staff'>View Staff Chat</a><center>";
+                }
+                require 'views/shoutbox/shoutboxmessage.php';
+                require 'views/shoutbox/shoutboxmain.php';
+                require 'views/shoutbox/shoutboxfooter.php';
+            } elseif ($CURUSER || !$CURUSER) {
+                require 'views/shoutbox/shoutboxheader.php';
+                print("<br><br><center><font color=red><b>You dont have permissions to use the Shoutbox! Contact the staff!</b><br><b>Or You are not logged in</b></font></center>");
+                require 'views/shoutbox/shoutboxfooter.php';
             }
-            require 'views/shoutbox/shoutboxheader.php';
-            if ($CURUSER['class'] > $site_config['Uploader']) {
-                echo "<center><a href='" . $site_config['SITEURL'] . "/shoutbox?staff'>View Staff Chat</a><center>";
-            }
-            require 'views/shoutbox/shoutboxmessage.php';
-            require 'views/shoutbox/shoutboxmain.php';
-            require 'views/shoutbox/shoutboxfooter.php';
         }
 
     }

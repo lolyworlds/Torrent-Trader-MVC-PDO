@@ -93,6 +93,7 @@ class Admincp extends Controller
         include "admin/admin_cheats.php";
         include "admin/admin_comments.php";
         include "admin/admin_config.php";
+        include "admin/admin_duplicateip.php";
         include "admin/admin_emailban.php";
         include "admin/admin_exceptionlog.php";
         include "admin/admin_forum.php";

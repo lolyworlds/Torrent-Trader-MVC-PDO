@@ -8,6 +8,14 @@
     public function index(){
 dbconn();
 global $site_config, $CURUSER;
+
+// Bann Download
+////////////////////////bann download ///////////////////////////////////////////////////
+$subbanned = DB::run("SELECT id FROM users WHERE id=? AND downloadbanned=? LIMIT 1", [$CURUSER['id'], 'no']);
+if ($subbanned->rowCount() < 1){
+	autolink(TTURL."/index", "You are banned from downloading please contact staff if you feel this is a mistake !");
+}
+
 if ($_GET["passkey"]) {
 	$CURUSER = DB::run("SELECT * FROM users INNER JOIN groups ON users.class=groups.group_id WHERE passkey=? AND enabled=? AND status=?", [$_GET["passkey"], 'yes', 'confirmed'])->fetch();
 }
