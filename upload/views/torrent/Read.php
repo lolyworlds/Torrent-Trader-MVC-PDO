@@ -51,7 +51,6 @@ if (isset($row["lang_image"]) && $row["lang_image"] != "") {
             }
             ?>
         </td><br><br>
-
         <td align="left">
         <?php // peers
             print("<b>" . T_("HEALTH") . ": </b><img src='" . $site_config["SITEURL"] . "/images/health/health_" . health($row["leechers"], $row["seeders"]) . ".gif' alt='' /><br />");
@@ -114,6 +113,10 @@ if (isset($row["lang_image"]) && $row["lang_image"] != "") {
                 }
                 print("" . $img1 . "&nbsp;&nbsp;" . $img2 . "<br />");
             }
+
+            if (!empty($row["tube"])) {
+                print ("<br><embed src='". str_replace("watch?v=", "v/", htmlspecialchars($row["tube"])) ."' type=\"application/x-shockwave-flash\" width=\"400\" height=\"310\"></embed>");
+                    }
             ?>
             </td>
         </tr>

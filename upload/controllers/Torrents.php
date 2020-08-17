@@ -26,7 +26,7 @@ end_frame();
         dbconn();
         global $site_config, $CURUSER, $pdo;
         require_once("classes/BDecode.php");
-        require_once("classes/BEncode.php");;
+        require_once("classes/BEncode.php");
         $torrent_dir = $site_config["torrent_dir"];
         $nfo_dir = $site_config["nfo_dir"];
 
@@ -46,7 +46,7 @@ end_frame();
         }
 
         //GET ALL MYSQL VALUES FOR THIS TORRENT
-        $res = $pdo->run("SELECT torrents.anon, torrents.seeders, torrents.banned, torrents.leechers, torrents.info_hash, torrents.filename, torrents.nfo, torrents.last_action, torrents.numratings, torrents.name, torrents.owner, torrents.save_as, torrents.descr, torrents.visible, torrents.size, torrents.added, torrents.views, torrents.hits, torrents.times_completed, torrents.id, torrents.type, torrents.external, torrents.image1, torrents.image2, torrents.announce, torrents.numfiles, torrents.freeleech, IF(torrents.numratings < 2, NULL, ROUND(torrents.ratingsum / torrents.numratings, 1)) AS rating, torrents.numratings, categories.name AS cat_name, torrentlang.name AS lang_name, torrentlang.image AS lang_image, categories.parent_cat as cat_parent, users.username, users.privacy FROM torrents LEFT JOIN categories ON torrents.category = categories.id LEFT JOIN torrentlang ON torrents.torrentlang = torrentlang.id LEFT JOIN users ON torrents.owner = users.id WHERE torrents.id = $id");
+        $res = $pdo->run("SELECT torrents.anon, torrents.seeders, torrents.tube, torrents.banned, torrents.leechers, torrents.info_hash, torrents.filename, torrents.nfo, torrents.last_action, torrents.numratings, torrents.name, torrents.owner, torrents.save_as, torrents.descr, torrents.visible, torrents.size, torrents.added, torrents.views, torrents.hits, torrents.times_completed, torrents.id, torrents.type, torrents.external, torrents.image1, torrents.image2, torrents.announce, torrents.numfiles, torrents.freeleech, IF(torrents.numratings < 2, NULL, ROUND(torrents.ratingsum / torrents.numratings, 1)) AS rating, torrents.numratings, categories.name AS cat_name, torrentlang.name AS lang_name, torrentlang.image AS lang_image, categories.parent_cat as cat_parent, users.username, users.privacy FROM torrents LEFT JOIN categories ON torrents.category = categories.id LEFT JOIN torrentlang ON torrents.torrentlang = torrentlang.id LEFT JOIN users ON torrents.owner = users.id WHERE torrents.id = $id");
         $row = $res->fetch(PDO::FETCH_ASSOC);
 
         //DECIDE IF TORRENT EXISTS
@@ -240,7 +240,12 @@ end_frame();
             }
         
             $updateset[] = "visible = '" . ($_POST["visible"] ? "yes" : "no") . "'";
-        
+            
+            // youtube
+            if (!empty($_POST['tube']))
+            $tube = unesc($_POST['tube']);
+            $updateset[] = "tube = " . sqlesc($tube);
+
             if ($CURUSER["edit_torrents"] == "yes")
                 $updateset[] = "freeleech = '".($_POST["freeleech"] ? "1" : "0")."'";
         
@@ -447,7 +452,10 @@ end_frame();
                 
                     if (!is_valid_id($catid))
                         $message = T_("UPLOAD_NO_CAT");
-                
+
+                    if (!empty($_POST['tube']))
+                        $tube = unesc($_POST['tube']);  
+
                     if (!validfilename($fname))
                         $message = T_("UPLOAD_INVALID_FILENAME");
                 
@@ -574,14 +582,13 @@ end_frame();
                         $anon = "no";
                     }
                 
-                 // $inames = ''; 
-				 //$fixnullimage = var_dump($inames);
+                 //$fixnullimage = var_dump($inames);
 				 //die($fixnullimage);
 				 
                     $filecounts = (int)$filecount;
-                    $ret = DB::run("INSERT INTO torrents (filename, owner, name, descr, image1, image2, category, added, info_hash, size, numfiles, save_as, announce, external, nfo, torrentlang, anon, last_action) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                    [$fname, $CURUSER['id'], $name, $descr, $inames[0], $inames[1], $catid, get_date_time(), $infohash, $torrentsize, $filecounts, $fname, $announce, $external, $nfo, $langid, $anon, get_date_time()]);
+                    $ret = DB::run("INSERT INTO torrents (filename, owner, name, descr, image1, image2, category, tube, added, info_hash, size, numfiles, save_as, announce, external, nfo, torrentlang, anon, last_action) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                    [$fname, $CURUSER['id'], $name, $descr, $inames[0], $inames[1], $catid, $tube, get_date_time(), $infohash, $torrentsize, $filecounts, $fname, $announce, $external, $nfo, $langid, $anon, get_date_time()]);
                      
                     $id = DB::lastInsertId();
                     
@@ -1432,7 +1439,7 @@ end_frame();
                     //get sql info
                     if ($count) {
                         list($pagertop, $pagerbottom, $limit) = pager(20, $count, "torrents/browse?" . $addparam);
-                        $query = "SELECT torrents.id, torrents.anon, torrents.announce, torrents.category, torrents.leechers, torrents.nfo, torrents.seeders, torrents.name, torrents.times_completed, torrents.size, torrents.added, torrents.comments, torrents.numfiles, torrents.filename, torrents.owner, torrents.external, torrents.freeleech, categories.name AS cat_name, categories.parent_cat AS cat_parent, categories.image AS cat_pic, users.username, users.privacy, IF(torrents.numratings < 2, NULL, ROUND(torrents.ratingsum / torrents.numratings, 1)) AS rating FROM torrents LEFT JOIN categories ON category = categories.id LEFT JOIN users ON torrents.owner = users.id $where $orderby $limit";
+                        $query = "SELECT torrents.id, torrents.anon, torrents.announce, torrents.category, torrents.leechers, torrents.nfo, torrents.seeders, torrents.name, torrents.times_completed,  torrents.tube, torrents.size, torrents.added, torrents.comments, torrents.numfiles, torrents.filename, torrents.owner, torrents.external, torrents.freeleech, categories.name AS cat_name, categories.parent_cat AS cat_parent, categories.image AS cat_pic, users.username, users.privacy, IF(torrents.numratings < 2, NULL, ROUND(torrents.ratingsum / torrents.numratings, 1)) AS rating FROM torrents LEFT JOIN categories ON category = categories.id LEFT JOIN users ON torrents.owner = users.id $where $orderby $limit";
                         $res = DB::run($query);
                     }else{
                         unset($res);

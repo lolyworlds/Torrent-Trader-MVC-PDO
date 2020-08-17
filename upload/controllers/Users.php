@@ -60,6 +60,13 @@ you should not see this, there is a issue with a link try
           if (($user["enabled"] == "no" || ($user["status"] == "pending")) && $CURUSER["edit_users"] == "no") {
               show_error_msg(T_("ERROR"), T_("NO_ACCESS_ACCOUNT_DISABLED"), 1);
           }
+
+          //===| Start Blocked Users
+$blocked = DB::run("SELECT id FROM friends WHERE userid=$user[id] AND friend='enemy' AND friendid=$CURUSER[id]");
+$show = $blocked->rowCount();
+if ($show != 0 && $CURUSER["control_panel"] != "yes")
+    show_error_msg("Error", "<div style='margin-top:10px; margin-bottom:10px' align='center'><font size=2 color=#FF2000><b>You're blocked by this member and you can not see his profile!</b></font></div>", 1);
+//===| End Blocked Users
   
           // $country
           $res = DB::run("SELECT name FROM countries WHERE id=? LIMIT 1", [$user['country']]);

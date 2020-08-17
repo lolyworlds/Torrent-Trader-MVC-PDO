@@ -1,3 +1,12 @@
+CREATE TABLE IF NOT EXISTS `friends` (
+`id` int(10) unsigned NOT NULL auto_increment,
+`userid` int(10) unsigned NOT NULL default '0',
+`friendid` int(10) unsigned NOT NULL default '0',
+`friend` varchar(6) NOT NULL DEFAULT 'maybe',
+PRIMARY KEY (`id`),
+UNIQUE KEY `userfriend` (`userid`,`friendid`)
+) ENGINE=MyISAM;
+
 CREATE TABLE `iplog` (
   `id` int(10) UNSIGNED NOT NULL,
   `ip` varchar(15) NOT NULL DEFAULT '',
@@ -45,7 +54,7 @@ CREATE TABLE `thanks` (
   PRIMARY KEY  (`id`),
   KEY `user` (`user`),
   KEY `thanked` (`thanked`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM;
 
 CREATE TABLE `likes` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -699,7 +708,7 @@ CREATE TABLE `torrents` (
   `filename` varchar(255) NOT NULL default '',
   `save_as` varchar(255) NOT NULL default '',
   `descr` text NOT NULL,
-  `image1` text NOT NULL,
+  `image1` text default NULL,
   `image2` text default NULL,
   `category` int(10) unsigned NOT NULL default '0',
   `size` bigint(20) unsigned NOT NULL default '0',
@@ -724,6 +733,7 @@ CREATE TABLE `torrents` (
   `external` enum('yes', 'no') NOT NULL DEFAULT 'no',
   `torrentlang` int(10) unsigned NOT NULL default '1',
   `freeleech` enum('0','1') NOT NULL default '0',
+  `tube` varchar(100) DEFAULT NULL,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `info_hash` (`info_hash`(20)),
   KEY `owner` (`owner`),

@@ -282,7 +282,7 @@ class Account extends Controller
         $password_maxlength = 60;
             
         //check if IP is already a peer
-        if ($site_config["ipcheck"] && $site_config["accountmax"] = "1") {
+        if ($site_config["ipcheck"]) {
                 $ip = $_SERVER['REMOTE_ADDR'];
                 $ipq = get_row_count("users", "WHERE ip = '$ip'");
                 if ($ipq >= $site_config["accountmax"])

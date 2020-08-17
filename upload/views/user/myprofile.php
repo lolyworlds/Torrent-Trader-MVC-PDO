@@ -101,7 +101,28 @@
 		
 			</table>
 		
-			<?php
+<div style="margin-bottom:10px">
+<?php
+If ($CURUSER["id"] != $user["id"])
+{
+    $r = DB::run("SELECT id FROM friends WHERE userid=$CURUSER[id] AND friend='friend' AND friendid=$id");
+    $friend = $r->rowCount();
+    $r = DB::run("SELECT id FROM friends WHERE userid=$CURUSER[id] AND friend='enemy' AND friendid=$id");
+    $block = $r->rowCount();
+
+    if ($friend > 0)
+        print("[<a href=$site_config[SITEURL]/friends/delete?type=friend&targetid=$id>Remove from Friends</a>]");
+    elseif($block > 0)
+        print("&nbsp;[<a href=$site_config[SITEURL]/friends/delete?type=block&targetid=$id>Remove from Blocked</a>]");
+    else
+    {
+        print("[<a href=$site_config[SITEURL]/friends/add?type=friend&targetid=$id><b>Add to Friends</b></a>]&nbsp;");
+        print("&nbsp;[<a href=$site_config[SITEURL]/friends/add?type=block&targetid=$id><b>Add to Blocked</b></a>]");
+    }
+}
+?>
+</div><?php
+
 		}else{
 			echo sprintf(T_("REPORT_MEMBER_MSG"), $user["id"]);
 		}

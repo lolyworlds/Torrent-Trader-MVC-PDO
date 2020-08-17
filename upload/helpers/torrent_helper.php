@@ -204,6 +204,9 @@ function torrenttable($res)
             case 'uploader':
                 echo "<th>" . T_("UPLOADER") . "</th>";
                 break;
+            case 'tube':
+                    echo "<th>".T_("YOUTUBE")."</th>";
+                break;
             case 'comments':
                 echo "<th>" . T_("COMM") . "</th>";
                 break;
@@ -335,6 +338,12 @@ function torrenttable($res)
 
                     echo "</td>";
                     break;
+                case 'tube':
+                        if ($row["tube"]) 
+                              print("<td class='ttable_col$x' align='center'><a rel=\"prettyPhoto\"  href=".$row['tube']." ><".htmlspecialchars($row['tube'])."><img src='" . $site_config['SITEURL'] . "/images/youtube1.png'  border='0' width='30' height='30' alt=\"\" /></a></td>");  
+                              else
+                           print("<td class='ttable_colx' align='center'>-</td>"); 
+                           break;
                 case 'comments':
                     print("<td class='ttable_col$x' align='center'><font size='1' face='verdana'><a href='$site_config[SITEURL]/comments?type=torrent&amp;id=$id'>" . number_format($row["comments"]) . "</a></font></td>\n");
                     break;

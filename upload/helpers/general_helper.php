@@ -147,6 +147,9 @@ function usermenu($id)
     <a href='<?php echo TTURL; ?>/messages'><button type="button" class="btn btn-sm btn-primary">Messages</button></a>
     <a href='<?php echo TTURL; ?>/bonus'><button type="button" class="btn btn-sm btn-primary">Seed Bonus</button></a>
     <?php } ?>
+    <?php if ($CURUSER["view_users"]) { ?>
+    <a href='<?php echo TTURL; ?>/friends'><button type="button" class="btn btn-sm btn-primary">Your Friends</button></a>
+    <?php } ?>
     <?php if ($CURUSER["view_torrents"]) { ?>
     <a href='<?php echo TTURL; ?>/peers/seeding?id=<?php echo $id; ?>'><button type="button" class="btn btn-sm btn-primary">Seeding</button></a>
     <a href='<?php echo TTURL; ?>/peers/uploaded?id=<?php echo $id; ?>'><button type="button" class="btn btn-sm btn-primary">Uploaded</button></a>

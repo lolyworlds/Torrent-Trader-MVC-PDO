@@ -2,11 +2,6 @@
 class Cookie
 {
 
-    public function __construct()
-    {
-
-    }
-
     // a classical static method to make it universally available
     public static function destroy()
     {

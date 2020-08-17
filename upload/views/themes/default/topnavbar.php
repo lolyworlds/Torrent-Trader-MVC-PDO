@@ -87,7 +87,7 @@ print("<font color=#fff><i>Connected:</i></font> ".$connectable.")");
 		    <a class="dropdown-item" href="<?php echo TTURL; ?>/users/profile?id=<?php echo $CURUSER["id"]; ?>"><?php echo T_("PROFILE");?></a>
 			<a class="dropdown-item" href="<?php echo TTURL; ?>/messages/inbox"><?php echo T_("YOUR_MESSAGES");?></a>
             <a class="dropdown-item" href="<?php echo TTURL; ?>/peers/seeding?id=<?php echo $CURUSER['id']; ?>"><?php echo T_("YOUR_TORRENTS");?></a>
-            <a class="dropdown-item" href="<?php echo TTURL; ?>/users/friends"><?php echo T_("FRIENDS");?></a>
+            <a class="dropdown-item" href="<?php echo TTURL; ?>/friends"><?php echo T_("FRIENDS");?></a>
             <a class="dropdown-item" href="<?php echo TTURL; ?>/bonus"><?php echo T_("SEEDING_BONUS");?></a> <!-- Check the link! -->
             <a class="dropdown-item" href="<?php echo TTURL; ?>/invite"><?php echo T_("INVITES");?></a> <!-- Check the link! -->
 		</div>

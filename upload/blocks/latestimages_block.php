@@ -20,4 +20,3 @@ if (!$site_config["MEMBERSONLY"] || $CURUSER) {
 		end_block();
 	}
 }
-?>

@@ -1109,4 +1109,10 @@ $LANG["EXCEPTION_READ"] = "Read the Exception Log";
 // ip
 $LANG['DUPLICATEIP'] = 'Duplicate IP\'s';
 $LANG['DUPLICATEIPINFO'] = "This page displays all users which the database shows them having more than one account associated by their ip.";
+
+// Youtube mod
+$LANG["VIDEOTUBE"] = "YouTube Trailer/Video";
+$LANG["NOVIDEOTUBE"] = "No YouTube video for this Torrent.";
+$LANG["FORMAT"] = "Accepted Format";
+$LANG["YOUTUBE"] = "Trailer";
 ?>
