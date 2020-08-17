@@ -1,6 +1,6 @@
 <?php
     
-   if ($CURUSER["control_panel"] == "yes") 
+   if ($_SESSION["control_panel"] == "yes") 
    {
        begin_block("AdminCP");
        ?>

@@ -12,7 +12,7 @@ if ($action=="masspm"){
 	//send pm
 	if ($_GET["send"] == '1'){
 
-		$sender_id = ($_POST['sender'] == 'system' ? 0 : $CURUSER['id']);
+		$sender_id = ($_POST['sender'] == 'system' ? 0 : $_SESSION['id']);
 
 		$dt = get_date_time();
 		$msg = $_POST['msg'];
@@ -28,14 +28,14 @@ if ($action=="masspm"){
 			DB::run("INSERT INTO messages (sender, receiver, added, msg, subject) VALUES (?,?,?,?,?)", [$sender_id, $dat['id'], get_date_time(), $msg, $subject]);
 		}
 
-		write_log("A Mass PM was sent by ($CURUSER[username])");
+		write_log("A Mass PM was sent by ($_SESSION[username])");
 		autolink(TTURL."/admincp?action=masspm", T_("SUCCESS"),"Mass PM Sent!");
 		die;
 	}
 
 	begin_frame("Mass Private Message");
     
-    print("<form name='masspm' method='post' action='$site_config[SITEURL]/admincp?action=masspm&amp;send=1'>\n"); 
+    print("<form name='masspm' method='post' action='$config[SITEURL]/admincp?action=masspm&amp;send=1'>\n"); 
 	print("<table border='0' cellspacing='0' cellpadding='5' align='center' width='90%'>\n");
 	
 
@@ -56,7 +56,7 @@ if ($action=="masspm"){
     
 	<tr>
 	<td><b><?php echo T_("SENDER");?></b>
-	<?php echo $CURUSER['username']?> <input name="sender" type="radio" value="self" checked="checked" />
+	<?php echo $_SESSION['username']?> <input name="sender" type="radio" value="self" checked="checked" />
 	System <input name="sender" type="radio" value="system" /></td>
 	</tr>
 

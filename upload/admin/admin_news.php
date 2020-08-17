@@ -8,7 +8,7 @@ if ($action=="news" && $do=="view"){
 	adminnavmenu();
 
 	begin_frame(T_("NEWS"));
-	echo "<center><a href='$site_config[SITEURL]/admincp?action=news&amp;do=add'><b>".T_("CP_NEWS_ADD_ITEM")."</b></a></center><br />";
+	echo "<center><a href='$config[SITEURL]/admincp?action=news&amp;do=add'><b>".T_("CP_NEWS_ADD_ITEM")."</b></a></center><br />";
 
 	$res = DB::run("SELECT * FROM news ORDER BY added DESC");
 	if ($res->rowCount() > 0){
@@ -30,8 +30,8 @@ if ($action=="news" && $do=="view"){
 			
 			print("<table border='0' cellspacing='0' cellpadding='0'><tr><td>");
 			print("$added&nbsp;---&nbsp;by&nbsp;$by");
-			print(" - [<a href='$site_config[SITEURL]/admincp?action=news&amp;do=edit&amp;newsid=$newsid'><b>".T_("EDIT")."</b></a>]");
-			print(" - [<a href='$site_config[SITEURL]/admincp?action=news&amp;do=delete&amp;newsid=$newsid'><b>".T_("DEL")."</b></a>]");
+			print(" - [<a href='$config[SITEURL]/admincp?action=news&amp;do=edit&amp;newsid=$newsid'><b>".T_("EDIT")."</b></a>]");
+			print(" - [<a href='$config[SITEURL]/admincp?action=news&amp;do=delete&amp;newsid=$newsid'><b>".T_("DEL")."</b></a>]");
 			print("</td></tr>\n");
 
 			print("<tr valign='top'><td><b>$title</b><br />$body</td></tr></table><br />\n");
@@ -61,7 +61,7 @@ if ($action=="news" && $do=="takeadd"){
 	if (!$added)
 		$added = get_date_time();
 
-	$afr = DB::run("INSERT INTO news (userid, added, body, title) VALUES (?,?,?,?)", [$CURUSER['id'], $added, $body, $title]);
+	$afr = DB::run("INSERT INTO news (userid, added, body, title) VALUES (?,?,?,?)", [$_SESSION['id'], $added, $body, $title]);
 	if ($afr)
 		autolink(TTURL."/admincp?action=news&do=view", T_("CP_NEWS_ITEM_ADDED_SUCCESS"));
 	else
@@ -74,7 +74,7 @@ if ($action=="news" && $do=="add"){
 	adminnavmenu();
 
 	begin_frame(T_("CP_NEWS_ADD"));
-	print("<center><form method='post' action='$site_config[SITEURL]/admincp' name='news'>\n");
+	print("<center><form method='post' action='$config[SITEURL]/admincp' name='news'>\n");
 	print("<input type='hidden' name='action' value='news' />\n");
 	print("<input type='hidden' name='do' value='takeadd' />\n");
 
@@ -130,7 +130,7 @@ if ($action=="news" && $do=="edit"){
 	} else {
 		$returnto = htmlspecialchars($_GET['returnto']);
 		begin_frame(T_("CP_NEWS_EDIT"));
-		print("<form method='post' action='$site_config[SITEURL]/admincp?action=news&amp;do=edit&amp;newsid=$newsid' name='news'>\n");
+		print("<form method='post' action='$config[SITEURL]/admincp?action=news&amp;do=edit&amp;newsid=$newsid' name='news'>\n");
 		print("<center>");
 		print("<input type='hidden' name='returnto' value='$returnto' />\n");
 		print("<b>".T_("CP_NEWS_TITLE").": </b><input type='text' name='title' value=\"".$arr['title']."\" /><br /><br />\n");

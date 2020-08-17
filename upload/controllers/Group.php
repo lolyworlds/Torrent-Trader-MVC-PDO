@@ -12,7 +12,7 @@
 	
     public function staff(){
   dbconn();
-global $site_config, $CURUSER, $pdo;
+global $config, $pdo;
   loggedinonly();
   stdhead("Staff");
 
@@ -25,9 +25,9 @@ global $site_config, $CURUSER, $pdo;
   while ( $row = $res->fetch(PDO::FETCH_ASSOC) )
   {
       $table[$row['class']] = ($table[$row['class']] ?? '').
-        "<td><img src='".$site_config['SITEURL']."/images/button_o".($row["last_access"] > $dt ? "n" : "ff")."line.png' alt='' /> ". 
-        "<a href='".$site_config['SITEURL']."/users/profile?id=".$row["id"]."'>" . class_user_colour($row["username"]) . "</a> ".       
-        "<a href='".$site_config['SITEURL']."/messages/create?id=".$row["id"]."'><img src='".$site_config['SITEURL']."/images/button_pm.gif' border='0' alt='' /></a></td>";
+        "<td><img src='".$config['SITEURL']."/images/button_o".($row["last_access"] > $dt ? "n" : "ff")."line.png' alt='' /> ". 
+        "<a href='".$config['SITEURL']."/users/profile?id=".$row["id"]."'>" . class_user_colour($row["username"]) . "</a> ".       
+        "<a href='".$config['SITEURL']."/messages/create?id=".$row["id"]."'><img src='".$config['SITEURL']."/images/button_pm.gif' border='0' alt='' /></a></td>";
         
        $col[$row['class']] = ($col[$row['class']] ?? 0) + 1;
       
@@ -41,7 +41,7 @@ global $site_config, $CURUSER, $pdo;
   }
 
   $where = null;
-  if ($CURUSER["edit_users"] == "no")
+  if ($_SESSION["edit_users"] == "no")
       $where = "AND `staff_public` = 'yes'";
   
   $res = $this->groupsModel->getStaffLevel($where);
@@ -77,10 +77,10 @@ public function member()
 {
 
     dbconn();
-    global $site_config, $CURUSER, $pdo;
+    global $config, $pdo;
     loggedinonly();
 
-    if ($CURUSER["view_users"] == "no") {
+    if ($_SESSION["view_users"] == "no") {
         show_error_msg(T_("ERROR"), T_("NO_USER_VIEW"), 1);
     }
 
@@ -123,7 +123,7 @@ public function member()
     stdhead(T_("USERS"));
     begin_frame(T_("USERS"));
 
-    print("<center><br /><form method='get' action='$site_config[SITEURL]/group/member'>\n");
+    print("<center><br /><form method='get' action='$config[SITEURL]/group/member'>\n");
     print(T_("SEARCH") . ": <input type='text' size='30' name='search' />\n");
     print("<select name='class'>\n");
     print("<option value='-'>(any class)</option>\n");
@@ -137,13 +137,13 @@ public function member()
 
     print("<p align='center'>\n");
 
-    print("<a href='$site_config[SITEURL]/group/member'><b>" . T_("ALL") . "</b></a> - \n");
+    print("<a href='$config[SITEURL]/group/member'><b>" . T_("ALL") . "</b></a> - \n");
     foreach (range("a", "z") as $l) {
         $L = strtoupper($l);
         if ($l == $letter) {
             print("<b>$L</b>\n");
         } else {
-            print("<a href='$site_config[SITEURL]/group/member?letter=$l'><b>$L</b></a>\n");
+            print("<a href='$config[SITEURL]/group/member?letter=$l'><b>$L</b></a>\n");
         }
 
     }
@@ -178,13 +178,13 @@ public function member()
             $cres = $this->countriesModel->getCountry($row);
 
             if ($carr = $cres->fetch(PDO::FETCH_ASSOC)) {
-                $country = "<td><img src='$site_config[SITEURL]/images/languages/$carr[flagpic]' title='" . htmlspecialchars($carr['name']) . "' alt='" . htmlspecialchars($carr['name']) . "' /></td>";
+                $country = "<td><img src='$config[SITEURL]/images/languages/$carr[flagpic]' title='" . htmlspecialchars($carr['name']) . "' alt='" . htmlspecialchars($carr['name']) . "' /></td>";
             } else {
-                $country = "<td><img src='$site_config[SITEURL]/images/languages/unknown.gif' alt='Unknown' /></td>";
+                $country = "<td><img src='$config[SITEURL]/images/languages/unknown.gif' alt='Unknown' /></td>";
             }
 
             print("<tbody><tr>
-<td><a href='$site_config[SITEURL]/users/profile?id=$row[id]'><b>" . class_user_colour($row['username']) . "</b></a>" . ($row["donated"] > 0 ? "<img src='$site_config[SITEURL]/images/star.png' border='0' alt='Donated' />" : "") . "</td>" . "
+<td><a href='$config[SITEURL]/users/profile?id=$row[id]'><b>" . class_user_colour($row['username']) . "</b></a>" . ($row["donated"] > 0 ? "<img src='$config[SITEURL]/images/star.png' border='0' alt='Donated' />" : "") . "</td>" . "
 <td>" . utc_to_tz($row["added"]) . "</td>
 <td>" . utc_to_tz($row["last_access"]) . "</td>" . "
 <td>" . T_($row["level"]) . "</td>$country</tr></tbody>");

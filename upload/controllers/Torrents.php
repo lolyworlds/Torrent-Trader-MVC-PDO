@@ -9,7 +9,7 @@ class Torrents extends Controller
     public function index()
     {
         dbconn();
-        global $site_config, $CURUSER;
+        global $config;
         loggedinonly();
         stdhead(T_("Torrents"));
         begin_frame(T_("Torrents"));
@@ -24,17 +24,17 @@ end_frame();
     public function read()
     {
         dbconn();
-        global $site_config, $CURUSER, $pdo;
+        global $config, $pdo;
         require_once("classes/BDecode.php");
         require_once("classes/BEncode.php");
-        $torrent_dir = $site_config["torrent_dir"];
-        $nfo_dir = $site_config["nfo_dir"];
+        $torrent_dir = $config["torrent_dir"];
+        $nfo_dir = $config["nfo_dir"];
 
         //check permissions
-        if ($site_config["MEMBERSONLY"]) {
+        if ($config["MEMBERSONLY"]) {
             loggedinonly();
         }
-        if ($CURUSER["view_torrents"] == "no") {
+        if ($_SESSION["view_torrents"] == "no") {
             show_error_msg(T_("ERROR"), T_("NO_TORRENT_VIEW"), 1);
         }
 
@@ -50,7 +50,7 @@ end_frame();
         $row = $res->fetch(PDO::FETCH_ASSOC);
 
         //DECIDE IF TORRENT EXISTS
-        if (!$row || ($row["banned"] == "yes" && $CURUSER["edit_torrents"] == "no")) {
+        if (!$row || ($row["banned"] == "yes" && $_SESSION["edit_torrents"] == "no")) {
             show_error_msg(T_("ERROR"), T_("TORRENT_NOT_FOUND"), 1);
         }
 
@@ -61,7 +61,7 @@ end_frame();
             die;
         }
 
-        if ($CURUSER["id"] == $row["owner"] || $CURUSER["edit_torrents"] == "yes") {
+        if ($_SESSION["id"] == $row["owner"] || $_SESSION["edit_torrents"] == "yes") {
             $owned = 1;
         } else {
             $owned = 0;
@@ -99,17 +99,17 @@ end_frame();
     public function torrentfilelist()
     {
         dbconn();
-        global $site_config, $CURUSER;
+        global $config;
         $id = (int) $_GET["id"];
 
         if (!is_valid_id($id)) {
             show_error_msg(T_("ERROR"), T_("THATS_NOT_A_VALID_ID"), 1);
         }
         //check permissions
-        if ($site_config["MEMBERSONLY"]) {
+        if ($config["MEMBERSONLY"]) {
             loggedinonly();
         }
-        if ($CURUSER["view_torrents"] == "no") {
+        if ($_SESSION["view_torrents"] == "no") {
             show_error_msg(T_("ERROR"), T_("NO_TORRENT_VIEW"), 1);
         }
         //GET ALL MYSQL VALUES FOR THIS TORRENT
@@ -139,17 +139,17 @@ end_frame();
     public function torrenttrackerlist()
     {
         dbconn();
-        global $site_config, $CURUSER;
+        global $config;
         $id = (int) $_GET["id"];
 
         if (!is_valid_id($id)) {
             show_error_msg(T_("ERROR"), T_("THATS_NOT_A_VALID_ID"), 1);
         }
         //check permissions
-        if ($site_config["MEMBERSONLY"]) {
+        if ($config["MEMBERSONLY"]) {
             loggedinonly();
         }
-        if ($CURUSER["view_torrents"] == "no") {
+        if ($_SESSION["view_torrents"] == "no") {
             show_error_msg(T_("ERROR"), T_("NO_TORRENT_VIEW"), 1);
         }
         //GET ALL MYSQL VALUES FOR THIS TORRENT
@@ -186,7 +186,7 @@ end_frame();
 
     public function edit(){
         dbconn();
-        global $site_config, $CURUSER, $pdo;
+        global $config, $pdo;
         loggedinonly();
         
         $id = (int) $_REQUEST["id"];
@@ -194,7 +194,7 @@ end_frame();
         $action = $_REQUEST["action"];
         
         $row = DB::run("SELECT `owner` FROM `torrents` WHERE id=?", [$id])->fetch();
-        if($CURUSER["edit_torrents"]=="no" && $CURUSER['id'] != $row['owner'])
+        if($_SESSION["edit_torrents"]=="no" && $_SESSION['id'] != $row['owner'])
             show_error_msg(T_("ERROR"), T_("NO_TORRENT_EDIT_PERMISSION"), 1);
         
         //GET DATA FROM DB
@@ -203,8 +203,8 @@ end_frame();
             show_error_msg(T_("ERROR"), T_("TORRENT_ID_GONE"), 1);
         }
         
-        $torrent_dir = $site_config["torrent_dir"];    
-        $nfo_dir = $site_config["nfo_dir"];    
+        $torrent_dir = $config["torrent_dir"];    
+        $nfo_dir = $config["nfo_dir"];    
         
         //DO THE SAVE TO DB HERE
         if ($action=="doedit"){
@@ -230,7 +230,7 @@ end_frame();
             $updateset[] = "category = " . (int) $_POST["type"];
             $updateset[] = "torrentlang = " . (int) $_POST["language"];
         
-            if ($CURUSER["edit_torrents"] == "yes") {
+            if ($_SESSION["edit_torrents"] == "yes") {
                 if ($_POST["banned"]) {
                     $updateset[] = "banned = 'yes'";
                     $_POST["visible"] = 0;
@@ -246,7 +246,7 @@ end_frame();
             $tube = unesc($_POST['tube']);
             $updateset[] = "tube = " . sqlesc($tube);
 
-            if ($CURUSER["edit_torrents"] == "yes")
+            if ($_SESSION["edit_torrents"] == "yes")
                 $updateset[] = "freeleech = '".($_POST["freeleech"] ? "1" : "0")."'";
         
             $updateset[] = "anon = '" . ($_POST["anon"] ? "yes" : "no") . "'";
@@ -257,7 +257,7 @@ end_frame();
                 $updateset[] = "image1 = " .sqlesc(uploadimage(0, $row["image1"], $id));
             if ($img1action == "delete") {
                 if ($row['image1']) {
-                    $del = unlink($site_config["torrent_dir"]."/images/$row[image1]");
+                    $del = unlink($config["torrent_dir"]."/images/$row[image1]");
                     $updateset[] = "image1 = ''";
                 }
             }
@@ -267,7 +267,7 @@ end_frame();
                 $updateset[] = "image2 = " .sqlesc(uploadimage(1, $row["image2"], $id));
             if ($img2action == "delete") {
                 if ($row['image2']) {
-                    $del = unlink($site_config["torrent_dir"]."/images/$row[image2]");
+                    $del = unlink($config["torrent_dir"]."/images/$row[image2]");
                     $updateset[] = "image2 = ''";
                 }
             }
@@ -275,7 +275,7 @@ end_frame();
         
             DB::run("UPDATE torrents SET " . join(",", $updateset) . " WHERE id = $id");
                 
-            write_log("Torrent $id (".htmlspecialchars($_POST["name"]).") was edited by $CURUSER[username]");
+            write_log("Torrent $id (".htmlspecialchars($_POST["name"]).") was edited by $_SESSION[username]");
         
             header("Location: ".TTURL."/torrents/read?id=$id");
             die();
@@ -326,7 +326,7 @@ end_frame();
 
         public function delete(){
             dbconn();
-            global $site_config, $CURUSER, $pdo;
+            global $config, $pdo;
             loggedinonly();
             
             $id = (int) $_GET["id"];
@@ -335,7 +335,7 @@ end_frame();
             }
 
             $row = DB::run("SELECT `owner` FROM `torrents` WHERE id=?", [$id])->fetch();
-            if($CURUSER["delete_torrents"]=="no" && $CURUSER['id'] != $row['owner'])
+            if($_SESSION["delete_torrents"]=="no" && $_SESSION['id'] != $row['owner'])
                 show_error_msg(T_("ERROR"), T_("NO_TORRENT_DELETE_PERMISSION"), 1);
             
             //GET DATA FROM DB
@@ -359,10 +359,10 @@ end_frame();
             
                 deletetorrent($torrentid);
             
-                write_log($CURUSER['username']." has deleted torrent: ID:$torrentid - ".htmlspecialchars($torrentname)." - Reason: ".htmlspecialchars($delreason));
-                if ($CURUSER['id'] != $row['owner']) {
+                write_log($_SESSION['username']." has deleted torrent: ID:$torrentid - ".htmlspecialchars($torrentname)." - Reason: ".htmlspecialchars($delreason));
+                if ($_SESSION['id'] != $row['owner']) {
                 $delreason = $_POST["delreason"];
-                    DB::run("INSERT INTO messages (sender, receiver, added, subject, msg, unread, location) VALUES(0, ".$row['owner'].", '".get_date_time()."', 'Your torrent \'$torrentname\' has been deleted by ".$CURUSER['username']."', ".sqlesc("'$torrentname' was deleted by ".$CURUSER['username']."\n\nReason: $delreason").", 'yes', 'in')");
+                    DB::run("INSERT INTO messages (sender, receiver, added, subject, msg, unread, location) VALUES(0, ".$row['owner'].", '".get_date_time()."', 'Your torrent \'$torrentname\' has been deleted by ".$_SESSION['username']."', ".sqlesc("'$torrentname' was deleted by ".$_SESSION['username']."\n\nReason: $delreason").", 'yes', 'in')");
                 }
             
                 show_error_msg(T_("COMPLETED"), htmlspecialchars($torrentname)." ".T_("HAS_BEEN_DEL_DB"),1);
@@ -385,18 +385,18 @@ end_frame();
             public function create(){
 
                 dbconn();
-                global $site_config, $CURUSER;
+                global $config;
                 // check access and rights
-                if ($site_config["MEMBERSONLY"]){
+                if ($config["MEMBERSONLY"]){
                     loggedinonly();
                 
-                    if($CURUSER["can_upload"]=="no")
+                    if($_SESSION["can_upload"]=="no")
                         show_error_msg(T_("ERROR"), T_("UPLOAD_NO_PERMISSION"), 1);
-                    if ($site_config["UPLOADERSONLY"] && $CURUSER["class"] < 4)
+                    if ($config["UPLOADERSONLY"] && $_SESSION["class"] < 4)
                         show_error_msg(T_("ERROR"), T_("UPLOAD_ONLY_FOR_UPLOADERS"), 1);
                 }
                 
-                $announce_urls = explode(",", strtolower($site_config["announce_list"]));  //generate announce_urls[] from config.php
+                $announce_urls = explode(",", strtolower($config["announce_list"]));  //generate announce_urls[] from config.php
                 
                 if ($_POST["takeupload"] == "yes") {
                 
@@ -473,8 +473,8 @@ end_frame();
                 
                     if (!$message) {
                     //parse torrent file
-                    $torrent_dir = $site_config["torrent_dir"];	
-                    $nfo_dir = $site_config["nfo_dir"];	
+                    $torrent_dir = $config["torrent_dir"];	
+                    $nfo_dir = $config["nfo_dir"];	
                 
                     //if(!copy($f, "$torrent_dir/$fname"))
                     if(!move_uploaded_file($tmpname, "$torrent_dir/$fname"))
@@ -514,7 +514,7 @@ end_frame();
                     }
                 
                     //if externals is turned off
-                    if (!$site_config["ALLOWEXTERNAL"] && $external == 'yes')
+                    if (!$config["ALLOWEXTERNAL"] && $external == 'yes')
                         $message = T_("UPLOAD_NO_TRACKER_ANNOUNCE");
                     }
                     if ($message) {
@@ -532,7 +532,7 @@ end_frame();
                     $name = str_replace("_", " ", $name);
                 
                     //upload images
-                    $allowed_types = &$site_config["allowed_image_types"];
+                    $allowed_types = &$config["allowed_image_types"];
                 
                     $inames = array();
                     for ($x=0; $x < 2; $x++) {
@@ -542,10 +542,10 @@ end_frame();
                             //if (!preg_match('/^(.+)\.(jpg|gif|png)$/si', $_FILES[image.$x]['name']))
                             //	show_error_msg(T_("INVAILD_IMAGE"), T_("THIS_FILETYPE_NOT_IMAGE"), 1);
                 
-                            if ($_FILES['image$x']['size'] > $site_config['image_max_filesize'])
+                            if ($_FILES['image$x']['size'] > $config['image_max_filesize'])
                                 show_error_msg(T_("ERROR"), T_("INVAILD_FILE_SIZE_IMAGE"), 1);
                 
-                            $uploaddir = $site_config["torrent_dir"]."/images/";
+                            $uploaddir = $config["torrent_dir"]."/images/";
                 
                             $ifile = $_FILES['image'.$x]['tmp_name'];
                 
@@ -588,7 +588,7 @@ end_frame();
                     $filecounts = (int)$filecount;
                     $ret = DB::run("INSERT INTO torrents (filename, owner, name, descr, image1, image2, category, tube, added, info_hash, size, numfiles, save_as, announce, external, nfo, torrentlang, anon, last_action) 
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                    [$fname, $CURUSER['id'], $name, $descr, $inames[0], $inames[1], $catid, $tube, get_date_time(), $infohash, $torrentsize, $filecounts, $fname, $announce, $external, $nfo, $langid, $anon, get_date_time()]);
+                    [$fname, $_SESSION['id'], $name, $descr, $inames[0], $inames[1], $catid, $tube, get_date_time(), $infohash, $torrentsize, $filecounts, $fname, $announce, $external, $nfo, $langid, $anon, get_date_time()]);
                      
                     $id = DB::lastInsertId();
                     
@@ -636,7 +636,7 @@ end_frame();
                     } 
                 
                     //EXTERNAL SCRAPE
-                    if ($external=='yes' && $site_config['UPLOADSCRAPE']){
+                    if ($external=='yes' && $config['UPLOADSCRAPE']){
                         $tracker=str_replace("/announce","/scrape",$announce);	
                         $stats 			= torrent_scrape_url($tracker, $infohash);
                         $seeders 		= (int) strip_tags($stats['seeds']);
@@ -647,7 +647,7 @@ end_frame();
                     }
                     //END SCRAPE
                 
-                    write_log( sprintf(T_("TORRENT_UPLOADED"), htmlspecialchars($name), $CURUSER["username"]) );
+                    write_log( sprintf(T_("TORRENT_UPLOADED"), htmlspecialchars($name), $_SESSION["username"]) );
                 
                     //Uploaded ok message (update later)
                     if ($external=='no')
@@ -665,7 +665,7 @@ end_frame();
                 stdhead(T_("UPLOAD"));
                 
                 begin_frame(T_("UPLOAD_RULES"));
-                    echo "<b>".stripslashes($site_config["UPLOADRULES"])."</b>";
+                    echo "<b>".stripslashes($config["UPLOADRULES"])."</b>";
                     echo "<br />";
                 end_frame();
                 
@@ -679,12 +679,12 @@ end_frame();
 
                 public function needseed(){
                     dbconn();
-                   global $site_config, $CURUSER, $pdo;
+                   global $config, $pdo;
                     // Check permissions
-                    if ($site_config["MEMBERSONLY"]) {
+                    if ($config["MEMBERSONLY"]) {
                         loggedinonly();
                         
-                        if ($CURUSER["view_torrents"] == "no")
+                        if ($_SESSION["view_torrents"] == "no")
                             show_error_msg(T_("ERROR"), T_("NO_TORRENT_VIEW"), 1);
                     }  
                     
@@ -703,7 +703,7 @@ end_frame();
                        
                            public function import(){
                    dbconn();
-                   global $site_config, $CURUSER, $pdo;
+                   global $config, $pdo;
                    $dir = "import";
                    
                    //ini_set("upload_max_filesize",$max_torrent_size);
@@ -718,10 +718,10 @@ end_frame();
                    
                    
                    // check access and rights
-                   if ($CURUSER["edit_torrents"] != "yes")
+                   if ($_SESSION["edit_torrents"] != "yes")
                        show_error_msg(T_("ERROR"), T_("ACCESS_DENIED"), 1);
                    
-                   $announce_urls = explode(",", strtolower($site_config["announce_list"]));  //generate announce_urls[] from config.php
+                   $announce_urls = explode(",", strtolower($config["announce_list"]));  //generate announce_urls[] from config.php
                    
                    if ($_POST["takeupload"] == "yes") {
                        set_time_limit(0);
@@ -749,7 +749,7 @@ end_frame();
                                $shortfname = $torrent = $matches[1];
                    
                                //parse torrent file
-                               $torrent_dir = $site_config["torrent_dir"];	
+                               $torrent_dir = $config["torrent_dir"];	
                    
                                $TorrentInfo = array();
                                $TorrentInfo = ParseTorrent("$dir/$fname");
@@ -772,7 +772,7 @@ end_frame();
                                else
                                    $external='no';
                    
-                               if (!$site_config["ALLOWEXTERNAL"] && $external == 'yes') {
+                               if (!$config["ALLOWEXTERNAL"] && $external == 'yes') {
                                    $message .= T_("UPLOAD_NO_TRACKER_ANNOUNCE");
                                    echo $message;
                                    continue;
@@ -789,7 +789,7 @@ end_frame();
                                else
                                    $anon = "no";
                    
-                               $ret = DB::run("INSERT INTO torrents (filename, owner, name, descr, category, added, info_hash, size, numfiles, save_as, announce, external, torrentlang, anon, last_action) VALUES (".sqlesc($fname).", '".$CURUSER['id']."', ".sqlesc($name).", ".sqlesc($descr).", '".$catid."', '" . get_date_time() . "', '".$infohash."', '".$torrentsize."', '".$filecount."', ".sqlesc($fname).", '".$announce."', '".$external."', '".$langid."','$anon', '".get_date_time()."')");
+                               $ret = DB::run("INSERT INTO torrents (filename, owner, name, descr, category, added, info_hash, size, numfiles, save_as, announce, external, torrentlang, anon, last_action) VALUES (".sqlesc($fname).", '".$_SESSION['id']."', ".sqlesc($name).", ".sqlesc($descr).", '".$catid."', '" . get_date_time() . "', '".$infohash."', '".$torrentsize."', '".$filecount."', ".sqlesc($fname).", '".$announce."', '".$external."', '".$langid."','$anon', '".get_date_time()."')");
                    
                                $id = $ret->lastInsertId();
                    
@@ -808,7 +808,7 @@ end_frame();
                                copy("$dir/$files[$i]", "uploads/$id.torrent");
                    
                                //EXTERNAL SCRAPE
-                               if ($external=='yes' && $site_config['UPLOADSCRAPE']) {  
+                               if ($external=='yes' && $config['UPLOADSCRAPE']) {  
                                    $tracker        = str_replace("/announce","/scrape",$announce);	
                                    $stats 			= torrent_scrape_url($tracker, $infohash);
                                    $seeders 		= strip_tags($stats['seeds']);
@@ -819,9 +819,9 @@ end_frame();
                                }
                                //END SCRAPE
                    
-                               write_log("Torrent $id ($name) was Uploaded by $CURUSER[username]");
+                               write_log("Torrent $id ($name) was Uploaded by $_SESSION[username]");
                    
-                               $message .= "<br /><b>".T_("UPLOAD_OK")."</b><br /><a href='$site_config[SITEURL]/torrents/read?id=".$id."'>".T_("UPLOAD_VIEW_DL")."</a><br /><br />";
+                               $message .= "<br /><b>".T_("UPLOAD_OK")."</b><br /><a href='$config[SITEURL]/torrents/read?id=".$id."'>".T_("UPLOAD_VIEW_DL")."</a><br /><br />";
                                echo $message;
                                @unlink("$dir/$fname");
                            }
@@ -844,12 +844,12 @@ end_frame();
 
                    public function completed(){
                     dbconn();
-                     global $site_config, $CURUSER, $pdo;
+                     global $config, $pdo;
                   $db = new Database;    
-                    if ($site_config["MEMBERSONLY"]) {
+                    if ($config["MEMBERSONLY"]) {
                         loggedinonly();
                         
-                        if ($CURUSER["view_torrents"] == "no")
+                        if ($_SESSION["view_torrents"] == "no")
                             show_error_msg(T_("ERROR"), T_("NO_TORRENT_VIEW"), 1);
                     }
                                     
@@ -858,7 +858,7 @@ end_frame();
                     $res = DB::run("SELECT name, external, banned FROM torrents WHERE id =?", [$id]);
                     $row = $res->fetch(PDO::FETCH_ASSOC);
                     
-                    if ((!$row) || ($row["banned"] == "yes" && $CURUSER["edit_torrents"] == "no"))
+                    if ((!$row) || ($row["banned"] == "yes" && $_SESSION["edit_torrents"] == "no"))
                          show_error_msg(T_("ERROR"), T_("TORRENT_NOT_FOUND"), 1);
                     if ($row["external"] == "yes")
                          show_error_msg(T_("ERROR"), T_("THIS_TORRENT_IS_EXTERNALLY_TRACKED"), 1);
@@ -883,7 +883,7 @@ end_frame();
                     <?php 
                          while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
                              
-                             if (($row["privacy"] == "strong") && ($CURUSER["edit_users"] == "no"))
+                             if (($row["privacy"] == "strong") && ($_SESSION["edit_users"] == "no"))
                                   continue;
                              
                              $ratio = ($row["downloaded"] > 0) ? $row["uploaded"] / $row["downloaded"] : 0;
@@ -908,12 +908,12 @@ end_frame();
                              public function today(){
                   
                   dbconn();
-                  global $site_config, $CURUSER, $pdo;
+                  global $config, $pdo;
                   //check permissions
-                  if ($site_config["MEMBERSONLY"]){
+                  if ($config["MEMBERSONLY"]){
                       loggedinonly();
                   
-                      if($CURUSER["view_torrents"]=="no")
+                      if($_SESSION["view_torrents"]=="no")
                           show_error_msg(T_("ERROR"), T_("NO_TORRENT_VIEW"), 1);
                   }
                   
@@ -935,7 +935,7 @@ end_frame();
                               $numtor = $res->rowCount();
                   
                               if ($numtor != 0) {
-                                      echo "<b><a href='$site_config[SITEURL]/torrents/browse?cat=".$cat["id"]."'>$cat[name]</a></b>";
+                                      echo "<b><a href='$config[SITEURL]/torrents/browse?cat=".$cat["id"]."'>$cat[name]</a></b>";
                                       # Got to think of a nice way to display this.
                                       #list($pagertop, $pagerbottom, $limit) = pager(1000, $count, "torrents/browse"); //adjust pager to match LIMIT
                                       torrenttable($res);
@@ -951,10 +951,10 @@ end_frame();
                       
                       public function reseed(){
                     dbconn();
-                  global $site_config, $CURUSER, $pdo;
+                  global $config, $pdo;
                     loggedinonly();
                     
-                    if ($CURUSER["view_torrents"] == "no")
+                    if ($_SESSION["view_torrents"] == "no")
                         show_error_msg(T_("ERROR"), T_("NO_TORRENT_VIEW"), 1); 
                   
                     $id = (int) $_GET["id"];
@@ -970,15 +970,15 @@ end_frame();
                     
                     $res2 = DB::run("SELECT users.id FROM completed LEFT JOIN users ON completed.userid = users.id WHERE users.enabled = 'yes' AND users.status = 'confirmed' AND completed.torrentid = $id");
                   
-                    $message = sprintf(T_('RESEED_MESSAGE'), $CURUSER['username'], $site_config['SITEURL'], $id);
+                    $message = sprintf(T_('RESEED_MESSAGE'), $_SESSION['username'], $config['SITEURL'], $id);
                     
                     while ( $row2 = $res2->fetch(PDO::FETCH_ASSOC) )
                     {
-                        DB::run("INSERT INTO `messages` (`subject`, `sender`, `receiver`, `added`, `msg`) VALUES ('".T_("RESEED_MES_SUBJECT")."', '".$CURUSER['id']."', '".$row2['id']."', '".get_date_time()."', ".sqlesc($message).")");
+                        DB::run("INSERT INTO `messages` (`subject`, `sender`, `receiver`, `added`, `msg`) VALUES ('".T_("RESEED_MES_SUBJECT")."', '".$_SESSION['id']."', '".$row2['id']."', '".get_date_time()."', ".sqlesc($message).")");
                     }
                     
-                    if ($row["owner"] && $row["owner"] != $CURUSER["id"])
-                        DB::run("INSERT INTO `messages` (`subject`, `sender`, `receiver`, `added`, `msg`) VALUES ('Torrent Reseed Request', '".$CURUSER['id']."', '".$row['owner']."', '".get_date_time()."', ".sqlesc($message).")");
+                    if ($row["owner"] && $row["owner"] != $_SESSION["id"])
+                        DB::run("INSERT INTO `messages` (`subject`, `sender`, `receiver`, `added`, `msg`) VALUES ('Torrent Reseed Request', '".$_SESSION['id']."', '".$row['owner']."', '".get_date_time()."', ".sqlesc($message).")");
                         
                     setcookie("reseed$id", $id, time() + 86400, '/');
                     
@@ -987,16 +987,16 @@ end_frame();
 
                   public function search(){
                     // Set Current User
-                    // $curuser = $this->userModel->setCurrentUser();
+                    // $_SESSION = $this->userModel->setCurrentUser();
                     // Set Current User
                     // $db = new Database;
             dbconn();
-            global $site_config, $CURUSER;
+            global $config;
             //check permissions
-            if ($site_config["MEMBERSONLY"]){
+            if ($config["MEMBERSONLY"]){
                 loggedinonly();
             
-                if($CURUSER["view_torrents"]=="no")
+                if($_SESSION["view_torrents"]=="no")
                     show_error_msg(T_("ERROR"), T_("NO_TORRENT_VIEW"), 1);
             }
             
@@ -1211,9 +1211,9 @@ end_frame();
             // get all parent cats
             echo "<center><b>".T_("CATEGORIES").":</b> ";
             $catsquery = $this->torrentModel->getCatByParent () ;
-            echo " - <a href='$site_config[SITEURL]torrents/browse'>".T_("SHOWALL")."</a>";
+            echo " - <a href='$config[SITEURL]torrents/browse'>".T_("SHOWALL")."</a>";
             while($catsrow = $catsquery->fetch(PDO::FETCH_ASSOC)){
-                    echo " - <a href='$site_config[SITEURL]torrents/browse?parent_cat=".urlencode($catsrow['parent_cat'])."'>$catsrow[parent_cat]</a>";
+                    echo " - <a href='$config[SITEURL]torrents/browse?parent_cat=".urlencode($catsrow['parent_cat'])."'>$catsrow[parent_cat]</a>";
             }
             echo "</center>";
             
@@ -1230,18 +1230,18 @@ end_frame();
             while ($cat = $cats->fetch(PDO::FETCH_ASSOC)) {
                 $catsperrow = 5;
                 print(($i && $i % $catsperrow == 0) ? "</tr><tr align='right'>" : "");
-                print("<td style=\"padding-bottom: 2px;padding-left: 2px\"><a href='$site_config[SITEURL]/torrents/browse?cat={$cat["id"]}'>".htmlspecialchars($cat["parent_cat"])." - " . htmlspecialchars($cat["name"]) . "</a> <input name='c{$cat["id"]}' type=\"checkbox\" " . (in_array($cat["id"], $wherecatina) || $_GET["cat"] == $cat["id"]  ? "checked='checked' " : "") . "value='1' /></td>\n");
+                print("<td style=\"padding-bottom: 2px;padding-left: 2px\"><a href='$config[SITEURL]/torrents/browse?cat={$cat["id"]}'>".htmlspecialchars($cat["parent_cat"])." - " . htmlspecialchars($cat["name"]) . "</a> <input name='c{$cat["id"]}' type=\"checkbox\" " . (in_array($cat["id"], $wherecatina) || $_GET["cat"] == $cat["id"]  ? "checked='checked' " : "") . "value='1' /></td>\n");
                 $i++;                                                                                                                                                                                                                                                                                                                 
             }
             echo "</tr></table>";
             
             //if we are browsing, display all subcats that are in same cat
             if ($parent_cat){
-                echo "<br /><br /><b>".T_("YOU_ARE_IN").":</b> <a href='$site_config[SITEURL]/torrents/browse?parent_cat=$parent_cat'>$parent_cat</a><br /><b>".T_("SUB_CATS").":</b> ";
+                echo "<br /><br /><b>".T_("YOU_ARE_IN").":</b> <a href='$config[SITEURL]/torrents/browse?parent_cat=$parent_cat'>$parent_cat</a><br /><b>".T_("SUB_CATS").":</b> ";
                 $subcatsquery = $this->torrentModel->getSubCatByParentName ($parent_cat) ;
                 while($subcatsrow = $subcatsquery->fetch(PDO::FETCH_ASSOC)){
                     $name = $subcatsrow['name'];
-                    echo " - <a href='$site_config[SITEURL]/torrents/browse?cat=$subcatsrow[id]'>$name</a>";
+                    echo " - <a href='$config[SITEURL]/torrents/browse?cat=$subcatsrow[id]'>$name</a>";
                 }
             }	
             
@@ -1284,7 +1284,7 @@ end_frame();
                 <option value="2" <?php if ($_GET["freeleech"] == 2) echo "selected='selected'"; ?>><?php echo T_("ONLY_FREELEECH");?></option>
                  </select>
             
-                <?php if ($site_config["ALLOWEXTERNAL"]){?>
+                <?php if ($config["ALLOWEXTERNAL"]){?>
                     <select name="inclexternal">
                      <option value="0"><?php echo T_("LOCAL_EXTERNAL"); ?></option>
                     <option value="1" <?php if ($_GET["inclexternal"] == 1) echo "selected='selected'"; ?>><?php echo T_("LOCAL_ONLY");?></option>
@@ -1347,8 +1347,8 @@ end_frame();
                  
             }
             
-            if ($CURUSER)
-                DB::run("UPDATE users SET last_browse=".gmtime()." WHERE id=$CURUSER[id]");
+            if ($_SESSION['loggedin'])
+                DB::run("UPDATE users SET last_browse=".gmtime()." WHERE id=$_SESSION[id]");
             end_frame();
             stdfoot();
                 }
@@ -1356,12 +1356,12 @@ end_frame();
                 public function browse(){
 
                     dbconn();
-                    global $site_config, $CURUSER, $pdo;
+                    global $config, $pdo;
                     //check permissions
-                    if ($site_config["MEMBERSONLY"]){
+                    if ($config["MEMBERSONLY"]){
                         loggedinonly();
                     
-                        if($CURUSER["view_torrents"]=="no")
+                        if($_SESSION["view_torrents"]=="no")
                             show_error_msg(T_("ERROR"), T_("NO_TORRENT_VIEW"), 1);
                     }
                     
@@ -1451,9 +1451,9 @@ end_frame();
                     // get all parent cats
                     echo "<center><b>".T_("CATEGORIES").":</b> ";
                     $catsquery = $this->torrentModel->getCatByParent () ;
-                    echo " - <a href='$site_config[SITEURL]/torrents/browse'>".T_("SHOW_ALL")."</a>";
+                    echo " - <a href='$config[SITEURL]/torrents/browse'>".T_("SHOW_ALL")."</a>";
                     while($catsrow = $catsquery->fetch(PDO::FETCH_ASSOC)){
-                            echo " - <a href='$site_config[SITEURL]/torrents/browse/?parent_cat=".urlencode($catsrow['parent_cat'])."'>$catsrow[parent_cat]</a>";
+                            echo " - <a href='$config[SITEURL]/torrents/browse/?parent_cat=".urlencode($catsrow['parent_cat'])."'>$catsrow[parent_cat]</a>";
                     }
                     
                     ?>
@@ -1468,7 +1468,7 @@ end_frame();
                     while ($cat = $cats->fetch(PDO::FETCH_ASSOC)) {
                         $catsperrow = 5;
                         print(($i && $i % $catsperrow == 0) ? "</tr><tr align='right'>" : "");
-                        print("<td style=\"padding-bottom: 2px;padding-left: 2px\"><a href='$site_config[SITEURL]/torrents/browse?cat={$cat["id"]}'>".htmlspecialchars($cat["parent_cat"])." - " . htmlspecialchars($cat["name"]) . "</a> <input name='c{$cat["id"]}' type=\"checkbox\" " . (in_array($cat["id"], $wherecatina) || $_GET["cat"] == $cat["id"] ? "checked='checked' " : "") . "value='1' /></td>\n");
+                        print("<td style=\"padding-bottom: 2px;padding-left: 2px\"><a href='$config[SITEURL]/torrents/browse?cat={$cat["id"]}'>".htmlspecialchars($cat["parent_cat"])." - " . htmlspecialchars($cat["name"]) . "</a> <input name='c{$cat["id"]}' type=\"checkbox\" " . (in_array($cat["id"], $wherecatina) || $_GET["cat"] == $cat["id"] ? "checked='checked' " : "") . "value='1' /></td>\n");
                         $i++;
                     }
                     echo "</tr><tr align='center'><td colspan='$catsperrow' align='center'><input type='submit' value='".T_("GO")."' /></td></tr>";
@@ -1481,7 +1481,7 @@ end_frame();
                         $subcatsquery = DB::run("SELECT id, name, parent_cat FROM categories WHERE parent_cat=".sqlesc($parent_cat)." ORDER BY name");
                         while($subcatsrow = $subcatsquery->fetch(PDO::FETCH_ASSOC)){
                             $name = $subcatsrow['name'];
-                            echo " - <a href='$site_config[SITEURL]/torrents/browse?cat=$subcatsrow[id]'>$name</a>";
+                            echo " - <a href='$config[SITEURL]/torrents/browse?cat=$subcatsrow[id]'>$name</a>";
                         }
                     }
                     
@@ -1522,8 +1522,8 @@ end_frame();
                         
                     }
                     
-                    if ($CURUSER)
-                        DB::run("UPDATE users SET last_browse=? WHERE id=?", [gmtime(), $CURUSER['id']]);
+                    if ($_SESSION)
+                        DB::run("UPDATE users SET last_browse=? WHERE id=?", [gmtime(), $_SESSION['id']]);
                     
                     end_frame();
                     stdfoot();

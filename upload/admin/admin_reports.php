@@ -10,7 +10,7 @@ if ($action == "reports" && $do == "view") {
           if (!@count($_POST["reports"])) show_error_msg(T_("ERROR"), "Nothing selected to mark.", 1);
           $ids = array_map("intval", $_POST["reports"]);
           $ids = implode(",", $ids);
-          DB::run("UPDATE reports SET complete = '1', dealtwith = '1', dealtby = '$CURUSER[id]' WHERE id IN ($ids)");
+          DB::run("UPDATE reports SET complete = '1', dealtwith = '1', dealtby = '$_SESSION[id]' WHERE id IN ($ids)");
           header("Refresh: 2; url=".TTURL."/admincp?action=reports&do=view");
           show_error_msg(T_("SUCCESS"), T_("CP_ENTRIES_MARK_COMP"), 1);
       }

@@ -22,10 +22,10 @@ if ($action=="categories" && $do=="view"){
 
 		print("<tr><td class='table_col1'>$priority</td><td class='table_col2'>$parent</td><td class='table_col1'>$name</td><td class='table_col2' align='center'>");
 		if (isset($row["image"]) && $row["image"] != "")
-			print("<img border=\"0\" src=\"" . $site_config['SITEURL'] . "/images/categories/" . $row["image"] . "\" alt=\"" . $row["name"] . "\" />");
+			print("<img border=\"0\" src=\"" . $config['SITEURL'] . "/images/categories/" . $row["image"] . "\" alt=\"" . $row["name"] . "\" />");
 		else
 			print("-");	
-		print("</td><td class='table_col1'><a href='$site_config[SITEURL]/admincp?action=categories&amp;do=edit&amp;id=$id'>[EDIT]</a> <a href='admincp?action=categories&amp;do=delete&amp;id=$id'>[DELETE]</a></td></tr>");
+		print("</td><td class='table_col1'><a href='$config[SITEURL]/admincp?action=categories&amp;do=edit&amp;id=$id'>[EDIT]</a> <a href='admincp?action=categories&amp;do=delete&amp;id=$id'>[DELETE]</a></td></tr>");
 	}
 	echo("</tbody></table></center>");
 	end_frame();

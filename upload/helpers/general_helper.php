@@ -133,28 +133,28 @@ function strtobytes($str)
 
 function usermenu($id)
 {
-    global $site_config, $CURUSER;
+    global $config;
 ?>
     <a href='<?php echo TTURL; ?>/users/profile?id=<?php echo $id; ?>'><button type="button" class="btn btn-sm btn-primary">Profile</button></a>
-    <?php if ($CURUSER["id"] == $id OR $CURUSER["class"] > $site_config['Uploader']) { ?>
+    <?php if ($_SESSION["id"] == $id OR $_SESSION["class"] > $config['Uploader']) { ?>
     <a href='<?php echo TTURL; ?>/users/details?id=<?php echo $id; ?>'><button type="button" class="btn btn-sm btn-primary">Edit</button></a>
     <a href='<?php echo TTURL; ?>/users/preferences?id=<?php echo $id; ?>'><button type="button" class="btn btn-sm btn-primary">Preferences</button></a>&nbsp;
     <a href='<?php echo TTURL; ?>/users/other?id=<?php echo $id; ?>'><button type="button" class="btn btn-sm btn-primary">Other</button></a>&nbsp;
     <?php } ?>
-    <?php if ($CURUSER["id"] == $id ) { ?>
+    <?php if ($_SESSION["id"] == $id ) { ?>
     <a href='<?php echo TTURL; ?>/users/changepw?id=<?php echo $id; ?>'><button type="button" class="btn btn-sm btn-primary">Password</button></a>
     <a href='<?php echo TTURL; ?>/users/email?id=<?php echo $id; ?>'><button type="button" class="btn btn-sm btn-primary">Email</button></a>
     <a href='<?php echo TTURL; ?>/messages'><button type="button" class="btn btn-sm btn-primary">Messages</button></a>
     <a href='<?php echo TTURL; ?>/bonus'><button type="button" class="btn btn-sm btn-primary">Seed Bonus</button></a>
     <?php } ?>
-    <?php if ($CURUSER["view_users"]) { ?>
+    <?php if ($_SESSION["view_users"]) { ?>
     <a href='<?php echo TTURL; ?>/friends'><button type="button" class="btn btn-sm btn-primary">Your Friends</button></a>
     <?php } ?>
-    <?php if ($CURUSER["view_torrents"]) { ?>
+    <?php if ($_SESSION["view_torrents"]) { ?>
     <a href='<?php echo TTURL; ?>/peers/seeding?id=<?php echo $id; ?>'><button type="button" class="btn btn-sm btn-primary">Seeding</button></a>
     <a href='<?php echo TTURL; ?>/peers/uploaded?id=<?php echo $id; ?>'><button type="button" class="btn btn-sm btn-primary">Uploaded</button></a>
     <?php } ?>
-    <?php if ($CURUSER["class"] > $site_config['Uploader']) { ?>
+    <?php if ($_SESSION["class"] > $config['Uploader']) { ?>
     <a href='<?php echo TTURL; ?>/warning?id=<?php echo $id; ?>'><button type="button" class="btn btn-sm btn-primary">Warn</button></a>
     <a href='<?php echo TTURL; ?>/users/admin?id=<?php echo $id; ?>'><button type="button" class="btn btn-sm btn-success">Admin</button></a>
     <?php } 
@@ -162,11 +162,11 @@ function usermenu($id)
 
 function uploadimage($x, $imgname, $tid)
 {
-    global $site_config;
+    global $config;
 
-    $imagesdir = $site_config["torrent_dir"] . "/images";
+    $imagesdir = $config["torrent_dir"] . "/images";
 
-    $allowed_types = &$site_config["allowed_image_types"];
+    $allowed_types = &$config["allowed_image_types"];
 
     if (!($_FILES["image$x"]["name"] == "")) {
         if ($imgname != "") {
@@ -186,7 +186,7 @@ function uploadimage($x, $imgname, $tid)
             show_error_msg(T_("ERROR"), T_("INVALID_FILETYPE_IMAGE"), 1);
         }
 
-        if ($_FILES["image$x"]["size"] > $site_config['image_max_filesize']) {
+        if ($_FILES["image$x"]["size"] > $config['image_max_filesize']) {
             show_error_msg(T_("ERROR"), sprintf(T_("INVAILD_FILE_SIZE_IMAGE"), $y), 1);
         }
 

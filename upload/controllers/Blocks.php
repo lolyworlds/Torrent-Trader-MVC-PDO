@@ -7,15 +7,15 @@
     
     public function edit(){
 dbconn();
-global $site_config, $CURUSER, $pdo;
+global $config, $pdo;
 loggedinonly();
 
-if (!$CURUSER || $CURUSER["control_panel"]!="yes"){
+if (!$_SESSION['loggedin'] || $_SESSION["control_panel"]!="yes"){
     show_error_msg(T_("ERROR"), T_("_ACCESS_DEN_"), 1);
 }
                          
 if ($_GET["preview"]) {
-	$site_config["LEFTNAV"] = $site_config["RIGHTNAV"] = $site_config["MIDDLENAV"] = false;
+	$config["LEFTNAV"] = $config["RIGHTNAV"] = $config["MIDDLENAV"] = false;
 }
 
 stdhead(T_("_BLC_MAN_"));
@@ -107,13 +107,13 @@ if($_POST["upload"] == "true"){
 	}
 
 	if(!$uplfailmessage){
-		$blockfilename = $site_config['blocks_dir'] . "/" . $blockfile['name'];
+		$blockfilename = $config['blocks_dir'] . "/" . $blockfile['name'];
 		if($_POST["uploadonly"]){
 			if(file_exists($blockfilename)){
 				$uplfailmessage .= "<center><font size=\"3\">\"".$blockfile['name']."\"<b> ".T_("_BLC_EXIST_")."</b></font></center><br />";
 			}else{
 				if(@!move_uploaded_file($blockfile["tmp_name"], $blockfilename)){
-					$uplfailmessage .= "<center><font size=\"3\"><b>".T_("_CANNOT_MOVE_")." </b> \"".$blockfile['name']."\" <b>".T_("_TO_DEST_DIR_")."</b></font></center><br />".T_("_CONFIG_DEST_DIR_").": <b>\"".$site_config['blocks_dir']. "\"</b><br />".T_("_PLS_CHECK_")." <b>config.php</b> ".T_("_SURE_FULL_PATH_").". ".T_("_YOUR_CASE_").": <b>\"".$_SERVER['DOCUMENT_ROOT']."\"</b> + <b>\"/".T_("_SUB_DIR_")."\"</b> (".T_("_IF_ANY_").") ".T_("_AND_")." + <b>\"/blocks\"</b>.";
+					$uplfailmessage .= "<center><font size=\"3\"><b>".T_("_CANNOT_MOVE_")." </b> \"".$blockfile['name']."\" <b>".T_("_TO_DEST_DIR_")."</b></font></center><br />".T_("_CONFIG_DEST_DIR_").": <b>\"".$config['blocks_dir']. "\"</b><br />".T_("_PLS_CHECK_")." <b>config.php</b> ".T_("_SURE_FULL_PATH_").". ".T_("_YOUR_CASE_").": <b>\"".$_SERVER['DOCUMENT_ROOT']."\"</b> + <b>\"/".T_("_SUB_DIR_")."\"</b> (".T_("_IF_ANY_").") ".T_("_AND_")." + <b>\"/blocks\"</b>.";
 				}else{
 					$uplsuccessmessage .= "<center><font size=\"3\">\"".$blockfile['name']."\" <b>".T_("_SUCCESS_UPL_")."</b></font></center><br />";
 				}
@@ -123,7 +123,7 @@ if($_POST["upload"] == "true"){
 				$uplfailmessage .= "<center><font size=\"3\">\"".$blockfile['name']."\"<b> ".T_("_BLC_EXIST_")."</b></font></center><br />";
 			}else{
 				if(@!move_uploaded_file($blockfile["tmp_name"], $blockfilename)){
-					$uplfailmessage .= "<center><font size=\"3\"><b>".T_("_CANNOT_MOVE_")." </b> \"".$blockfile['name']."\" <b>".T_("_TO_DEST_DIR_")."</b></font></center><br />".T_("_CONFIG_DEST_DIR_").": <b>\"".$site_config['blocks_dir']. "\"</b><br />".T_("_PLS_CHECK_")." <b>config.php</b> ".T_("_SURE_FULL_PATH_").". ".T_("_YOUR_CASE_").": <b>\"".$_SERVER['DOCUMENT_ROOT']."\"</b> + <b>\"/".T_("_SUB_DIR_")."\"</b> (".T_("_IF_ANY_").") ".T_("_AND_")." + <b>\"/blocks\"</b>.";
+					$uplfailmessage .= "<center><font size=\"3\"><b>".T_("_CANNOT_MOVE_")." </b> \"".$blockfile['name']."\" <b>".T_("_TO_DEST_DIR_")."</b></font></center><br />".T_("_CONFIG_DEST_DIR_").": <b>\"".$config['blocks_dir']. "\"</b><br />".T_("_PLS_CHECK_")." <b>config.php</b> ".T_("_SURE_FULL_PATH_").". ".T_("_YOUR_CASE_").": <b>\"".$_SERVER['DOCUMENT_ROOT']."\"</b> + <b>\"/".T_("_SUB_DIR_")."\"</b> (".T_("_IF_ANY_").") ".T_("_AND_")." + <b>\"/blocks\"</b>.";
 				}else{
 					$named = ($_POST["wantedname"] ? $_POST["wantedname"] : str_replace("_block.php","",$blockfile['name']));
 					$name  = str_replace("_block.php","",$blockfile['name']);
@@ -247,7 +247,7 @@ if ($_REQUEST["edit"] == "true")
 	resortright();
 }// == end edit
 
-echo "<center><a href=\"index.php\">".T_("HOME")."</a>&nbsp;&#8226;&nbsp;<a href=\"$site_config[SITEURL]/admincp\">".T_("ADMIN_CP")."</a>&nbsp;&#8226;&nbsp;<a href=\"$site_config[SITEURL]/admincp?action=blocks&amp;do=view\">".T_("_BLC_MAN_")."</a></center>";
+echo "<center><a href=\"index.php\">".T_("HOME")."</a>&nbsp;&#8226;&nbsp;<a href=\"$config[SITEURL]/admincp\">".T_("ADMIN_CP")."</a>&nbsp;&#8226;&nbsp;<a href=\"$config[SITEURL]/admincp?action=blocks&amp;do=view\">".T_("_BLC_MAN_")."</a></center>";
 
 // ---- <table> for blocks in database -----------------------------------------
 print("<hr />");
@@ -306,11 +306,11 @@ while($blocks2 = $res->fetch(PDO::FETCH_ASSOC)){
 			"<td rowspan=\"2\" class=\"$class\" align=\"center\"><input type=\"checkbox\" name=\"delete[]\" value=\"".$blocks2["id"]."\"/></td>".
 		"</tr>".
 		"<tr>".
-			"<td class=\"$class\" height=\"1%\">".((($blocks2["position"] != "left") && ($blocks2["enabled"] == 1)) ? "<a href=\"blocks/edit?edit=true&amp;position=left&amp;left=".$blocks2["id"]."\"><img border=\"0\" src=\"$site_config[SITEURL]/images/blocks/leftenable.gif\" width=\"18\" height=\"15\"  /></a>" : "<img border=\"0\" src=\"$site_config[SITEURL]/images/blocks/leftdisable.gif\" width=\"18\" height=\"15\" ".($blocks2["enabled"] ? "alt=\"".T_("_AT_LEFT_")."\"" : "")." ".($blocks2["enabled"] ? "onclick=\"javascript: alert('".T_("_AT_LEFT_")."');\"" : "onclick=\"javascript: alert('".T_("_MUST_ENB_FIRST")."');\"")."  />")."</td>".
-			"<td class=\"$class\" height=\"1%\">".((($blocks2["position"] != "middle") && ($blocks2["enabled"] == 1)) ? "<a href=\"blocks/edit?edit=true&amp;position=middle&amp;middle=".$blocks2["id"]."\"><img border=\"0\" src=\"$site_config[SITEURL]/images/blocks/middleenable.gif\" width=\"18\" height=\"15\" /></a>" : "<img border=\"0\" src=\"$site_config[SITEURL]/images/blocks/middledisable.gif\" width=\"18\" height=\"15\" ".($blocks2["enabled"] ? "alt=\"".T_("_AT_CENTER_")."\"" : "")." ".($blocks2["enabled"] ? "onclick=\"javascript: alert('".T_("_AT_CENTER_")."');\"" : "onclick=\"javascript: alert('".T_("_MUST_ENB_FIRST")."');\"")."  />")."</td>".
-			"<td class=\"$class\" height=\"1%\">".((($blocks2["position"] != "right") && ($blocks2["enabled"] == 1)) ? "<a href=\"blocks/edit?edit=true&amp;position=right&amp;right=".$blocks2["id"]."\"><img border=\"0\" src=\"$site_config[SITEURL]/images/blocks/rightenable.gif\" width=\"18\" height=\"15\" /></a>" : "<img border=\"0\" src=\"$site_config[SITEURL]/images/blocks/rightdisable.gif\" width=\"18\" height=\"15\" ".($blocks2["enabled"] ? "alt=\"".T_("_AT_RIGHT_")."\"" : "")." ".($blocks2["enabled"] ? "onclick=\"javascript: alert('".T_("_AT_RIGHT_")."');\"" : "onclick=\"javascript: alert('".T_("_MUST_ENB_FIRST")."');\"")."  />")."</td>".
-			"<td class=\"$class\" height=\"1%\">".((($blocks2["sort"]!= 1) && ($blocks2["enabled"] != 0)) ? "<a href=\"blocks/edit?edit=true&amp;position=".$blocks2["position"]."&amp;sort=".$blocks2["sort"]."&amp;up=".$blocks2["id"]."\"><img border=\"0\" src=\"images/blocks/upenable.gif\" width=\"18\" height=\"15\" /></a>" : "<img border='0' src=\"$site_config[SITEURL]/images/blocks/updisable.gif\" width=\"18\" height=\"15\" alt=\"".($blocks2["enabled"] ? "".T_("_AT_TOP_")."" : "")."\" ".($blocks2["enabled"] ? "onclick=\"javascript: alert('".T_("_AT_TOP_")."');\"" : "onclick=\"javascript: alert('".T_("_MUST_ENB_FIRST")."');\"")." />")."</td>".
-			"<td class=\"$class\" height=\"1%\">".(((($blocks2["sort"] != ($nextleft-1)) && ($blocks2["position"] == "left") || ($blocks2["sort"] != ($nextright-1)) && ($blocks2["position"] == "right") || ($blocks2["sort"] != ($nextmiddle-1)) && ($blocks2["position"] == "middle")) && ($blocks2["enabled"] != 0)) ? "<a href=\"blocks/edit?edit=true&amp;position=".$blocks2["position"]."&amp;sort=".$blocks2["sort"]."&amp;down=".$blocks2["id"]."\"><img border=\"0\" src=\"$site_config[SITEURL]/images/blocks/downenable.gif\" width=\"18\" height=\"15\" /></a>" : "<img border=\"0\" src=\"$site_config[SITEURL]/images/blocks/downdisable.gif\" width=\"18\" height=\"15\" alt=\"".($blocks2["enabled"] ? "".T_("_AT_BOTTOM_")."" : "")."\" ".($blocks2["enabled"] ? "onclick=\"javascript: alert('".T_("_AT_BOTTOM_")."');\"" : "onclick=\"javascript: alert('".T_("_MUST_ENB_FIRST")."');\"")." />")."</td>".
+			"<td class=\"$class\" height=\"1%\">".((($blocks2["position"] != "left") && ($blocks2["enabled"] == 1)) ? "<a href=\"blocks/edit?edit=true&amp;position=left&amp;left=".$blocks2["id"]."\"><img border=\"0\" src=\"$config[SITEURL]/images/blocks/leftenable.gif\" width=\"18\" height=\"15\"  /></a>" : "<img border=\"0\" src=\"$config[SITEURL]/images/blocks/leftdisable.gif\" width=\"18\" height=\"15\" ".($blocks2["enabled"] ? "alt=\"".T_("_AT_LEFT_")."\"" : "")." ".($blocks2["enabled"] ? "onclick=\"javascript: alert('".T_("_AT_LEFT_")."');\"" : "onclick=\"javascript: alert('".T_("_MUST_ENB_FIRST")."');\"")."  />")."</td>".
+			"<td class=\"$class\" height=\"1%\">".((($blocks2["position"] != "middle") && ($blocks2["enabled"] == 1)) ? "<a href=\"blocks/edit?edit=true&amp;position=middle&amp;middle=".$blocks2["id"]."\"><img border=\"0\" src=\"$config[SITEURL]/images/blocks/middleenable.gif\" width=\"18\" height=\"15\" /></a>" : "<img border=\"0\" src=\"$config[SITEURL]/images/blocks/middledisable.gif\" width=\"18\" height=\"15\" ".($blocks2["enabled"] ? "alt=\"".T_("_AT_CENTER_")."\"" : "")." ".($blocks2["enabled"] ? "onclick=\"javascript: alert('".T_("_AT_CENTER_")."');\"" : "onclick=\"javascript: alert('".T_("_MUST_ENB_FIRST")."');\"")."  />")."</td>".
+			"<td class=\"$class\" height=\"1%\">".((($blocks2["position"] != "right") && ($blocks2["enabled"] == 1)) ? "<a href=\"blocks/edit?edit=true&amp;position=right&amp;right=".$blocks2["id"]."\"><img border=\"0\" src=\"$config[SITEURL]/images/blocks/rightenable.gif\" width=\"18\" height=\"15\" /></a>" : "<img border=\"0\" src=\"$config[SITEURL]/images/blocks/rightdisable.gif\" width=\"18\" height=\"15\" ".($blocks2["enabled"] ? "alt=\"".T_("_AT_RIGHT_")."\"" : "")." ".($blocks2["enabled"] ? "onclick=\"javascript: alert('".T_("_AT_RIGHT_")."');\"" : "onclick=\"javascript: alert('".T_("_MUST_ENB_FIRST")."');\"")."  />")."</td>".
+			"<td class=\"$class\" height=\"1%\">".((($blocks2["sort"]!= 1) && ($blocks2["enabled"] != 0)) ? "<a href=\"blocks/edit?edit=true&amp;position=".$blocks2["position"]."&amp;sort=".$blocks2["sort"]."&amp;up=".$blocks2["id"]."\"><img border=\"0\" src=\"images/blocks/upenable.gif\" width=\"18\" height=\"15\" /></a>" : "<img border='0' src=\"$config[SITEURL]/images/blocks/updisable.gif\" width=\"18\" height=\"15\" alt=\"".($blocks2["enabled"] ? "".T_("_AT_TOP_")."" : "")."\" ".($blocks2["enabled"] ? "onclick=\"javascript: alert('".T_("_AT_TOP_")."');\"" : "onclick=\"javascript: alert('".T_("_MUST_ENB_FIRST")."');\"")." />")."</td>".
+			"<td class=\"$class\" height=\"1%\">".(((($blocks2["sort"] != ($nextleft-1)) && ($blocks2["position"] == "left") || ($blocks2["sort"] != ($nextright-1)) && ($blocks2["position"] == "right") || ($blocks2["sort"] != ($nextmiddle-1)) && ($blocks2["position"] == "middle")) && ($blocks2["enabled"] != 0)) ? "<a href=\"blocks/edit?edit=true&amp;position=".$blocks2["position"]."&amp;sort=".$blocks2["sort"]."&amp;down=".$blocks2["id"]."\"><img border=\"0\" src=\"$config[SITEURL]/images/blocks/downenable.gif\" width=\"18\" height=\"15\" /></a>" : "<img border=\"0\" src=\"$config[SITEURL]/images/blocks/downdisable.gif\" width=\"18\" height=\"15\" alt=\"".($blocks2["enabled"] ? "".T_("_AT_BOTTOM_")."" : "")."\" ".($blocks2["enabled"] ? "onclick=\"javascript: alert('".T_("_AT_BOTTOM_")."');\"" : "onclick=\"javascript: alert('".T_("_MUST_ENB_FIRST")."');\"")." />")."</td>".
 		"</tr>");
 }	
 print("<tr>".

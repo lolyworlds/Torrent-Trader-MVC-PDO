@@ -1,5 +1,5 @@
 <?php
-if ($CURUSER) {
+if ($_SESSION['loggedin']) {
 begin_block(T_("SERVER_LOAD"));
 
 //Get average CPU usage 

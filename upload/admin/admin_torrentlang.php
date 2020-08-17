@@ -5,7 +5,7 @@ if ($action=="torrentlangs" && $do=="view"){
     require 'views/admin/header.php';
 	adminnavmenu();
 	begin_frame(T_("TORRENT_LANGUAGES"));
-	echo "<center><a href='$site_config[SITEURL]/admincp?action=torrentlangs&amp;do=add'><b>Add New Language</b></a></center>";
+	echo "<center><a href='$config[SITEURL]/admincp?action=torrentlangs&amp;do=add'><b>Add New Language</b></a></center>";
 
 	print("<i>Please note that language image is optional</i><br />");
 
@@ -19,10 +19,10 @@ if ($action=="torrentlangs" && $do=="view"){
 
 		print("<tr><td class='table_col1' align='center'>$priority</td><td class='table_col2'>$name</td><td class='table_col1' width='50' align='center'>");
 		if (isset($row["image"]) && $row["image"] != "")
-			print("<img border=\"0\" src=\"$site_config[SITEURL]/images/languages/" . $row["image"] . "\" alt=\"" . $row["name"] . "\" />");
+			print("<img border=\"0\" src=\"$config[SITEURL]/images/languages/" . $row["image"] . "\" alt=\"" . $row["name"] . "\" />");
 		else
 			print("-");	
-		print("</td><td class='table_col1'><a href='$site_config[SITEURL]/admincp?action=torrentlangs&amp;do=edit&amp;id=$id'>[EDIT]</a> <a href='$site_config[SITEURL]/admincp?action=torrentlangs&amp;do=delete&amp;id=$id'>[DELETE]</a></td></tr>");
+		print("</td><td class='table_col1'><a href='$config[SITEURL]/admincp?action=torrentlangs&amp;do=edit&amp;id=$id'>[EDIT]</a> <a href='$config[SITEURL]/admincp?action=torrentlangs&amp;do=delete&amp;id=$id'>[DELETE]</a></td></tr>");
 	}
 	echo("</tbody></table></center>");
 	end_frame();
@@ -138,7 +138,7 @@ if ($action=="torrentlangs" && $do=="add"){
 	adminnavmenu();
 
 	begin_frame("Add Language");
-	print("<center><form method='post' action='$site_config[SITEURL]/admincp'>\n");
+	print("<center><form method='post' action='$config[SITEURL]/admincp'>\n");
 	print("<input type='hidden' name='action' value='torrentlangs' />\n");
 	print("<input type='hidden' name='do' value='takeadd' />\n");
 

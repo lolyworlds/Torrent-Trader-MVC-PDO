@@ -10,19 +10,19 @@ class Friends extends Controller
     public function index()
     {
         dbconn();
-        global $site_config, $CURUSER;
+        global $config;
         loggedinonly();
 
         $userid = (int) $_GET['id'];
         if (!$userid) {
-            $userid = $CURUSER['id'];
+            $userid = $_SESSION['id'];
         }
 
-        if (!is_valid_id($CURUSER["id"])) {
+        if (!is_valid_id($_SESSION["id"])) {
             show_error_msg("Error", "Invalid ID $userid.", 1);
         }
 
-        if (!$CURUSER["id"]) {
+        if (!$_SESSION["id"]) {
             show_error_msg("Error", "Access denied", 1);
         }
 
@@ -31,7 +31,7 @@ class Friends extends Controller
 
         stdhead("Personal lists for " . $user['username']);
         begin_frame("Personal lists for " . class_user_colour($user['username']) . "");
-        usermenu($CURUSER["id"]);
+        usermenu($_SESSION["id"]);
         print("<table class=table_table align=center width=90% border=0 cellspacing=0 cellpadding=0><tr><td>");
         print("<div style='margin-top:20px; margin-bottom:10px' align=left><font size=2><b>List of friends</b></font></div>\n");
         print("<table align=center width=100% border=1 cellspacing=0 cellpadding=5><tr><td class=table_col1>");
@@ -47,15 +47,15 @@ class Friends extends Controller
                 if (!$title);
                 $title = get_user_class_name($friend["class"]);
 
-                $body = "<a href=$site_config[SITEURL]/users/profile?id=" . $friend['id'] . "><b>" . class_user_colour($friend['name']) . "</b></a> &nbsp;
-			<a href=$site_config[SITEURL]/messages/create?id=" . $friend['id'] . "><img src=$site_config[SITEURL]/images/button_pm.gif title=Send&nbsp;PM border=0></a>&nbsp;
-			<a href=friends/delete?id=$userid&type=friend&targetid=" . $friend['id'] . "><img src=$site_config[SITEURL]/images/delete.png title=Remove border=0></a>
+                $body = "<a href=$config[SITEURL]/users/profile?id=" . $friend['id'] . "><b>" . class_user_colour($friend['name']) . "</b></a> &nbsp;
+			<a href=$config[SITEURL]/messages/create?id=" . $friend['id'] . "><img src=$config[SITEURL]/images/button_pm.gif title=Send&nbsp;PM border=0></a>&nbsp;
+			<a href=friends/delete?id=$userid&type=friend&targetid=" . $friend['id'] . "><img src=$config[SITEURL]/images/delete.png title=Remove border=0></a>
 			<div style='margin-top:10px; margin-bottom:2px'>Last seen: " . date("<\\b>d.M.Y<\\/\\b> H:i", utc_to_tz_time($friend['last_access'])) . "</div>
 			[<b>" . get_elapsed_time(sql_timestamp_to_unix_timestamp($friend['last_access'])) . " ago</b>]";
 
                 $avatar = htmlspecialchars($friend["avatar"]);
                 if (!$avatar) {
-                    $avatar = "$site_config[SITEURL]/images/default_avatar.png";
+                    $avatar = "$config[SITEURL]/images/default_avatar.png";
                 }
 
                 if ($i % 2 == 0) {
@@ -100,7 +100,7 @@ class Friends extends Controller
                     $blocked .= "<tr>";
                 }
 
-                $blocked .= "<td style='border:none; padding:4px; spacing:0px'><a href=$site_config[SITEURL]/users/profile?id=" . $block['id'] . "><b>" . class_user_colour($block['name']) . "</b></a> <a href=friends/delete?id=$userid&type=block&targetid=" . $block['id'] . "><img src=images/delete.png title=Remove border=0></a></td>";
+                $blocked .= "<td style='border:none; padding:4px; spacing:0px'><a href=$config[SITEURL]/users/profile?id=" . $block['id'] . "><b>" . class_user_colour($block['name']) . "</b></a> <a href=friends/delete?id=$userid&type=block&targetid=" . $block['id'] . "><img src=images/delete.png title=Remove border=0></a></td>";
                 if ($i % 6 == 5) {
                     $blocked .= "</tr>";
                 }
@@ -117,7 +117,7 @@ class Friends extends Controller
         print("$blocked\n");
         print("</td></tr></table>\n");
         print("</td></tr></table>\n");
-        print("<div style='margin-top:20px; margin-bottom:10px' align='center'>[<a href=$site_config[SITEURL]/groups/members><b>Browse Members List</b></a>]</div>");
+        print("<div style='margin-top:20px; margin-bottom:10px' align='center'>[<a href=$config[SITEURL]/groups/members><b>Browse Members List</b></a>]</div>");
         print("</td></tr></table>\n");
 
         end_frame();
@@ -128,7 +128,7 @@ class Friends extends Controller
     public function add()
     {
         dbconn();
-        global $site_config, $CURUSER;
+        global $config;
         loggedinonly();
         $targetid = (int) $_GET['targetid'];
         $type = $_GET['type'];
@@ -138,22 +138,22 @@ class Friends extends Controller
         }
 
         if ($type == 'friend') {
-            $r = DB::run("SELECT id FROM friends WHERE userid=$CURUSER[id] AND userid=$targetid");
+            $r = DB::run("SELECT id FROM friends WHERE userid=$_SESSION[id] AND userid=$targetid");
             if ($r->rowCount() == 1) {
                 show_error_msg("Error", "User ID $targetid is already in your friends list.", 1);
             }
 
-            DB::run("INSERT INTO friends (id, userid, friendid, friend) VALUES (0,$CURUSER[id], $targetid, 'friend')");
-            header("Location: " . $site_config['SITEURL'] . "/friends?id=$CURUSER[id]");
+            DB::run("INSERT INTO friends (id, userid, friendid, friend) VALUES (0,$_SESSION[id], $targetid, 'friend')");
+            header("Location: " . $config['SITEURL'] . "/friends?id=$_SESSION[id]");
             die();
         } elseif ($type == 'block') {
-            $r = DB::run("SELECT id FROM friends WHERE userid=$CURUSER[id] AND userid=$targetid");
+            $r = DB::run("SELECT id FROM friends WHERE userid=$_SESSION[id] AND userid=$targetid");
             if ($r->rowCount() == 1) {
                 show_error_msg("Error", "User ID $targetid is already in your friends list.", 1);
             }
 
-            DB::run("INSERT INTO friends (id, userid, friendid, friend) VALUES (0,$CURUSER[id], $targetid, 'enemy')");
-            header("Location: " . $site_config['SITEURL'] . "/friends?id=$CURUSER[id]");
+            DB::run("INSERT INTO friends (id, userid, friendid, friend) VALUES (0,$_SESSION[id], $targetid, 'enemy')");
+            header("Location: " . $config['SITEURL'] . "/friends?id=$_SESSION[id]");
             die();
         } else {
             show_error_msg("Error", "Unknown type $type", 1);
@@ -164,7 +164,7 @@ class Friends extends Controller
     public function delete()
     {
         dbconn();
-        global $site_config, $CURUSER;
+        global $config;
         loggedinonly();
         $targetid = (int) $_GET['targetid'];
         $sure = htmlentities($_GET['sure']);
@@ -173,22 +173,22 @@ class Friends extends Controller
         if ($type != "block") {$typ = "friend from list";} else { $typ = "blocked user from list";}
 
         if (!is_valid_id($targetid)) {
-            show_error_msg("Error", "Invalid ID $CURUSER[id].", 1);
+            show_error_msg("Error", "Invalid ID $_SESSION[id].", 1);
         }
 
         if (!$sure) {
-            show_error_msg("Delete $type", "<div style='margin-top:10px; margin-bottom:10px' align='center'>Do you really want to delete this $typ? &nbsp; \n" . "<a href=?id=$CURUSER[id]/delete&type=$type&targetid=$targetid&sure=1>Yes</a> | <a href=friends.php>No</a></div>", 1);
+            show_error_msg("Delete $type", "<div style='margin-top:10px; margin-bottom:10px' align='center'>Do you really want to delete this $typ? &nbsp; \n" . "<a href=?id=$_SESSION[id]/delete&type=$type&targetid=$targetid&sure=1>Yes</a> | <a href=friends.php>No</a></div>", 1);
         }
 
         if ($type == 'friend') {
-            $stmt = DB::run("DELETE FROM friends WHERE userid=$CURUSER[id] AND friendid=$targetid AND friend=friend");
+            $stmt = DB::run("DELETE FROM friends WHERE userid=$_SESSION[id] AND friendid=$targetid AND friend=friend");
             if ($stmt->rowCount() == 0) {
                 show_error_msg("Error", "No friend found with ID $targetid", 1);
             }
 
             $frag = "friends";
         } elseif ($type == 'block') {
-            $stmt = DB::run("DELETE FROM friends WHERE userid=$CURUSER[id] AND friendid=$targetid AND friend=?", ['enemy']);
+            $stmt = DB::run("DELETE FROM friends WHERE userid=$_SESSION[id] AND friendid=$targetid AND friend=?", ['enemy']);
             if ($stmt->rowCount() == 0) {
                 show_error_msg("Error", "No block found with ID $targetid", 1);
             }
@@ -198,7 +198,7 @@ class Friends extends Controller
             show_error_msg("Error", "Unknown type $type", 1);
         }
 
-        header("Location: " . $site_config['SITEURL'] . "/friends?id=$CURUSER[id]#$frag");
+        header("Location: " . $config['SITEURL'] . "/friends?id=$_SESSION[id]#$frag");
         die;
     }
 }

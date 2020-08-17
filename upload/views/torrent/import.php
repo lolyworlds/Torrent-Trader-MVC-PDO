@@ -29,7 +29,7 @@
                    $language .= "</select>\n";
                    print ("<tr><td align='right'>Language: </td><td align='left'>".$language."</td></tr>");
                    $anonycheck = '';
-                   if ($site_config['ANONYMOUSUPLOAD']){ ?>
+                   if ($config['ANONYMOUSUPLOAD']){ ?>
                        <tr><td align="right"><?php echo T_("UPLOAD_ANONY");?>: </td><td><?php printf("<input name='anonycheck' value='yes' type='radio' " . ($anonycheck ? " checked='checked'" : "") . " />Yes <input name='anonycheck' value='no' type='radio' " . (!$anonycheck ? " checked='checked'" : "") . " />No"); ?> &nbsp;<?php echo T_("UPLOAD_ANONY_MSG");?>
                        </td></tr>
                    

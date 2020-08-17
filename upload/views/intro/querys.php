@@ -119,13 +119,13 @@ echo '<div style="font-size:1.25em;color:red">$peerupd = DB::run("UPDATE name, p
           print ("<div id='result'></div>");
 begin_frame("result");
 echo '<div style="font-size:1.25em;color:orange">SQLI: </div>';
-echo '<div style="font-size:1.25em;color:red">$res = SQL_Query_exec("SELECT COUNT(*) FROM messages WHERE `sender` = " . $CURUSER["id"] . " AND `location` = template");
+echo '<div style="font-size:1.25em;color:red">$res = SQL_Query_exec("SELECT COUNT(*) FROM messages WHERE `sender` = " . $_SESSION["id"] . " AND `location` = template");
 </br>$template = mysqli_result($res, 0); </div></br>';
 echo '<div style="font-size:1.25em;color:orange">PDO: </div>';
-echo '<div style="font-size:1.25em;color:red">$res = DB::run(""SELECT COUNT(*) FROM messages WHERE `sender` = " . $CURUSER["id"] . " AND `location` = template");
+echo '<div style="font-size:1.25em;color:red">$res = DB::run(""SELECT COUNT(*) FROM messages WHERE `sender` = " . $_SESSION["id"] . " AND `location` = template");
 </br>$template = $res->fetchColumn(); </div></br>';
 echo '<div style="font-size:1.25em;color:orange">PREPARED STATEMENT: </div>';
-echo '<div style="font-size:1.25em;color:red">$res = DB::run(""SELECT COUNT(*) FROM messages WHERE `sender` = ? AND `location` =?", [".$CURUSER["id"]."],[template]);
+echo '<div style="font-size:1.25em;color:red">$res = DB::run(""SELECT COUNT(*) FROM messages WHERE `sender` = ? AND `location` =?", [".$_SESSION["id"]."],[template]);
 </br>$template = $res->fetchColumn(); </div>';
           end_frame();
           

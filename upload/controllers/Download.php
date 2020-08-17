@@ -7,24 +7,24 @@
     
     public function index(){
 dbconn();
-global $site_config, $CURUSER;
+global $config;
 
 // Bann Download
 ////////////////////////bann download ///////////////////////////////////////////////////
-$subbanned = DB::run("SELECT id FROM users WHERE id=? AND downloadbanned=? LIMIT 1", [$CURUSER['id'], 'no']);
+$subbanned = DB::run("SELECT id FROM users WHERE id=? AND downloadbanned=? LIMIT 1", [$_SESSION['id'], 'no']);
 if ($subbanned->rowCount() < 1){
 	autolink(TTURL."/index", "You are banned from downloading please contact staff if you feel this is a mistake !");
 }
 
 if ($_GET["passkey"]) {
-	$CURUSER = DB::run("SELECT * FROM users INNER JOIN groups ON users.class=groups.group_id WHERE passkey=? AND enabled=? AND status=?", [$_GET["passkey"], 'yes', 'confirmed'])->fetch();
+	// todo $_SESSION = DB::run("SELECT * FROM users INNER JOIN groups ON users.class=groups.group_id WHERE passkey=? AND enabled=? AND status=?", [$_GET["passkey"], 'yes', 'confirmed'])->fetch();
 }
 
 //check permissions
-if ($site_config["MEMBERSONLY"]){
+if ($config["MEMBERSONLY"]){
 	loggedinonly();
 	
-	if($CURUSER["can_download"]=="no")
+	if($_SESSION["can_download"]=="no")
 		show_error_msg(T_("ERROR"), T_("NO_PERMISSION_TO_DOWNLOAD"), 1);
 }
 
@@ -37,15 +37,15 @@ $res = DB::run("SELECT filename, banned, external, announce, owner FROM torrents
 $row = $res->fetch(PDO::FETCH_ASSOC);
 
     // LIKE MOD
-    if($CURUSER["id"] != $row["owner"] && $site_config["forcethanks"]) {
-    $data = DB::run("SELECT user FROM thanks WHERE thanked = ? & type = ? & user = ?", [$id, 'torrent', $CURUSER['id']]);
+    if($_SESSION["id"] != $row["owner"] && $config["forcethanks"]) {
+    $data = DB::run("SELECT user FROM thanks WHERE thanked = ? & type = ? & user = ?", [$id, 'torrent', $_SESSION['id']]);
     $like = $data->fetch(PDO::FETCH_ASSOC);
     if(!$like){
         show_error_msg(T_("ERROR"), T_("PLEASE_THANK"), 1);
     }
     }
 
-$torrent_dir = $site_config["torrent_dir"];
+$torrent_dir = $config["torrent_dir"];
 
 $fn = "$torrent_dir/$id.torrent";
 
@@ -59,7 +59,7 @@ if (!is_readable($fn))
 	show_error_msg(T_("FILE_NOT_FOUND"), T_("FILE_UNREADABLE"), 1);
 
 $name = $row['filename'];
-$friendlyurl = str_replace("http://","",$site_config["SITEURL"]);
+$friendlyurl = str_replace("http://","",$config["SITEURL"]);
 $friendlyname = str_replace(".torrent","",$name);
 $friendlyext = ".torrent";
 $name = $friendlyname ."[". $friendlyurl ."]". $friendlyext;
@@ -67,11 +67,11 @@ $name = $friendlyname ."[". $friendlyurl ."]". $friendlyext;
 DB::run("UPDATE torrents SET hits = hits + 1 WHERE id = $id");
 
 // if user dont have a passkey generate one, only if current member, note - it was membersonly
-if ($CURUSER){
-	if (strlen($CURUSER['passkey']) != 32) {
+if ($_SESSION['loggedin']){
+	if (strlen($_SESSION['passkey']) != 32) {
 		$rand = array_sum(explode(" ", microtime()));
-		$CURUSER['passkey'] = md5($CURUSER['username'].$rand.$CURUSER['secret'].($rand*mt_rand()));
-		DB::run("UPDATE users SET passkey=? WHERE id=?", [$CURUSER['passkey'], $CURUSER['id']]);
+		$_SESSION['passkey'] = md5($_SESSION['username'].$rand.$_SESSION['secret'].($rand*mt_rand()));
+		DB::run("UPDATE users SET passkey=? WHERE id=?", [$_SESSION['passkey'], $_SESSION['id']]);
 	}
 }
 
@@ -79,10 +79,10 @@ require_once("classes/BDecode.php");
 require_once("classes/BEncode.php");
 
 // if not external and current member, note - it was membersonly
-if ($row["external"]!='yes' && $CURUSER){// local torrent so add passkey
+if ($row["external"]!='yes' && $_SESSION['loggedin']){// local torrent so add passkey
 	// BDe Class
 	$dict = BDecode(file_get_contents($fn));
-	$dict['announce'] = sprintf($site_config["PASSKEYURL"], $CURUSER["passkey"]);
+	$dict['announce'] = sprintf($config["PASSKEYURL"], $_SESSION["passkey"]);
 	unset($dict['announce-list']);
 
 	// BEn Class

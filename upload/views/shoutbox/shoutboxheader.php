@@ -1,6 +1,6 @@
 <html>
 <head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title><?php echo $site_config['SITENAME'] . T_("SHOUTBOX"); ?></title>
+<title><?php echo $config['SITENAME'] . T_("SHOUTBOX"); ?></title>
 <?php /* If you do change the refresh interval, you should also change index.php printf(T_("SHOUTBOX_REFRESH"), 5) the 5 is in minutes */ ?>
 <meta http-equiv="refresh" content="300" />
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->

@@ -11,10 +11,10 @@ class Admincp extends Controller
     {
         // Lets try walkthrough this
         dbconn();
-        global $site_config, $CURUSER, $THEME;
+        global $config, $THEME;
         // Checks
         loggedinonly();
-        if (!$CURUSER || $CURUSER["control_panel"] != "yes") {
+        if (!$_SESSION['loggedin'] || $_SESSION["control_panel"] != "yes") {
             show_error_msg(T_("ERROR"), T_("SORRY_NO_RIGHTS_TO_ACCESS"), 1);
         }
         // Calls
@@ -23,7 +23,7 @@ class Admincp extends Controller
         // navbar to pass round
         function adminnavmenu()
         {
-            global $site_config;
+            global $config;
             //Get Last Cleanup
             $row = DB::run("SELECT last_time FROM tasks WHERE task =?", ['cleanup'])->fetchColumn();
             if (!$row) {
@@ -35,13 +35,13 @@ class Admincp extends Controller
             <div class="card w-100 ">
             <div class="border border-primary">
             <?php
-            echo "<center>Last cleanup performed: " . $lastclean . " ago [<a href='$site_config[SITEURL]/admincp?action=forceclean'><b>" . T_("FORCE_CLEAN") . "</b></a>]</center>";
-            if ($site_config["ttversion"] != "PDO") {
+            echo "<center>Last cleanup performed: " . $lastclean . " ago [<a href='$config[SITEURL]/admincp?action=forceclean'><b>" . T_("FORCE_CLEAN") . "</b></a>]</center>";
+            if ($config["ttversion"] != "PDO") {
                 $file = @file_get_contents('https://www.torrenttradertest.uk/ttversion.php');
-                if ($site_config['ttversion'] >= $file) {
-                    echo "<br /><center><b>" . T_("YOU_HAVE_LATEST_VER_INSTALLED") . " $site_config[ttversion]</b></center>";
+                if ($config['ttversion'] >= $file) {
+                    echo "<br /><center><b>" . T_("YOU_HAVE_LATEST_VER_INSTALLED") . " $config[ttversion]</b></center>";
                 } else {
-                    echo "<br /><center><b><font class='error'>" . T_("NEW_VERSION_OF_TT_NOW_AVAIL") . ": v" . $file . " you have " . $site_config['ttversion'] . "<br /> Please visit <a href=http://www.torrenttrader.xyz/>TorrentTrader.xyz</a> to upgrade.</font></b></center>";
+                    echo "<br /><center><b><font class='error'>" . T_("NEW_VERSION_OF_TT_NOW_AVAIL") . ": v" . $file . " you have " . $config['ttversion'] . "<br /> Please visit <a href=http://www.torrenttrader.xyz/>TorrentTrader.xyz</a> to upgrade.</font></b></center>";
                 }
             }
 
@@ -55,7 +55,7 @@ class Admincp extends Controller
             $pending = get_row_count("users", "WHERE status = 'pending' AND invited_by = '0'");
             echo "<center><b>" . T_("USERS_AWAITING_VALIDATION") . ":</b> <a href='/admincp?action=confirmreg'><b>($pending)</b></a></center>";
             echo "<center>" . T_("VERSION_MYSQL") . ": <b>" . $mysqlver . "</b>&nbsp;-&nbsp;" . T_("VERSION_PHP") . ": <b>" . phpversion() . "</b>&nbsp;-&nbsp;" . T_("Apache Version") . ": <b>" . apache_version() . "</b></center>";
-            echo "<center><a href=$site_config[SITEURL]/admincp?action=prune><b>Prune Cache</b></a><br></center>";
+            echo "<center><a href=$config[SITEURL]/admincp?action=prune><b>Prune Cache</b></a><br></center>";
 
             echo '</div></div><br>';
         }

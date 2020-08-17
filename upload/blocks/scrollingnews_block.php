@@ -1,6 +1,6 @@
 <?php
-if ($CURUSER) {
-    if ($site_config['NEWSON']) { //check news is turned on first
+if ($_SESSION['loggedin']) {
+    if ($config['NEWSON']) { //check news is turned on first
         begin_block(T_("LATEST_NEWS"));
 
         $res = $pdo->run("SELECT * FROM news ORDER BY added DESC LIMIT 10");

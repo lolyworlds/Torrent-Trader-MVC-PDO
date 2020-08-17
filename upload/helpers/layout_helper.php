@@ -2,11 +2,11 @@
 // Header Creation Function
 function stdhead($title = "")
 {
-    global $site_config, $CURUSER, $THEME, $LANGUAGE; //Define globals
+    global $config, $THEME, $LANGUAGE; //Define globals
     //site online check
-    if (!$site_config["SITE_ONLINE"]) {
-        if ($CURUSER["control_panel"] != "yes") {
-            echo '<br /><br /><br /><center>' . stripslashes($site_config["OFFLINEMSG"]) . '</center><br /><br />';
+    if (!$config["SITE_ONLINE"]) {
+        if ($_SESSION["control_panel"] != "yes") {
+            echo '<br /><br /><br /><center>' . stripslashes($config["OFFLINEMSG"]) . '</center><br /><br />';
             die;
         } else {
             echo '<br /><br /><br /><center><b><font color="#ff0000">SITE OFFLINE, STAFF ONLY VIEWING! DO NOT LOGOUT</font></b><br />If you logout please edit config/config.php and set SITE_ONLINE to true </center><br /><br />';
@@ -14,14 +14,14 @@ function stdhead($title = "")
     }
     //end check
 
-    if (!$CURUSER) {
+    if (!$_SESSION['loggedin']) {
         guestadd();
     }
 
     if ($title == "") {
-        $title = $site_config['SITENAME'];
+        $title = $config['SITENAME'];
     } else {
-        $title = $site_config['SITENAME'] . " : " . htmlspecialchars($title);
+        $title = $config['SITENAME'] . " : " . htmlspecialchars($title);
     }
 
     require_once "views/themes/" . $THEME . "/header.php";
@@ -29,14 +29,14 @@ function stdhead($title = "")
 // End of page creation function
 function stdfoot()
 {
-    global $site_config, $CURUSER, $THEME, $LANGUAGE;
+    global $config, $THEME, $LANGUAGE;
     require_once "views/themes/" . $THEME . "/footer.php";
 }
 
 //BEGIN FRAME
 function begin_frame($caption = "-", $align = "justify")
 {
-    global $THEME, $site_config;
+    global $THEME, $config;
 
     $blockId = 'f-' . sha1($caption);
     ?>
@@ -51,7 +51,7 @@ function begin_frame($caption = "-", $align = "justify")
 //END FRAME
 function end_frame()
 {
-    global $THEME, $site_config;
+    global $THEME, $config;
     ?>
         </div>
     </div><br />

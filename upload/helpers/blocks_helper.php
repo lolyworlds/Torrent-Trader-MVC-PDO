@@ -2,7 +2,7 @@
 // Function For Left Blocks
 function leftblocks()
 {
-    global $site_config, $CURUSER, $THEME, $LANGUAGE, $pdo, $blockfilename; //Define globals
+    global $config, $THEME, $LANGUAGE, $pdo, $blockfilename; //Define globals
     $TTCache = new Cache();
     if (($blocks = $TTCache->get("blocks_left", 900)) === false) {
         $res = $pdo->run("SELECT * FROM blocks WHERE position='left' AND enabled=1 ORDER BY sort");
@@ -20,7 +20,7 @@ function leftblocks()
 // Function For Right Blocks
 function rightblocks()
 {
-    global $site_config, $CURUSER, $THEME, $LANGUAGE, $pdo, $blockfilename; //Define globals
+    global $config, $THEME, $LANGUAGE, $pdo, $blockfilename; //Define globals
     $TTCache = new Cache();
     if (($blocks = $TTCache->get("blocks_right", 900)) === false) {
         $res = $pdo->run("SELECT * FROM blocks WHERE position='right' AND enabled=1 ORDER BY sort");
@@ -38,7 +38,7 @@ function rightblocks()
 // Function For Middle Blocks
 function middleblocks()
 {
-    global $site_config, $CURUSER, $THEME, $LANGUAGE, $pdo; //Define globals
+    global $config, $THEME, $LANGUAGE, $pdo; //Define globals
     $TTCache = new Cache();
     if (($blocks = $TTCache->get("blocks_middle", 900)) === false) {
         $res = $pdo->run("SELECT * FROM blocks WHERE position='middle' AND enabled=1 ORDER BY sort");
@@ -56,7 +56,7 @@ function middleblocks()
 // BEGIN BLOCK
 function begin_block($caption = "-", $align = "justify")
 {
-    global $THEME, $pdo, $site_config;
+    global $THEME, $pdo, $config;
 
     $blockId = 'b-' . sha1($caption);
     ?>
@@ -71,7 +71,7 @@ function begin_block($caption = "-", $align = "justify")
 // END BLOCK
 function end_block()
 {
-    global $THEME, $pdo, $site_config;
+    global $THEME, $pdo, $config;
     ?>
         </div>
     </div><br />

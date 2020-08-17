@@ -6,7 +6,7 @@ if($action == "censor") {
 	$title = T_("Censor");
 	require 'views/admin/header.php';
 adminnavmenu();
-if($site_config["OLD_CENSOR"])
+if($config["OLD_CENSOR"])
 {
 //Output
 if ($_POST['submit'] == 'Add Censor'){

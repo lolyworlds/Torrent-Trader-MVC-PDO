@@ -8,7 +8,7 @@
      if ($do == 'save')
      {                             
          #$file = new SplFileObject('helpers/config.php', 'w');                                
-         #$file->fwrite('<?php ' . "\r\n\r\n" . '$site_config = ' . var_export((array)$site_config, true) . ';');
+         #$file->fwrite('<?php ' . "\r\n\r\n" . '$config = ' . var_export((array)$config, true) . ';');
          write_log( '<pre>', print_r($_POST, true), '</pre>' );
          die;
      }                               
@@ -106,7 +106,7 @@ jQuery(document).ready(function() {
      </script>
 
      <form id="dd-form" method="post" action="admincp?action=settings&amp;do=save">
-     <input type="hidden" name="sort_order" id="sort_order" value="<?php echo $site_config['torrenttable_columns']; ?>" />
+     <input type="hidden" name="sort_order" id="sort_order" value="<?php echo $config['torrenttable_columns']; ?>" />
      <table border="0" width="100%" cellpadding="3" cellspacing="3">
  
      <!-- File Path(s) -->
@@ -115,19 +115,19 @@ jQuery(document).ready(function() {
      </tr>
      <tr>
           <td>Path to directory where .torrents will be stored:</td>
-          <td><input type="text" name="site_config[torrent_dir]" value="<?php echo $site_config['torrent_dir']; ?>" size="50" /></td>
+          <td><input type="text" name="site_config[torrent_dir]" value="<?php echo $config['torrent_dir']; ?>" size="50" /></td>
      </tr>
      <tr>
           <td>Path to directory where .nfo's will be stored:</td>
-          <td><input type="text" name="site_config[nfo_dir]" value="<?php echo $site_config['nfo_dir']; ?>" size="50" /></td>
+          <td><input type="text" name="site_config[nfo_dir]" value="<?php echo $config['nfo_dir']; ?>" size="50" /></td>
      </tr>
      <tr>
           <td>Path to directory where blocks's will be stored:</td>
-          <td><input type="text" name="site_config[blocks_dir]" value="<?php echo $site_config['blocks_dir']; ?>" size="50" /></td>
+          <td><input type="text" name="site_config[blocks_dir]" value="<?php echo $config['blocks_dir']; ?>" size="50" /></td>
      </tr>
      <tr>
           <td>Path to directory where <i>Disk</i> cache will be stored:</td>
-          <td><input type="text" name="site_config[cache_dir]" value="<?php echo $site_config['cache_dir']; ?>" size="50" /></td>
+          <td><input type="text" name="site_config[cache_dir]" value="<?php echo $config['cache_dir']; ?>" size="50" /></td>
      </tr>
      <!-- File Path(s) -->
      
@@ -137,15 +137,15 @@ jQuery(document).ready(function() {
      </tr>
      <tr>
          <td>Site Name:</td>
-         <td><input type="text" name="" value="<?php echo $site_config["SITENAME"]; ?>" size="50" /></td>
+         <td><input type="text" name="" value="<?php echo $config["SITENAME"]; ?>" size="50" /></td>
      </tr>
      <tr>
          <td>Site Email:</td>
-         <td><input type="text" name="" value="<?php echo $site_config["SITEEMAIL"]; ?>" size="50" /></td>
+         <td><input type="text" name="" value="<?php echo $config["SITEEMAIL"]; ?>" size="50" /></td>
      </tr>
      <tr>
          <td>Site URL:</td>
-         <td><input type="text" name="" value="<?php echo $site_config["SITEURL"]; ?>" size="50" /></td>
+         <td><input type="text" name="" value="<?php echo $config["SITEURL"]; ?>" size="50" /></td>
      </tr>
      <tr>
          <td>Default Theme:</td>
@@ -153,7 +153,7 @@ jQuery(document).ready(function() {
          <select name="site_config[default_theme]">
          <?php $res = DB::run("SELECT * FROM `stylesheets`");
                while ($row = $res->fetch()): ?>
-         <option value="<?php echo $row["id"]; ?>" <?php echo ( $row["id"] == $site_config["default_theme"] ? 'selected="selected"' : null ); ?>><?php echo $row["name"]; ?></option>
+         <option value="<?php echo $row["id"]; ?>" <?php echo ( $row["id"] == $config["default_theme"] ? 'selected="selected"' : null ); ?>><?php echo $row["name"]; ?></option>
          <?php endwhile; ?>
          </select>
          </td>
@@ -164,22 +164,22 @@ jQuery(document).ready(function() {
          <select name="site_config[default_language]">
          <?php $res = DB::run("SELECT * FROM `languages`");
                while ($row = $res->fetch()): ?>
-         <option value="<?php echo $row["id"]; ?>" <?php echo ( $row["id"] == $site_config["default_language"] ? 'selected="selected"' : null ); ?>><?php echo $row["name"]; ?></option>
+         <option value="<?php echo $row["id"]; ?>" <?php echo ( $row["id"] == $config["default_language"] ? 'selected="selected"' : null ); ?>><?php echo $row["name"]; ?></option>
          <?php endwhile; ?>
          </select>
          </td> 
      </tr>
      <tr>
          <td>Site Charset:</td>
-         <td><input type="text" name="" value="<?php echo $site_config["CHARSET"]; ?>" size="8" /></td>
+         <td><input type="text" name="" value="<?php echo $config["CHARSET"]; ?>" size="8" /></td>
      </tr>
      <tr>
          <td>Announce Url:</td>
-         <td><input type="text" name="" value="<?php echo $site_config["announce_list"]; ?>" size="50" /></td>
+         <td><input type="text" name="" value="<?php echo $config["announce_list"]; ?>" size="50" /></td>
      </tr>
      <tr>
          <td>Passkey URL:</td>
-         <td><input type="text" name="" value="<?php echo $site_config["PASSKEYURL"]; ?>" size="50" /></td>
+         <td><input type="text" name="" value="<?php echo $config["PASSKEYURL"]; ?>" size="50" /></td>
      </tr>
      <!-- Tracker Options -->
    
@@ -189,16 +189,16 @@ jQuery(document).ready(function() {
      </tr>
      <tr>
          <td>Max File Size:</td>
-         <td><input type="text" name="" value="<?php echo $site_config["image_max_filesize"]; ?>" size="5" /> kb</td>
+         <td><input type="text" name="" value="<?php echo $config["image_max_filesize"]; ?>" size="5" /> kb</td>
      </tr>
      <tr>
          <td>File Types:</td>
          <td>
-         <input type="checkbox" name="site_config[allowed_image_types][image/png]" value=".png" <?php echo ( isset($site_config['allowed_image_types']['image/png']) ? 'checked="checked"' : null ); ?> /> image/png
-         <input type="checkbox" name="site_config[allowed_image_types][image/gif]" value=".gif" <?php echo ( isset($site_config['allowed_image_types']['image/gif']) ? 'checked="checked"' : null ); ?> /> image/gif
-         <input type="checkbox" name="site_config[allowed_image_types][image/jpg]" value=".jpg" <?php echo ( isset($site_config['allowed_image_types']['image/jpg']) ? 'checked="checked"' : null ); ?> /> image/jpg  
-         <input type="checkbox" name="site_config[allowed_image_types][image/jpeg]" value=".jpg" <?php echo ( isset($site_config['allowed_image_types']['image/jpeg']) ? 'checked="checked"' : null ); ?> /> image/jpeg 
-         <input type="checkbox" name="site_config[allowed_image_types][image/pjpeg]" value=".jpg" <?php echo ( isset($site_config['allowed_image_types']['image/pjpeg']) ? 'checked="checked"' : null ); ?>/> image/pjpeg        
+         <input type="checkbox" name="site_config[allowed_image_types][image/png]" value=".png" <?php echo ( isset($config['allowed_image_types']['image/png']) ? 'checked="checked"' : null ); ?> /> image/png
+         <input type="checkbox" name="site_config[allowed_image_types][image/gif]" value=".gif" <?php echo ( isset($config['allowed_image_types']['image/gif']) ? 'checked="checked"' : null ); ?> /> image/gif
+         <input type="checkbox" name="site_config[allowed_image_types][image/jpg]" value=".jpg" <?php echo ( isset($config['allowed_image_types']['image/jpg']) ? 'checked="checked"' : null ); ?> /> image/jpg  
+         <input type="checkbox" name="site_config[allowed_image_types][image/jpeg]" value=".jpg" <?php echo ( isset($config['allowed_image_types']['image/jpeg']) ? 'checked="checked"' : null ); ?> /> image/jpeg 
+         <input type="checkbox" name="site_config[allowed_image_types][image/pjpeg]" value=".jpg" <?php echo ( isset($config['allowed_image_types']['image/pjpeg']) ? 'checked="checked"' : null ); ?>/> image/pjpeg        
          </td>
      </tr>
      <!-- Image Uploads -->
@@ -209,27 +209,27 @@ jQuery(document).ready(function() {
      </tr>
      <tr>
          <td>Enable Wait Times:</td>
-         <td><input type="radio" name="" value="" <?php echo ( $site_config['MEMBERSONLY_WAIT'] ? 'checked="checked"' : null ); ?> /> Yes <input type="radio" name="" value="" <?php echo ( !$site_config['MEMBERSONLY_WAIT'] ? 'checked="checked"' : null ); ?> /> No</td>
+         <td><input type="radio" name="" value="" <?php echo ( $config['MEMBERSONLY_WAIT'] ? 'checked="checked"' : null ); ?> /> Yes <input type="radio" name="" value="" <?php echo ( !$config['MEMBERSONLY_WAIT'] ? 'checked="checked"' : null ); ?> /> No</td>
      </tr>
      <tr>
          <td>Usergroups Wait:</td>
-         <td><input type="text" name="" value="<?php echo $site_config["WAIT_CLASS"]; ?>" size="50" /></td> 
+         <td><input type="text" name="" value="<?php echo $config["WAIT_CLASS"]; ?>" size="50" /></td> 
      </tr>
      <tr>
          <td>Times (A):</td>
-         <td><input type="text" value="<?php echo $site_config["GIGSA"]; ?>" size="3" /> <input type="text" value="<?php echo $site_config["RATIOA"]; ?>" size="3" /> <input type="text" value="<?php echo $site_config["WAITA"]; ?>" size="3" /></td>
+         <td><input type="text" value="<?php echo $config["GIGSA"]; ?>" size="3" /> <input type="text" value="<?php echo $config["RATIOA"]; ?>" size="3" /> <input type="text" value="<?php echo $config["WAITA"]; ?>" size="3" /></td>
      </tr>
      <tr>
          <td>Times (B):</td>
-         <td><input type="text" value="<?php echo $site_config["GIGSB"]; ?>" size="3" /> <input type="text" value="<?php echo $site_config["RATIOB"]; ?>" size="3" /> <input type="text" value="<?php echo $site_config["WAITB"]; ?>" size="3" /></td>
+         <td><input type="text" value="<?php echo $config["GIGSB"]; ?>" size="3" /> <input type="text" value="<?php echo $config["RATIOB"]; ?>" size="3" /> <input type="text" value="<?php echo $config["WAITB"]; ?>" size="3" /></td>
      </tr>
      <tr>
          <td>Times (C):</td>
-         <td><input type="text" value="<?php echo $site_config["GIGSC"]; ?>" size="3" /> <input type="text" value="<?php echo $site_config["RATIOC"]; ?>" size="3" /> <input type="text" value="<?php echo $site_config["WAITC"]; ?>" size="3" /></td>
+         <td><input type="text" value="<?php echo $config["GIGSC"]; ?>" size="3" /> <input type="text" value="<?php echo $config["RATIOC"]; ?>" size="3" /> <input type="text" value="<?php echo $config["WAITC"]; ?>" size="3" /></td>
      </tr>
      <tr>
          <td>Times (D):</td>
-         <td><input type="text" value="<?php echo $site_config["GIGSD"]; ?>" size="3" /> <input type="text" value="<?php echo $site_config["RATIOD"]; ?>" size="3" /> <input type="text" value="<?php echo $site_config["WAITD"]; ?>" size="3" /></td>
+         <td><input type="text" value="<?php echo $config["GIGSD"]; ?>" size="3" /> <input type="text" value="<?php echo $config["RATIOD"]; ?>" size="3" /> <input type="text" value="<?php echo $config["WAITD"]; ?>" size="3" /></td>
      </tr>
      <!-- Wait Times -->
      
@@ -239,31 +239,31 @@ jQuery(document).ready(function() {
      </tr>
      <tr>
          <td>Mail Type:</td>
-         <td><input type="radio" name="" value="" <?php echo ( $site_config["mail_type"] == "php" ? 'checked="checked"' : null ); ?> /> PHP <input type="radio" name="" value="" <?php echo ( $site_config["mail_type"] == "pear" ? 'checked="checked"' : null ); ?> /> Pear</td>
+         <td><input type="radio" name="" value="" <?php echo ( $config["mail_type"] == "php" ? 'checked="checked"' : null ); ?> /> PHP <input type="radio" name="" value="" <?php echo ( $config["mail_type"] == "pear" ? 'checked="checked"' : null ); ?> /> Pear</td>
      </tr>
      <tr>
          <td>SMTP Host:</td>
-         <td><input type="text" name="" value="<?php echo $site_config["mail_smtp_host"]; ?>" size="50" /></td>
+         <td><input type="text" name="" value="<?php echo $config["mail_smtp_host"]; ?>" size="50" /></td>
      </tr>
      <tr>
          <td>SMTP User:</td>
-         <td><input type="text" name="" value="<?php echo $site_config["mail_smtp_user"]; ?>" size="50" /></td>
+         <td><input type="text" name="" value="<?php echo $config["mail_smtp_user"]; ?>" size="50" /></td>
      </tr>
      <tr>
          <td>SMTP Host:</td>
-         <td><input type="text" name="" value="<?php echo $site_config["mail_smtp_pass"]; ?>" size="50" /></td>
+         <td><input type="text" name="" value="<?php echo $config["mail_smtp_pass"]; ?>" size="50" /></td>
      </tr>
      <tr>
          <td>SMTP Port:</td>
-         <td><input type="text" name="" value="<?php echo $site_config["mail_smtp_port"]; ?>" size="3" /></td>
+         <td><input type="text" name="" value="<?php echo $config["mail_smtp_port"]; ?>" size="3" /></td>
      </tr>
      <tr>
          <td>SMTP Auth:</td>
-         <td><input type="radio" name="" value="" <?php echo ( $site_config["mail_smtp_auth"] ? 'checked="checked"' : null ); ?> /> Yes <input type="radio" name="" value="" <?php echo ( !$site_config["mail_smtp_auth"] ? 'checked="checked"' : null ); ?> /> No</td>
+         <td><input type="radio" name="" value="" <?php echo ( $config["mail_smtp_auth"] ? 'checked="checked"' : null ); ?> /> Yes <input type="radio" name="" value="" <?php echo ( !$config["mail_smtp_auth"] ? 'checked="checked"' : null ); ?> /> No</td>
      </tr>
      <tr>
          <td>SMTP SSL:</td>
-         <td><input type="radio" name="" value="" <?php echo ( $site_config["mail_smtp_ssl"] ? 'checked="checked"' : null ); ?> /> Yes <input type="radio" name="" value="" <?php echo ( !$site_config["mail_smtp_ssl"] ? 'checked="checked"' : null ); ?> /> No</td>
+         <td><input type="radio" name="" value="" <?php echo ( $config["mail_smtp_ssl"] ? 'checked="checked"' : null ); ?> /> Yes <input type="radio" name="" value="" <?php echo ( !$config["mail_smtp_ssl"] ? 'checked="checked"' : null ); ?> /> No</td>
      </tr>
      <!-- Mail Settings -->
      
@@ -273,15 +273,15 @@ jQuery(document).ready(function() {
      </tr>            
      <tr>
          <td>Cache Type:</td>
-         <td><input type="radio" name="" value="" <?php echo ( $site_config["cache_type"] == "disk" ? 'checked="checked"' : null ); ?> /> Disk <input type="radio" name="" value="" <?php echo ( $site_config["cache_type"] == "apc" ? 'checked="checked"' : null ); ?> /> APC <input type="radio" name="" value="" <?php echo ( $site_config["cache_type"] == "memcache" ? 'checked="checked"' : null ); ?> /> Memcache <input type="radio" name="" value="" <?php echo ( $site_config["cache_type"] == "xcache" ? 'checked="checked"' : null ); ?> /> XCache</td>
+         <td><input type="radio" name="" value="" <?php echo ( $config["cache_type"] == "disk" ? 'checked="checked"' : null ); ?> /> Disk <input type="radio" name="" value="" <?php echo ( $config["cache_type"] == "apc" ? 'checked="checked"' : null ); ?> /> APC <input type="radio" name="" value="" <?php echo ( $config["cache_type"] == "memcache" ? 'checked="checked"' : null ); ?> /> Memcache <input type="radio" name="" value="" <?php echo ( $config["cache_type"] == "xcache" ? 'checked="checked"' : null ); ?> /> XCache</td>
      </tr>
      <tr>
          <td>Memcache Host:</td>
-         <td><input type="text" name="" value="<?php echo $site_config["cache_memcache_host"]; ?>" size="50" /></td>
+         <td><input type="text" name="" value="<?php echo $config["cache_memcache_host"]; ?>" size="50" /></td>
      </tr>
      <tr>
          <td>Memcache Port:</td>
-         <td><input type="text" name="" value="<?php echo $site_config["cache_memcache_port"]; ?>" size="50" /></td>
+         <td><input type="text" name="" value="<?php echo $config["cache_memcache_port"]; ?>" size="50" /></td>
      </tr>
      <!-- Cache Settings -->
      
@@ -291,19 +291,19 @@ jQuery(document).ready(function() {
      </tr>
      <tr>
          <td>Enable:</td>
-         <td><input type="radio" name="" value="" <?php echo ( $site_config["ratiowarn_enable"] ? 'checked="checked"' : null ); ?> /> Yes <input type="radio" name="" value="" <?php echo ( !$site_config["ratiowarn_enable"] ? 'checked="checked"' : null ); ?> /> No</td>
+         <td><input type="radio" name="" value="" <?php echo ( $config["ratiowarn_enable"] ? 'checked="checked"' : null ); ?> /> Yes <input type="radio" name="" value="" <?php echo ( !$config["ratiowarn_enable"] ? 'checked="checked"' : null ); ?> /> No</td>
      </tr>
      <tr>
          <td>Minimum Ratio:</td>
-         <td><input type="text" name="" value="<?php echo $site_config["ratiowarn_minratio"]; ?>" size="3" /></td>
+         <td><input type="text" name="" value="<?php echo $config["ratiowarn_minratio"]; ?>" size="3" /></td>
      </tr>
      <tr>
          <td>Minimum Downloaded (GB):</td>
-         <td><input type="text" name="" value="<?php echo $site_config["ratiowarn_mingigs"]; ?>" size="3" /></td>
+         <td><input type="text" name="" value="<?php echo $config["ratiowarn_mingigs"]; ?>" size="3" /></td>
      </tr>
      <tr>
          <td>Days to Warning:</td>
-         <td><input type="text" name="" value="<?php echo $site_config["ratiowarn_daystowarn"]; ?>" size="3" /></td>
+         <td><input type="text" name="" value="<?php echo $config["ratiowarn_daystowarn"]; ?>" size="3" /></td>
      </tr>
      <!-- Ratio Warnings -->
      
@@ -313,15 +313,15 @@ jQuery(document).ready(function() {
      </tr>
      <tr>
          <td>Left Nav:</td>
-         <td><input type="radio" name="" value="" <?php echo ( $site_config["LEFTNAV"] ? 'checked="checked"' : null ); ?> /> Yes <input type="radio" name="" value="" <?php echo ( !$site_config["LEFTNAV"] ? 'checked="checked"' : null ); ?> /> No</td>
+         <td><input type="radio" name="" value="" <?php echo ( $config["LEFTNAV"] ? 'checked="checked"' : null ); ?> /> Yes <input type="radio" name="" value="" <?php echo ( !$config["LEFTNAV"] ? 'checked="checked"' : null ); ?> /> No</td>
      </tr>
      <tr>
          <td>Right Nav:</td>
-         <td><input type="radio" name="" value="" <?php echo ( $site_config["RIGHTNAV"] ? 'checked="checked"' : null ); ?> /> Yes <input type="radio" name="" value="" <?php echo ( !$site_config["RIGHTNAV"] ? 'checked="checked"' : null ); ?> /> No</td>
+         <td><input type="radio" name="" value="" <?php echo ( $config["RIGHTNAV"] ? 'checked="checked"' : null ); ?> /> Yes <input type="radio" name="" value="" <?php echo ( !$config["RIGHTNAV"] ? 'checked="checked"' : null ); ?> /> No</td>
      </tr>
      <tr>
          <td>Middle Nav:</td>
-         <td><input type="radio" name="" value="" <?php echo ( $site_config["MIDDLENAV"] ? 'checked="checked"' : null ); ?> /> Yes <input type="radio" name="" value="" <?php echo ( !$site_config["MIDDLENAV"] ? 'checked="checked"' : null ); ?> /> No</td>
+         <td><input type="radio" name="" value="" <?php echo ( $config["MIDDLENAV"] ? 'checked="checked"' : null ); ?> /> Yes <input type="radio" name="" value="" <?php echo ( !$config["MIDDLENAV"] ? 'checked="checked"' : null ); ?> /> No</td>
      </tr>
      <!-- Blocks Navigation -->
      
@@ -331,27 +331,27 @@ jQuery(document).ready(function() {
      </tr>
      <tr>
          <td>Peer Limit:</td>
-         <td><input type="text" name="" value="<?php echo $site_config["PEERLIMIT"]; ?>" size="4" /></td>
+         <td><input type="text" name="" value="<?php echo $config["PEERLIMIT"]; ?>" size="4" /></td>
      </tr>
      <tr>
          <td>Autoclean Interval:</td>
-         <td><input type="text" name="" value="<?php echo $site_config["autoclean_interval"]; ?>" size="4" /></td>
+         <td><input type="text" name="" value="<?php echo $config["autoclean_interval"]; ?>" size="4" /></td>
      </tr>
      <tr>
          <td>Announce Interval:</td>
-         <td><input type="text" name="" value="<?php echo $site_config["announce_interval"]; ?>" size="4" /></td>
+         <td><input type="text" name="" value="<?php echo $config["announce_interval"]; ?>" size="4" /></td>
      </tr>
      <tr>
          <td>Site Log Cleanup:</td>
-         <td><input type="text" name="" value="<?php echo $site_config["LOGCLEAN"]; ?>" size="4" /></td>
+         <td><input type="text" name="" value="<?php echo $config["LOGCLEAN"]; ?>" size="4" /></td>
      </tr>
      <tr>
          <td>Signup Timeout</td>
-         <td><input type="text" name="" value="<?php echo $site_config["signup_timeout"]; ?>" size="4" /></td>
+         <td><input type="text" name="" value="<?php echo $config["signup_timeout"]; ?>" size="4" /></td>
      </tr>
      <tr>
          <td>Dead Torrents:</td>
-         <td><input type="text" name="" value="<?php echo $site_config["max_dead_torrent_time"]; ?>" size="4" /></td>
+         <td><input type="text" name="" value="<?php echo $config["max_dead_torrent_time"]; ?>" size="4" /></td>
      </tr>
      <!-- Cleanup / Announce Settings -->
      
@@ -361,19 +361,19 @@ jQuery(document).ready(function() {
      </tr>                 
      <tr>
          <td>Allow External Torrents:</td>
-         <td><input type="radio" name="" value="" <?php echo ( $site_config["ALLOWEXTERNAL"] ? 'checked="checked"' : null ); ?> /> Yes <input type="radio" name="" value="" <?php echo ( ! $site_config["ALLOWEXTERNAL"] ? 'checked="checked"' : null ); ?> /> No</td>
+         <td><input type="radio" name="" value="" <?php echo ( $config["ALLOWEXTERNAL"] ? 'checked="checked"' : null ); ?> /> Yes <input type="radio" name="" value="" <?php echo ( ! $config["ALLOWEXTERNAL"] ? 'checked="checked"' : null ); ?> /> No</td>
      </tr>
      <tr>
          <td>Uploaders Only:</td>
-         <td><input type="radio" name="" value="" <?php echo ( $site_config["UPLOADERSONLY"] ? 'checked="checked"' : null ); ?> /> Yes <input type="radio" name="" value="" <?php echo ( ! $site_config["UPLOADERSONLY"] ? 'checked="checked"' : null ); ?> /> No</td>
+         <td><input type="radio" name="" value="" <?php echo ( $config["UPLOADERSONLY"] ? 'checked="checked"' : null ); ?> /> Yes <input type="radio" name="" value="" <?php echo ( ! $config["UPLOADERSONLY"] ? 'checked="checked"' : null ); ?> /> No</td>
      </tr>
      <tr>
          <td>Allow Anonymous Upload:</td>
-         <td><input type="radio" name="" value="" <?php echo ( $site_config["ANONYMOUSUPLOAD"] ? 'checked="checked"' : null ); ?> /> Yes <input type="radio" name="" value="" <?php echo ( ! $site_config["ANONYMOUSUPLOAD"] ? 'checked="checked"' : null ); ?> / > No</td>
+         <td><input type="radio" name="" value="" <?php echo ( $config["ANONYMOUSUPLOAD"] ? 'checked="checked"' : null ); ?> /> Yes <input type="radio" name="" value="" <?php echo ( ! $config["ANONYMOUSUPLOAD"] ? 'checked="checked"' : null ); ?> / > No</td>
      </tr>
      <tr>
          <td valign="top">Upload Rules:</td>
-         <td><textarea name="" cols="39" rows="4"><?php echo $site_config["UPLOADRULES"]; ?></textarea></td>
+         <td><textarea name="" cols="39" rows="4"><?php echo $config["UPLOADRULES"]; ?></textarea></td>
      </tr>
      <!-- Torrents Settings -->
      
@@ -387,7 +387,7 @@ jQuery(document).ready(function() {
          <?php $column = array('category', 'name', 'dl', 'uploader', 'comments', 'completed', 'size', 'seeders', 'leechers', 'health', 'ratio', 'external', 'wait', 'rating', 'added', 'nfo'); ?>
          <ul id="sortable-list">
            <?php for ($i = 0; $i < count($column); $i++): ?>
-           <li class="sortme" title="<?php echo $column[$i]; ?>"><input type="checkbox" name="" value="" <?php echo ( in_array( $column[$i], explode(',', $site_config['torrenttable_columns']) ) ? 'checked="checked"' : null ); ?> /> <?php echo $column[$i]; ?></li>
+           <li class="sortme" title="<?php echo $column[$i]; ?>"><input type="checkbox" name="" value="" <?php echo ( in_array( $column[$i], explode(',', $config['torrenttable_columns']) ) ? 'checked="checked"' : null ); ?> /> <?php echo $column[$i]; ?></li>
            <?php endfor; ?>
          </ul>
          </td>

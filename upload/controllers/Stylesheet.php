@@ -7,7 +7,7 @@
     
     public function index(){
  dbconn();
-global $site_config, $CURUSER;
+global $config;
  loggedinonly();
  
  $updateset = array();
@@ -21,7 +21,7 @@ global $site_config, $CURUSER;
      $updateset[] = "language = '$language'";
 
  if (count($updateset))
-     DB::run("UPDATE `users` SET " . implode(', ', $updateset) . " WHERE `id` =?", [$CURUSER["id"]]);
+     DB::run("UPDATE `users` SET " . implode(', ', $updateset) . " WHERE `id` =?", [$_SESSION["id"]]);
  
  if (empty($_SERVER["HTTP_REFERER"]))
  {

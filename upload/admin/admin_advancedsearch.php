@@ -30,7 +30,7 @@ if ($action == "usersearch") {
 				$r = DB::run("SELECT modcomment FROM users WHERE id IN (" . implode(", ", $_POST['warndisable']) . ")")or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\n".T_("ERROR").": (" . $r->errorCode() . ") " . $r->errorInfo());
 				$user = $r->fetch(PDO::FETCH_LAZY);
 				$exmodcomment = $user["modcomment"];
-				$modcomment = gmdate("Y-m-d") . " - Warning Removed By " . $CURUSER['username'] . ".\n". $modcomment . $exmodcomment;
+				$modcomment = gmdate("Y-m-d") . " - Warning Removed By " . $_SESSION['username'] . ".\n". $modcomment . $exmodcomment;
 				$query = "UPDATE users SET modcomment=" . sqlesc($modcomment) . " WHERE id IN (" . implode(", ", $_POST['warndisable']) . ")";
 				$q = DB::run($query);
 				if(!$q) die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\n".T_("ERROR").": (" . $q->errorCode() . ") " . $q->errorInfo());
@@ -42,7 +42,7 @@ if ($action == "usersearch") {
 					$msg = "You have received a warning, Reason: $warnpm";
 					$user = DB::run("SELECT modcomment FROM users WHERE id IN (" . implode(", ", $_POST['warndisable']) . ")")->fetch();
 					$exmodcomment = $user["modcomment"];
-					$modcomment = gmdate("Y-m-d") . " - Warned by " . $CURUSER['username'] . ".\nReason: $warnpm\n" . $modcomment . $exmodcomment;
+					$modcomment = gmdate("Y-m-d") . " - Warned by " . $_SESSION['username'] . ".\nReason: $warnpm\n" . $modcomment . $exmodcomment;
 					$query = "UPDATE users SET modcomment=" . sqlesc($modcomment) . " WHERE id IN (" . implode(", ", $_POST['warndisable']) . ")";
 					$upd = DB::run($query);
 					if(!$upd)  die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\n".T_("ERROR").": (" . $upd->errorCode() . ") " . $upd->errorInfo());
@@ -669,7 +669,7 @@ if ($action == "usersearch") {
 			$pdl = $user['downloaded'];
 			$auxres = DB::run("SELECT COUNT(DISTINCT p.id) FROM forum_posts AS p LEFT JOIN forum_topics as t ON p.topicid = t.id
 			LEFT JOIN forum_forums AS f ON t.forumid = f.id WHERE p.userid = " . $user['id'] . " AND f.minclassread <= " .
-			$CURUSER['class']);
+			$_SESSION['class']);
 			$n = $auxres->fetch(PDO::FETCH_LAZY);
 			$n_posts = $n[0];
 			$auxres = DB::run("SELECT COUNT(id) FROM comments WHERE user = ".$user['id']);

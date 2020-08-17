@@ -2,7 +2,7 @@
 // Function For Comment Table
 function commenttable($res, $type = null)
 {
-    global $site_config, $CURUSER, $THEME, $LANGUAGE, $pdo; //Define globals
+    global $config, $THEME, $LANGUAGE, $pdo; //Define globals
 
     while ($row = $res->fetch(PDO::FETCH_LAZY)) {
 
@@ -30,19 +30,19 @@ function commenttable($res, $type = null)
         }
 
         if (!$avatar) {
-            $avatar = $site_config["SITEURL"] . "/images/default_avatar.png";
+            $avatar = $config["SITEURL"] . "/images/default_avatar.png";
         }
 
         $commenttext = format_comment($row["text"]);
 
         $edit = null;
-        if ($type == "torrent" && $CURUSER["edit_torrents"] == "yes" || $type == "news" && $CURUSER["edit_news"] == "yes" || $CURUSER['id'] == $row['user']) {
-            $edit = '[<a href="'.$site_config['SITEURL'].'/comments?id=' . $row["id"] . '&amp;type=' . $type . '&amp;edit=1">Edit</a>]&nbsp;';
+        if ($type == "torrent" && $_SESSION["edit_torrents"] == "yes" || $type == "news" && $_SESSION["edit_news"] == "yes" || $_SESSION['id'] == $row['user']) {
+            $edit = '[<a href="'.$config['SITEURL'].'/comments?id=' . $row["id"] . '&amp;type=' . $type . '&amp;edit=1">Edit</a>]&nbsp;';
         }
 
         $delete = null;
-        if ($type == "torrent" && $CURUSER["delete_torrents"] == "yes" || $type == "news" && $CURUSER["delete_news"] == "yes") {
-            $delete = '[<a href="'.$site_config['SITEURL'].'/comments?id=' . $row["id"] . '&amp;type=' . $type . '&amp;delete=1">Delete</a>]&nbsp;';
+        if ($type == "torrent" && $_SESSION["delete_torrents"] == "yes" || $type == "news" && $_SESSION["delete_news"] == "yes") {
+            $delete = '[<a href="'.$config['SITEURL'].'/comments?id=' . $row["id"] . '&amp;type=' . $type . '&amp;delete=1">Delete</a>]&nbsp;';
         }
 
         print('<div class="container"><table class="table table-striped" style="border: 1px solid black" >');
@@ -51,10 +51,10 @@ function commenttable($res, $type = null)
         print('<th align="right">' . $edit . $delete . '[<a href="' . TTURL . '/report/comment?comment=' . $row["id"] . '">Report</a>] Posted: ' . date("d-m-Y \\a\\t H:i:s", utc_to_tz_time($row["added"])) . '<a id="comment' . $row["id"] . '"></a></th>');
         print('</tr></thead>');
         print('<tr valign="top">');
-        if ($CURUSER['edit_users'] == 'no' && $privacylevel == 'strong') {
-            print('<td align="left" width="150"><center><a href="'.$site_config['SITEURL'].'/users/profile?id='.$row['id'].'"><b>' . $postername . '</b></a><br /><i>' . $title . '</i><br /><img width="80" height="80" src="' . $avatar . '" alt="" /><br /><br />Uploaded: ---<br />Downloaded: ---<br />Ratio: ---<br /><br /><a href="$site_config[SITEURL]/users/profile?id=' . $row["user"] . '"><img src="themes/' . $THEME . '/forums/icon_profile.png" border="" alt="" /></a> <a href="$site_config[SITEURL]/messages/create?id=' . $row["user"] . '"><img src="themes/' . $THEME . '/forums/icon_pm.png" border="0" alt="" /></a></center></td>');
+        if ($_SESSION['edit_users'] == 'no' && $privacylevel == 'strong') {
+            print('<td align="left" width="150"><center><a href="'.$config['SITEURL'].'/users/profile?id='.$row['id'].'"><b>' . $postername . '</b></a><br /><i>' . $title . '</i><br /><img width="80" height="80" src="' . $avatar . '" alt="" /><br /><br />Uploaded: ---<br />Downloaded: ---<br />Ratio: ---<br /><br /><a href="$config[SITEURL]/users/profile?id=' . $row["user"] . '"><img src="themes/' . $THEME . '/forums/icon_profile.png" border="" alt="" /></a> <a href="$config[SITEURL]/messages/create?id=' . $row["user"] . '"><img src="themes/' . $THEME . '/forums/icon_pm.png" border="0" alt="" /></a></center></td>');
         } else {
-            print('<td align="left" width="150"><center><a href="'.$site_config['SITEURL'].'/users/profile?id='.$row['id'].'"><b>' . $postername . '</b></a><br /><i>' . $title . '</i><br /><img width="80" height="80" src="' . $avatar . '" alt="" /><br /><br />Uploaded: ' . $useruploaded . '<br />Downloaded: ' . $userdownloaded . '<br />Ratio: ' . $userratio . '<br /><br /><a href="$site_config[SITEURL]/users/profile?id=' . $row["user"] . '"><img src="themes/' . $THEME . '/forums/icon_profile.png" border="0" alt="" /></a> <a href="/messages/create?id=' . $row["user"] . '"><img src="themes/' . $THEME . '/forums/icon_pm.png" border="0" alt="" /></a></center></td>');
+            print('<td align="left" width="150"><center><a href="'.$config['SITEURL'].'/users/profile?id='.$row['id'].'"><b>' . $postername . '</b></a><br /><i>' . $title . '</i><br /><img width="80" height="80" src="' . $avatar . '" alt="" /><br /><br />Uploaded: ' . $useruploaded . '<br />Downloaded: ' . $userdownloaded . '<br />Ratio: ' . $userratio . '<br /><br /><a href="$config[SITEURL]/users/profile?id=' . $row["user"] . '"><img src="themes/' . $THEME . '/forums/icon_profile.png" border="0" alt="" /></a> <a href="/messages/create?id=' . $row["user"] . '"><img src="themes/' . $THEME . '/forums/icon_pm.png" border="0" alt="" /></a></center></td>');
         }
 
         print('<td>' . $commenttext . '<hr />' . $usersignature . '</td>');

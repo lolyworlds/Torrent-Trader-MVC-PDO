@@ -3,9 +3,9 @@
     private $pdo;
     
     public function connect() {
-      global $site_config;
+      global $config;
       // create a db connection
-      $pdo = new PDO('mysql:host='.$site_config['mysql_host'].';dbname='.$site_config['mysql_db'], $site_config['mysql_user'], $site_config['mysql_pass']);
+      $pdo = new PDO('mysql:host='.$config['mysql_host'].';dbname='.$config['mysql_db'], $config['mysql_user'], $config['mysql_pass']);
         return $pdo;
     }
     

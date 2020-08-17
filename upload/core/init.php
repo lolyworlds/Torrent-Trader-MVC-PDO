@@ -14,9 +14,9 @@ set_exception_handler("handleUncaughtException");
 if (function_exists("date_default_timezone_set"))
 	date_default_timezone_set("Europe/London"); 
 
-// Get Site Settings and Vars ($site_config)
+// Get Site Settings and Vars ($config)
 require_once ("config/config.php");
-define("TTURL", $site_config['SITEURL']);
+define("TTURL", $config['SITEURL']);
 
 // Include all helpers & connection
 require_once ("helpers/a_start_function.php");

@@ -3,8 +3,7 @@
 // Connection Verification Function Otherwise Connection Page
 function loggedinonly()
 {
-    global $CURUSER;
-    if (!$CURUSER) {
+    if (!$_SESSION['loggedin']) {
         header("Refresh: 0; url=".TTURL."/account/login");
         exit();
     }
@@ -62,9 +61,9 @@ function where ($where, $userid, $update=1){
 // Function That Returns The Group Name
 function get_user_class_name($i)
 {
-    global $CURUSER, $pdo;
-    if ($i == $CURUSER["class"]) {
-        return $CURUSER["level"];
+    $pdo = new Database();
+    if ($i == $_SESSION["class"]) {
+        return $_SESSION["level"];
     }
 
     $res = $pdo->run("SELECT level FROM groups WHERE group_id=" . $i . "");
@@ -96,8 +95,7 @@ function classlist()
 
 function priv($name, $descr)
 {
-    global $CURUSER;
-    if ($CURUSER["privacy"] == $name) {
+    if ($_SESSION["privacy"] == $name) {
         return "<input type=\"radio\" name=\"privacy\" value=\"$name\" checked=\"checked\" /> $descr";
     }
 
@@ -107,21 +105,21 @@ function priv($name, $descr)
 // Start class_user_colour colour function
 function class_user_colour($name)
 {
-    global $site_config, $pdo;
+    global $config, $pdo;
     $classy = $pdo->run("SELECT u.class, u.donated, u.warned, u.enabled, g.Color, g.level, u.uploaded, u.downloaded FROM `users` `u` INNER JOIN `groups` `g` ON g.group_id=u.class WHERE username ='" . $name . "'")->fetch();
     $gcolor = $classy->Color;
     if ($classy->donated > 0) {
-        $star = "<img src='" . $site_config['SITEURL'] . "/images/donor.png' alt='donated' border='0' width='15' height='15'>";
+        $star = "<img src='" . $config['SITEURL'] . "/images/donor.png' alt='donated' border='0' width='15' height='15'>";
     } else {
         $star = "";
     }
     if ($classy->warned == "yes") {
-        $warn = "<img src='" . $site_config['SITEURL'] . "/images/warn.png' alt='Warn' border='0'>";
+        $warn = "<img src='" . $config['SITEURL'] . "/images/warn.png' alt='Warn' border='0'>";
     } else {
         $warn = "";
     }
     if ($classy->enabled == "no") {
-        $disabled = "<img src='" . $site_config['SITEURL'] . "/images/disabled.png' title='Disabled' border='0'>";
+        $disabled = "<img src='" . $config['SITEURL'] . "/images/disabled.png' title='Disabled' border='0'>";
     } else {
         $disabled = "";
     }

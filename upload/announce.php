@@ -6,8 +6,8 @@ error_reporting(E_ALL ^ E_NOTICE);
 require_once("config/config.php");
 require_once("classes/DB.php"); // Lets Use Static For Now
 
-$MEMBERSONLY = $site_config["MEMBERSONLY"];
-$MEMBERSONLY_WAIT = $site_config["MEMBERSONLY_WAIT"];
+$MEMBERSONLY = $config["MEMBERSONLY"];
+$MEMBERSONLY_WAIT = $config["MEMBERSONLY_WAIT"];
 
 $_GET = array_map_recursive("unesc", $_GET);
 
@@ -210,7 +210,7 @@ $res = DB::run("SELECT $peerfields FROM peers WHERE torrent = $torrentid $limit"
 
 //DO SOME BENC STUFF TO THE PEERS CONNECTION
 $resp = "d8:completei$torrent[seeders]e10:downloadedi$torrent[times_completed]e10:incompletei$torrent[leechers]e";
-$resp .= benc_str("interval") . "i" . $site_config['announce_interval'] . "e" . benc_str("min interval") . "i300e" . benc_str("peers");
+$resp .= benc_str("interval") . "i" . $config['announce_interval'] . "e" . benc_str("min interval") . "i300e" . benc_str("peers");
 unset($self);
 while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
 	if ($row["peer_id"] === $peer_id) {
@@ -256,18 +256,18 @@ if (!isset($self)){
 if (!isset($self)){ //IF PEER IS NOT IN PEERS TABLE DO THE WAIT TIME CHECK
 	if ($MEMBERSONLY_WAIT && $MEMBERSONLY){
 		//wait time check
-		if($left > 0 && in_array($user["class"], explode(",",$site_config["WAIT_CLASS"]))){ //check only leechers and lowest user class
+		if($left > 0 && in_array($user["class"], explode(",",$config["WAIT_CLASS"]))){ //check only leechers and lowest user class
 			$gigs = $user["uploaded"] / (1024*1024*1024);
 			$elapsed = floor((gmtime() - $torrent["ts"]) / 3600); 
 			$ratio = (($user["downloaded"] > 0) ? ($user["uploaded"] / $user["downloaded"]) : 1); 
-			if ($ratio == 0 && $gigs == 0) $wait = $site_config["WAITA"];
-			elseif ($ratio < $site_config["RATIOA"] || $gigs < $site_config["GIGSA"]) $wait = $site_config["WAITA"];
-			elseif ($ratio < $site_config["RATIOB"] || $gigs < $site_config["GIGSB"]) $wait = $site_config["WAITB"];
-			elseif ($ratio < $site_config["RATIOC"] || $gigs < $site_config["GIGSC"]) $wait = $site_config["WAITC"];
-			elseif ($ratio < $site_config["RATIOD"] || $gigs < $site_config["GIGSD"]) $wait = $site_config["WAITD"];
+			if ($ratio == 0 && $gigs == 0) $wait = $config["WAITA"];
+			elseif ($ratio < $config["RATIOA"] || $gigs < $config["GIGSA"]) $wait = $config["WAITA"];
+			elseif ($ratio < $config["RATIOB"] || $gigs < $config["GIGSB"]) $wait = $config["WAITB"];
+			elseif ($ratio < $config["RATIOC"] || $gigs < $config["GIGSC"]) $wait = $config["WAITC"];
+			elseif ($ratio < $config["RATIOD"] || $gigs < $config["GIGSD"]) $wait = $config["WAITD"];
 			else $wait = 0;
 		if ($elapsed < $wait)
-			err("Wait Time (" . ($wait - $elapsed) . " hours) - Visit ".$site_config["SITEURL"]." for more info");
+			err("Wait Time (" . ($wait - $elapsed) . " hours) - Visit ".$config["SITEURL"]." for more info");
 		}
 	}
 	$sockres = @fsockopen($ip, $port, $errno, $errstr, 5);
@@ -279,7 +279,7 @@ if (!isset($self)){ //IF PEER IS NOT IN PEERS TABLE DO THE WAIT TIME CHECK
 
 }else{
 	// snatch
-	$elapsed = ($self['seeder'] == 'yes') ? $site_config['announce_interval'] - floor(($self['ez'] - time()) / 60) : 0; //
+	$elapsed = ($self['seeder'] == 'yes') ? $config['announce_interval'] - floor(($self['ez'] - time()) / 60) : 0; //
     $upthis = max(0, $uploaded - $self["uploaded"]);
     $downthis = max(0, $downloaded - $self["downloaded"]);
 

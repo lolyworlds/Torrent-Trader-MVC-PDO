@@ -23,7 +23,7 @@ while ($row =  $result->fetch(PDO::FETCH_LAZY)) {
 	$totaluploaded      = $row["totalul"]; 
 }
 $localpeers = $leechers+$seeders;
-if($CURUSER["edit_users"]=="yes") {
+if($_SESSION["edit_users"]=="yes") {
 begin_block(T_("STATS"));
 ?>
 
@@ -53,7 +53,7 @@ begin_block(T_("STATS"));
 <?php
 end_block();
 }
-if($CURUSER["edit_users"]=="no") {
+if($_SESSION["edit_users"]=="no") {
 begin_block(T_("STATS"));
 ?>
 

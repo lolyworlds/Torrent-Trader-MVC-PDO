@@ -9,35 +9,35 @@
     public function index(){
 
   dbconn();
-  global $site_config, $CURUSER;
+  global $config;
   loggedinonly();
   $_POST['id'] = (int) ($_POST['id'] ?? 0);
   if ( is_valid_id($_POST['id']) )
   {
        $row = $this->bonusModel->getBonusByPost($_POST['id']);
 
-       if ( !$row || $CURUSER['seedbonus'] < $row->cost )
+       if ( !$row || $_SESSION['seedbonus'] < $row->cost )
        {
             autolink("bonus", "Demand not valid.");
        }
                  
        $cost = $row->cost;
-       $id =  $CURUSER['id'];
+       $id =  $_SESSION['id'];
        
        $this->bonusModel->setBonus($cost, $id);
                  
        switch ( $row->type )
        {
            case 'invite':
-                 DB::run("UPDATE `users` SET `invites` = `invites` + '$row->value' WHERE `id` = '$CURUSER[id]'");
+                 DB::run("UPDATE `users` SET `invites` = `invites` + '$row->value' WHERE `id` = '$_SESSION[id]'");
                  break;
                                  
            case 'traffic':
-                 DB::run("UPDATE `users` SET `uploaded` = `uploaded` + '$row->value' WHERE `id` = '$CURUSER[id]'");
+                 DB::run("UPDATE `users` SET `uploaded` = `uploaded` + '$row->value' WHERE `id` = '$_SESSION[id]'");
                  break;
            
            case 'HnR':
-			    $uid = $CURUSER["class"] == "1" ? (int) $_POST["userid"] : (int) $CURUSER["id"];
+			    $uid = $_SESSION["class"] == "1" ? (int) $_POST["userid"] : (int) $_SESSION["id"];
 			    $tid = (int) $_POST["torrentid"];
 			
 			if ( empty($tid) )
@@ -56,13 +56,13 @@
 				$username = htmlspecialchars($row1["username"]);
 				$torname = htmlspecialchars($row2["name"]);
 			
-				write_log ("The HnR of <a href='users/profile?id=".$uid."'>".class_user_colour($username)."</a> on the torrent <a href='torrents/read?id=".$tid."'>".$torname."</a> has been cleared by <a href='users/profile?id=".$CURUSER['id']."'>".class_user_colour($CURUSER['username'])."</a>");
+				write_log ("The HnR of <a href='users/profile?id=".$uid."'>".class_user_colour($username)."</a> on the torrent <a href='torrents/read?id=".$tid."'>".$torname."</a> has been cleared by <a href='users/profile?id=".$_SESSION['id']."'>".class_user_colour($_SESSION['username'])."</a>");
 				
 				$new_modcomment = gmdate("d-m-Y \à H:i") . " - ";
-				if ( $uid == $CURUSER["id"] )
+				if ( $uid == $_SESSION["id"] )
 					$new_modcomment.= "H&R on the torrent ".$torname." cleared against ".$row->cost." points \n";
 				else
-					$new_modcomment.= "H&R on the torrent ".$torname." cleared by ".$CURUSER['username']." \n";
+					$new_modcomment.= "H&R on the torrent ".$torname." cleared by ".$_SESSION['username']." \n";
 				$modcom = sqlesc($new_modcomment);
 				
 				DB::run("UPDATE `users` SET `modcomment` = CONCAT($modcom,modcomment) WHERE id = '$uid'");
@@ -75,9 +75,9 @@
                  
             case 'VIP':
                 $days = $row->value;
-                $vipuntil = ( $CURUSER["vipuntil"] > "0000-00-00 00:00:00" ) ? $vipuntil = get_date_time( strtotime( $CURUSER["vipuntil"] ) + ( 60*86400 ) ) : $vipuntil = get_date_time( gmtime() + ( 60*86400 ) );
-                $oldclass = ( $CURUSER["vipuntil"] > "0000-00-00 00:00:00" ) ? $oldclass = $CURUSER["oldclass"] : $oldclass = $CURUSER["class"];
-                DB::run("UPDATE `users` SET `class` = '3', `oldclass`='$oldclass', `vipuntil` = '$vipuntil' WHERE `id` = '$CURUSER[id]'");
+                $vipuntil = ( $_SESSION["vipuntil"] > "0000-00-00 00:00:00" ) ? $vipuntil = get_date_time( strtotime( $_SESSION["vipuntil"] ) + ( 60*86400 ) ) : $vipuntil = get_date_time( gmtime() + ( 60*86400 ) );
+                $oldclass = ( $_SESSION["vipuntil"] > "0000-00-00 00:00:00" ) ? $oldclass = $_SESSION["oldclass"] : $oldclass = $_SESSION["class"];
+                DB::run("UPDATE `users` SET `class` = '3', `oldclass`='$oldclass', `vipuntil` = '$vipuntil' WHERE `id` = '$_SESSION[id]'");
                 break;      
                  
        }
@@ -92,10 +92,10 @@
   begin_frame("Bonus Exchange");
       $data = [
         'bonus' => $row1,
-        'usersbonus' => $CURUSER['seedbonus'],
-        'configbonuspertime' => $site_config['bonuspertime'],
-        'configautoclean_interval' => floor($site_config['add_bonus'] / 60),
-        'usersid' => $CURUSER['id'],
+        'usersbonus' => $_SESSION['seedbonus'],
+        'configbonuspertime' => $config['bonuspertime'],
+        'configautoclean_interval' => floor($config['add_bonus'] / 60),
+        'usersid' => $_SESSION['id'],
       ];
 
       $this->view('bonus/index', $data);

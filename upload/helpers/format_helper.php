@@ -18,7 +18,7 @@ function format_urls($s)
 
 function format_comment($text)
 {
-    global $site_config, $smilies, $pdo;
+    global $config, $smilies, $pdo;
 
     $s = $text;
 
@@ -130,10 +130,10 @@ function format_comment($text)
     // require_once "smilies_helper.php";
     reset($smilies);
     while (list($code, $url) = thisEach($smilies)) {
-        $s = str_replace($code, '<img border="0" src="' . $site_config["SITEURL"] . '/images/smilies/' . $url . '" alt="' . $code . '" title="' . $code . '" />', $s);
+        $s = str_replace($code, '<img border="0" src="' . $config["SITEURL"] . '/images/smilies/' . $url . '" alt="' . $code . '" title="' . $code . '" />', $s);
     }
 
-    if ($site_config["OLD_CENSOR"]) {
+    if ($config["OLD_CENSOR"]) {
         $r = $pdo->run("SELECT * FROM censor");
         while ($rr = $r->fetch(PDO::FETCH_LAZY)) {
             $s = preg_replace("/" . preg_quote($rr[0]) . "/i", $rr[1], $s);
@@ -152,7 +152,7 @@ function format_comment($text)
                 $badwords[$i] = trim($badwords[$i]);
             }
 
-            $s = str_replace($badwords, "<img src='" . $site_config["SITEURL"] . "/images/censored.png' border='0' alt='Censored' title='Censored' />", $s);
+            $s = str_replace($badwords, "<img src='" . $config["SITEURL"] . "/images/censored.png' border='0' alt='Censored' title='Censored' />", $s);
         }
         @fclose($f);
     }

@@ -10,12 +10,12 @@
 
 public function read(){
 dbconn();
-global $site_config, $CURUSER;
+global $config;
 // check access and rights
-if ($site_config["MEMBERSONLY"]){
+if ($config["MEMBERSONLY"]){
 	loggedinonly();
 
-	if($CURUSER["view_torrents"]=="no")
+	if($_SESSION["view_torrents"]=="no")
 		show_error_msg(T_("ERROR"), "You do not have permission to view nfo's", 1);
 }
 
@@ -36,7 +36,7 @@ if($res["nfo"] == "yes"){
     $char1 = 55; //cut length (cutname func is in header.php)
     $shortname = CutName(htmlspecialchars($res["name"]), $char1);
     
-	$nfo_dir = $site_config["nfo_dir"];
+	$nfo_dir = $config["nfo_dir"];
 
     $nfofilelocation = "$nfo_dir/$id.nfo";
     $filegetcontents = file_get_contents($nfofilelocation);
@@ -45,8 +45,8 @@ if($res["nfo"] == "yes"){
     
     if ($nfo) {
 		$nfo = my_nfo_translate($nfo);
-		if($CURUSER["edit_torrents"]=="yes")
-            begin_frame(T_("NFO_FILE_FOR").": <a href='".$site_config["SITEURL"]."/torrents/read?id=$id'>$shortname</a> - <a href='$site_config[SITEURL]/nfo/edit?id=$id'>".T_("NFO_EDIT")."</a>");
+		if($_SESSION["edit_torrents"]=="yes")
+            begin_frame(T_("NFO_FILE_FOR").": <a href='".$config["SITEURL"]."/torrents/read?id=$id'>$shortname</a> - <a href='$config[SITEURL]/nfo/edit?id=$id'>".T_("NFO_EDIT")."</a>");
         else
             begin_frame(T_("NFO_FILE_FOR").": $shortname");
 
@@ -62,18 +62,18 @@ stdfoot();
 
 public function edit(){
 dbconn();
-global $site_config, $CURUSER;
+global $config;
 loggedinonly();
 
 error_reporting(0);
                        
-if ($CURUSER["edit_torrents"] == "no")
+if ($_SESSION["edit_torrents"] == "no")
     show_error_msg(T_("ERROR"), T_("NFO_PERMISSION"), 1);
 
 $id = ( int ) cleanstr($_REQUEST["id"]); 
 $do = $_POST["do"];
 
-$nfo = $site_config["nfo_dir"] . "/$id.nfo";
+$nfo = $config["nfo_dir"] . "/$id.nfo";
 
 if ($do == "update") { 
                                                                  
@@ -81,7 +81,7 @@ if ($do == "update") {
     {
          file_put_contents( $nfo, $_POST['content'] );
          
-         write_log("NFO ($id) was updated by $CURUSER[username].");
+         write_log("NFO ($id) was updated by $_SESSION[username].");
       
          show_error_msg(T_("NFO_UPDATED"), T_("NFO_UPDATED"), 1);
     }
@@ -94,7 +94,7 @@ if ($do == "delete") {
     if (get_row_count("torrents", "WHERE `nfo` = 'yes' AND `id` = $id"))
     {
         unlink($nfo);
-        write_log("NFO ($id) was deleted by $CURUSER[username] $reason");
+        write_log("NFO ($id) was deleted by $_SESSION[username] $reason");
         DB::run("UPDATE `torrents` SET `nfo` = 'no' WHERE `id` = $id");
         show_error_msg(T_("NFO_DELETED"), T_("NFO_DELETED"), 1);
     }

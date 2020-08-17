@@ -7,28 +7,28 @@
     
     public function index(){
 dbconn(true);
-global $site_config, $CURUSER;
+global $config;
 
-if ($site_config['MEMBERSONLY']){
+if ($config['MEMBERSONLY']){
 loggedinonly ();
 }
 
 stdhead(T_("HOME"));
 
 //check
-if (file_exists("check.php") && $CURUSER["class"] == 7){
-	show_error_msg("WARNING", "check still exists, please delete or rename the file as it could pose a security risk<br /><br /><a href='".$site_config["SITEURL"]."/check.php'>View /check</a> - Use to check your config!<br />",0);
+if (file_exists("check.php") && $_SESSION["class"] == 7){
+	show_error_msg("WARNING", "check still exists, please delete or rename the file as it could pose a security risk<br /><br /><a href='".$config["SITEURL"]."/check.php'>View /check</a> - Use to check your config!<br />",0);
 }
 
 //Site Notice
-if ($site_config['SITENOTICEON']){
+if ($config['SITENOTICEON']){
 	begin_frame(T_("NOTICE"));
-	echo $site_config['SITENOTICE'];
+	echo $config['SITENOTICE'];
 	end_frame();
 }
 
 //Site News
-if ($site_config['NEWSON'] && $CURUSER['view_news'] == "yes"){
+if ($config['NEWSON'] && $_SESSION['view_news'] == "yes"){
 	begin_frame(T_("NEWS"));
 	$res = DB::run("SELECT news.id, news.title, news.added, news.body, users.username FROM news LEFT JOIN users ON news.userid = users.id ORDER BY added DESC LIMIT 10");
 	if ($res->rowCount() > 0){
@@ -51,10 +51,10 @@ if ($site_config['NEWSON'] && $CURUSER['view_news'] == "yes"){
 				$pic = "plus";
 			}
 
-			print("<br /><a href=\"javascript: klappe_news('a".$array['id']."')\"><img border=\"0\" src=\"".$site_config["SITEURL"]."/images/$pic.gif\" id=\"pica".$array['id']."\" alt=\"Show/Hide\" />");
-			print("&nbsp;<b>". $array['title'] . "</b></a> - <b>".T_("POSTED").":</b> " . date("d-M-y", utc_to_tz_time($array['added'])) . " <b>".T_("BY").":</b><a href='$site_config[SITEURL]/users/profile?id=$CURUSER[id]'>  ".class_user_colour($array['username'])."</a>");
+			print("<br /><a href=\"javascript: klappe_news('a".$array['id']."')\"><img border=\"0\" src=\"".$config["SITEURL"]."/images/$pic.gif\" id=\"pica".$array['id']."\" alt=\"Show/Hide\" />");
+			print("&nbsp;<b>". $array['title'] . "</b></a> - <b>".T_("POSTED").":</b> " . date("d-M-y", utc_to_tz_time($array['added'])) . " <b>".T_("BY").":</b><a href='$config[SITEURL]/users/profile?id=$_SESSION[id]'>  ".class_user_colour($array['username'])."</a>");
 
-			print("<div id=\"ka".$array['id']."\" style=\"display: $disp;\"> ".format_comment($array["body"])." <br /><br />".T_("COMMENTS")." (<a href='$site_config[SITEURL]/comments?type=news&amp;id=".$array['id']."'>".number_format($numcomm)."</a>)</div><br /> ");
+			print("<div id=\"ka".$array['id']."\" style=\"display: $disp;\"> ".format_comment($array["body"])." <br /><br />".T_("COMMENTS")." (<a href='$config[SITEURL]/comments?type=news&amp;id=".$array['id']."'>".number_format($numcomm)."</a>)</div><br /> ");
 
 			$news_flag++;
 		}
@@ -67,7 +67,7 @@ if ($site_config['NEWSON'] && $CURUSER['view_news'] == "yes"){
 
 
 
-if ($site_config['SHOUTBOX'] && !($CURUSER['hideshoutbox'] == 'yes')){
+if ($config['SHOUTBOX'] && !($_SESSION['hideshoutbox'] == 'yes')){
 	begin_frame(T_("SHOUTBOX"));
 	echo '<iframe name="shout_frame" src="'.TTURL.'/shoutbox" frameborder="0" marginheight="0" marginwidth="0" width="99%" height="350" scrolling="no" align="middle"></iframe>';
 	printf(T_("SHOUTBOX_REFRESH"), 5)."<br />";
@@ -75,7 +75,7 @@ if ($site_config['SHOUTBOX'] && !($CURUSER['hideshoutbox'] == 'yes')){
 }
 
 // Last forum post on index
-if ($site_config['FORUMONINDEX']) {
+if ($config['FORUMONINDEX']) {
     begin_frame("Recent Fourum Post ");
     latestforumposts();
     end_frame();
@@ -84,9 +84,9 @@ if ($site_config['FORUMONINDEX']) {
 // latest torrents
 begin_frame(T_("LATEST_TORRENTS"));
 
-print("<br /><center><a href='$site_config[SITEURL]/torrents/browse'>".T_("BROWSE_TORRENTS")."</a> - <a href='$site_config[SITEURL]/torrents/search'>".T_("SEARCH_TORRENTS")."</a></center><br />");
+print("<br /><center><a href='$config[SITEURL]/torrents/browse'>".T_("BROWSE_TORRENTS")."</a> - <a href='$config[SITEURL]/torrents/search'>".T_("SEARCH_TORRENTS")."</a></center><br />");
 
-if ($site_config["MEMBERSONLY"] && !$CURUSER) {
+if ($config["MEMBERSONLY"] && !$_SESSION) {
 	echo "<br /><br /><center><b>".T_("BROWSE_MEMBERS_ONLY")."</b></center><br /><br />";
 } else {
 	$query = "SELECT torrents.id, torrents.anon, torrents.announce, torrents.category,  torrents.tube, torrents.leechers, torrents.nfo, torrents.seeders, torrents.name, torrents.times_completed, torrents.size, torrents.added, torrents.comments, torrents.numfiles, torrents.filename, torrents.owner, torrents.external, torrents.freeleech, categories.name AS cat_name, categories.image AS cat_pic, categories.parent_cat AS cat_parent, users.username, users.privacy, IF(torrents.numratings < 2, NULL, ROUND(torrents.ratingsum / torrents.numratings, 1)) AS rating FROM torrents LEFT JOIN categories ON category = categories.id LEFT JOIN users ON torrents.owner = users.id WHERE visible = 'yes' AND banned = 'no' ORDER BY id DESC LIMIT 25";
@@ -103,14 +103,14 @@ if ($site_config["MEMBERSONLY"] && !$CURUSER) {
 		print("</div>");
 
 	}
-	if ($CURUSER)
-		DB::run("UPDATE users SET last_browse=".gmtime()." WHERE id=?", [$CURUSER['id']]);
+	if ($_SESSION['loggedin'])
+		DB::run("UPDATE users SET last_browse=".gmtime()." WHERE id=?", [$_SESSION['id']]);
 
 }
 end_frame();
 
 
-if ($site_config['DISCLAIMERON']){
+if ($config['DISCLAIMERON']){
 	begin_frame(T_("DISCLAIMER"));
 	echo T_("DISCLAIMERTXT");
 	end_frame();

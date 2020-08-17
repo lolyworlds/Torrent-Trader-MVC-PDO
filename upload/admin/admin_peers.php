@@ -37,7 +37,7 @@ if ($action=="peers"){
 		print'</tr>';
 
 		while($row = $result->fetch(PDO::FETCH_ASSOC)) {
-			if ($site_config['MEMBERSONLY']) {
+			if ($config['MEMBERSONLY']) {
 				$sql1 = "SELECT id, username FROM users WHERE id = $row[userid]";
 				$row1 = DB::run($sql1)->fetch();
 			}

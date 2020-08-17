@@ -2,7 +2,7 @@
 // Automatic System Update Function
 function autoclean()
 {
-    global $site_config, $pdo;
+    global $config, $pdo;
     require_once "cleanup_helper.php";
 
     $now = gmtime();
@@ -17,7 +17,7 @@ function autoclean()
     }
 
     $ts = $row['last_time']; // $row['0'] returned null now int string
-    if ($ts + $site_config["autoclean_interval"] > $now){
+    if ($ts + $config["autoclean_interval"] > $now){
         return;
 	}
     
@@ -57,11 +57,11 @@ function autoinvites($interval, $minlimit, $maxlimit, $minratio, $invites, $maxi
 
 function do_cleanup()
 {
-    global $site_config, $pdo;
+    global $config, $pdo;
 
     //LOCAL TORRENTS - GET PEERS DATA AND UPDATE BROWSE STATS
     //DELETE OLD NON-ACTIVE PEERS
-    $deadtime = get_date_time(gmtime() - $site_config['announce_interval']);
+    $deadtime = get_date_time(gmtime() - $config['announce_interval']);
     $pdo->run("DELETE FROM peers WHERE last_action < '$deadtime'");
 
     $torrents = array();
@@ -108,11 +108,11 @@ function do_cleanup()
     }
 
 // DELETE OLD SESSION ENTRIES
-    $ts = gmtime() - $site_config["session_time"];
+    $ts = gmtime() - $config["session_time"];
     $pdo->run("DELETE FROM sessions WHERE _access > FROM_UNIXTIME($ts)");
 
 //LOCAL TORRENTS - MAKE NON-ACTIVE/OLD TORRENTS INVISIBLE
-    $deadtime = gmtime() - $site_config["max_dead_torrent_time"];
+    $deadtime = gmtime() - $config["max_dead_torrent_time"];
     $pdo->run("UPDATE torrents SET visible='no' WHERE visible='yes' AND last_action < FROM_UNIXTIME($deadtime) AND seeders = '0' AND leechers = '0' AND external !='yes'");
 
     // Seedbonus Mod
@@ -129,7 +129,7 @@ function do_cleanup()
 
     $ts = $row['last_time']; // $row['0'] returned null
    
-    if ($ts + $site_config['add_bonus'] < $now){
+    if ($ts + $config['add_bonus'] < $now){
         
     $qry = "SELECT DISTINCT userid as peer, (
     SELECT DISTINCT COUNT( torrent )
@@ -140,7 +140,7 @@ function do_cleanup()
     $res1 = DB::run($qry);
     while ( $row = $res1->fetch(PDO::FETCH_LAZY) )
     {
-        DB::run("UPDATE users SET seedbonus = seedbonus + '" . ($site_config["bonuspertime"] * $row->count) . "' WHERE id = '" . $row->peer . "'");
+        DB::run("UPDATE users SET seedbonus = seedbonus + '" . ($config["bonuspertime"] * $row->count) . "' WHERE id = '" . $row->peer . "'");
         DB::run("UPDATE tasks SET last_time=$now WHERE task='bonus'");
         // write_log("bonus and task inserted every hour");
     }
@@ -165,19 +165,19 @@ if ($resv->rowCount()) {
 
 
 //DELETE PENDING USER ACCOUNTS OVER TIMOUT AGE
-    $deadtime = gmtime() - $site_config["signup_timeout"];
+    $deadtime = gmtime() - $config["signup_timeout"];
     $pdo->run("DELETE FROM users WHERE status = 'pending' AND added < FROM_UNIXTIME($deadtime)");
 
 // DELETE OLD LOG ENTRIES
-    $ts = gmtime() - $site_config["LOGCLEAN"];
+    $ts = gmtime() - $config["LOGCLEAN"];
     $pdo->run("DELETE FROM log WHERE added < FROM_UNIXTIME($ts)");
 
 //LEECHWARN USERS WITH LOW RATIO
 
-    if ($site_config["ratiowarn_enable"]) {
-        $minratio = $site_config["ratiowarn_minratio"];
-        $downloaded = $site_config["ratiowarn_mingigs"] * 1024 * 1024 * 1024;
-        $length = $site_config["ratiowarn_daystowarn"];
+    if ($config["ratiowarn_enable"]) {
+        $minratio = $config["ratiowarn_minratio"];
+        $downloaded = $config["ratiowarn_mingigs"] * 1024 * 1024 * 1024;
+        $length = $config["ratiowarn_daystowarn"];
 
         //ADD WARNING
         $res = $pdo->run("SELECT id,username FROM users WHERE class = 1 AND warned = 'no' AND enabled='yes' AND uploaded / downloaded < $minratio AND downloaded >= $downloaded");
@@ -192,7 +192,7 @@ if ($resv->rowCount()) {
                 $pdo->run("INSERT INTO warnings (userid, reason, added, expiry, warnedby, type) VALUES ('" . $arr["id"] . "','" . $reason . "','" . $timenow . "','" . $expiretime . "','0','Poor Ratio')");
                 $pdo->run("UPDATE users SET warned='yes' WHERE id='" . $arr["id"] . "'");
                 $pdo->run("INSERT INTO messages (sender, receiver, added, msg, poster) VALUES ('0', '" . $arr["id"] . "', '" . $timenow . "', '" . $reason . "', '0')");
-                write_log("Auto Leech warning has been <b>added</b> for: <a href='$site_config[SITEURL]/users/profile?id=" . $arr["id"] . "'>" . class_user_colour($arr["username"]) . "</a>");
+                write_log("Auto Leech warning has been <b>added</b> for: <a href='$config[SITEURL]/users/profile?id=" . $arr["id"] . "'>" . class_user_colour($arr["username"]) . "</a>");
             }
         }
 
@@ -203,7 +203,7 @@ if ($resv->rowCount()) {
             $reason = "Your warning of low ratio has been removed. We highly recommend you to keep a your ratio up to not be warned again.\n";
 
             while ($arr1 = $res1->fetch(PDO::FETCH_ASSOC)) {
-                write_log("Auto Leech warning has been removed for: <a href='$site_config[SITEURL]/users/profile?id=" . $arr1["id"] . "'>" . class_user_colour($arr1["username"]) . "</a>");
+                write_log("Auto Leech warning has been removed for: <a href='$config[SITEURL]/users/profile?id=" . $arr1["id"] . "'>" . class_user_colour($arr1["username"]) . "</a>");
 
                 $pdo->run("UPDATE users SET warned = 'no' WHERE id = '" . $arr1["id"] . "'");
                 $pdo->run("UPDATE warnings SET expiry = '$timenow', active = 'no' WHERE userid = $arr1[id]");
@@ -220,7 +220,7 @@ if ($resv->rowCount()) {
             while ($arr = $res->fetch(PDO::FETCH_ASSOC)) {
                 if (gmtime() - $arr["expiry"] >= 0) {
                     $pdo->run("UPDATE users SET enabled='no', warned='no' WHERE id='" . $arr["id"] . "'");
-                    write_log("User <a href='$site_config[SITEURL]/users/profile?id=" . $arr["id"] . "'>" . class_user_colour($arr["username"]) . "</a> has been banned (Auto Leech warning).");
+                    write_log("User <a href='$config[SITEURL]/users/profile?id=" . $arr["id"] . "'>" . class_user_colour($arr["username"]) . "</a> has been banned (Auto Leech warning).");
                 }
             }
         }

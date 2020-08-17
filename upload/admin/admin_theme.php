@@ -51,7 +51,7 @@ if ($action == "style") {
         $ids = array_map("intval", $_POST["ids"]);
         $ids = implode(', ', $ids);
         DB::run("DELETE FROM `stylesheets` WHERE `id` IN ($ids)");
-        DB::run("UPDATE `users` SET `stylesheet` = ".$site_config["default_theme"]." WHERE stylesheet NOT IN (SELECT id FROM stylesheets)");
+        DB::run("UPDATE `users` SET `stylesheet` = ".$config["default_theme"]." WHERE stylesheet NOT IN (SELECT id FROM stylesheets)");
         autolink(TTURL."/admincp?action=style", T_("THEME_SUCCESS_THEME_DELETED"));
                                  
 	}elseif ($do == "add2") {
@@ -84,8 +84,8 @@ if ($action == "style") {
 		adminnavmenu();
 		begin_frame(T_("THEME_MANAGEMENT"));
 		$res = DB::run("SELECT * FROM stylesheets");
-		echo "<center><a href='$site_config[SITEURL]/admincp?action=style&amp;do=add'>".T_("THEME_ADD")."</a><!-- - <b>".T_("THEME_CLICK_A_THEME_TO_EDIT")."</b>--></center>";
-		echo "<center>".T_("THEME_CURRENT").":<form id='deltheme' method='post' action='$site_config[SITEURL]/admincp?action=style&amp;do=del'></center><table class='table table-striped table-bordered table-hover'>
+		echo "<center><a href='$config[SITEURL]/admincp?action=style&amp;do=add'>".T_("THEME_ADD")."</a><!-- - <b>".T_("THEME_CLICK_A_THEME_TO_EDIT")."</b>--></center>";
+		echo "<center>".T_("THEME_CURRENT").":<form id='deltheme' method='post' action='$config[SITEURL]/admincp?action=style&amp;do=del'></center><table class='table table-striped table-bordered table-hover'>
         <thead>".
 			"<tr><th>ID</th><th>".T_("NAME")."</th><th>".T_("THEME_FOLDER_NAME")."</th><th><input type='checkbox' name='checkall' onclick='checkAll(this.form.id);' /></th></tr></thead<tbody>";
 		while ($row=$res->fetch(PDO::FETCH_ASSOC)) {

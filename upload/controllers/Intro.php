@@ -7,7 +7,7 @@
     
     public function index(){
   dbconn();
-  global $site_config, $CURUSER;
+  global $config;
   stdhead( T_("intro") );
   loggedinonly ();
   begin_frame("Generl Functions");
@@ -20,7 +20,7 @@
 
 public function querys(){
   dbconn();
-  global $site_config, $CURUSER;
+  global $config;
   stdhead( T_("intro") );
   loggedinonly ();
   begin_frame("Querys");
@@ -33,7 +33,7 @@ public function querys(){
 
 public function models(){
   dbconn();
-  global $site_config, $CURUSER;
+  global $config;
   stdhead( T_("intro") );
   loggedinonly ();
   begin_frame("Models");
@@ -46,7 +46,7 @@ public function models(){
 
 public function controllers(){
   dbconn();
-  global $site_config, $CURUSER;
+  global $config;
   stdhead( T_("intro") );
   loggedinonly ();
   begin_frame("Controllers");
@@ -59,7 +59,7 @@ public function controllers(){
 
 public function classes(){
   dbconn();
-  global $site_config, $CURUSER;
+  global $config;
   stdhead( T_("intro") );
   loggedinonly ();
   begin_frame("Classes");
@@ -72,7 +72,7 @@ public function classes(){
 
 public function views(){
   dbconn();
-  global $site_config, $CURUSER;
+  global $config;
   stdhead( T_("intro") );
   loggedinonly ();
   begin_frame("Views");
@@ -85,7 +85,7 @@ public function views(){
 
 public function errors(){
   dbconn();
-  global $site_config, $CURUSER;
+  global $config;
   stdhead( T_("intro") );
   loggedinonly ();
   begin_frame("Errors");

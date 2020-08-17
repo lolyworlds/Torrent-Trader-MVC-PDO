@@ -7,7 +7,7 @@
     
     public function index(){
 dbconn(); 
-global $site_config, $CURUSER;
+global $config;
 if (isset($_GET["custom"])){
 	stdhead(T_("CUSTOM_RSS_XML_FEED"));
 	begin_frame(T_("CUSTOM_RSS_XML_FEED"));
@@ -35,15 +35,15 @@ if (isset($_GET["custom"])){
 		if ($_POST["dllink"])
 			$params[] = "dllink=1";
 
-		if (!$_POST["cookies"] && $CURUSER)
-			$params[] = "passkey=$CURUSER[passkey]";
+		if (!$_POST["cookies"] && $_SESSION['loggedin'])
+			$params[] = "passkey=$_SESSION[passkey]";
 
 		if ($params)
 			$param = "?".implode("&amp;", $params);
 		else
 			$param = "";
 
-		echo "Your RSS link is: <a href=\"$site_config[SITEURL]/rss$param\">$site_config[SITEURL]/rss$param</a><br/><br/>";
+		echo "Your RSS link is: <a href=\"$config[SITEURL]/rss$param\">$config[SITEURL]/rss$param</a><br/><br/>";
 	}
 	?>
 	What is RSS? Take a look at the <a href="http://wikipedia.org/wiki/RSS_%28file_format%29">Wiki</a> to <a href="http://wikipedia.org/wiki/RSS_%28file_format%29">learn more</a>.<br /><br />
@@ -125,10 +125,10 @@ if ($wherea)
 $limit = "LIMIT 50";
 
 // start the RSS feed output
-header("Content-Type: application/xhtml+xml; charset=$site_config[CHARSET]"); 
-echo("<?xml version=\"1.0\" encoding=\"$site_config[CHARSET]\"?>");
-echo("<rss version=\"2.0\"><channel><generator>" . htmlspecialchars($site_config["SITENAME"]) . " RSS 2.0</generator><language>en</language>" . 
-"<title>" . $site_config["SITENAME"] . "</title><description>" . htmlspecialchars($site_config["SITENAME"]) . " RSS Feed</description><link>" . $site_config["SITEURL"] . "</link><copyright>Copyright " . htmlspecialchars($site_config["SITENAME"]) . "</copyright><pubDate>".date("r")."</pubDate>"); 
+header("Content-Type: application/xhtml+xml; charset=$config[CHARSET]"); 
+echo("<?xml version=\"1.0\" encoding=\"$config[CHARSET]\"?>");
+echo("<rss version=\"2.0\"><channel><generator>" . htmlspecialchars($config["SITENAME"]) . " RSS 2.0</generator><language>en</language>" . 
+"<title>" . $config["SITENAME"] . "</title><description>" . htmlspecialchars($config["SITENAME"]) . " RSS Feed</description><link>" . $config["SITEURL"] . "</link><copyright>Copyright " . htmlspecialchars($config["SITENAME"]) . "</copyright><pubDate>".date("r")."</pubDate>"); 
 
 $res = DB::run("SELECT torrents.id, torrents.name, torrents.size, torrents.category, torrents.added, torrents.leechers, torrents.seeders, categories.parent_cat as cat_parent, categories.name AS cat_name FROM torrents LEFT JOIN categories ON category = categories.id $where ORDER BY added DESC $limit");
 
@@ -137,11 +137,11 @@ while ($row = $res->fetch(PDO::FETCH_LAZY)){
 
 	if ($dllink) {
 		if ($passkey)
-			$link = "$site_config[SITEURL]/download?id=$id&amp;passkey=$passkey"; 
+			$link = "$config[SITEURL]/download?id=$id&amp;passkey=$passkey"; 
 		else
-			$link = "$site_config[SITEURL]/download?id=$id"; 
+			$link = "$config[SITEURL]/download?id=$id"; 
 	} else {
-		$link = $site_config["SITEURL"]."/torrents/read?id=$id&amp;hit=1"; 
+		$link = $config["SITEURL"]."/torrents/read?id=$id&amp;hit=1"; 
 	}
 
 	$pubdate = date("r", sql_timestamp_to_unix_timestamp($added));

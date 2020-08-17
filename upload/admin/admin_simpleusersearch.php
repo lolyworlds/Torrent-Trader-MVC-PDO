@@ -4,7 +4,7 @@
 #======================================================================#
 if ($action == "users")
 {
-    if ($CURUSER['delete_users'] == 'no' || $CURUSER['delete_torrents'] == 'no')
+    if ($_SESSION['delete_users'] == 'no' || $_SESSION['delete_torrents'] == 'no')
         autolink(TTURL."/admincp", "You do not have permission to be here.");
     
     if ($do == "del") 
@@ -17,7 +17,7 @@ if ($action == "users")
         $res = DB::run("SELECT `id`, `username` FROM `users` WHERE `id` IN ($ids)");
         while ($row = $res->fetch(PDO::FETCH_LAZY))
         {
-            write_log("Account '$row[1]' (ID: $row[0]) was deleted by $CURUSER[username]");  
+            write_log("Account '$row[1]' (ID: $row[0]) was deleted by $_SESSION[username]");  
             deleteaccount($row[0]); 
         }
         
@@ -26,7 +26,7 @@ if ($action == "users")
             $res = DB::run("SELECT `id`, `name` FROM `torrents` WHERE `owner` IN ($ids)");
             while ($row = $res->fetch(PDO::FETCH_LAZY))
             {
-                write_log("Torrent '$row[1]' (ID: $row[0]) was deleted by $CURUSER[username]");    
+                write_log("Torrent '$row[1]' (ID: $row[0]) was deleted by $_SESSION[username]");    
                 deletetorrent($row["id"]);
             }  
         } 

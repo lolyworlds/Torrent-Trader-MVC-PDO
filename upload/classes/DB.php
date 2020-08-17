@@ -1,9 +1,9 @@
 <?php
 include 'config/config.php';
-define('DB_HOST', $site_config['mysql_host']);
-define('DB_NAME', $site_config['mysql_db']);
-define('DB_USER', $site_config['mysql_user']);
-define('DB_PASS', $site_config['mysql_pass']);
+define('DB_HOST', $config['mysql_host']);
+define('DB_NAME', $config['mysql_db']);
+define('DB_USER', $config['mysql_user']);
+define('DB_PASS', $config['mysql_pass']);
 define('DB_CHAR', 'utf8');
 
 class DB

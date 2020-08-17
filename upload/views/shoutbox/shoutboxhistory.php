@@ -6,7 +6,7 @@ echo '<div class="shoutbox_history">';
             $pages = round($row[0] / 100) + 1;
             $i = 1;
             while ($pages > 0){
-                echo "<a href='".$site_config['SITEURL']."/shoutbox?history=1&amp;page=".$i."'>[".$i."]</a>&nbsp;";
+                echo "<a href='".$config['SITEURL']."/shoutbox?history=1&amp;page=".$i."'>[".$i."]</a>&nbsp;";
                 $i++;
                 $pages--;
             }
@@ -58,7 +58,7 @@ echo '<div class="shoutbox_history">';
         $av = "<img src='images/default_avatar.png' alt='default_avatar' width='20' height='20'>";
     }
     // message part
-    echo '</td><td>'.$av.'<a href="' . $site_config['SITEURL'] . '/users/profile?id=' . $row['userid'] . '" target="_parent"><b>' . class_user_colour($row['user']) . ':</b></a>&nbsp;&nbsp;' . nl2br(format_comment($row['message']));
+    echo '</td><td>'.$av.'<a href="' . $config['SITEURL'] . '/users/profile?id=' . $row['userid'] . '" target="_parent"><b>' . class_user_colour($row['user']) . ':</b></a>&nbsp;&nbsp;' . nl2br(format_comment($row['message']));
        
     echo '</td></tr>';
         }

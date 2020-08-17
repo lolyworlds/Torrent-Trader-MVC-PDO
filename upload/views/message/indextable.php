@@ -1,5 +1,5 @@
 <?php
-            usermenu($CURUSER["id"]);
+            usermenu($_SESSION["id"]);
             include 'views/message/messagenavbar.php';
             ?>
             <form id='messages' method='post' action='<?php echo TTURL;?>/messages/inbox?do=del'>
@@ -17,7 +17,7 @@
 <?php
 while ($arr = $res->fetch(PDO::FETCH_ASSOC)) {
 
-        if ($arr["sender"] == $CURUSER['id']) $sender = "Yourself";
+        if ($arr["sender"] == $_SESSION['id']) $sender = "Yourself";
         elseif (is_valid_id($arr["sender"]))
         {
             $res2 = DB::run("SELECT username FROM users WHERE `id` = $arr[sender]");
@@ -27,7 +27,7 @@ while ($arr = $res->fetch(PDO::FETCH_ASSOC)) {
         else $sender = T_("SYSTEM");
 //    $sender = $arr['sendername'];
 
-        if ($arr["receiver"] == $CURUSER['id']) 
+        if ($arr["receiver"] == $_SESSION['id']) 
 			$receiver = "Yourself";
         elseif (is_valid_id($arr["receiver"]))
         {
@@ -58,5 +58,5 @@ while ($arr = $res->fetch(PDO::FETCH_ASSOC)) {
 }?>
 
     <tbody></table></div>
-    <?php echo '<div style="float: left;">read&nbsp;<img src="'.$site_config["SITEURL"].'/views/themes/default/forums/folder.png" alt="read" width="20" height="20">&nbsp;unread&nbsp;<img src="'.$site_config["SITEURL"].'/views/themes/default/forums/folder_new.png" alt="unread" width="20" height="20"></div>'; ?>
+    <?php echo '<div style="float: left;">read&nbsp;<img src="'.$config["SITEURL"].'/views/themes/default/forums/folder.png" alt="read" width="20" height="20">&nbsp;unread&nbsp;<img src="'.$config["SITEURL"].'/views/themes/default/forums/folder_new.png" alt="unread" width="20" height="20"></div>'; ?>
     <center><input type='submit' value='Delete Checked' /> <input type='submit' value='Read Checked' name='read' /></center></form>

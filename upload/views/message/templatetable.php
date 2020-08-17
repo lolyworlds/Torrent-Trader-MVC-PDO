@@ -1,5 +1,5 @@
 <?php
-            usermenu($CURUSER["id"]);
+            usermenu($_SESSION["id"]);
             include 'views/message/messagenavbar.php';
             ?>
             <form id='messagespy' method='post' action='messages&amp;do=del'>

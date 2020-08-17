@@ -12,7 +12,7 @@
       public function seeding()
       {
         dbconn();
-		global $site_config, $CURUSER;
+		global $config;
 		loggedinonly();
 		stdhead("User CP");
 		$id = (int)$_GET["id"];
@@ -22,14 +22,14 @@
 		if(!$user)
 			show_error_msg(T_("NO_SHOW_DETAILS"), T_("NO_USER_WITH_ID")." $id.",1);
 		//add invites check here
-		if ($CURUSER["view_users"] == "no" && $CURUSER["id"] != $id)
+		if ($_SESSION["view_users"] == "no" && $_SESSION["id"] != $id)
 			 show_error_msg(T_("ERROR"), T_("NO_USER_VIEW"), 1);	 
-		if (($user["enabled"] == "no" || ($user["status"] == "pending")) && $CURUSER["edit_users"] == "no")
+		if (($user["enabled"] == "no" || ($user["status"] == "pending")) && $_SESSION["edit_users"] == "no")
 			show_error_msg(T_("ERROR"), T_("NO_ACCESS_ACCOUNT_DISABLED"), 1);
 		//Layout		
         begin_frame(sprintf(T_("USER_DETAILS_FOR"), class_user_colour($user["username"])));
         usermenu($id);
-        if ($user["privacy"] != "strong" || ($CURUSER["control_panel"] == "yes") || ($CURUSER["id"] == $user["id"])) {
+        if ($user["privacy"] != "strong" || ($_SESSION["control_panel"] == "yes") || ($_SESSION["id"] == $user["id"])) {
 		
 			$res = DB::run("SELECT torrent, uploaded, downloaded FROM peers WHERE userid =? AND seeder =?", [$id, 'yes']);
 			if ($res->rowCount() > 0)
@@ -57,7 +57,7 @@
 			$page = (int) $_GET["page"];
 			$perpage = 25;
 			$where = "";
-			if ($CURUSER['control_panel'] != "yes")
+			if ($_SESSION['control_panel'] != "yes")
 				$where = "AND anon='no'";
 			$count = DB::run("SELECT COUNT(*) FROM torrents WHERE owner='$id' $where")->fetchColumn();
 		
@@ -88,7 +88,7 @@
       public function uploaded()
       {
         dbconn();
-		global $site_config, $CURUSER;
+		global $config;
 		loggedinonly();
 		stdhead("User CP");
 		$id = (int)$_GET["id"];
@@ -98,9 +98,9 @@
 		if(!$user)
 			show_error_msg(T_("NO_SHOW_DETAILS"), T_("NO_USER_WITH_ID")." $id.",1);
 		//add invites check here
-		if ($CURUSER["view_users"] == "no" && $CURUSER["id"] != $id)
+		if ($_SESSION["view_users"] == "no" && $_SESSION["id"] != $id)
 			 show_error_msg(T_("ERROR"), T_("NO_USER_VIEW"), 1);	 
-		if (($user["enabled"] == "no" || ($user["status"] == "pending")) && $CURUSER["edit_users"] == "no")
+		if (($user["enabled"] == "no" || ($user["status"] == "pending")) && $_SESSION["edit_users"] == "no")
 			show_error_msg(T_("ERROR"), T_("NO_ACCESS_ACCOUNT_DISABLED"), 1);
 		//Layout		
 		begin_frame(sprintf(T_("USER_DETAILS_FOR"), class_user_colour($user["username"])));
@@ -108,7 +108,7 @@
         $page = (int) $_GET["page"];
         $perpage = 25;
         $where = "";
-        if ($CURUSER['control_panel'] != "yes")
+        if ($_SESSION['control_panel'] != "yes")
             $where = "AND anon='no'";
         $count = DB::run("SELECT COUNT(*) FROM torrents WHERE owner='$id' $where")->fetchColumn();
     
@@ -139,17 +139,17 @@
       public function peerlist()
       {
         dbconn();
-		global $site_config, $CURUSER;
+		global $config;
         $id = (int) $_GET["id"];
 
         if (!is_valid_id($id)) {
             show_error_msg(T_("ERROR"), T_("THATS_NOT_A_VALID_ID"), 1);
         }
         //check permissions
-        if ($site_config["MEMBERSONLY"]) {
+        if ($config["MEMBERSONLY"]) {
             loggedinonly();
         }
-        if ($CURUSER["view_torrents"] == "no") {
+        if ($_SESSION["view_torrents"] == "no") {
             show_error_msg(T_("ERROR"), T_("NO_TORRENT_VIEW"), 1);
         }
         //GET ALL MYSQL VALUES FOR THIS TORRENT
@@ -198,19 +198,19 @@ while ($row1 = $query->fetch(PDO::FETCH_ASSOC)) {
 
 				$percentcomp = sprintf("%.2f", 100 * (1 - ($row1["to_go"] / $row["size"])));
 
-				if ($site_config["MEMBERSONLY"]) {
+				if ($config["MEMBERSONLY"]) {
 					$res = DB::run("SELECT id, username, privacy FROM users WHERE id=" . $row1["userid"] . "");
 					$arr = $res->fetch(PDO::FETCH_LAZY);
 
-					$arr["username"] = "<a href='$site_config[SITEURL]/users/profile?id=$arr[id]'>" . class_user_colour($arr['username']) . "</a>";
+					$arr["username"] = "<a href='$config[SITEURL]/users/profile?id=$arr[id]'>" . class_user_colour($arr['username']) . "</a>";
 				}
 
-				# With $site_config["MEMBERSONLY"] off this will be shown.
+				# With $config["MEMBERSONLY"] off this will be shown.
 				if (!$arr["username"]) {
 					$arr["username"] = "Unknown User";
 				}
 
-				if ($arr["privacy"] != "strong" || ($CURUSER["control_panel"] == "yes")) {
+				if ($arr["privacy"] != "strong" || ($_SESSION["control_panel"] == "yes")) {
 					print("<tr><td class='table_col2'>" . $row1["port"] . "</td><td class='table_col1'>" . mksize($row1["uploaded"]) . "</td><td class='table_col2'>" . mksize($row1["downloaded"]) . "</td><td class='table_col1'>" . $ratio . "</td><td class='table_col2'>" . mksize($row1["to_go"]) . "</td><td class='table_col1'>" . $percentcomp . "%</td><td class='table_col2'>$row1[seeder]</td><td class='table_col1'>$row1[connectable]</td><td class='table_col2'>" . htmlspecialchars($row1["client"]) . "</td><td class='table_col1'>$arr[username]</td></tr>");
 				} else {
 					print("<tr><td class='table_col2'>" . $row1["port"] . "</td><td class='table_col1'>" . mksize($row1["uploaded"]) . "</td><td class='table_col2'>" . mksize($row1["downloaded"]) . "</td><td class='table_col1'>" . $ratio . "</td><td class='table_col2'>" . mksize($row1["to_go"]) . "</td><td class='table_col1'>" . $percentcomp . "%</td><td class='table_col2'>$row1[seeder]</td><td class='table_col1'>$row1[connectable]</td><td class='table_col2'>" . htmlspecialchars($row1["client"]) . "</td><td class='table_col1'>Private</td></tr>");
@@ -234,7 +234,7 @@ while ($row1 = $query->fetch(PDO::FETCH_ASSOC)) {
       public function seeding1()
       {
         dbconn();
-		global $site_config, $CURUSER;
+		global $config;
 		loggedinonly();
 
 		$id = (int)$_GET["id"];
@@ -248,12 +248,12 @@ while ($row1 = $query->fetch(PDO::FETCH_ASSOC)) {
 		$action = $_GET['action'];
 		
 		if (!$userid)
-			$userid = $CURUSER['id'];
+			$userid = $_SESSION['id'];
 		
 		if (!is_valid_id($userid))
 			show_error_msg("Error", "Invalid ID $userid.");
 		
-		if ($userid != $CURUSER["id"])
+		if ($userid != $_SESSION["id"])
 			show_error_msg("Error", "Not allowed to view others activity here.");
 		
 		$user = DB::run("SELECT * FROM users WHERE id=?", [$id])->fetch();
@@ -261,12 +261,12 @@ while ($row1 = $query->fetch(PDO::FETCH_ASSOC)) {
 		show_error_msg(T_("NO_SHOW_DETAILS"), T_("NO_USER_WITH_ID")." $id.",1);
 		
 		$res = DB::run("SELECT torrent,uploaded,downloaded FROM peers LEFT JOIN torrents ON torrent = torrents.id WHERE userid='$id' AND seeder='yes'");
-		//$res = DB::run("SELECT torrent,uploaded,downloaded FROM peers LEFT JOIN torrents ON torrent = torrents.id WHERE userid='$id' AND seeder='yes' AND (torrents.team = 0 OR torrents.team = ".$CURUSER['team']. " OR ".$CURUSER['class']." = 7)");
+		//$res = DB::run("SELECT torrent,uploaded,downloaded FROM peers LEFT JOIN torrents ON torrent = torrents.id WHERE userid='$id' AND seeder='yes' AND (torrents.team = 0 OR torrents.team = ".$_SESSION['team']. " OR ".$_SESSION['class']." = 7)");
 		if ($res->rowCount() > 0)
 		$seeding = peerstable($res);
 
 		$res = DB::run("SELECT torrent,uploaded,downloaded FROM peers LEFT JOIN torrents ON torrent = torrents.id WHERE userid='$id' AND seeder='no'");		
-		//$res = DB::run("SELECT torrent,uploaded,downloaded FROM peers LEFT JOIN torrents ON torrent = torrents.id WHERE userid='$id' AND seeder='no' AND (torrents.team = 0 OR torrents.team = ".$CURUSER['team']. " OR ".$CURUSER['class']." = 7)");
+		//$res = DB::run("SELECT torrent,uploaded,downloaded FROM peers LEFT JOIN torrents ON torrent = torrents.id WHERE userid='$id' AND seeder='no' AND (torrents.team = 0 OR torrents.team = ".$_SESSION['team']. " OR ".$_SESSION['class']." = 7)");
 		if ($res->rowCount() > 0)
 		$leeching = peerstable($res);
 		
@@ -282,7 +282,7 @@ while ($row1 = $query->fetch(PDO::FETCH_ASSOC)) {
       public function leeching()
       {
         dbconn();
-		global $site_config, $CURUSER;
+		global $config;
 		loggedinonly();
 
 		$id = (int)$_GET["id"];
@@ -296,12 +296,12 @@ while ($row1 = $query->fetch(PDO::FETCH_ASSOC)) {
 		$action = $_GET['action'];
 		
 		if (!$userid)
-			$userid = $CURUSER['id'];
+			$userid = $_SESSION['id'];
 		
 		if (!is_valid_id($userid))
 			show_error_msg("Error", "Invalid ID $userid.");
 		
-		if ($userid != $CURUSER["id"])
+		if ($userid != $_SESSION["id"])
 			show_error_msg("Error", "Not allowed to view others activity here.");
 		
 		$user = DB::run("SELECT * FROM users WHERE id=?", [$id])->fetch();
@@ -309,12 +309,12 @@ while ($row1 = $query->fetch(PDO::FETCH_ASSOC)) {
 		show_error_msg(T_("NO_SHOW_DETAILS"), T_("NO_USER_WITH_ID")." $id.",1);
 		
 		$res = DB::run("SELECT torrent,uploaded,downloaded FROM peers LEFT JOIN torrents ON torrent = torrents.id WHERE userid='$id' AND seeder='yes'");
-		//$res = DB::run("SELECT torrent,uploaded,downloaded FROM peers LEFT JOIN torrents ON torrent = torrents.id WHERE userid='$id' AND seeder='yes' AND (torrents.team = 0 OR torrents.team = ".$CURUSER['team']. " OR ".$CURUSER['class']." = 7)");
+		//$res = DB::run("SELECT torrent,uploaded,downloaded FROM peers LEFT JOIN torrents ON torrent = torrents.id WHERE userid='$id' AND seeder='yes' AND (torrents.team = 0 OR torrents.team = ".$_SESSION['team']. " OR ".$_SESSION['class']." = 7)");
 		if ($res->rowCount() > 0)
 		$seeding = peerstable($res);
 		
 		$res = DB::run("SELECT torrent,uploaded,downloaded FROM peers LEFT JOIN torrents ON torrent = torrents.id WHERE userid='$id' AND seeder='no'");
-		//$res = DB::run("SELECT torrent,uploaded,downloaded FROM peers LEFT JOIN torrents ON torrent = torrents.id WHERE userid='$id' AND seeder='no' AND (torrents.team = 0 OR torrents.team = ".$CURUSER['team']. " OR ".$CURUSER['class']." = 7)");
+		//$res = DB::run("SELECT torrent,uploaded,downloaded FROM peers LEFT JOIN torrents ON torrent = torrents.id WHERE userid='$id' AND seeder='no' AND (torrents.team = 0 OR torrents.team = ".$_SESSION['team']. " OR ".$_SESSION['class']." = 7)");
 		if ($res->rowCount() > 0)
 		$leeching = peerstable($res);
 		

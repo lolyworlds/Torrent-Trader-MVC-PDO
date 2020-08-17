@@ -93,7 +93,7 @@ function get_date_time($timestamp = 0)
 // Function which returns a date according to the member's time zone
 function utc_to_tz($timestamp = 0)
 {
-    global $CURUSER, $tzs;
+    global $tzs;
 
     if (method_exists("DateTime", "setTimezone")) {
         if (!$timestamp) {
@@ -102,7 +102,8 @@ function utc_to_tz($timestamp = 0)
 
         $date = new DateTime($timestamp, new DateTimeZone("UTC"));
 
-        $date->setTimezone(new DateTimeZone($CURUSER ? $tzs[$CURUSER["tzoffset"]][1] : "Europe/London"));
+        $date->setTimezone(new DateTimeZone($tzs = [$_SESSION["tzoffset"]][1] ?: "Europe/London"));
+        //$date->setTimezone(new DateTimeZone($tzs[$_SESSION["tzoffset"]] ?: "Europe/London"));
         return $date->format('Y-m-d H:i:s');
     }
     if (!is_numeric($timestamp)) {
@@ -113,7 +114,7 @@ function utc_to_tz($timestamp = 0)
         $timestamp = gmtime();
     }
 
-    $timestamp = $timestamp + ($CURUSER['tzoffset'] * 60);
+    $timestamp = $timestamp + ($_SESSION['tzoffset'] * 60);
     if (date("I")) {
         $timestamp += 3600;
     }
@@ -124,7 +125,7 @@ function utc_to_tz($timestamp = 0)
 // Function That Returns A Timestamp According To The Member's Time Zone
 function utc_to_tz_time($timestamp = 0)
 {
-    global $CURUSER, $tzs;
+    global $tzs;
 
     if (method_exists("DateTime", "setTimezone")) {
         if (!$timestamp) {
@@ -132,7 +133,8 @@ function utc_to_tz_time($timestamp = 0)
         }
 
         $date = new DateTime($timestamp, new DateTimeZone("UTC"));
-        $date->setTimezone(new DateTimeZone($CURUSER ? $tzs[$CURUSER["tzoffset"]][1] : "Europe/London"));
+        $date->setTimezone(new DateTimeZone($tzs = [$_SESSION["tzoffset"]][1] ?: "Europe/London"));
+        //$date->setTimezone(new DateTimeZone($tzs[$_SESSION["tzoffset"]] ?: "Europe/London"));
         return sql_timestamp_to_unix_timestamp($date->format('Y-m-d H:i:s'));
     }
 
@@ -144,7 +146,7 @@ function utc_to_tz_time($timestamp = 0)
         $timestamp = gmtime();
     }
 
-    $timestamp = $timestamp + ($CURUSER['tzoffset'] * 60);
+    $timestamp = $timestamp + ($_SESSION['tzoffset'] * 60);
     if (date("I")) {
         $timestamp += 3600;
     }

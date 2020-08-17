@@ -2,7 +2,7 @@
 error_reporting(E_ALL ^ E_NOTICE);
 
 if ($_GET["phpinfo"] == 1){
-	echo "<br /><center><a href='$site_config[SITEURL]/check'>Back To Check</a></center><br /><br />";
+	echo "<br /><center><a href='$config[SITEURL]/check'>Back To Check</a></center><br /><br />";
 	phpinfo();
 	die();
 }
@@ -202,7 +202,7 @@ writableCell( 'censor.txt', 1 );
 require_once("config/config.php");
 echo "<b>Table Status Check:</b><br /><br />";
     try {
-        $link = new PDO('mysql:host='.$site_config['mysql_host'].';dbname='.$site_config['mysql_db'], $site_config['mysql_user'], $site_config['mysql_pass']);       
+        $link = new PDO('mysql:host='.$config['mysql_host'].';dbname='.$config['mysql_db'], $config['mysql_user'], $config['mysql_pass']);       
         $link->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $stmt = $link->prepare("SHOW TABLES");
         $stmt->execute();
@@ -260,33 +260,33 @@ echo "<b>Table Status Check:</b><br /><br />";
 
             require("config/config.php");
             echo "<br /><br /><b>Default Theme:</b> ";
-            if (!is_numeric($site_config["default_theme"]))
+            if (!is_numeric($config["default_theme"]))
                 echo "<font color='#ff0000'><b>Invalid.</b></font> (Not a number)";
             else {
-                $res = $link->prepare("SELECT uri FROM stylesheets WHERE id=$site_config[default_theme]");
+                $res = $link->prepare("SELECT uri FROM stylesheets WHERE id=$config[default_theme]");
                 $res->execute();
                 if ($row = $res->fetch(PDO::FETCH_LAZY)) {
                     if (file_exists("views/themes/$row[0]/header.php"))
-                        echo "<font color='green'><b>Valid.</b></font> (ID: $site_config[default_theme], Path: views/themes/$row[0]/)";
+                        echo "<font color='green'><b>Valid.</b></font> (ID: $config[default_theme], Path: views/themes/$row[0]/)";
                     else
                         echo "<font color='#ff0000'><b>Invalid.</b></font> (No header.php found)";
                 } else
-                    echo "<font color='#ff0000'><b>Invalid.</b></font> (No theme found with ID $site_config[default_theme])";
+                    echo "<font color='#ff0000'><b>Invalid.</b></font> (No theme found with ID $config[default_theme])";
             }
 
             echo "<br /><b>Default Language:</b> ";
-            if (!is_numeric($site_config["default_language"]))
+            if (!is_numeric($config["default_language"]))
                 echo "<font color='#ff0000'><b>Invalid.</b></font> (Not a number)";
             else {
-                $res = $link->prepare("SELECT uri FROM languages WHERE id=$site_config[default_language]");
+                $res = $link->prepare("SELECT uri FROM languages WHERE id=$config[default_language]");
                 $res->execute();
                 if ($row = $res->fetch(PDO::FETCH_LAZY)) {
                     if (file_exists("languages/$row[0]"))
-                        echo "<font color='green'><b>Valid.</b></font> (ID: $site_config[default_language], Path: languages/$row[0])";
+                        echo "<font color='green'><b>Valid.</b></font> (ID: $config[default_language], Path: languages/$row[0])";
                     else
                         echo "<font color='#ff0000'><b>Invalid.</b></font> (File languages/$row[0] missing)";
                 } else
-                    echo "<font color='#ff0000'><b>Invalid.</b></font> (No language found with ID $site_config[default_language])";
+                    echo "<font color='#ff0000'><b>Invalid.</b></font> (No language found with ID $config[default_language])";
             }
         }
     }

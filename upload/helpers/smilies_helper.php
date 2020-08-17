@@ -5,7 +5,7 @@ require_once "a_start_function.php";
 // Insertion of Smilies function
 function insert_smilies_frame()
 {
-    global $site_config;
+    global $config;
 // Summary Table of Emotions
 $smilies = array
     (
@@ -51,7 +51,7 @@ $smilies = array
 );
     echo "<table><tr><td>Type...</td><td>To make a...</td></tr>";
     foreach ($smilies as $code => $url) {
-        echo "<tr><td>$code</td><td><a href=\"javascript:window.opener.SmileIT('$code', '" . cleanstr($_GET["form"]) . "', '" . htmlspecialchars($_GET["text"]) . "')\"><img src=\"$site_config[SITEURL]/images/smilies/$url\" alt=\"$code\" title=\"$code\" border=\"0\"></a></td></tr>";
+        echo "<tr><td>$code</td><td><a href=\"javascript:window.opener.SmileIT('$code', '" . cleanstr($_GET["form"]) . "', '" . htmlspecialchars($_GET["text"]) . "')\"><img src=\"$config[SITEURL]/images/smilies/$url\" alt=\"$code\" title=\"$code\" border=\"0\"></a></td></tr>";
     }
     echo "</table>";
 }

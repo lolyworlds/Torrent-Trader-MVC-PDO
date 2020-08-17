@@ -14,23 +14,23 @@ class TTMail
     // Mail Class Constructor Function
     public function __construct()
     {
-        global $site_config;
+        global $config;
 
-        switch (strtolower($site_config["mail_type"])) {
+        switch (strtolower($config["mail_type"])) {
             case "pear":
-                $this->smtp_ssl = $site_config["mail_smtp_ssl"];
+                $this->smtp_ssl = $config["mail_smtp_ssl"];
 
                 if ($this->smtp_ssl) {
-                    $this->smtp_host = "ssl://" . $site_config["mail_smtp_host"];
+                    $this->smtp_host = "ssl://" . $config["mail_smtp_host"];
                 } else {
-                    $this->smtp_host = $site_config["mail_smtp_host"];
+                    $this->smtp_host = $config["mail_smtp_host"];
                 }
 
                 $this->type = "pear";
-                $this->smtp_port = $site_config["mail_smtp_port"];
-                $this->smtp_auth = $site_config["mail_smtp_auth"];
-                $this->smtp_user = $site_config["mail_smtp_user"];
-                $this->smtp_pass = $site_config["mail_smtp_pass"];
+                $this->smtp_port = $config["mail_smtp_port"];
+                $this->smtp_auth = $config["mail_smtp_auth"];
+                $this->smtp_user = $config["mail_smtp_user"];
+                $this->smtp_pass = $config["mail_smtp_pass"];
 
                 if (!@include_once ("Mail.php")) {
                     trigger_error("Config is set to use PEAR Mail but it is not installed (or include_path is wrong).", E_USER_WARNING);
@@ -45,12 +45,12 @@ class TTMail
     // Function That Allows Sending Mail
     public function Send($to, $subject, $message, $additional_headers = "", $additional_parameters = "")
     {
-        global $site_config;
+        global $config;
 
         if (preg_match("!^From:(.*)!m", $additional_headers, $matches)) {
             $from = trim($matches[1]);
         } else {
-            $from = "$site_config[SITEEMAIL]";
+            $from = "$config[SITEEMAIL]";
         }
 
         $additional_headers = preg_replace("!^From:(.*)!m", "", $additional_headers);

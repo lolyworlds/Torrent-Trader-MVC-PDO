@@ -1,5 +1,5 @@
 <?php
-if ($CURUSER) {
+if ($_SESSION['loggedin']) {
     begin_block(T_("NEWEST_MEMBERS"));
     $TTCache = new Cache();
     $expire = 600; // time in seconds

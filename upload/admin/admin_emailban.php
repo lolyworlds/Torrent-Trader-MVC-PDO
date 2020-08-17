@@ -9,7 +9,7 @@ if ($action=="emailbans"){
 
 	if (is_valid_id($remove)){
 		DB::run("DELETE FROM email_bans WHERE id=$remove");
-		write_log(sprintf(T_("EMAIL_BANS_REM"), $remove, $CURUSER["username"]));
+		write_log(sprintf(T_("EMAIL_BANS_REM"), $remove, $_SESSION["username"]));
 	}
 
 	if ($_GET["add"] == '1'){
@@ -25,8 +25,8 @@ if ($action=="emailbans"){
 		$comment = $comment;
 		$added = get_date_time();
 
-		$ins = DB::run("INSERT INTO email_bans (added, addedby, mail_domain, comment) VALUES(?,?,?,?)", [$added, $CURUSER['id'], $mail_domain, $comment]);
-		write_log(sprintf(T_("EMAIL_BANS_ADD"), $mail_domain, $CURUSER["username"]));
+		$ins = DB::run("INSERT INTO email_bans (added, addedby, mail_domain, comment) VALUES(?,?,?,?)", [$added, $_SESSION['id'], $mail_domain, $comment]);
+		write_log(sprintf(T_("EMAIL_BANS_ADD"), $mail_domain, $_SESSION["username"]));
 		show_error_msg(T_("COMPLETE"), T_("EMAIL_BAN_ADDED"), 0);
 		require 'views/admin/footer.php';
 		die;

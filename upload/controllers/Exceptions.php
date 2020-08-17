@@ -9,16 +9,16 @@
       public function error()
       {
           dbconn();
-          global $site_config, $CURUSER;
+          global $config;
           dbconn();
           show_error_msg(T_("ERROR"), T_("Oops somwthing went wrong, Admin have been notified if this continues please contact a member of staff. Thank you"), 1);
       }
   
       public function admin(){
           dbconn();
-          global $site_config, $CURUSER;
+          global $config;
         
-          if (!$CURUSER || $CURUSER["control_panel"]!="yes") {
+          if (!$_SESSION || $_SESSION["control_panel"]!="yes") {
               show_error_msg(T_("ERROR"), T_("SORRY_NO_RIGHTS_TO_ACCESS"), 1);
           }
         

@@ -72,7 +72,7 @@ function torrent_scrape_url($scrape, $hash)
 // Function To Delete A Torrent
 function deletetorrent($id)
 {
-    global $site_config, $pdo;
+    global $config, $pdo;
 
     $stmt = @$pdo->run("SELECT image1,image2 FROM torrents WHERE id=$id");
     $row = @$stmt->fetch(PDO::FETCH_ASSOC);
@@ -83,19 +83,19 @@ function deletetorrent($id)
 
     $pdo->run("DELETE FROM completed WHERE torrentid = $id");
 
-    if (file_exists($site_config["torrent_dir"] . "/$id.torrent")) {
-        unlink($site_config["torrent_dir"] . "/$id.torrent");
+    if (file_exists($config["torrent_dir"] . "/$id.torrent")) {
+        unlink($config["torrent_dir"] . "/$id.torrent");
     }
 
     if ($row["image1"]) {
-        unlink($site_config['torrent_dir'] . "/images/" . $row["image1"]);
+        unlink($config['torrent_dir'] . "/images/" . $row["image1"]);
     }
 
     if ($row["image2"]) {
-        unlink($site_config['torrent_dir'] . "/images/" . $row["image2"]);
+        unlink($config['torrent_dir'] . "/images/" . $row["image2"]);
     }
 
-    @unlink($site_config["nfo_dir"] . "/$id.nfo");
+    @unlink($config["nfo_dir"] . "/$id.nfo");
 
     $pdo->run("DELETE FROM torrents WHERE id = $id");
     $pdo->run("DELETE FROM reports WHERE votedfor = $id AND type = 'torrent'");
@@ -129,7 +129,7 @@ function langlist()
 
 function peerstable($res)
 {
-    global $site_config, $pdo;
+    global $config, $pdo;
     $ret = "<table align='center' cellpadding=\"3\" cellspacing=\"0\" class=\"table_table\" width=\"100%\" border=\"1\"><tr><th class='table_head'>" . T_("NAME") . "</th><th class='table_head'>" . T_("SIZE") . "</th><th class='table_head'>" . T_("UPLOADED") . "</th>\n<th class='table_head'>" . T_("DOWNLOADED") . "</th><th class='table_head'>" . T_("RATIO") . "</th></tr>\n";
 
     while ($arr = $res->fetch(PDO::FETCH_LAZY)) {
@@ -140,7 +140,7 @@ function peerstable($res)
         } else {
             $ratio = "---";
         }
-        $ret .= "<tr><td class='table_col1'><a href='$site_config[SITEURL]/torrents/read?id=$arr[torrent]&amp;hit=1'><b>" . htmlspecialchars($arr2["name"]) . "</b></a></td><td align='center' class='table_col2'>" . mksize($arr2["size"]) . "</td><td align='center' class='table_col1'>" . mksize($arr["uploaded"]) . "</td><td align='center' class='table_col2'>" . mksize($arr["downloaded"]) . "</td><td align='center' class='table_col1'>$ratio</td></tr>\n";
+        $ret .= "<tr><td class='table_col1'><a href='$config[SITEURL]/torrents/read?id=$arr[torrent]&amp;hit=1'><b>" . htmlspecialchars($arr2["name"]) . "</b></a></td><td align='center' class='table_col2'>" . mksize($arr2["size"]) . "</td><td align='center' class='table_col1'>" . mksize($arr["uploaded"]) . "</td><td align='center' class='table_col2'>" . mksize($arr["downloaded"]) . "</td><td align='center' class='table_col1'>$ratio</td></tr>\n";
     }
     $ret .= "</table>\n";
     return $ret;
@@ -149,21 +149,21 @@ function peerstable($res)
 // Function To Display Tables Of Torrents
 function torrenttable($res)
 {
-    global $site_config, $CURUSER, $THEME, $LANGUAGE, $pdo; //Define globals
+    global $config, $THEME, $LANGUAGE, $pdo; //Define globals
 
-    if ($site_config["MEMBERSONLY_WAIT"] && $site_config["MEMBERSONLY"] && in_array($CURUSER["class"], explode(",", $site_config["WAIT_CLASS"]))) {
-        $gigs = $CURUSER["uploaded"] / (1024 * 1024 * 1024);
-        $ratio = (($CURUSER["downloaded"] > 0) ? ($CURUSER["uploaded"] / $CURUSER["downloaded"]) : 0);
+    if ($config["MEMBERSONLY_WAIT"] && $config["MEMBERSONLY"] && in_array($_SESSION["class"], explode(",", $config["WAIT_CLASS"]))) {
+        $gigs = $_SESSION["uploaded"] / (1024 * 1024 * 1024);
+        $ratio = (($_SESSION["downloaded"] > 0) ? ($_SESSION["uploaded"] / $_SESSION["downloaded"]) : 0);
         if ($ratio < 0 || $gigs < 0) {
-            $wait = $site_config["WAITA"];
-        } elseif ($ratio < $site_config["RATIOA"] || $gigs < $site_config["GIGSA"]) {
-            $wait = $site_config["WAITA"];
-        } elseif ($ratio < $site_config["RATIOB"] || $gigs < $site_config["GIGSB"]) {
-            $wait = $site_config["WAITB"];
-        } elseif ($ratio < $site_config["RATIOC"] || $gigs < $site_config["GIGSC"]) {
-            $wait = $site_config["WAITC"];
-        } elseif ($ratio < $site_config["RATIOD"] || $gigs < $site_config["GIGSD"]) {
-            $wait = $site_config["WAITD"];
+            $wait = $config["WAITA"];
+        } elseif ($ratio < $config["RATIOA"] || $gigs < $config["GIGSA"]) {
+            $wait = $config["WAITA"];
+        } elseif ($ratio < $config["RATIOB"] || $gigs < $config["GIGSB"]) {
+            $wait = $config["WAITB"];
+        } elseif ($ratio < $config["RATIOC"] || $gigs < $config["GIGSC"]) {
+            $wait = $config["WAITC"];
+        } elseif ($ratio < $config["RATIOD"] || $gigs < $config["GIGSD"]) {
+            $wait = $config["WAITD"];
         } else {
             $wait = 0;
         }
@@ -171,7 +171,7 @@ function torrenttable($res)
     }
     $wait = '';
     // Columns
-    $cols = explode(",", $site_config["torrenttable_columns"]);
+    $cols = explode(",", $config["torrenttable_columns"]);
     $cols = array_map("strtolower", $cols);
     $cols = array_map("trim", $cols);
     $colspan = count($cols);
@@ -179,8 +179,8 @@ function torrenttable($res)
 
     // Expanding Area
     $expandrows = array();
-    if (!empty($site_config["torrenttable_expand"])) {
-        $expandrows = explode(",", $site_config["torrenttable_expand"]);
+    if (!empty($config["torrenttable_expand"])) {
+        $expandrows = explode(",", $config["torrenttable_expand"]);
         $expandrows = array_map("strtolower", $expandrows);
         $expandrows = array_map("trim", $expandrows);
     }
@@ -229,7 +229,7 @@ function torrenttable($res)
                 echo "<th>" . T_("HEALTH") . "</th>";
                 break;
             case 'external':
-                if ($site_config["ALLOWEXTERNAL"]) {
+                if ($config["ALLOWEXTERNAL"]) {
                     echo "<th>" . T_("L/E") . "</th>";
                 }
 
@@ -271,7 +271,7 @@ function torrenttable($res)
                     if (!empty($row["cat_name"])) {
                         print("<a href=\"torrents/browse?cat=" . $row["category"] . "\">");
                         if (!empty($row["cat_pic"]) && $row["cat_pic"] != "") {
-                            print("<img border=\"0\"src=\"" . $site_config['SITEURL'] . "/images/categories/" . $row["cat_pic"] . "\" alt=\"" . $row["cat_name"] . "\" />");
+                            print("<img border=\"0\"src=\"" . $config['SITEURL'] . "/images/categories/" . $row["cat_pic"] . "\" alt=\"" . $row["cat_name"] . "\" />");
                         } else {
                             print($row["cat_parent"] . ": " . $row["cat_name"]);
                         }
@@ -288,7 +288,7 @@ function torrenttable($res)
                     $smallname = htmlspecialchars(CutName($row["name"], $char1));
                     $dispname = "<b>" . $smallname . "</b>";
 
-                    $last_access = $CURUSER["last_browse"];
+                    $last_access = $_SESSION["last_browse"];
                     $time_now = gmtime();
                     if ($last_access > $time_now || !is_numeric($last_access)) {
                         $last_access = $time_now;
@@ -302,36 +302,36 @@ function torrenttable($res)
                         $dispname .= " <img src='images/free.gif' border='0' alt='' />";
                     }
 
-                    print("<td class='ttable_col$x' nowrap='nowrap'>" . (count($expandrows) ? "<a href=\"javascript: klappe_torrent('t" . $row['id'] . "')\"><img border=\"0\" src=\"" . $site_config["SITEURL"] . "/images/plus.gif\" id=\"pict" . $row['id'] . "\" alt=\"Show/Hide\" class=\"showthecross\" /></a>" : "") . "&nbsp;<a title=\"" . $row["name"] . "\" href=\"".$site_config['SITEURL']."/torrents/read?id=$id&amp;hit=1\">$dispname</a></td>");
+                    print("<td class='ttable_col$x' nowrap='nowrap'>" . (count($expandrows) ? "<a href=\"javascript: klappe_torrent('t" . $row['id'] . "')\"><img border=\"0\" src=\"" . $config["SITEURL"] . "/images/plus.gif\" id=\"pict" . $row['id'] . "\" alt=\"Show/Hide\" class=\"showthecross\" /></a>" : "") . "&nbsp;<a title=\"" . $row["name"] . "\" href=\"".$config['SITEURL']."/torrents/read?id=$id&amp;hit=1\">$dispname</a></td>");
 
                     break;
                 case 'dl':
-                    print("<td class='ttable_col$x' align='center'><a href=\"download?id=$id&amp;name=" . rawurlencode($row["filename"]) . "\"><img src='" . $site_config['SITEURL'] . "/images/icon_download.gif' border='0' alt=\"Download .torrent\" /></a></td>");
+                    print("<td class='ttable_col$x' align='center'><a href=\"download?id=$id&amp;name=" . rawurlencode($row["filename"]) . "\"><img src='" . $config['SITEURL'] . "/images/icon_download.gif' border='0' alt=\"Download .torrent\" /></a></td>");
                     break;
                 case 'magnet':
                     $magnet = $pdo->run("SELECT info_hash FROM torrents WHERE id=?", [$id])->fetch();
                     // Like Mod
-                    if(!$site_config["forcethanks"]) {
-                    print("<td class='ttable_col$x' align='center'><a href=\"magnet:?xt=urn:btih:" . $magnet["info_hash"] . "&dn=" . rawurlencode($row['name']) . "&tr=" . $row['announce'] . "?passkey=" . $CURUSER['passkey'] . "\"><img src='" . $site_config['SITEURL'] . "/images/magnetique.png' border='0' title='Download via Magnet' /></a></td>");
+                    if(!$config["forcethanks"]) {
+                    print("<td class='ttable_col$x' align='center'><a href=\"magnet:?xt=urn:btih:" . $magnet["info_hash"] . "&dn=" . rawurlencode($row['name']) . "&tr=" . $row['announce'] . "?passkey=" . $_SESSION['passkey'] . "\"><img src='" . $config['SITEURL'] . "/images/magnetique.png' border='0' title='Download via Magnet' /></a></td>");
                     }
-                    if($CURUSER["id"] != $row["owner"] && $site_config["forcethanks"]) {
-                    $data = DB::run("SELECT user FROM thanks WHERE thanked = ? AND type = ? AND user = ?", [$id, 'torrent', $CURUSER['id']]);
+                    if($_SESSION["id"] != $row["owner"] && $config["forcethanks"]) {
+                    $data = DB::run("SELECT user FROM thanks WHERE thanked = ? AND type = ? AND user = ?", [$id, 'torrent', $_SESSION['id']]);
                     $like = $data->fetch(PDO::FETCH_ASSOC);
                     if($like){
-                    print("<td class='ttable_col$x' align='center'><a href=\"magnet:?xt=urn:btih:" . $magnet["info_hash"] . "&dn=" . rawurlencode($row['name']) . "&tr=" . $row['announce'] . "?passkey=" . $CURUSER['passkey'] . "\"><img src='" . $site_config['SITEURL'] . "/images/magnetique.png' border='0' title='Download via Magnet' /></a></td>");
+                    print("<td class='ttable_col$x' align='center'><a href=\"magnet:?xt=urn:btih:" . $magnet["info_hash"] . "&dn=" . rawurlencode($row['name']) . "&tr=" . $row['announce'] . "?passkey=" . $_SESSION['passkey'] . "\"><img src='" . $config['SITEURL'] . "/images/magnetique.png' border='0' title='Download via Magnet' /></a></td>");
                     }else {
-                    print ("<td class='ttable_col$x' align='center'><a href='$site_config[SITEURL]/likes/index?id=$id' ><button  class='btn btn-sm btn-danger'>Thanks</button></td>");
+                    print ("<td class='ttable_col$x' align='center'><a href='$config[SITEURL]/likes/index?id=$id' ><button  class='btn btn-sm btn-danger'>Thanks</button></td>");
                     }
                     }else{
-                        print("<td class='ttable_col$x' align='center'><a href=\"magnet:?xt=urn:btih:" . $magnet->info_hash . "&dn=" . rawurlencode($row['name']) . "&tr=" . $row['announce'] . "?passkey=" . $CURUSER->passkey . "\"><img src='" . $site_config['SITEURL'] . "/images/magnetique.png' border='0' title='Download via Magnet' /></a></td>");
+                        print("<td class='ttable_col$x' align='center'><a href=\"magnet:?xt=urn:btih:" . $magnet->info_hash . "&dn=" . rawurlencode($row['name']) . "&tr=" . $row['announce'] . "?passkey=" . $_SESSION['passkey'] . "\"><img src='" . $config['SITEURL'] . "/images/magnetique.png' border='0' title='Download via Magnet' /></a></td>");
                     }
                     break;
                 case 'uploader':
                     echo "<td class='ttable_col$x' align='center'>";
-                    if (($row["anon"] == "yes" || $row["privacy"] == "strong") && $CURUSER["id"] != $row["owner"] && $CURUSER["edit_torrents"] != "yes") {
+                    if (($row["anon"] == "yes" || $row["privacy"] == "strong") && $_SESSION["id"] != $row["owner"] && $_SESSION["edit_torrents"] != "yes") {
                         echo "Anonymous";
                     } elseif ($row["username"]) {
-                        echo "<a href='".$site_config['SITEURL']."/users/profile?id=$row[owner]'>" . class_user_colour($row['username']) . "</a>";
+                        echo "<a href='".$config['SITEURL']."/users/profile?id=$row[owner]'>" . class_user_colour($row['username']) . "</a>";
                     } else {
                         echo "Unknown";
                     }
@@ -340,16 +340,16 @@ function torrenttable($res)
                     break;
                 case 'tube':
                         if ($row["tube"]) 
-                              print("<td class='ttable_col$x' align='center'><a rel=\"prettyPhoto\"  href=".$row['tube']." ><".htmlspecialchars($row['tube'])."><img src='" . $site_config['SITEURL'] . "/images/youtube1.png'  border='0' width='30' height='30' alt=\"\" /></a></td>");  
+                              print("<td class='ttable_col$x' align='center'><a rel=\"prettyPhoto\"  href=".$row['tube']." ><".htmlspecialchars($row['tube'])."><img src='" . $config['SITEURL'] . "/images/youtube1.png'  border='0' width='30' height='30' alt=\"\" /></a></td>");  
                               else
                            print("<td class='ttable_colx' align='center'>-</td>"); 
                            break;
                 case 'comments':
-                    print("<td class='ttable_col$x' align='center'><font size='1' face='verdana'><a href='$site_config[SITEURL]/comments?type=torrent&amp;id=$id'>" . number_format($row["comments"]) . "</a></font></td>\n");
+                    print("<td class='ttable_col$x' align='center'><font size='1' face='verdana'><a href='$config[SITEURL]/comments?type=torrent&amp;id=$id'>" . number_format($row["comments"]) . "</a></font></td>\n");
                     break;
                 case 'nfo':
                     if ($row["nfo"] == "yes") {
-                        print("<td class='ttable_col$x' align='center'><a href='$site_config[SITEURL]/nfo/read?id=$row[id]'><img src='" . $site_config['SITEURL'] . "/images/icon_nfo.gif' border='0' alt='View NFO' /></a></td>");
+                        print("<td class='ttable_col$x' align='center'><a href='$config[SITEURL]/nfo/read?id=$row[id]'><img src='" . $config['SITEURL'] . "/images/icon_nfo.gif' border='0' alt='View NFO' /></a></td>");
                     } else {
                         print("<td class='ttable_col$x' align='center'>-</td>");
                     }
@@ -368,10 +368,10 @@ function torrenttable($res)
                     print("<td class='ttable_col$x' align='center'><font color='#ff0000'><b>" . number_format($row["leechers"]) . "</b></font></td>\n");
                     break;
                 case 'health':
-                    print("<td class='ttable_col$x' align='center'><img src='" . $site_config["SITEURL"] . "/images/health/health_" . health($row["leechers"], $row["seeders"]) . ".gif' alt='' /></td>\n");
+                    print("<td class='ttable_col$x' align='center'><img src='" . $config["SITEURL"] . "/images/health/health_" . health($row["leechers"], $row["seeders"]) . ".gif' alt='' /></td>\n");
                     break;
                 case 'external':
-                    if ($site_config["ALLOWEXTERNAL"]) {
+                    if ($config["ALLOWEXTERNAL"]) {
                         if ($row["external"] == 'yes') {
                             print("<td class='ttable_col$x' align='center'>" . T_("E") . "</td>\n");
                         } else {
@@ -535,7 +535,7 @@ function get_ratio_color($ratio)
 
 function ratingpic($num)
 {
-    global $site_config;
+    global $config;
     $r = round($num * 2) / 2;
     if ($r != $num) {
         $n = $num - $r;
@@ -551,7 +551,7 @@ function ratingpic($num)
         return;
     }
 
-    return "<img src=\"" . $site_config["SITEURL"] . "/images/rating/$r.png\" border=\"0\" alt=\"rating: $num/5\" title=\"rating: $num/5\" />";
+    return "<img src=\"" . $config["SITEURL"] . "/images/rating/$r.png\" border=\"0\" alt=\"rating: $num/5\" title=\"rating: $num/5\" />";
 }
 
 /*array info for ref:

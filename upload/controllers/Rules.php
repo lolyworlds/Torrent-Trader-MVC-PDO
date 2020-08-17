@@ -8,7 +8,7 @@
     public function index(){
 
   dbconn();
-  global $site_config, $CURUSER;
+  global $config;
   stdhead( T_("SITE_RULES") );
   
   $res = $this->rulesModel->getRules();
@@ -20,7 +20,7 @@
           echo format_comment($row->text); 
           end_frame();
       }
-      else if ($row->public == "no" && $row->class <= $CURUSER["class"])
+      else if ($row->public == "no" && $row->class <= $_SESSION["class"])
       {
           begin_frame($row->title);
           echo format_comment($row->text);

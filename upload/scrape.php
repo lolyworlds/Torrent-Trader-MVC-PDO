@@ -16,15 +16,15 @@ if (stristr($_SERVER["HTTP_ACCEPT_ENCODING"],"gzip") && extension_loaded('zlib')
 require_once("config/config.php");
 
 function dbconn() {
-    global $conn, $site_config;
+    global $conn, $config;
     try {
-        $conn = new PDO('mysql:host='.$site_config['mysql_host'].';dbname='.$site_config['mysql_db'], $site_config['mysql_user'], $site_config['mysql_pass']);
+        $conn = new PDO('mysql:host='.$config['mysql_host'].';dbname='.$config['mysql_db'], $config['mysql_user'], $config['mysql_pass']);
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }
     catch(PDOException $e) {
         echo "Error: " . $e->getMessage();
     }
-    unset($site_config['mysql_pass']); //security
+    unset($config['mysql_pass']); //security
 }
 
 function sqlesc($x) {

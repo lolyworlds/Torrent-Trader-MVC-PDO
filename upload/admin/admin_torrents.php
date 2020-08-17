@@ -7,7 +7,7 @@
                   show_error_msg(T_("ERROR"), "Nothing selected click <a href='admincp?action=torrentmanage'>here</a> to go back.", 1);
             foreach ($_POST["torrentids"] as $id) {
                 deletetorrent(intval($id));
-                write_log("Torrent ID $id was deleted by $CURUSER[username]");
+                write_log("Torrent ID $id was deleted by $_SESSION[username]");
             }
             show_error_msg("Torrents Deleted", "Go <a href='admincp?action=torrentmanage'>back</a>?", 1);
         }

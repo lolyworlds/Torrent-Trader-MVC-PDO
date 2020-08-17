@@ -48,14 +48,14 @@ function submenu($pages, $default, $prefix = '', $class = 'submenu', $space = fa
             if ((!$prefix && isset($_GET[$page])) || ($prefix && $_GET[$prefix] == $page)) {
                 $menu .= '<td style="width:' . floor(100 / count($arr)) . '%"><b>' . $name . '</b></td>';
             } else {
-                $menu .= '<td style="width:' . floor(100 / count($arr)) . '%"><a href="$site_config[SITEURL]/messages?' . $prefix . ($prefix ? '=' : '') . $page . '">' . $name . '</a></td>';
+                $menu .= '<td style="width:' . floor(100 / count($arr)) . '%"><a href="$config[SITEURL]/messages?' . $prefix . ($prefix ? '=' : '') . $page . '">' . $name . '</a></td>';
             }
 
         } else {
             if ((!$prefix && isset($_GET[$page])) || ($prefix && $_GET[$prefix] == $page)) {
                 $menu .= "&nbsp;<b>$name</b>";
             } else {
-                $menu .= '&nbsp;<a href="$site_config[SITEURL]/messages?' . $prefix . ($prefix ? '=' : '') . $page . '">' . $name . '</a>';
+                $menu .= '&nbsp;<a href="$config[SITEURL]/messages?' . $prefix . ($prefix ? '=' : '') . $page . '">' . $name . '</a>';
             }
 
         }

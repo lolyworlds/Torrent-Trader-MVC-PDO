@@ -1,5 +1,5 @@
 <?php
-            usermenu($CURUSER["id"]);
+            usermenu($_SESSION["id"]);
             include 'views/message/messagenavbar.php';
             ?>
             <form id='messagespy' method='post' action='messages&amp;do=del'>
@@ -16,7 +16,7 @@
 <?php
 while ($arr = $res->fetch(PDO::FETCH_ASSOC)) {
 
-    if ($arr["receiver"] == $CURUSER['id']) 
+    if ($arr["receiver"] == $_SESSION['id']) 
     $receiver = "Yourself";
 elseif (is_valid_id($arr["receiver"]))
 {
@@ -27,7 +27,7 @@ elseif (is_valid_id($arr["receiver"]))
 else $receiver = T_("SYSTEM");
 
             $subject = "<a href='" . TTURL . "/messages/read?outbox&amp;id=" . $arr["id"] . "'><b>" . format_comment($arr["subject"]) . "</b></a>";
-            //$subject = "<a href=\"javascript:read($arr[id]);\"><img src=\"".$site_config["SITEURL"]."/images/plus.gif\" id=\"img_$arr[id]\" class=\"read\" border=\"0\" alt='' /></a>&nbsp;<a href=\"javascript:read($arr[id]);\">$subject</a>";
+            //$subject = "<a href=\"javascript:read($arr[id]);\"><img src=\"".$config["SITEURL"]."/images/plus.gif\" id=\"img_$arr[id]\" class=\"read\" border=\"0\" alt='' /></a>&nbsp;<a href=\"javascript:read($arr[id]);\">$subject</a>";
 
             $added = utc_to_tz($arr["added"]);
 
@@ -48,5 +48,5 @@ else $receiver = T_("SYSTEM");
 }?>
 
     <tbody></table></div>
-    <?php echo '<div style="float: left;">read&nbsp;<img src="'.$site_config["SITEURL"].'/views/themes/default/forums/folder.png" alt="read" width="20" height="20">&nbsp;unread&nbsp;<img src="'.$site_config["SITEURL"].'/views/themes/default/forums/folder_new.png" alt="unread" width="20" height="20"></div>'; ?>
+    <?php echo '<div style="float: left;">read&nbsp;<img src="'.$config["SITEURL"].'/views/themes/default/forums/folder.png" alt="read" width="20" height="20">&nbsp;unread&nbsp;<img src="'.$config["SITEURL"].'/views/themes/default/forums/folder_new.png" alt="unread" width="20" height="20"></div>'; ?>
     <center><input type='submit' value='Delete Checked' /></center></form>

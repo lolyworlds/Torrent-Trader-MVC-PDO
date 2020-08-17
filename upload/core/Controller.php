@@ -15,7 +15,7 @@
 
     // Load view
     public function view($view, $data = []){
-      global $site_config, $CURUSER, $THEME, $LANGUAGE;
+      global $config, $THEME, $LANGUAGE;
       // Check for view file
       if(file_exists( 'views/' . $view . '.php')){
         require_once  'views/' . $view . '.php';

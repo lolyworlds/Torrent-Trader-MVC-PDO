@@ -9,7 +9,7 @@ class Rating extends Controller
     public function index()
     {
         dbconn();
-        global $site_config, $CURUSER, $pdo;
+        global $config, $pdo;
         loggedinonly();
 		$id = (int) $_GET["id"];
         
@@ -29,7 +29,7 @@ class Rating extends Controller
                 show_error_msg(T_("RATING_ERROR"), T_("INVAILD_RATING"), 1);
             }
 
-            $res = $pdo->run("INSERT INTO ratings (torrent, user, rating, added) VALUES ($id, " . $CURUSER["id"] . ", $rating, '" . get_date_time() . "')");
+            $res = $pdo->run("INSERT INTO ratings (torrent, user, rating, added) VALUES ($id, " . $_SESSION["id"] . ", $rating, '" . get_date_time() . "')");
 
             if (!$res) {
                 if ($res->errorCode() == 1062) {
@@ -41,12 +41,12 @@ class Rating extends Controller
             }
 
             $pdo->run("UPDATE torrents SET numratings = numratings + 1, ratingsum = ratingsum + $rating WHERE id = $id");
-            show_error_msg(T_("RATING_SUCCESS"), T_("RATING_THANK") . "<br /><br /><a href='$site_config[SITEURL]/torrents/read?id=$id'>" . T_("BACK_TO_TORRENT") . "</a>");
+            show_error_msg(T_("RATING_SUCCESS"), T_("RATING_THANK") . "<br /><br /><a href='$config[SITEURL]/torrents/read?id=$id'>" . T_("BACK_TO_TORRENT") . "</a>");
         }
 
         
         
-$xres = DB::run("SELECT rating, added FROM ratings WHERE torrent = $id AND user = " . $CURUSER["id"]);
+$xres = DB::run("SELECT rating, added FROM ratings WHERE torrent = $id AND user = " . $_SESSION["id"]);
 $xrow = $xres->fetch(PDO::FETCH_ASSOC);
         stdhead(T_("Torrents"));
         begin_frame(T_("Torrents"));
@@ -67,8 +67,8 @@ $xrow = $xres->fetch(PDO::FETCH_ASSOC);
 
       }
       $srating .= "\n";
-      if (!isset($CURUSER)) {
-          $srating .= "(<a href='$site_config[SITEURL]/account/login'>Log in</a> to rate it)";
+      if (!isset($_SESSION['loggedin'])) {
+          $srating .= "(<a href='$config[SITEURL]/account/login'>Log in</a> to rate it)";
       } else {
           $ratings = array(
               5 => T_("COOL"),
@@ -78,7 +78,7 @@ $xrow = $xres->fetch(PDO::FETCH_ASSOC);
               1 => T_("SUCKS"),
           );
           //if (!$owned || $moderator) {
-          $xres = DB::run("SELECT rating, added FROM ratings WHERE torrent = $id AND user = " . $CURUSER["id"]);
+          $xres = DB::run("SELECT rating, added FROM ratings WHERE torrent = $id AND user = " . $_SESSION["id"]);
           $xrow = $xres->fetch(PDO::FETCH_ASSOC);
           if ($xrow) {
               $srating .= "<br /><i>(" . T_("YOU_RATED") . " \"" . $xrow["rating"] . " - " . $ratings[$xrow["rating"]] . "\")</i>";

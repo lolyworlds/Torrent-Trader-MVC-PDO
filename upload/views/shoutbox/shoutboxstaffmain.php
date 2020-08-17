@@ -13,7 +13,7 @@ echo "<form name='shoutboxform' action='shoutbox?staff' method='post'>";
             echo ' <small>-</small> <a href="javascript:PopMoreTags();"><small>'.T_("TAGS").'</small></a>';
             //echo "<br />";
             echo "<small>-</small> <a href='shoutbox'><small>".T_("REFRESH")."</small></a>";              
-            echo " <small>-</small> <a href='".$site_config['SITEURL']."/shoutbox?history=1' target='_blank'><small>".T_("HISTORY")."</small></a>";
+            echo " <small>-</small> <a href='".$config['SITEURL']."/shoutbox?history=1' target='_blank'><small>".T_("HISTORY")."</small></a>";
             echo "</td>";
             echo "</tr>";
             echo "</table></center>";

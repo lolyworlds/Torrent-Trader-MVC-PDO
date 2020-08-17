@@ -1,5 +1,5 @@
 <?php
-if ($CURUSER) {
+if ($_SESSION['loggedin']) {
     begin_block(T_("POLL"));
 
     if (!function_exists("srt")) {
@@ -15,14 +15,14 @@ if ($CURUSER) {
         }
     }
 
-    if ($_SERVER["REQUEST_METHOD"] == "POST" && $CURUSER && $_POST["act"] == "takepoll") {
+    if ($_SERVER["REQUEST_METHOD"] == "POST" && $_SESSION['loggedin'] && $_POST["act"] == "takepoll") {
         $choice = $_POST["choice"];
         if ($choice != "" && $choice < 256 && $choice == floor($choice)) {
 			$res = $pdo->run("SELECT * FROM polls ORDER BY added DESC LIMIT 1");
 			$arr = $res->fetch(PDO::FETCH_ASSOC) or show_error_msg(T_("ERROR"), "No Poll", 1);
 
             $pollid = $arr["id"];
-            $userid = $CURUSER["id"];
+            $userid = $_SESSION["id"];
 
 			$res = $pdo->run("SELECT * FROM pollanswers WHERE pollid=? && userid=?", [$pollid, $userid]);
 			$arr = $res->fetch(PDO::FETCH_ASSOC);
@@ -41,13 +41,13 @@ if ($CURUSER) {
 	}
 
     // Get current poll
-    if ($CURUSER) {
+    if ($_SESSION['loggedin']) {
 		$res = $pdo->run("SELECT * FROM polls ORDER BY added DESC LIMIT 1");
 
 		if($pollok=($res->rowCount())) {
 			$arr = $res->fetch(PDO::FETCH_ASSOC);
             $pollid = $arr["id"];
-            $userid = $CURUSER["id"];
+            $userid = $_SESSION["id"];
             $question = $arr["question"];
 
             $o = array($arr["option0"], $arr["option1"], $arr["option2"], $arr["option3"], $arr["option4"],
@@ -133,7 +133,7 @@ if ($CURUSER) {
                 </div>
               </div>
             </div>
-      			<!-- <tr><td width='1%'$c>" . format_comment($a[1]) . "&nbsp;&nbsp;</td><td width='99%'$c><img src='".$site_config["SITEURL"]."/images/poll/bar_left.gif' alt='' /><img src='".$site_config["SITEURL"]."/images/poll/bar.gif' height='9' width='" . ($p / 2) . "' alt='' /><img src='".$site_config["SITEURL"]."/images/poll/bar_right.gif' alt='' />$p%</td></tr> -->
+      			<!-- <tr><td width='1%'$c>" . format_comment($a[1]) . "&nbsp;&nbsp;</td><td width='99%'$c><img src='".$config["SITEURL"]."/images/poll/bar_left.gif' alt='' /><img src='".$config["SITEURL"]."/images/poll/bar.gif' height='9' width='" . ($p / 2) . "' alt='' /><img src='".$config["SITEURL"]."/images/poll/bar_right.gif' alt='' />$p%</td></tr> -->
             <?php
                   ++$i;
             }

@@ -12,7 +12,7 @@
         $action = $_REQUEST["action"];
         $do = $_REQUEST["do"];		  
         dbconn();
-		global $site_config, $CURUSER;
+		global $config;
 		loggedinonly();
 		if ($action == 'addwarning'){
 			$userid = (int)$_POST["userid"];
@@ -31,15 +31,15 @@
 		
 			$expiretime = get_date_time(gmtime() + (86400 * $expiry));
 		
-			$ret = DB::run("INSERT INTO warnings (userid, reason, added, expiry, warnedby, type) VALUES ('$userid','$reason','$timenow','$expiretime','".$CURUSER['id']."','$type')");
+			$ret = DB::run("INSERT INTO warnings (userid, reason, added, expiry, warnedby, type) VALUES ('$userid','$reason','$timenow','$expiretime','".$_SESSION['id']."','$type')");
 		
 			$ret = DB::run("UPDATE users SET warned=? WHERE id=?",['yes',$userid]);
 		
-			$msg = sqlesc("You have been warned by " . $CURUSER["username"] . " - Reason: ".$reason." - Expiry: ".$expiretime."");
+			$msg = sqlesc("You have been warned by " . $_SESSION["username"] . " - Reason: ".$reason." - Expiry: ".$expiretime."");
 			$added = sqlesc(get_date_time());
 			DB::run("INSERT INTO messages (sender, receiver, msg, added) VALUES(0, $userid, $msg, $added)");
 		
-			write_log($CURUSER['username']." has added a warning for user: <a href='$site_config[SITEURL]/users/profile?id=$userid'>$userid</a>");
+			write_log($_SESSION['username']." has added a warning for user: <a href='$config[SITEURL]/users/profile?id=$userid'>$userid</a>");
 			header("Location: ".TTURL."/users/profile?id=$userid");
 			die;
 		}
@@ -47,7 +47,7 @@
 		
 		if ($action == "deleteaccount"){
 			
-			if ($CURUSER["delete_users"] != "yes")//only allow admins to delete users
+			if ($_SESSION["delete_users"] != "yes")//only allow admins to delete users
 				show_error_msg(T_("ERROR"), T_("TASK_ADMIN"),1);
 		
 			$userid = (int)$_POST["userid"];
@@ -57,7 +57,7 @@
 			if (!$this->valid->id($userid))
 				show_error_msg(T_("FAILED"), T_("INVALID_USERID"),1);
 		
-			if ($CURUSER["id"] == $userid) 
+			if ($_SESSION["id"] == $userid) 
 				show_error_msg(T_("ERROR"), "You cannot delete yourself.", 1);
 				
 			if (!$delreason){
@@ -66,7 +66,7 @@
 		
 			deleteaccount($userid);
 		
-			write_log($CURUSER['username']." has deleted account: $username");
+			write_log($_SESSION['username']." has deleted account: $username");
 		
 			show_error_msg(T_("COMPLETED"), T_("USER_DELETE"), 1);
 			die;
@@ -83,16 +83,16 @@
 			show_error_msg(T_("NO_SHOW_DETAILS"), T_("NO_USER_WITH_ID")." $id.",1);
 		
 		//add invites check here
-		if ($CURUSER["view_users"] == "no" && $CURUSER["id"] != $id)
+		if ($_SESSION["view_users"] == "no" && $_SESSION["id"] != $id)
 			 show_error_msg(T_("ERROR"), T_("NO_USER_VIEW"), 1);
 			 
-		if (($user["enabled"] == "no" || ($user["status"] == "pending")) && $CURUSER["edit_users"] == "no")
+		if (($user["enabled"] == "no" || ($user["status"] == "pending")) && $_SESSION["edit_users"] == "no")
 			show_error_msg(T_("ERROR"), T_("NO_ACCESS_ACCOUNT_DISABLED"), 1);
 
 		//Layout		
 		begin_frame(sprintf(T_("USER_DETAILS_FOR"), class_user_colour($user["username"])));
 
-			if($CURUSER["edit_users"]=="yes"){
+			if($_SESSION["edit_users"]=="yes"){
 			usermenu($id);
 			
 			$res = DB::run("SELECT * FROM warnings WHERE userid=? ORDER BY id DESC", [$id]);
@@ -123,7 +123,7 @@
 		
 					$addeddate = substr($arr['added'], 0, strpos($arr['added'], " "));
 					$expirydate = substr($arr['expiry'], 0, strpos($arr['expiry'], " "));
-					print("<tr><td class='table_col1' align='center'>$addeddate</td><td class='table_col2' align='center'>$expirydate</td><td class='table_col1'>".format_comment($arr['reason'])."</td><td class='table_col2' align='center'><a href='$site_config[SITEURL]/accountdetails?id=".$arr2['id']."'>".$wusername."</a></td><td class='table_col1' align='center'>".$arr['type']."</td></tr>\n");
+					print("<tr><td class='table_col1' align='center'>$addeddate</td><td class='table_col2' align='center'>$expirydate</td><td class='table_col1'>".format_comment($arr['reason'])."</td><td class='table_col2' align='center'><a href='$config[SITEURL]/accountdetails?id=".$arr2['id']."'>".$wusername."</a></td><td class='table_col1' align='center'>".$arr['type']."</td></tr>\n");
 				 }
 		
 				echo "</table>\n";
@@ -132,7 +132,7 @@
 			}
 		
 		
-			print("<form method='post' action='$site_config[SITEURL]/adminmodtasks'>\n");
+			print("<form method='post' action='$config[SITEURL]/adminmodtasks'>\n");
 			print("<input type='hidden' name='action' value='addwarning' />\n");
 			print("<input type='hidden' name='userid' value='$id' />\n");
 			echo "<br /><br /><center><table border='0'><tr><td align='right'><b>".T_("REASON").":</b> </td><td align='left'><textarea cols='40' rows='5' name='reason'></textarea></td></tr>";
@@ -140,8 +140,8 @@
 			echo "<tr><td align='right'><b>".T_("TYPE").":</b> </td><td align='left'><input type='text' size='10' name='type' /></td></tr>";
 			echo "<tr><td colspan='2' align='center'><button type='submit' class='btn btn-sm btn-success'><b>" .T_("ADD_WARNING"). "</b></button></td></tr></table></center></form>";
 		
-			if($CURUSER["delete_users"] == "yes"){
-				print("<hr /><center><form method='post' action='$site_config[SITEURL]/adminmodtasks'>\n");
+			if($_SESSION["delete_users"] == "yes"){
+				print("<hr /><center><form method='post' action='$config[SITEURL]/adminmodtasks'>\n");
 				print("<input type='hidden' name='action' value='deleteaccount' />\n");
 				print("<input type='hidden' name='userid' value='$id' />\n");
 				print("<input type='hidden' name='username' value='".$user["username"]."' />\n");

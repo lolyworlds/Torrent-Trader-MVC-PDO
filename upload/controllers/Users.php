@@ -9,10 +9,10 @@
       public function index()
       {
           dbconn();
-          global $site_config, $THEME, $CURUSER, $pdo;
+          global $config, $THEME, $pdo;
           loggedinonly();
           $id = (int)$_GET["id"];
-          if ($CURUSER['class'] < 5 && $id != $CURUSER['id']) {
+          if ($_SESSION['class'] < 5 && $id != $_SESSION['id']) {
             autolink(TTURL."/index", T_("You dont have permission"));
           } else {
            //   echo 'im staff or curuser';
@@ -25,7 +25,7 @@
           </div>
           <div class="card-body">
 you should not see this, there is a issue with a link try 
-<a href='<?php echo TTURL; ?>/users/profile?id=<?php echo $CURUSER['id']; ?>'>adding id</a>
+<a href='<?php echo TTURL; ?>/users/profile?id=<?php echo $_SESSION['id']; ?>'>adding id</a>
 
             </div>
     </div><br />
@@ -37,7 +37,7 @@ you should not see this, there is a issue with a link try
       public function profile()
       {
           dbconn();
-          global $site_config, $CURUSER;
+          global $config;
           loggedinonly();
   
           $id = (int) $_GET["id"];
@@ -52,19 +52,19 @@ you should not see this, there is a issue with a link try
           }
   
           // view own but not others
-          if ($CURUSER["view_users"] == "no" && $CURUSER["id"] != $id) {
+          if ($_SESSION["view_users"] == "no" && $_SESSION["id"] != $id) {
               show_error_msg(T_("ERROR"), T_("NO_USER_VIEW"), 1);
           }
   
           // user not ready to be seen yet
-          if (($user["enabled"] == "no" || ($user["status"] == "pending")) && $CURUSER["edit_users"] == "no") {
+          if (($user["enabled"] == "no" || ($user["status"] == "pending")) && $_SESSION["edit_users"] == "no") {
               show_error_msg(T_("ERROR"), T_("NO_ACCESS_ACCOUNT_DISABLED"), 1);
           }
 
           //===| Start Blocked Users
-$blocked = DB::run("SELECT id FROM friends WHERE userid=$user[id] AND friend='enemy' AND friendid=$CURUSER[id]");
+$blocked = DB::run("SELECT id FROM friends WHERE userid=$user[id] AND friend='enemy' AND friendid=$_SESSION[id]");
 $show = $blocked->rowCount();
-if ($show != 0 && $CURUSER["control_panel"] != "yes")
+if ($show != 0 && $_SESSION["control_panel"] != "yes")
     show_error_msg("Error", "<div style='margin-top:10px; margin-bottom:10px' align='center'><font size=2 color=#FF2000><b>You're blocked by this member and you can not see his profile!</b></font></div>", 1);
 //===| End Blocked Users
   
@@ -91,20 +91,20 @@ if ($show != 0 && $CURUSER["control_panel"] != "yes")
   
           $avatar = htmlspecialchars($user["avatar"]);
           if (!$avatar) {
-              $avatar = $site_config["SITEURL"] . "/images/default_avatar.png";
+              $avatar = $config["SITEURL"] . "/images/default_avatar.png";
           }
   
           $usersignature = stripslashes($user["signature"]); // todo
   
           stdhead("User CP");
           // im staff i see all details
-          if ($CURUSER['class'] >= $site_config['Moderator']) {
+          if ($_SESSION['class'] >= $config['Moderator']) {
               begin_frame(sprintf(T_("USER_DETAILS_FOR"), class_user_colour($user["username"])));
               include 'views/user/myprofile.php';
               end_frame();
               stdfoot();
               // im not staff but i should see my own stuff
-          } elseif ($id == $CURUSER['id'] && $CURUSER['class'] < $site_config['Moderator']) {
+          } elseif ($id == $_SESSION['id'] && $_SESSION['class'] < $config['Moderator']) {
               begin_frame(sprintf(T_("USER_DETAILS_FOR"), class_user_colour($user["username"])));
               include 'views/user/myprofile.php';
               end_frame();
@@ -121,10 +121,10 @@ if ($show != 0 && $CURUSER["control_panel"] != "yes")
       public function preferences()
       {
           dbconn();
-          global $site_config, $THEME, $tzs, $CURUSER, $pdo;
+          global $config, $THEME, $tzs, $pdo;
           loggedinonly();
           $id = (int)$_GET["id"];
-          if ($CURUSER['class'] < 5 && $id != $CURUSER['id']) {
+          if ($_SESSION['class'] < 5 && $id != $_SESSION['id']) {
             autolink(TTURL."/index", T_("You dont have permission"));
           } else {
            //   echo 'im staff or curuser';
@@ -175,7 +175,7 @@ stdhead(T_("user"));
        " value='yes' /><b>" . T_("PM_NOTIFY_ME") . "</b><br /><i>".T_("EMAIL_WHEN_PM")."</i></td></tr>");
        print("<tr><td align='right' class='alt2'><b>".T_("RESET_PASSKEY").":</b> </td><td align='left' class='alt2'><input type='checkbox' name='resetpasskey' value='1' />&nbsp;<i>".T_("RESET_PASSKEY_MSG").".</i></td></tr>");
 
-       if ($site_config["SHOUTBOX"]) {
+       if ($config["SHOUTBOX"]) {
            print("<tr><td align='right' class='table_col3'><b>".T_("HIDE_SHOUT").":</b></td><td align='left' class='table_col3'><input type='checkbox' name='hideshoutbox' value='yes' ".($user['hideshoutbox'] == 'yes' ? 'checked="checked"' : '')." />&nbsp;<i>".T_("HIDE_SHOUT")."</i></td></tr> ");
        }
        ksort($tzs);
@@ -202,10 +202,10 @@ stdhead(T_("user"));
       public function details()
       {
           dbconn();
-          global $site_config, $THEME, $CURUSER, $pdo;
+          global $config, $THEME, $pdo;
           loggedinonly();
           $id = (int)$_GET["id"];
-          if ($CURUSER['class'] < 5 && $id != $CURUSER['id']) {
+          if ($_SESSION['class'] < 5 && $id != $_SESSION['id']) {
             autolink(TTURL."/index", T_("You dont have permission"));
           } else {
            //   echo 'im staff or curuser';
@@ -296,10 +296,10 @@ stdhead(T_("user"));
       public function other()
       {
           dbconn();
-          global $site_config, $THEME, $CURUSER, $pdo;
+          global $config, $THEME, $pdo;
           loggedinonly();
           $id = (int)$_GET["id"];
-          if ($CURUSER['class'] < 5 && $id != $CURUSER['id']) {
+          if ($_SESSION['class'] < 5 && $id != $_SESSION['id']) {
             autolink(TTURL."/index", T_("You dont have permission"));
           } else {
            //   echo 'im staff or curuser';
@@ -324,10 +324,10 @@ stdhead(T_("user"));
       public function changepw()
       {
           dbconn();
-          global $site_config, $THEME, $CURUSER, $pdo;
+          global $config, $THEME, $pdo;
           loggedinonly();
           $id = (int)$_GET["id"];
-          if ($CURUSER['class'] < 5 && $id != $CURUSER['id']) {
+          if ($_SESSION['class'] < 5 && $id != $_SESSION['id']) {
             autolink(TTURL."/index", T_("You dont have permission"));
           } else {
            //   echo 'im staff or curuser';
@@ -387,7 +387,7 @@ stdhead(T_("user"));
           </div>
           <div class="card-body">
           <?php require_once "views/user/detaillist.php"; ?>
-	<form method="post" action="<?php echo $site_config["SITEURL"]; ?>/users/changepw?id=<?php echo $id; ?>">
+	<form method="post" action="<?php echo $config["SITEURL"]; ?>/users/changepw?id=<?php echo $id; ?>">
 	<input type="hidden" name="do" value="newpassword" />
     <div class="f-border">
     <br />
@@ -420,10 +420,10 @@ stdhead(T_("user"));
       public function signature()
       {
           dbconn();
-          global $site_config, $THEME, $CURUSER, $pdo;
+          global $config, $THEME, $pdo;
           loggedinonly();
           $id = (int)$_GET["id"];
-          if ($CURUSER['class'] < 5 && $id != $CURUSER['id']) {
+          if ($_SESSION['class'] < 5 && $id != $_SESSION['id']) {
             autolink(TTURL."/index", T_("You dont have permission"));
           } else {
            //   echo 'im staff or curuser';
@@ -471,10 +471,10 @@ $user = DB::run("SELECT id, title, signature FROM users WHERE id=?", [$id])->fet
       public function avatar()
       {
           dbconn();
-          global $site_config, $THEME, $CURUSER, $pdo;
+          global $config, $THEME, $pdo;
           loggedinonly();
           $id = (int)$_GET["id"];
-          if ($CURUSER['class'] < 5 && $id != $CURUSER['id']) {
+          if ($_SESSION['class'] < 5 && $id != $_SESSION['id']) {
             autolink(TTURL."/index", T_("You dont have permission"));
           } else {
            //   echo 'im staff or curuser';
@@ -484,7 +484,7 @@ $user = DB::run("SELECT id, title, signature FROM users WHERE id=?", [$id])->fet
           
               if ($avatar != null) {
                   # Allowed Image Extenstions.
-                  $allowed_types = &$site_config["allowed_image_types"];
+                  $allowed_types = &$config["allowed_image_types"];
           
                   # We force http://
                   if (!preg_match("#^\w+://#i", $avatar)) {
@@ -535,10 +535,10 @@ $user = DB::run("SELECT id, title, signature FROM users WHERE id=?", [$id])->fet
       public function email()
       {
           dbconn();
-          global $site_config, $THEME, $CURUSER, $pdo;
+          global $config, $THEME, $pdo;
           loggedinonly();
           $id = (int)$_GET["id"];
-          if ($id != $CURUSER['id']) {
+          if ($id != $_SESSION['id']) {
             autolink(TTURL."/index", T_("You dont have permission"));
           } else {
            //   echo 'im staff or curuser';
@@ -552,21 +552,21 @@ $user = DB::run("SELECT id, title, signature FROM users WHERE id=?", [$id])->fet
                     $thishost = $_SERVER["HTTP_HOST"];
                     $thisdomain = preg_replace('/^www\./is', "", $thishost);
                     $body = <<<EOD
-You have requested that your user profile (username {$CURUSER["username"]})
-on {$site_config["SITEURL"]} should be updated with this email address ($email) as
+You have requested that your user profile (username {$_SESSION["username"]})
+on {$config["SITEURL"]} should be updated with this email address ($email) as
 user contact.
 If you did not do this, please ignore this email. The person who entered your
 email address had the IP address {$_SERVER["REMOTE_ADDR"]}. Please do not reply.
 To complete the update of your user profile, please follow this link:
-{$site_config["SITEURL"]}/account/ce?id={$CURUSER["id"]}&secret=$sec&email=$obemail
+{$config["SITEURL"]}/account/ce?id={$_SESSION["id"]}&secret=$sec&email=$obemail
 Your new email address will appear in your profile after you do this. Otherwise
 your profile will remain unchanged.
 EOD;
 
 $TTMail = new TTMail();
-$var = $TTMail->Send($email, "$site_config[SITENAME] profile update confirmation", $body, "From: $site_config[SITEEMAIL]", "-f$site_config[SITEEMAIL]");
+$var = $TTMail->Send($email, "$config[SITENAME] profile update confirmation", $body, "From: $config[SITEEMAIL]", "-f$config[SITEEMAIL]");
 
-DB::run("UPDATE users SET editsecret =? WHERE id =?", [$sec, $CURUSER['id']]);
+DB::run("UPDATE users SET editsecret =? WHERE id =?", [$sec, $_SESSION['id']]);
 
 autolink(TTURL."/users/profile?id=$id", T_("Email Edited"));
 
@@ -595,10 +595,10 @@ autolink(TTURL."/users/profile?id=$id", T_("Email Edited"));
       public function admin()
       {
           dbconn();
-          global $site_config, $THEME, $CURUSER, $pdo;
+          global $config, $THEME, $pdo;
           loggedinonly();
           $id = (int)$_GET["id"];
-          if ($CURUSER['class'] < 5 && $id != $CURUSER['id']) {
+          if ($_SESSION['class'] < 5 && $id != $_SESSION['id']) {
             autolink(TTURL."/index", T_("You dont have permission"));
           } else {
            //   echo 'im staff or curuser';
@@ -637,10 +637,10 @@ autolink(TTURL."/users/profile?id=$id", T_("Email Edited"));
                     DB::run("UPDATE users SET class=? WHERE id=?",[$class , $id]);
                     // Notify user
                     $prodemoted = ($class > $uc ? "promoted" : "demoted");
-                    $msg = "You have been $prodemoted to " . get_user_class_name($class) . " by " . $CURUSER["username"] . "";
+                    $msg = "You have been $prodemoted to " . get_user_class_name($class) . " by " . $_SESSION["username"] . "";
                     $added = get_date_time();
         
-                  //  DB::run("INSERT INTO messages (sender, receiver, msg, added) VALUES(0, $CURUSER[id], $msg, $added)");
+                  //  DB::run("INSERT INTO messages (sender, receiver, msg, added) VALUES(0, $_SESSION[id], $msg, $added)");
                          
                 }
            // }
@@ -654,7 +654,7 @@ autolink(TTURL."/users/profile?id=$id", T_("Email Edited"));
              $enabled, $invites, $downloadbanned, $shoutboxpos, $id]);
          
         
-            write_log($CURUSER['username']." has edited user: $id details");
+            write_log($_SESSION['username']." has edited user: $id details");
         
             if ($_POST['resetpasskey']=='yes'){
                 DB::run("UPDATE users SET passkey=? WHERE id=?",['',$uploaded]);
@@ -667,7 +667,7 @@ autolink(TTURL."/users/profile?id=$id", T_("Email Edited"));
                 if($password != $passres['password']){
                     $password = password_hash($password, PASSWORD_BCRYPT);
                     DB::run("UPDATE users SET password=? WHERE id=?",[$password,$id]);
-                    write_log($CURUSER['username']." has changed password for user: $id");
+                    write_log($_SESSION['username']." has changed password for user: $id");
                 }
             }
             autolink(TTURL."/users/admin?id=$id", T_("SUCCESS"));
@@ -698,7 +698,7 @@ $user = DB::run("SELECT * FROM users WHERE id=?", [$id])->fetch(PDO::FETCH_ASSOC
           </div>
           <div class="card-body">
           <?php require_once "views/user/adminlist.php";
-          print("<form method='post' action='$site_config[SITEURL]/users/admin?id=$id'>\n");
+          print("<form method='post' action='$config[SITEURL]/users/admin?id=$id'>\n");
             print("<table border='0' cellspacing='0' cellpadding='3'>\n"); 
           print("<tr><td>" . T_("UPLOADED") . ": </td><td align='left'><input type='text' size='30' name='uploaded' value=\"" . mksize($user["uploaded"], 9) . "\" /></td></tr>\n");
             print("<tr><td>" . T_("DOWNLOADED") . ": </td><td align='left'><input type='text' size='30' name='downloaded' value=\"" . mksize($user["downloaded"], 9) . "\" /></td></tr>\n");
@@ -707,9 +707,9 @@ $user = DB::run("SELECT * FROM users WHERE id=?", [$id])->fetch(PDO::FETCH_ASSOC
                     print("<tr><td>" . T_("IP_ADDRESS") . ": </td><td align='left'><input type='text' size='20' name='ip' value=\"$user[ip]\" /></td></tr>\n");
                     print("<tr><td>" . T_("INVITES") . ": </td><td align='left'><input type='text' size='4' name='invites' value='" . $user["invites"] . "' /></td></tr>\n");
 
-                    if ($CURUSER["class"] > 1) { //todo
+                    if ($_SESSION["class"] > 1) { //todo
                         print("<tr><td>" . T_("CLASS") . ": </td><td align='left'><select name='class'>\n");
-                        $maxclass = $CURUSER["class"] + 1;
+                        $maxclass = $_SESSION["class"] + 1;
                         for ($i = 1; $i < $maxclass; ++$i) {
                             print("<option value='$i' " . ($user["class"] == $i ? " selected='selected'" : "") . ">$prefix" . get_user_class_name($i) . "\n");
                         }
@@ -749,7 +749,7 @@ while ( $row = $res->fetch(PDO::FETCH_ASSOC) ) {
     $res2 = DB::run( "SELECT users.id AS id,users.username as username FROM users INNER JOIN iplog ON (iplog.ip = '$row[ip]' AND users.id=iplog.userid AND users.id<>$id)" );
     $usersSame = "";
     while ( $userrow = $res2->fetch(PDO::FETCH_ASSOC) ) {
-        $usersSame .= "<a href='$site_config[SITEURL]users?id=$userrow[id]'>".class_user_colour($userrow['username'])."</a>,&nbsp;";
+        $usersSame .= "<a href='$config[SITEURL]users?id=$userrow[id]'>".class_user_colour($userrow['username'])."</a>,&nbsp;";
     }
     echo "<tr align='center'><td>$row[ip]</td><td>" . date( "M d, Y H:i:s", utc_to_tz_time( $row[ 'added' ] ) ) . "</td><td>" . date( "M d, Y H:i:s", utc_to_tz_time( $row[ 'lastused' ] ) ) . "</td><td>" . number_format( $row[ 'timesused' ] ) . "</td><td>$usersSame</td></tr>";
     if ( $x == 1 )

@@ -7,8 +7,8 @@
     
     public function index(){
         dbconn();
-        global $site_config, $CURUSER;
-        if ($CURUSER["class"]  < 6) {
+        global $config;
+        if ($_SESSION["class"]  < 6) {
             show_error_msg("Error", "Access denied.");
         }
 
@@ -61,8 +61,8 @@ end_frame();
 
         public function banned(){
             dbconn();
-            global $site_config, $CURUSER;
-            if ($CURUSER["class"]  < 6) {
+            global $config;
+            if ($_SESSION["class"]  < 6) {
                 show_error_msg("Error", "Access denied.");
             }
 

@@ -10,8 +10,8 @@
       {
           require_once("helpers/bbcode_helper.php");
           dbconn();
-          global $site_config, $CURUSER;
-          if ($site_config["MEMBERSONLY"]) {
+          global $config;
+          if ($config["MEMBERSONLY"]) {
               loggedinonly();
           }
  
@@ -32,7 +32,7 @@
           if ($edit=='1') {
               $row = DB::run("SELECT user FROM comments WHERE id=?", [$id])->fetch();
 
-              if (($type == "torrent" && $CURUSER["edit_torrents"] == "no" || $type == "news" && $CURUSER["edit_news"] == "no") && $CURUSER['id'] != $row['user']) {
+              if (($type == "torrent" && $_SESSION["edit_torrents"] == "no" || $type == "news" && $_SESSION["edit_news"] == "no") && $_SESSION['id'] != $row['user']) {
                   show_error_msg(T_("ERROR"), T_("ERR_YOU_CANT_DO_THIS"), 1);
               }
 
@@ -42,7 +42,7 @@
                   $text = $_POST['text'];
 
                   $result= DB::run("UPDATE comments SET text=? WHERE id=?", [$text, $id]);
-                  write_log(class_user_colour($CURUSER['username'])." has edited comment: ID:$id");
+                  write_log(class_user_colour($_SESSION['username'])." has edited comment: ID:$id");
                   show_error_msg(T_("COMPLETE"), "Comment Edited OK", 1);
               }
 
@@ -61,7 +61,7 @@
           }
 
           if ($delete=='1') {
-              if ($CURUSER["delete_news"] == "no" && $type == "news" || $CURUSER["delete_torrents"] == "no" && $type == "torrent") {
+              if ($_SESSION["delete_news"] == "no" && $type == "news" || $_SESSION["delete_torrents"] == "no" && $type == "torrent") {
                   show_error_msg(T_("ERROR"), T_("ERR_YOU_CANT_DO_THIS"), 1);
               }
 
@@ -74,7 +74,7 @@
               }
 
               DB::run("DELETE FROM comments WHERE id =?", [$id]);
-              write_log(class_user_colour($CURUSER['username'])." has deleted comment: ID: $id");
+              write_log(class_user_colour($_SESSION['username'])." has deleted comment: ID: $id");
               show_error_msg(T_("COMPLETE"), "Comment deleted OK", 1);
           }
 
@@ -94,7 +94,7 @@
                   DB::run("UPDATE torrents SET comments = comments + 1 WHERE id = $id");
               }
 
-              $ins = DB::run("INSERT INTO comments (user, ".$type.", added, text) VALUES (?, ?, ?, ?)", [$CURUSER["id"], $id, get_date_time(), $body]);
+              $ins = DB::run("INSERT INTO comments (user, ".$type.", added, text) VALUES (?, ?, ?, ?)", [$_SESSION["id"], $id, get_date_time(), $body]);
 
               if ($ins) {
                   show_error_msg(T_("COMPLETED"), "Your Comment was added successfully.", 0);
@@ -128,7 +128,7 @@
                   stdfoot();
               }
 
-              echo "<center><b>".T_("COMMENTSFOR")."</b> <a href='$site_config[SITEURL]/torrents/read?id=".$row['id']."'>".htmlspecialchars($row['name'])."</a></center><br />";
+              echo "<center><b>".T_("COMMENTSFOR")."</b> <a href='$config[SITEURL]/torrents/read?id=".$row['id']."'>".htmlspecialchars($row['name'])."</a></center><br />";
           }
 
           begin_frame(T_("COMMENTS"));
@@ -164,17 +164,17 @@
     public function torrent(){
 		//require_once("helpers/bbcode_helper.php");
 		dbconn();
-		global $site_config, $CURUSER;
+		global $config;
         $id = (int) $_GET["id"];
 
         if (!is_valid_id($id)) {
             show_error_msg(T_("ERROR"), T_("THATS_NOT_A_VALID_ID"), 1);
         }
         //check permissions
-        if ($site_config["MEMBERSONLY"]) {
+        if ($config["MEMBERSONLY"]) {
             loggedinonly();
         }
-        if ($CURUSER["view_torrents"] == "no") {
+        if ($_SESSION["view_torrents"] == "no") {
             show_error_msg(T_("ERROR"), T_("NO_TORRENT_VIEW"), 1);
         }
         //GET ALL MYSQL VALUES FOR THIS TORRENT
@@ -192,7 +192,7 @@
 
             DB::run("UPDATE torrents SET comments = comments + 1 WHERE id = $id");
 
-            $comins = DB::run("INSERT INTO comments (user, torrent, added, text) VALUES (" . $CURUSER["id"] . ", " . $id . ", '" . get_date_time() . "', " . sqlesc($body) . ")");
+            $comins = DB::run("INSERT INTO comments (user, torrent, added, text) VALUES (" . $_SESSION["id"] . ", " . $id . ", '" . get_date_time() . "', " . sqlesc($body) . ")");
 
             if ($comins) {
 				autolink(TTURL."/comments/torrent?id=$id", T_("COMMENT_ADDED"));
@@ -204,7 +204,7 @@
 
         stdhead(T_("DETAILS_FOR_TORRENT") . " \"" . $row["name"] . "\"");
         begin_frame(T_("TORRENT_DETAILS_FOR") . " \"" . $shortname . "\"");
-			//echo "<p align=center><a class=index href=$site_config[SITEURL]/torrents-comment.php?id=$id>" .T_("ADDCOMMENT"). "</a></p>\n";
+			//echo "<p align=center><a class=index href=$config[SITEURL]/torrents-comment.php?id=$id>" .T_("ADDCOMMENT"). "</a></p>\n";
 	
 			//  $subrow = $pdo->run("SELECT COUNT(*) FROM comments WHERE torrent = $id")->fetch();
 			$commcount = DB::run("SELECT COUNT(*) FROM comments WHERE torrent = $id")->fetchColumn(); //$subrow[0];

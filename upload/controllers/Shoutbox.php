@@ -9,7 +9,7 @@ class Shoutbox extends Controller
     public function index()
     {
         dbconn();
-        global $site_config, $THEME, $CURUSER;
+        global $config, $THEME;
         $id = $_GET['id'];
 
         // Get Page from url
@@ -21,14 +21,14 @@ class Shoutbox extends Controller
         $quickedit = isset($_GET['quickedit']) ? $_GET['quickedit'] : null;
 
         // Get theme & language
-        if ($CURUSER) {
-            $ss_a = DB::run("SELECT uri FROM stylesheets WHERE id=?", [$CURUSER["stylesheet"]])->fetch();
+        if ($_SESSION['loggedin']) {
+            $ss_a = DB::run("SELECT uri FROM stylesheets WHERE id=?", [$_SESSION["stylesheet"]])->fetch();
             if ($ss_a) {
                 $THEME = $ss_a["uri"];
             }
 
         } else { // Not logged in so get default theme/language
-            $ss_a = DB::run("SELECT uri FROM stylesheets WHERE id=?", [$site_config["default_theme"]])->fetch();
+            $ss_a = DB::run("SELECT uri FROM stylesheets WHERE id=?", [$config["default_theme"]])->fetch();
             if ($ss_a) {
                 $THEME = $ss_a["uri"];
             }
@@ -44,20 +44,20 @@ class Shoutbox extends Controller
                 exit;
             }
             $row = $result->fetch(PDO::FETCH_LAZY);
-            if ($row && ($CURUSER["edit_users"] == "yes" || $CURUSER['username'] == $row[1])) {
-                write_log("<b><font color='orange'>Shout Deleted:</font> Deleted by   " . $CURUSER['username'] . "</b>");
+            if ($row && ($_SESSION["edit_users"] == "yes" || $_SESSION['username'] == $row[1])) {
+                write_log("<b><font color='orange'>Shout Deleted:</font> Deleted by   " . $_SESSION['username'] . "</b>");
                 DB::run("DELETE FROM shoutbox WHERE msgid=?", [$delete]);
             }
         }
         // Edit
-        if (!empty($_POST['update']) && $CURUSER) {
+        if (!empty($_POST['update']) && $_SESSION['loggedin']) {
             $update = $_POST['update'];
             DB::run("UPDATE shoutbox SET message=? WHERE msgid=?", [$update, $id]);
         }
         // Staff
-        if (!empty($_POST['staffmsg']) && $CURUSER) {
+        if (!empty($_POST['staffmsg']) && $_SESSION['loggedin']) {
             $update = $_POST['staffmsg'];
-            $qry = DB::run("INSERT INTO shoutbox (msgid, user, message, date, userid, staff) VALUES (?, ?, ?, ?, ?, ?)", [null, $CURUSER['username'], $update, get_date_time(), $CURUSER['id'], 1]);
+            $qry = DB::run("INSERT INTO shoutbox (msgid, user, message, date, userid, staff) VALUES (?, ?, ?, ?, ?, ?)", [null, $_SESSION['username'], $update, get_date_time(), $_SESSION['id'], 1]);
         }
 
         // Set some conditions
@@ -69,7 +69,7 @@ class Shoutbox extends Controller
             stdfoot();
 
         } elseif (isset($edit)) {
-            if ($CURUSER['class'] < $site_config['Uploader']) {
+            if ($_SESSION['class'] < $config['Uploader']) {
                 autolink(TTURL . "/index", T_("You dont have permission"));
             }
             require 'views/shoutbox/shoutboxheader.php';
@@ -80,7 +80,7 @@ class Shoutbox extends Controller
         } elseif (isset($quickedit)) {
             $stmt = DB::run("SELECT user, date FROM shoutbox WHERE msgid=?", [$quickedit]);
             while ($row = $stmt->fetch(PDO::FETCH_LAZY));
-            if ($CURUSER['username'] == $stmt->user) {
+            if ($_SESSION['username'] == $stmt->user) {
                 autolink(TTURL . "/index", T_("You dont have permission"));
             }
             require 'views/shoutbox/shoutboxheader.php';
@@ -89,7 +89,7 @@ class Shoutbox extends Controller
             require 'views/shoutbox/shoutboxfooter.php';
 
         } elseif (isset($reply)) {
-            if (!$CURUSER) {
+            if (!$_SESSION['loggedin']) {
                 autolink(TTURL . "/index", T_("You dont have permission"));
             }
             require 'views/shoutbox/shoutboxheader.php';
@@ -98,7 +98,7 @@ class Shoutbox extends Controller
             require 'views/shoutbox/shoutboxfooter.php';
 
         } elseif (isset($staff)) {
-            if ($CURUSER['class'] < $site_config['Uploader']) {
+            if ($_SESSION['class'] < $config['Uploader']) {
                 autolink(TTURL . "/index", T_("You dont have permission"));
             }
             require 'views/shoutbox/shoutboxheader.php';
@@ -107,24 +107,24 @@ class Shoutbox extends Controller
             require 'views/shoutbox/shoutboxfooter.php';
 
         } else {
-            if ($CURUSER["shoutboxpos"] == 'no') {
+            if ($_SESSION["shoutboxpos"] == 'no') {
                 //INSERT MESSAGE
-                if (!empty($_POST['message']) && $CURUSER) {
+                if (!empty($_POST['message']) && $_SESSION['loggedin']) {
                     $_POST['message'] = $_POST['message'];
-                    $result = DB::run("SELECT COUNT(*) FROM shoutbox WHERE message=? AND user=? AND UNIX_TIMESTAMP(?)-UNIX_TIMESTAMP(date) < ?", [$_POST['message'], $CURUSER['username'], get_date_time(), 30]);
+                    $result = DB::run("SELECT COUNT(*) FROM shoutbox WHERE message=? AND user=? AND UNIX_TIMESTAMP(?)-UNIX_TIMESTAMP(date) < ?", [$_POST['message'], $_SESSION['username'], get_date_time(), 30]);
                     $row = $result->fetch(PDO::FETCH_LAZY);
                     if ($row[0] == '0') {
-                        $qry = DB::run("INSERT INTO shoutbox (msgid, user, message, date, userid) VALUES (?, ?, ?, ?, ?)", [null, $CURUSER['username'], $_POST['message'], get_date_time(), $CURUSER['id']]);
+                        $qry = DB::run("INSERT INTO shoutbox (msgid, user, message, date, userid) VALUES (?, ?, ?, ?, ?)", [null, $_SESSION['username'], $_POST['message'], get_date_time(), $_SESSION['id']]);
                     }
                 }
                 require 'views/shoutbox/shoutboxheader.php';
-                if ($CURUSER['class'] > $site_config['Uploader']) {
-                    echo "<center><a href='" . $site_config['SITEURL'] . "/shoutbox?staff'>View Staff Chat</a><center>";
+                if ($_SESSION['class'] > $config['Uploader']) {
+                    echo "<center><a href='" . $config['SITEURL'] . "/shoutbox?staff'>View Staff Chat</a><center>";
                 }
                 require 'views/shoutbox/shoutboxmessage.php';
                 require 'views/shoutbox/shoutboxmain.php';
                 require 'views/shoutbox/shoutboxfooter.php';
-            } elseif ($CURUSER || !$CURUSER) {
+            } elseif ($_SESSION['loggedin'] || !$_SESSION['loggedin'] === false) {
                 require 'views/shoutbox/shoutboxheader.php';
                 print("<br><br><center><font color=red><b>You dont have permissions to use the Shoutbox! Contact the staff!</b><br><b>Or You are not logged in</b></font></center>");
                 require 'views/shoutbox/shoutboxfooter.php';

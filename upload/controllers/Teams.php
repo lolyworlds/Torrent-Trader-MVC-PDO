@@ -6,8 +6,8 @@
     }
 	public function index(){
  dbconn(); 
-global $site_config, $CURUSER, $pdo;
- if ($site_config["MEMBERSONLY"]) {
+global $config, $pdo;
+ if ($config["MEMBERSONLY"]) {
      loggedinonly();
  }
  
@@ -15,12 +15,12 @@ global $site_config, $CURUSER, $pdo;
  $res = DB::run("SELECT teams.id, teams.name, teams.image, teams.info, teams.owner, teams.added, users.username, (SELECT GROUP_CONCAT(id, ' ', username) FROM users WHERE FIND_IN_SET(users.team, teams.id) AND users.enabled = 'yes' AND users.status = 'confirmed') AS members FROM teams LEFT JOIN users ON teams.owner = users.id WHERE users.enabled = 'yes' AND users.status = 'confirmed'");
                                                  
  if ($res->rowCount() == 0)
-     show_error_msg(T_("ERROR"), "No teams available, to create a group please contact <a href='$site_config[SITEURL]/group/staff'>staff</a>.", 1);
+     show_error_msg(T_("ERROR"), "No teams available, to create a group please contact <a href='$config[SITEURL]/group/staff'>staff</a>.", 1);
      
  stdhead("Teams View");
  begin_frame("Teams View");
  
- echo '<center>Please <a href="$site_config[SITEURL]/group/staff">contact</a> a member of staff if you would like a new team creating</center><br />';
+ echo '<center>Please <a href="$config[SITEURL]/group/staff">contact</a> a member of staff if you would like a new team creating</center><br />';
  
  while ($row = $res->fetch(PDO::FETCH_ASSOC)):
  ?>
@@ -28,7 +28,7 @@ global $site_config, $CURUSER, $pdo;
  <div class='table-responsive'><table class='table table-striped'>
 <thead><tr>
      <th></th>
-     <th>Owner: <?php echo ( $row["username"] ) ? '<a href="$site_config[SITEURL]/users/profile?id='.$row["owner"].'">' . class_user_colour($row["username"]) . '</a>' : "Unknown User"; ?> - Added: <?php echo utc_to_tz($row["added"]); ?></th>
+     <th>Owner: <?php echo ( $row["username"] ) ? '<a href="$config[SITEURL]/users/profile?id='.$row["owner"].'">' . class_user_colour($row["username"]) . '</a>' : "Unknown User"; ?> - Added: <?php echo utc_to_tz($row["added"]); ?></th>
  </tr></thead>
  <tbody><tr>
      <td><img src="<?php echo htmlspecialchars($row["image"]); ?>" border="0" alt="<?php echo htmlspecialchars($row["name"]); ?>" title="<?php echo htmlspecialchars($row["name"]); ?>" /></td>
@@ -38,7 +38,7 @@ global $site_config, $CURUSER, $pdo;
     <td class="table_col1" colspan="2">
     <b>Members:</b> 
     <?php foreach ( explode(',', $row['members']) as $member ): $member = explode(" ", $member); ?>
-    <a href="$site_config[SITEURL]/users/profile?id=<?php echo $member[0]; ?>"><?php echo htmlspecialchars($member[1]); ?></a>,
+    <a href="$config[SITEURL]/users/profile?id=<?php echo $member[0]; ?>"><?php echo htmlspecialchars($member[1]); ?></a>,
     <?php endforeach; ?>
     </td>
  </tr><tbody>
@@ -54,12 +54,12 @@ global $site_config, $CURUSER, $pdo;
     public function create(){
 require_once ("helpers/bbcode_helper.php");
 dbconn();
-global $site_config, $CURUSER, $pdo;
+global $config, $pdo;
 loggedinonly();
 
 # Todo: Clean this shit up, move to admincp
 
-if (!$CURUSER || $CURUSER["control_panel"]!="yes"){
+if (!$_SESSION['loggedin'] || $_SESSION["control_panel"]!="yes"){
 	 show_error_msg(T_("ERROR"), T_("SORRY_NO_RIGHTS_TO_ACCESS"), 1);
 }
 
@@ -94,15 +94,15 @@ if($sure == "yes") {
 	$sql = DB::run("UPDATE users SET team=? WHERE team=?", ['0', $del]);
 
 	$sql = DB::run("DELETE FROM teams WHERE id=? LIMIT 1", [$del]);
-	echo("Team Successfully Deleted![<a href='$site_config[SITEURL]/teams/create'>Back</a>]");
-	write_log($CURUSER['username']." has deleted team id:$del");
+	echo("Team Successfully Deleted![<a href='$config[SITEURL]/teams/create'>Back</a>]");
+	write_log($_SESSION['username']." has deleted team id:$del");
 	end_frame();
 	stdfoot();
 	die();
 }
 
 if($del > 0) {
-	echo("You and in the truth wish to delete team? ($team) ( <b><a href='$site_config[SITEURL]/teams/create?del=$del&amp;team=$team&amp;sure=yes'>Yes!</a></b> / <b><a href='$site_config[SITEURL]/teams/create'>No!</a></b> )");
+	echo("You and in the truth wish to delete team? ($team) ( <b><a href='$config[SITEURL]/teams/create?del=$del&amp;team=$team&amp;sure=yes'>Yes!</a></b> / <b><a href='$config[SITEURL]/teams/create'>No!</a></b> )");
 	end_frame();
 	stdfoot();
 	die();
@@ -131,9 +131,9 @@ if($edited == 1) {
 
 	if($sql) {
 		echo("<table cellspacing='0' cellpadding='5' width='50%'>");
-		echo("<tr><td><b>Successfully Edited</b>[<a href='$site_config[SITEURL]/teams/create'>Back</a>]</tr>");
+		echo("<tr><td><b>Successfully Edited</b>[<a href='$config[SITEURL]/teams/create'>Back</a>]</tr>");
 		echo("</table>");
-		write_log($CURUSER['username']." has edited team ($team_name)");
+		write_log($_SESSION['username']." has edited team ($team_name)");
 		end_frame();
 		stdfoot();
 		die();
@@ -141,7 +141,7 @@ if($edited == 1) {
 }
 
 if($editid > 0) {
-	echo("<form name='smolf3d' method='get' action='$site_config[SITEURL]/teams/create'>");
+	echo("<form name='smolf3d' method='get' action='$config[SITEURL]/teams/create'>");
     echo("<input type='hidden' name='id' value='$editid' />");
     echo("<input type='hidden' name='edited' value='1' />");   
 	echo("<table cellspacing='0' cellpadding='5' width='50%'>");
@@ -166,7 +166,7 @@ if($editmembers > 0) {
 		$uploaded = mksize($row['uploaded']);
 		$downloaded = mksize($row['downloaded']);
 		
-		echo("<tr><td class='table_col1'><a href='$site_config[SITEURL]/users/profile?id=$row[id]'>".class_user_colour($username)."</a></td><td class='table_col2'>$uploaded</td><td class='table_col1'>$downloaded</td></tr>");
+		echo("<tr><td class='table_col1'><a href='$config[SITEURL]/users/profile?id=$row[id]'>".class_user_colour($username)."</a></td><td class='table_col2'>$uploaded</td><td class='table_col1'>$downloaded</td></tr>");
 	}
 	echo "</table></center>";
 	end_frame();
@@ -209,7 +209,7 @@ if($add == 'true') {
 
 /*
 	if($sql) {
-		write_log($CURUSER['username']." has created new team ($team_name)");
+		write_log($_SESSION['username']." has created new team ($team_name)");
 		$success = TRUE;
 	}else{
 		$success = FALSE;
@@ -219,7 +219,7 @@ if($add == 'true') {
 print("<b>Add new team:</b>");
 print("<br />");
 print("<br />");
-echo("<form name='smolf3d' method='get' action='$site_config[SITEURL]/teams/create'>");
+echo("<form name='smolf3d' method='get' action='$config[SITEURL]/teams/create'>");
 echo("<center><table cellspacing='0' cellpadding='5' width='50%'>");
 echo("<tr><td>".T_("TEAM").": </td><td align='left'><input type='text' size='50' name='team_name' /></td></tr>");
 echo("<tr><td>".T_("TEAM_OWNER_NAME").": </td><td align='left'><input type='text' size='50' name='team_owner' /></td></tr>");
@@ -250,7 +250,7 @@ while ($row = $sql->fetch(PDO::FETCH_LAZY)) {
 	$OWNERNAME2 = DB::run("SELECT username, class FROM users WHERE id=$owner")->fetch();
 	$OWNERNAME = $OWNERNAME2['username'];
 
-	echo("<tbody><tr><td><b>$id</b> </td> <td><img src='$image' alt='' /></td> <td><b>$name</b></td><td><a href='$site_config[SITEURL]/users/profile?id=$owner'>$OWNERNAME</a></td><td>$info</td><td><a href='$site_config[SITEURL]/teams/create?editmembers=$id'>[Members]</a>&nbsp;<a href='$site_config[SITEURL]/teams/create?editid=$id&amp;name=$name&amp;image=$image&amp;info=$info&amp;owner=$OWNERNAME'>[".T_("EDIT")."]</a>&nbsp;<a href='$site_config[SITEURL]/teams/create?del=$id&amp;team=$name'>[Delete]</a></td></tr></tbody>");
+	echo("<tbody><tr><td><b>$id</b> </td> <td><img src='$image' alt='' /></td> <td><b>$name</b></td><td><a href='$config[SITEURL]/users/profile?id=$owner'>$OWNERNAME</a></td><td>$info</td><td><a href='$config[SITEURL]/teams/create?editmembers=$id'>[Members]</a>&nbsp;<a href='$config[SITEURL]/teams/create?editid=$id&amp;name=$name&amp;image=$image&amp;info=$info&amp;owner=$OWNERNAME'>[".T_("EDIT")."]</a>&nbsp;<a href='$config[SITEURL]/teams/create?del=$id&amp;team=$name'>[Delete]</a></td></tr></tbody>");
 }
 echo "</table></center>";
 

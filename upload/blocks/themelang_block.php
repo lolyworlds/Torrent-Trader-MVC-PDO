@@ -1,5 +1,5 @@
 <?php
-if ($CURUSER){
+if ($_SESSION['loggedin']){
 	begin_block(T_("THEME")." / ".T_("LANGUAGE"));
 $stylesheets= '';
 $languages = '';
@@ -16,7 +16,7 @@ $languages = '';
 	reset($ss_sa);
     
 	while (list($ss_name, $ss_id) = thisEach($ss_sa)){
-		if ($ss_id == $CURUSER["stylesheet"]) $ss = " selected='selected'"; else $ss = "";
+		if ($ss_id == $_SESSION["stylesheet"]) $ss = " selected='selected'"; else $ss = "";
 		$stylesheets .= "<option value='$ss_id'$ss>$ss_name</option>\n";
 	}
 
@@ -33,7 +33,7 @@ $languages = '';
 	reset($lang_sa);
 
 	while (list($lang_name, $lang_id) = thisEach($lang_sa)){
-		if ($lang_id == $CURUSER["language"]) $lang = " selected='selected'"; else $lang = "";
+		if ($lang_id == $_SESSION["language"]) $lang = " selected='selected'"; else $lang = "";
 		$languages .= "<option value='$lang_id'$lang>$lang_name</option>\n";
 	}
 

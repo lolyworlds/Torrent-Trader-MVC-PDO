@@ -148,25 +148,25 @@ while ($row = $query->fetch()) {
 <tr>
 <td class='table_col1'>Mininum Class Needed to Read:</td>
 <td class='table_col2' align='right'><select name='minclassread'>
-<option value='<? echo $site_config['User']; ?>'>User</option>
-<option value='<? echo $site_config['PowerUser']; ?>'>Power User</option>
-<option value='<? echo $site_config['VIP']; ?>'>VIP</option>
-<option value='<? echo $site_config['Uploader']; ?>'>Uploader</option>
-<option value='<? echo $site_config['Moderator']; ?>'>Moderator</option>
-<option value='<? echo $site_config['SuperModerator']; ?>'>Super Moderator</option>
-<option value='<? echo $site_config['Administrator']; ?>'>Administrator</option>
+<option value='<? echo $config['User']; ?>'>User</option>
+<option value='<? echo $config['PowerUser']; ?>'>Power User</option>
+<option value='<? echo $config['VIP']; ?>'>VIP</option>
+<option value='<? echo $config['Uploader']; ?>'>Uploader</option>
+<option value='<? echo $config['Moderator']; ?>'>Moderator</option>
+<option value='<? echo $config['SuperModerator']; ?>'>Super Moderator</option>
+<option value='<? echo $config['Administrator']; ?>'>Administrator</option>
 </select></td>
 </tr>
 <tr>
 <td class='table_col1'>Mininum Class Needed to Post:</td>
 <td class='table_col2' align='right'><select name='minclasswrite'>
-<option value='<? echo $site_config['User']; ?>'>User</option>
-<option value='<? echo $site_config['PowerUser']; ?>'>Power User</option>
-<option value='<? echo $site_config['VIP']; ?>'>VIP</option>
-<option value='<? echo $site_config['Uploader']; ?>'>Uploader</option>
-<option value='<? echo $site_config['Moderator']; ?>'>Moderator</option>
-<option value='<? echo $site_config['SuperModerator']; ?>'>Super Moderator</option>
-<option value='<? echo $site_config['Administrator']; ?>'>Administrator</option>
+<option value='<? echo $config['User']; ?>'>User</option>
+<option value='<? echo $config['PowerUser']; ?>'>Power User</option>
+<option value='<? echo $config['VIP']; ?>'>VIP</option>
+<option value='<? echo $config['Uploader']; ?>'>Uploader</option>
+<option value='<? echo $config['Moderator']; ?>'>Moderator</option>
+<option value='<? echo $config['SuperModerator']; ?>'>Super Moderator</option>
+<option value='<? echo $config['Administrator']; ?>'>Administrator</option>
 
 </select></td>
 </tr>".
@@ -300,25 +300,25 @@ foreach ($forumcat as $row)
 <tr>
 <td class='table_col1'>Mininum Class Needed to Read:</td>
 <td class='table_col2' align='right'><select name='minclassread'>
-<option value='<? echo $site_config['User']; ?>'>User</option>
-<option value='<? echo $site_config['PowerUser']; ?>'>Power User</option>
-<option value='<? echo $site_config['VIP']; ?>'>VIP</option>
-<option value='<? echo $site_config['Uploader']; ?>'>Uploader</option>
-<option value='<? echo $site_config['Moderator']; ?>'>Moderator</option>
-<option value='<? echo $site_config['SuperModerator']; ?>'>Super Moderator</option>
-<option value='<? echo $site_config['Administrator']; ?>'>Administrator</option>
+<option value='<? echo $config['User']; ?>'>User</option>
+<option value='<? echo $config['PowerUser']; ?>'>Power User</option>
+<option value='<? echo $config['VIP']; ?>'>VIP</option>
+<option value='<? echo $config['Uploader']; ?>'>Uploader</option>
+<option value='<? echo $config['Moderator']; ?>'>Moderator</option>
+<option value='<? echo $config['SuperModerator']; ?>'>Super Moderator</option>
+<option value='<? echo $config['Administrator']; ?>'>Administrator</option>
 </select></td>
 </tr>
 <tr>
 <td class='table_col1'>Mininum Class Needed to Post:</td>
 <td class='table_col2' align='right'><select name='minclasswrite'>
-<option value='<? echo $site_config['User']; ?>'>User</option>
-<option value='<? echo $site_config['PowerUser']; ?>'>Power User</option>
-<option value='<? echo $site_config['VIP']; ?>'>VIP</option>
-<option value='<? echo $site_config['Uploader']; ?>'>Uploader</option>
-<option value='<? echo $site_config['Moderator']; ?>'>Moderator</option>
-<option value='<? echo $site_config['SuperModerator']; ?>'>Super Moderator</option>
-<option value='<? echo $site_config['Administrator']; ?>'>Administrator</option>
+<option value='<? echo $config['User']; ?>'>User</option>
+<option value='<? echo $config['PowerUser']; ?>'>Power User</option>
+<option value='<? echo $config['VIP']; ?>'>VIP</option>
+<option value='<? echo $config['Uploader']; ?>'>Uploader</option>
+<option value='<? echo $config['Moderator']; ?>'>Moderator</option>
+<option value='<? echo $config['SuperModerator']; ?>'>Super Moderator</option>
+<option value='<? echo $config['Administrator']; ?>'>Administrator</option>
 
 <?php
 echo "</select></td>

@@ -7,7 +7,7 @@
     
     public function index(){
 dbconn();
-global $site_config, $CURUSER;
+global $config;
 loggedinonly();
 
 $tid = ( int ) $_GET['tid'];
@@ -17,7 +17,7 @@ $id = ( int ) $_GET['id'];
 if ($id != 0)
 	$uid = ( int ) $_GET['id'];
 if ($tid == 0 && $uid == 0)
-	$uid = ( int ) $CURUSER['id'];
+	$uid = ( int ) $_SESSION['id'];
 
 if ($tid > 0) {
 	$count_tid = get_row_count('snatched', 'WHERE `tid` = \'' . $tid . '\'');
@@ -74,7 +74,7 @@ if ($tid > 0) {
 			
 			$res = DB::run($qry);
 
-		//	print("<div style='margin-top:10px; margin-bottom:5px'><a href=$site_config[SITEURL]/torrents/read?id=$tid><b><input type='submit' value='".T_("BACK_TO_TORRENT")."'></b></a></div>");
+		//	print("<div style='margin-top:10px; margin-bottom:5px'><a href=$config[SITEURL]/torrents/read?id=$tid><b><input type='submit' value='".T_("BACK_TO_TORRENT")."'></b></a></div>");
 
 			if ($count_tid > $perpage) { echo ($pagertop); }
 			
@@ -111,7 +111,7 @@ if ($tid > 0) {
 				?>
 				
 				<tr align="center">
-					<td class="table_col1" align="left"><a href="$site_config[SITEURL]/users/profile?id=<?php echo $row[0];?>"><?php echo "<b>".$row[1]."</b>";?></a></td>
+					<td class="table_col1" align="left"><a href="$config[SITEURL]/users/profile?id=<?php echo $row[0];?>"><?php echo "<b>".$row[1]."</b>";?></a></td>
 					<td class="table_col2"><font color="#27B500"><?php echo mksize($row[5]);?></font></td>
 					<td class="table_col1"><font color="#FF1200"><?php echo mksize($row[6]);?></font></td>
 					<td class="table_col2"><?php echo $ratio;?></td>
@@ -128,7 +128,7 @@ if ($tid > 0) {
 			</table>
 			<?php
 			if ($count_tid > $perpage) { echo ($pagerbottom); }
-			print("<div style='margin-top:5px; margin-bottom:10px' align='right'><a href=$site_config[SITEURL]/torrents/read?id=$tid><b><input type='submit' value='".T_("BACK_TO_TORRENT")."'></b></a></div>");
+			print("<div style='margin-top:5px; margin-bottom:10px' align='right'><a href=$config[SITEURL]/torrents/read?id=$tid><b><input type='submit' value='".T_("BACK_TO_TORRENT")."'></b></a></div>");
 				endif;
 				end_frame();
 				stdfoot();
@@ -147,7 +147,7 @@ if ($tid > 0) {
 				begin_frame($ttitle);
 				?>
 				<div style="margin-top:10px; margin-bottom:10px" align="center"><font size="2"><?php echo T_("NOTHING_FOUND"); ?>.</font></div>
-				<div style="margin-bottom:10px" align="center">[<?php echo "<a href=$site_config[SITEURL]/torrents/read?id=$tid>";?><b><?php echo T_("BACK_TO_TORRENT"); ?></b></a>]</div>
+				<div style="margin-bottom:10px" align="center">[<?php echo "<a href=$config[SITEURL]/torrents/read?id=$tid>";?><b><?php echo T_("BACK_TO_TORRENT"); ?></b></a>]</div>
 				<?php
 				end_frame();
 				stdfoot();
@@ -167,7 +167,7 @@ if ($tid > 0) {
 			stdhead($title);
 			begin_frame($title2);
 
-			if (($CURUSER["control_panel"] == "no") && $CURUSER["id"] != $uid)
+			if (($_SESSION["control_panel"] == "no") && $_SESSION["id"] != $uid)
 			{
 				echo "<div style='margin-top:5px; margin-bottom:5px' align='center'><font size='4' color='red'><b>".T_("NO_PERMISSION")."</b></font></div>";
 				end_frame();
@@ -204,15 +204,15 @@ if ($tid > 0) {
 
 			$res = DB::run($qry);
 
-			if ( $uid == $CURUSER['id'] )
+			if ( $uid == $_SESSION['id'] )
 			{
 				usermenu($id);
 
 				print("<div style='margin-top:20px; margin-bottom:20px' align='center'><font size='2'>".T_("SNATCHED_MESSAGE")."</font></div>");
 			}
 			
-			if ( $uid != $CURUSER['id'] )
-				print("<div style='margin-top:10px; margin-bottom:5px'><a href=$site_config[SITEURL]/users/profile?id=$uid><b><input type='submit' value='".T_("GO_TO_USER_ACCOUNT")."'></b></a></div>");
+			if ( $uid != $_SESSION['id'] )
+				print("<div style='margin-top:10px; margin-bottom:5px'><a href=$config[SITEURL]/users/profile?id=$uid><b><input type='submit' value='".T_("GO_TO_USER_ACCOUNT")."'></b></a></div>");
 			
 			if ($count_uid > $perpage) { echo $pagertop; }
 
@@ -221,7 +221,7 @@ if ($tid > 0) {
 			<table border="0" class="table_table" cellpadding="4" cellspacing="0" width="100%">
 					<tr>
 						<th class="table_head" align="left"><?php echo T_("TORRENT_NAME"); ?></th>
-					  <?php if ($site_config["ALLOWEXTERNAL"]) { ?>
+					  <?php if ($config["ALLOWEXTERNAL"]) { ?>
 						<th class="table_head"><img src="images/t_le.png" border="0" title="<?php echo T_("T_L_OR_E"); ?>"></th>
 					  <?php } ?>
 						<th class="table_head"><?php echo T_("UPLOADED"); ?></th>
@@ -259,8 +259,8 @@ if ($tid > 0) {
 						$smallname = htmlspecialchars(CutName($row[1], $maxchar));
 					?>
 					<tr align="center">  <!-- below was ".(count($expandrows)?" -->
-						<?php echo("<td class='ttable_col1' align='left' nowrap='nowrap'>".($expandrows?"<a href=\"javascript: klappe_torrent('t".$row['0']."')\"><img border=\"0\" src=\"".$site_config["SITEURL"]."/images/plus.gif\" id=\"pict".$row['0']."\" alt=\"Show/Hide\" class=\"showthecross\" /></a>":"")."<a title=\"".$row["1"]."\" href=\"/torrents/read?id=".$row['0']."&amp;hit=1\"><b>$smallname</b></a> $freeleech</td>"); ?>
-					  <?php if ($site_config["ALLOWEXTERNAL"]) { ?>
+						<?php echo("<td class='ttable_col1' align='left' nowrap='nowrap'>".($expandrows?"<a href=\"javascript: klappe_torrent('t".$row['0']."')\"><img border=\"0\" src=\"".$config["SITEURL"]."/images/plus.gif\" id=\"pict".$row['0']."\" alt=\"Show/Hide\" class=\"showthecross\" /></a>":"")."<a title=\"".$row["1"]."\" href=\"/torrents/read?id=".$row['0']."&amp;hit=1\"><b>$smallname</b></a> $freeleech</td>"); ?>
+					  <?php if ($config["ALLOWEXTERNAL"]) { ?>
 						<td class="table_col2" align="center"><?php echo $type;?></td>
 					  <?php } ?>
 						<td class="table_col1"><font color="#27B500"><?php echo mksize($row[2]);?></font></td>
@@ -281,8 +281,8 @@ if ($tid > 0) {
 			
 			if ($count_uid > $perpage) { echo $pagerbottom; }
 			
-			if ( $uid != $CURUSER['id'] )
-				print("<div style='margin-top:5px; margin-bottom:10px' align='right'><a href=$site_config[SITEURL]/users/profile?id=$uid><b><input type='submit' value='".T_("GO_TO_USER_ACCOUNT")."'></b></a></div>");
+			if ( $uid != $_SESSION['id'] )
+				print("<div style='margin-top:5px; margin-bottom:10px' align='right'><a href=$config[SITEURL]/users/profile?id=$uid><b><input type='submit' value='".T_("GO_TO_USER_ACCOUNT")."'></b></a></div>");
 			
 			endif;
 			end_frame();
@@ -302,7 +302,7 @@ if ($tid > 0) {
 			stdhead($title);
 			begin_frame($title2);
 			
-			if (($CURUSER["control_panel"] == "no") && $CURUSER["id"] != $uid)
+			if (($_SESSION["control_panel"] == "no") && $_SESSION["id"] != $uid)
 			{
 				echo "<div style='margin-top:10px; margin-bottom:10px' align='center'><font size='2' color='red'><b>".T_("NO_PERMISSION")."</b></font></div>";
 				end_frame();
@@ -314,10 +314,10 @@ if ($tid > 0) {
 		if (! $users)
 		//	if ($users->rowCount() > 0)
 			{
-				if ( $uid != $CURUSER['id'] ) {
-					print("<div style='margin-bottom:10px' align='center'><a href=$site_config[SITEURL]/users/profile?id=$uid><b><button type='submit' class='btn btn-sm btn-primary'>".T_("GO_TO_USER_ACCOUNT")."</button></b></a></div>");
+				if ( $uid != $_SESSION['id'] ) {
+					print("<div style='margin-bottom:10px' align='center'><a href=$config[SITEURL]/users/profile?id=$uid><b><button type='submit' class='btn btn-sm btn-primary'>".T_("GO_TO_USER_ACCOUNT")."</button></b></a></div>");
 				} else {
-					print("<div style='margin-bottom:10px' align='center'>[<a href=$site_config[SITEURL]/users/profile?id=$CURUSER[id]><b>".T_("GO_TO_YOUR_PROFILE")."</b></a>]</div>");
+					print("<div style='margin-bottom:10px' align='center'>[<a href=$config[SITEURL]/users/profile?id=$_SESSION[id]><b>".T_("GO_TO_YOUR_PROFILE")."</b></a>]</div>");
 				}
 			}
 			end_frame();

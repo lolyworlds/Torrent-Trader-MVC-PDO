@@ -3,7 +3,7 @@
             <?php echo T_("LOGIN"); ?>
         </div>
         <div class="card-body">
-<?php if ($site_config["MEMBERSONLY"]) { ?>
+<?php if ($config["MEMBERSONLY"]) { ?>
 <center><b><?php echo T_("MEMBERS_ONLY"); ?></b></center>
 <?php } ?>
 <form method="post" action="<?php echo TTURL; ?>/account/login">

@@ -4,14 +4,14 @@ class Cache
     // Fonction Constructeur De La Classe Cache
     public function __construct()
     {
-        global $site_config, $pdo;
-        $this->cachedir = $site_config["cache_dir"];
-        $this->type = strtolower(trim($site_config["cache_type"]));
+        global $config, $pdo;
+        $this->cachedir = $config["cache_dir"];
+        $this->type = strtolower(trim($config["cache_type"]));
         // Cache Connection
         switch ($this->type) {
             case "memcache":
                 $this->obj = new Memcache;
-                if (!@$this->obj->Connect($site_config["cache_memcache_host"], $site_config["cache_memcache_port"])) {
+                if (!@$this->obj->Connect($config["cache_memcache_host"], $config["cache_memcache_port"])) {
                     $this->type = "disk";
                 }
 
@@ -33,14 +33,14 @@ class Cache
     // Caching Function According to the Type of Cache Used
     public function Set($var, $val, $expire = 0)
     {
-        global $site_config;
+        global $config;
         if ($expire == 0) {
             return;
         }
 
         switch ($this->type) {
             case "memcache":
-                return $this->obj->set($site_config['SITENAME'] . "_" . $var, $val, 0, $expire);
+                return $this->obj->set($config['SITENAME'] . "_" . $var, $val, 0, $expire);
                 break;
             case "apc":
                 return apc_store($var, $val, $expire);
@@ -59,11 +59,11 @@ class Cache
     // Function Delete Memcache According To Its Type
     public function Delete($var)
     {
-        global $site_config;
+        global $config;
 
         switch ($this->type) {
             case "memcache":
-                return $this->obj->delete($site_config['SITENAME'] . "_" . $var);
+                return $this->obj->delete($config['SITENAME'] . "_" . $var);
                 break;
             case "apc":
                 return apc_delete($var);
@@ -79,14 +79,14 @@ class Cache
     // Get Memcache Type Function Used
     public function Get($var, $expire = 0)
     {
-        global $site_config;
+        global $config;
         if ($expire == 0) {
             return false;
         }
 
         switch ($this->type) {
             case "memcache":
-                return $this->obj->get($site_config['SITENAME'] . "_" . $var);
+                return $this->obj->get($config['SITENAME'] . "_" . $var);
                 break;
             case "apc":
                 return apc_fetch($var);

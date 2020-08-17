@@ -1,6 +1,6 @@
 <?php
-if (($site_config["INVITEONLY"] || $site_config["ENABLEINVITES"]) && $CURUSER) {
-	$invites = $CURUSER["invites"];
+if (($config["INVITEONLY"] || $config["ENABLEINVITES"]) && $_SESSION['loggedin']) {
+	$invites = $_SESSION["invites"];
 	begin_block(T_("INVITES"));
 	?>
 	<table border="0" width="100%">
@@ -12,7 +12,7 @@ if (($site_config["INVITEONLY"] || $site_config["ENABLEINVITES"]) && $CURUSER) {
 	<?php if ($invites > 0 ){?>
 	<tr>
         <td align="center">
-        <a href="<?php echo $site_config['SITEURL'] ?>/invite"><?php echo T_("SEND_AN_INVITE"); ?></a>
+        <a href="<?php echo $config['SITEURL'] ?>/invite"><?php echo T_("SEND_AN_INVITE"); ?></a>
         </td>
     </tr>
 	<?php } ?>

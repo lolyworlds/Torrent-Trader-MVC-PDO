@@ -1,5 +1,5 @@
 <?php usermenu($id);
-			if ($user["privacy"] != "strong" || ($CURUSER["control_panel"] == "yes") || ($CURUSER["id"] == $user["id"])) {
+			if ($user["privacy"] != "strong" || ($_SESSION["control_panel"] == "yes") || ($_SESSION["id"] == $user["id"])) {
 			?>
 			<table align="center" border="0" cellpadding="6" cellspacing="1" width="100%">
 			<tr>
@@ -22,9 +22,9 @@
                 <?php echo T_("GENDER"); ?>: <?php echo T_($user["gender"]); ?><br />
 				<?php echo T_("CLIENT"); ?>: <?php echo htmlspecialchars($user["client"])?><br />
 				<?php echo T_("COUNTRY"); ?>: <?php echo $country?><br />
-				<?php echo T_("DONATED"); ?>  <?php echo $site_config['currency_symbol']; ?><?php echo number_format($user["donated"], 2); ?><br /> 
+				<?php echo T_("DONATED"); ?>  <?php echo $config['currency_symbol']; ?><?php echo number_format($user["donated"], 2); ?><br /> 
 				<?php echo T_("WARNINGS"); ?>: <?php echo htmlspecialchars($user["warned"])?><br />
-				<?php if ($CURUSER["edit_users"] == "yes"){ echo T_("ACCOUNT_PRIVACY_LVL").": <b>".T_($user["privacy"])."</b><br />"; }?>
+				<?php if ($_SESSION["edit_users"] == "yes"){ echo T_("ACCOUNT_PRIVACY_LVL").": <b>".T_($user["privacy"])."</b><br />"; }?>
 				<?php echo T_("SIGNATURE"); ?>:</b> <?php echo format_comment($usersignature); ?><br />
 				</td>
 			</tr>
@@ -50,16 +50,16 @@
 				<td align="left">
                 
 				<img src="<?php echo $avatar; ?>" alt="" title="<?php echo class_user_colour($user["username"]); ?>" height="80" width="80" /><br />
-				<a href="<?php echo $site_config['SITEURL'] ?>/messages/create?id=<?php echo $user["id"]?>"><button type='button' class='btn btn-sm btn-success'><?php echo T_("SEND_PM") ?></button></a><br />
+				<a href="<?php echo $config['SITEURL'] ?>/messages/create?id=<?php echo $user["id"]?>"><button type='button' class='btn btn-sm btn-success'><?php echo T_("SEND_PM") ?></button></a><br />
 				<!-- <a href=#>View Forum Posts</a><br />
 				<a href=#>View Comments</a><br /> -->
-				<a href="<?php echo $site_config['SITEURL'] ?>/report/user?user=<?php echo $user["id"]?>"><button type='button' class='btn btn-sm btn-danger'><?php echo T_("REPORT_MEMBER") ?></button></a><br />
-			<?php if ($CURUSER["edit_users"]=="yes") { ?>
-		  <div style="margin-bottom:3px"><a href="<?php echo $site_config['SITEURL']; ?>/snatched?uid=<?php echo $user["id"]?>"><button type='button' class='btn btn-sm btn-warning'><?php echo T_("SNATCHLIST") ?></button></a></div>
+				<a href="<?php echo $config['SITEURL'] ?>/report/user?user=<?php echo $user["id"]?>"><button type='button' class='btn btn-sm btn-danger'><?php echo T_("REPORT_MEMBER") ?></button></a><br />
+			<?php if ($_SESSION["edit_users"]=="yes") { ?>
+		  <div style="margin-bottom:3px"><a href="<?php echo $config['SITEURL']; ?>/snatched?uid=<?php echo $user["id"]?>"><button type='button' class='btn btn-sm btn-warning'><?php echo T_("SNATCHLIST") ?></button></a></div>
 		<?php } ?>
 				</td>
 			</tr>
-			<?php if ($CURUSER["edit_users"] == "yes") { ?>
+			<?php if ($_SESSION["edit_users"] == "yes") { ?>
 			<tr>
 				<td width="50%"><b><?php echo T_("STAFF_ONLY_INFO"); ?></b></td>
 			</tr>
@@ -70,7 +70,7 @@
 						if ($user["invited_by"]) {
 							$invited = $user['invited_by'];
 							$row = DB::run("SELECT username FROM users WHERE id=?", [$invited])->fetch();
-							echo "<b>".T_("INVITED_BY").":</b> <a href=\"$site_config[SITEURL]/users/profile?id=$user[invited_by]\">".class_user_colour($row['username'])."</a><br />";
+							echo "<b>".T_("INVITED_BY").":</b> <a href=\"$config[SITEURL]/users/profile?id=$user[invited_by]\">".class_user_colour($row['username'])."</a><br />";
 						}
 						echo "<b>".T_("INVITES").":</b> ".number_format($user["invites"])."<br />";
 						$invitees = array_reverse(explode(" ", $user["invitees"]));
@@ -78,7 +78,7 @@
 						foreach ($invitees as $invitee) {
 							$res = DB::run("SELECT id, username FROM users WHERE id=? and status=?", [$invitee, 'confirmed']);
 							if ($row = $res->fetch()) {
-								$rows[] = "<a href=\"$site_config[SITEURL]/users/profile?id=$row[id]\">".class_user_colour($row['username'])."</a>";
+								$rows[] = "<a href=\"$config[SITEURL]/users/profile?id=$row[id]\">".class_user_colour($row['username'])."</a>";
 							}
 						}
 						if ($rows)
@@ -93,7 +93,7 @@
 			if ($res->rowCount() == 1) {
 				$arr = $res->fetch();
 				echo "<tr><td colspan='2' align='left'><b>Team Member Of:</b><br />";
-				echo"<img src='".htmlspecialchars($arr["image"])."' alt='' /><br />".sqlesc($arr["name"])."<br /><br /><a href='$site_config[SITEURL]/teams'>[View ".T_("TEAMS")."]</a></td></tr>"; 
+				echo"<img src='".htmlspecialchars($arr["image"])."' alt='' /><br />".sqlesc($arr["name"])."<br /><br /><a href='$config[SITEURL]/teams'>[View ".T_("TEAMS")."]</a></td></tr>"; 
 			}
 			?>
 		
@@ -101,21 +101,21 @@
 
 			<div style="margin-bottom:10px">
 <?php
-If ($CURUSER["id"] != $user["id"])
+If ($_SESSION["id"] != $user["id"])
 {
-    $r = DB::run("SELECT id FROM friends WHERE userid=$CURUSER[id] AND friend='friend' AND friendid=$id");
+    $r = DB::run("SELECT id FROM friends WHERE userid=$_SESSION[id] AND friend='friend' AND friendid=$id");
     $friend = $r->rowCount();
-    $r = DB::run("SELECT id FROM friends WHERE userid=$CURUSER[id] AND friend='enemy' AND friendid=$id");
+    $r = DB::run("SELECT id FROM friends WHERE userid=$_SESSION[id] AND friend='enemy' AND friendid=$id");
     $block = $r->rowCount();
 
     if ($friend > 0)
-        print("[<a href=$site_config[SITEURL]/friends/delete?type=friend&targetid=$id>Remove from Friends</a>]");
+        print("[<a href=$config[SITEURL]/friends/delete?type=friend&targetid=$id>Remove from Friends</a>]");
     elseif($block > 0)
-        print("&nbsp;[<a href=$site_config[SITEURL]/friends/delete?type=block&targetid=$id>Remove from Blocked</a>]");
+        print("&nbsp;[<a href=$config[SITEURL]/friends/delete?type=block&targetid=$id>Remove from Blocked</a>]");
     else
     {
-        print("[<a href=$site_config[SITEURL]/friends/add?type=friend&targetid=$id><b>Add to Friends</b></a>]&nbsp;");
-        print("&nbsp;[<a href=$site_config[SITEURL]/friends/add?type=block&targetid=$id><b>Add to Blocked</b></a>]");
+        print("[<a href=$config[SITEURL]/friends/add?type=friend&targetid=$id><b>Add to Friends</b></a>]&nbsp;");
+        print("&nbsp;[<a href=$config[SITEURL]/friends/add?type=block&targetid=$id><b>Add to Blocked</b></a>]");
     }
 }
 ?>

@@ -58,7 +58,7 @@ class Account extends Controller
     public function recover()
     {
         dbconn();
-        global $site_config, $CURUSER, $pdo;
+        global $config, $pdo;
         $kind = '0';
 
         if ($_SERVER["REQUEST_METHOD"] == "POST" && $_GET["take"] == 1) {
@@ -78,10 +78,10 @@ class Account extends Controller
                     $sec = mksecret();
                     $id = $arr->id;
 
-                    $body = T_("SOMEONE_FROM") . " " . $_SERVER["REMOTE_ADDR"] . " " . T_("MAILED_BACK") . " ($email) " . T_("BE_MAILED_BACK") . " \r\n\r\n " . T_("ACCOUNT_INFO") . " \r\n\r\n " . T_("USERNAME") . ": " . $arr->username . " \r\n " . T_("CHANGE_PSW") . "\n\n$site_config[SITEURL]/account/confirmrecover?id=$id&secret=$sec\n\n\n" . $site_config["SITENAME"] . "\r\n";
+                    $body = T_("SOMEONE_FROM") . " " . $_SERVER["REMOTE_ADDR"] . " " . T_("MAILED_BACK") . " ($email) " . T_("BE_MAILED_BACK") . " \r\n\r\n " . T_("ACCOUNT_INFO") . " \r\n\r\n " . T_("USERNAME") . ": " . $arr->username . " \r\n " . T_("CHANGE_PSW") . "\n\n$config[SITEURL]/account/confirmrecover?id=$id&secret=$sec\n\n\n" . $config["SITENAME"] . "\r\n";
 
                     $TTMail = new TTMail();
-                    @$TTMail->Send($arr->email, T_("ACCOUNT_DETAILS"), $body, "", "-f" . $site_config['SITEEMAIL']);
+                    @$TTMail->Send($arr->email, T_("ACCOUNT_DETAILS"), $body, "", "-f" . $config['SITEEMAIL']);
                     $res2 = $this->userModel->setSecret($sec, $email);
                     $msg = sprintf(T_('MAIL_RECOVER'), htmlspecialchars($email));
                     $kind = T_("SUCCESS");
@@ -103,7 +103,7 @@ class Account extends Controller
     public function confirmrecover()
     {
         dbconn();
-        global $site_config, $CURUSER, $pdo;
+        global $config, $pdo;
         $kind = '0';
 
         if (is_valid_id($_POST["id"]) && strlen($_POST["secret"]) == 20) {
@@ -144,7 +144,7 @@ class Account extends Controller
     public function ce()
     {
         dbconn();
-        global $site_config, $CURUSER, $pdo;
+        global $config, $pdo;
         $id = (int) $_GET["id"];
         $md5 = $_GET["secret"];
         $email = $_GET["email"];
@@ -175,7 +175,7 @@ class Account extends Controller
     public function confirm()
     {
         dbconn();
-        global $site_config, $CURUSER, $pdo;
+        global $config, $pdo;
         $id = (int) $_GET["id"];
         $md5 = $_GET["secret"];
 
@@ -185,7 +185,7 @@ class Account extends Controller
 
         $row = $this->pdo->run("SELECT `password`, `secret`, `status` FROM `users` WHERE `id` =?", [$id])->fetch();
         if (!$row) {
-            show_error_msg(T_("ERROR"), sprintf(T_("CONFIRM_EXPIRE"), $site_config['signup_timeout'] / 86400), 1);
+            show_error_msg(T_("ERROR"), sprintf(T_("CONFIRM_EXPIRE"), $config['signup_timeout'] / 86400), 1);
         }
 
         if ($row->status != "pending") {
@@ -210,7 +210,7 @@ class Account extends Controller
     public function confirmok()
     {
         dbconn();
-        global $site_config, $CURUSER;
+        global $config;
         $type = $_GET["type"];
         $email = $_GET["email"];
 
@@ -230,7 +230,7 @@ class Account extends Controller
         if ($type == "signup" && validemail($email)) {
             stdhead(T_("ACCOUNT_USER_SIGNUP"));
             begin_frame(T_("ACCOUNT_SIGNUP_SUCCESS"));
-            if (!$site_config["ACONFIRM"]) {
+            if (!$config["ACONFIRM"]) {
                 print(T_("A_CONFIRMATION_EMAIL_HAS_BEEN_SENT") . " (" . htmlspecialchars($email) . "). " . T_("ACCOUNT_CONFIRM_SENT_TO_ADDY_REST") . " <br/ >");
             } else {
                 print(T_("EMAIL_CHANGE_SEND") . " (" . htmlspecialchars($email) . "). " . T_("ACCOUNT_CONFIRM_SENT_TO_ADDY_ADMIN") . " <br/ >");
@@ -254,11 +254,11 @@ class Account extends Controller
         } //end invite code
 
         elseif ($type == "confirm") {
-            if (isset($CURUSER)) {
+            if (isset($_SESSION)) {
                 stdhead(T_("ACCOUNT_SIGNUP_CONFIRMATION"));
                 begin_frame(T_("ACCOUNT_SUCCESS_CONFIRMED"));
-                print(T_("ACCOUNT_ACTIVATED") . " <a href='" . $site_config["SITEURL"] . "/index.php'>" . T_("ACCOUNT_ACTIVATED_REST") . "\n");
-                print(T_("ACCOUNT_BEFOR_USING") . " " . $site_config["SITENAME"] . " " . T_("ACCOUNT_BEFOR_USING_REST") . "\n");
+                print(T_("ACCOUNT_ACTIVATED") . " <a href='" . $config["SITEURL"] . "/index.php'>" . T_("ACCOUNT_ACTIVATED_REST") . "\n");
+                print(T_("ACCOUNT_BEFOR_USING") . " " . $config["SITENAME"] . " " . T_("ACCOUNT_BEFOR_USING_REST") . "\n");
                 end_frame();
             } else {
                 stdhead(T_("ACCOUNT_SIGNUP_CONFIRMATION"));
@@ -276,30 +276,30 @@ class Account extends Controller
     public function signup()
     {
         dbconn();
-        global $site_config, $CURUSER, $pdo;
+        global $config, $pdo;
         $username_length = 15; // Max username length. You shouldn't set this higher without editing the database first
         $password_minlength = 6;
         $password_maxlength = 60;
             
         //check if IP is already a peer
-        if ($site_config["ipcheck"]) {
+        if ($config["ipcheck"]) {
                 $ip = $_SERVER['REMOTE_ADDR'];
                 $ipq = get_row_count("users", "WHERE ip = '$ip'");
-                if ($ipq >= $site_config["accountmax"])
+                if ($ipq >= $config["accountmax"])
                 autolink(TTURL."/account/login", "This IP is already in use !");
         }
 
         // Disable checks if we're signing up with an invite
         if (!is_valid_id($_REQUEST["invite"]) || strlen($_REQUEST["secret"]) != 20) {
             //invite only check
-            if ($site_config["INVITEONLY"]) {
+            if ($config["INVITEONLY"]) {
                 show_error_msg(T_("INVITE_ONLY"), "<br /><br /><center>" . T_("INVITE_ONLY_MSG") . "<br /><br /></center>", 1);
             }
 
             //get max members, and check how many users there is
             $numsitemembers = get_row_count("users");
-            if ($numsitemembers >= $site_config["maxusers"]) {
-                show_error_msg(T_("SORRY") . "...", T_("SITE_FULL_LIMIT_MSG") . number_format($site_config["maxusers"]) . " " . T_("SITE_FULL_LIMIT_REACHED_MSG") . " " . number_format($numsitemembers) . " members", 1);
+            if ($numsitemembers >= $config["maxusers"]) {
+                show_error_msg(T_("SORRY") . "...", T_("SITE_FULL_LIMIT_MSG") . number_format($config["maxusers"]) . " " . T_("SITE_FULL_LIMIT_REACHED_MSG") . " " . number_format($numsitemembers) . " members", 1);
             }
 
         } else {
@@ -307,7 +307,7 @@ class Account extends Controller
             $invite_row = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if (!$invite_row) {
-                show_error_msg(T_("ERROR"), T_("INVITE_ONLY_NOT_FOUND") . " " . ($site_config['signup_timeout'] / 86400) . " days.", 1);
+                show_error_msg(T_("ERROR"), T_("INVITE_ONLY_NOT_FOUND") . " " . ($config['signup_timeout'] / 86400) . " days.", 1);
             }
         }
 
@@ -385,16 +385,16 @@ class Account extends Controller
 			SET username=" . $wantusername . ", password=" . $wantpassword . ", secret=" . $secret . ", status='confirmed', added='" . get_date_time() . "'
 			WHERE id=$invite_row[id]");
                     //send pm to new user
-                    if ($site_config["WELCOMEPMON"]) {
+                    if ($config["WELCOMEPMON"]) {
                         $dt = get_date_time();
-                        $msg = $site_config["WELCOMEPMMSG"];
+                        $msg = $config["WELCOMEPMMSG"];
                         $ins = $pdo->run("INSERT INTO messages (sender, receiver, added, msg, poster) VALUES(0, $invite_row[id], $dt, $msg, 0)");
                     }
                     header("Refresh: 0; url=" . TTURL . "/account/confirmok?type=confirm");
                     die;
                 }
 
-                if ($site_config["CONFIRMEMAIL"]) { //req confirm email true/false
+                if ($config["CONFIRMEMAIL"]) { //req confirm email true/false
                     $status = "pending";
                 } else {
                     $status = "confirmed";
@@ -407,7 +407,7 @@ class Account extends Controller
                     $signupclass = '1';
                 }
 
-                $sql = "INSERT INTO users (username, password, secret, email, status, added, last_access, age, country, gender, client, stylesheet, language, class, ip) VALUES (" . implode(",", array_map("sqlesc", array($wantusername, $wantpassword, $secret, $email, $status, get_date_time(), get_date_time(), $age, $country, $gender, $client, $site_config["default_theme"], $site_config["default_language"], $signupclass, getip()))) . ")";
+                $sql = "INSERT INTO users (username, password, secret, email, status, added, last_access, age, country, gender, client, stylesheet, language, class, ip) VALUES (" . implode(",", array_map("sqlesc", array($wantusername, $wantpassword, $secret, $email, $status, get_date_time(), get_date_time(), $age, $country, $gender, $client, $config["default_theme"], $config["default_language"], $signupclass, getip()))) . ")";
                 $ins_user = DB::run($sql);
                 $id = DB::lastInsertId();
 
@@ -415,23 +415,23 @@ class Account extends Controller
                 $thisdomain = preg_replace('/^www\./is', "", $thishost);
 
                 //ADMIN CONFIRM
-                if ($site_config["ACONFIRM"]) {
-                    $body = T_("YOUR_ACCOUNT_AT") . " " . $site_config['SITENAME'] . " " . T_("HAS_BEEN_CREATED_YOU_WILL_HAVE_TO_WAIT") . "\n\n" . $site_config['SITENAME'] . " " . T_("ADMIN");
+                if ($config["ACONFIRM"]) {
+                    $body = T_("YOUR_ACCOUNT_AT") . " " . $config['SITENAME'] . " " . T_("HAS_BEEN_CREATED_YOU_WILL_HAVE_TO_WAIT") . "\n\n" . $config['SITENAME'] . " " . T_("ADMIN");
                 } else { //NO ADMIN CONFIRM, BUT EMAIL CONFIRM
-                    $body = T_("YOUR_ACCOUNT_AT") . " " . $site_config['SITENAME'] . " " . T_("HAS_BEEN_APPROVED_EMAIL") . "\n\n	" . $site_config['SITEURL'] . "/account/confirm?id=$id&secret=$secret\n\n" . T_("HAS_BEEN_APPROVED_EMAIL_AFTER") . "\n\n	" . T_("HAS_BEEN_APPROVED_EMAIL_DELETED") . "\n\n" . $site_config['SITENAME'] . " " . T_("ADMIN");
+                    $body = T_("YOUR_ACCOUNT_AT") . " " . $config['SITENAME'] . " " . T_("HAS_BEEN_APPROVED_EMAIL") . "\n\n	" . $config['SITEURL'] . "/account/confirm?id=$id&secret=$secret\n\n" . T_("HAS_BEEN_APPROVED_EMAIL_AFTER") . "\n\n	" . T_("HAS_BEEN_APPROVED_EMAIL_DELETED") . "\n\n" . $config['SITENAME'] . " " . T_("ADMIN");
                 }
 
-                if ($site_config["CONFIRMEMAIL"]) { //email confirmation is on
+                if ($config["CONFIRMEMAIL"]) { //email confirmation is on
                     $TTMail = new TTMail();
-$TTMail->Send($email, "Your $site_config[SITENAME] User Account", $body, "", "-f$site_config[SITEEMAIL]");
+$TTMail->Send($email, "Your $config[SITENAME] User Account", $body, "", "-f$config[SITEEMAIL]");
                     header("Refresh: 0; url=" . TTURL . "/account/confirmok?type=signup&email=" . urlencode($email));
                 } else { //email confirmation is off
                     header("Refresh: 0; url=" . TTURL . "/account/confirmok?type=noconf");
                 }
                 //send pm to new user
-                if ($site_config["WELCOMEPMON"]) {
+                if ($config["WELCOMEPMON"]) {
                     $dt = get_date_time();
-                    $msg = $site_config["WELCOMEPMMSG"];
+                    $msg = $config["WELCOMEPMMSG"];
                     $qry = $this->pdo->run("INSERT INTO messages (sender, receiver, added, msg, poster) VALUES(?,?,?,?,?)", [0, $id, $dt, $msg, 0]);
                 }
 

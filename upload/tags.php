@@ -91,7 +91,7 @@ insert_tag(
 	"Hyperlink (alt. 1)",
 	"Inserts a hyperlink.",
 	"[url]<i>URL</i>[/url]",
-	"[url]".$site_config["SITEURL"]."[/url]",
+	"[url]".$config["SITEURL"]."[/url]",
 	"This tag is superfluous; all URLs are automatically hyperlinked."
 );
 
@@ -99,7 +99,7 @@ insert_tag(
 	"Hyperlink (alt. 2)",
 	"Inserts a hyperlink.",
 	"[url=<i>URL</i>]<i>Link text</i>[/url]",
-	"[url=".$site_config["SITEURL"]."]".$site_config["SITENAME"]."[/url]",
+	"[url=".$config["SITEURL"]."]".$config["SITENAME"]."[/url]",
 	"You do not have to use this tag unless you want to set the link text; all URLs are automatically hyperlinked."
 );
 
@@ -107,7 +107,7 @@ insert_tag(
 	"Image (alt. 1)",
 	"Inserts a picture.",
 	"[img=<i>URL</i>]",
-	"[img=".$site_config["SITEURL"]."/images/banner.jpg]",
+	"[img=".$config["SITEURL"]."/images/banner.jpg]",
 	"The URL must end with <b>.gif</b>, <b>.jpg</b> or <b>.png</b>."
 );
 
@@ -115,7 +115,7 @@ insert_tag(
 	"Image (alt. 2)",
 	"Inserts a picture.",
 	"[img]<i>URL</i>[/img]",
-	"[img]".$site_config["SITEURL"]."/images/banner.jpg[/img]",
+	"[img]".$config["SITEURL"]."/images/banner.jpg[/img]",
 	"The URL must end with <b>.gif</b>, <b>.jpg</b> or <b>.png</b>."
 );
 

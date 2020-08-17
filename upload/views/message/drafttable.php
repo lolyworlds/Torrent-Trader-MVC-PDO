@@ -1,5 +1,5 @@
 <?php
-            usermenu($CURUSER["id"]);
+            usermenu($_SESSION["id"]);
             include 'views/message/messagenavbar.php';
             ?>
             <form id='messagespy' method='post' action='messages&amp;do=del'>
@@ -24,7 +24,7 @@ foreach ($res as $arr) {
             }
 
             $subject = "<a href='" . TTURL . "/messages/read?draft&amp;id=" . $arr["id"] . "'><b>" . format_comment($arr["subject"]) . "</b></a>";
-            //$subject = "<a href=\"javascript:read($arr[id]);\"><img src=\"".$site_config["SITEURL"]."/images/plus.gif\" id=\"img_$arr[id]\" class=\"read\" border=\"0\" alt='' /></a>&nbsp;<a href=\"javascript:read($arr[id]);\">$subject</a>";
+            //$subject = "<a href=\"javascript:read($arr[id]);\"><img src=\"".$config["SITEURL"]."/images/plus.gif\" id=\"img_$arr[id]\" class=\"read\" border=\"0\" alt='' /></a>&nbsp;<a href=\"javascript:read($arr[id]);\">$subject</a>";
 
             $added = utc_to_tz($arr["added"]);
 

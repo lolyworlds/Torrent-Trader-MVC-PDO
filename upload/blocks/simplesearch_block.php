@@ -1,5 +1,5 @@
 <?php
-if ($CURUSER) {
+if ($_SESSION['loggedin']) {
     $_GET['search'] = $_GET['search'] ?? '';
 	begin_block(T_("SEARCH")); ?>
 	<form method="get" action="<?php echo TTURL; ?>/torrents/search" class="form-inline">

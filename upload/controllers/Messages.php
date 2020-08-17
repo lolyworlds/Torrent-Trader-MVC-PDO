@@ -12,29 +12,29 @@ class Messages extends Controller
     public function index()
     {
         dbconn();
-        global $site_config, $CURUSER;
+        global $config;
         loggedinonly();
         stdhead("Index");
         begin_frame("Index");
-        $res = DB::run("SELECT COUNT(*), COUNT(`unread` = 'yes') FROM messages WHERE `receiver` = $CURUSER[id] AND `location` IN ('in','both')");
-        $res = DB::run("SELECT COUNT(*) FROM messages WHERE receiver=" . $CURUSER["id"] . " AND `location` IN ('in','both')");
+        $res = DB::run("SELECT COUNT(*), COUNT(`unread` = 'yes') FROM messages WHERE `receiver` = $_SESSION[id] AND `location` IN ('in','both')");
+        $res = DB::run("SELECT COUNT(*) FROM messages WHERE receiver=" . $_SESSION["id"] . " AND `location` IN ('in','both')");
         $inbox = $res->fetchColumn();
-        $res = DB::run("SELECT COUNT(*) FROM messages WHERE `receiver` = " . $CURUSER["id"] . " AND `location` IN ('in','both') AND `unread` = 'yes'");
+        $res = DB::run("SELECT COUNT(*) FROM messages WHERE `receiver` = " . $_SESSION["id"] . " AND `location` IN ('in','both') AND `unread` = 'yes'");
         $unread = $res->fetchColumn();
-        $res = DB::run("SELECT COUNT(*) FROM messages WHERE `sender` = " . $CURUSER["id"] . " AND `location` IN ('out','both')");
+        $res = DB::run("SELECT COUNT(*) FROM messages WHERE `sender` = " . $_SESSION["id"] . " AND `location` IN ('out','both')");
         $outbox = $res->fetchColumn();
-        $res = DB::run("SELECT COUNT(*) FROM messages WHERE `sender` = " . $CURUSER["id"] . " AND `location` = 'draft'");
+        $res = DB::run("SELECT COUNT(*) FROM messages WHERE `sender` = " . $_SESSION["id"] . " AND `location` = 'draft'");
         $draft = $res->fetchColumn();
-        $res = DB::run("SELECT COUNT(*) AS count FROM messages WHERE `sender` = " . $CURUSER["id"] . " AND `location` = 'template'");
+        $res = DB::run("SELECT COUNT(*) AS count FROM messages WHERE `sender` = " . $_SESSION["id"] . " AND `location` = 'template'");
         $template = $res->fetchColumn(); //Mysqli Result Need to change It
-        usermenu($CURUSER["id"]);
+        usermenu($_SESSION["id"]);
         include 'views/message/messagenavbar.php';
         echo("<center><div id='tablebox'><table class='table_mb' align='center' border='1' width='60%' cellspacing='5' cellpadding='5'></center>");
         echo('<tr><td class="table_head" align="center" colspan="2"><b><i>'.T_("OVERVIEW_INFO").'</i></b></td></tr>');
-        echo('<tr><td align="right" width="25%"><!--<a href="<?php echo $site_config[SITEURL]; ?>/messages/inbox">-->'.T_("INBOX").' :</a></td><td align="center" "width="25%" >'. " [<font color=green> $inbox </font>] ".P_("", $inbox)." (<font color=red>$unread ".T_("UNREAD")."</font>)</td></tr>");
-        echo('<tr><td align="right" width="25%"><!--<a href="<?php echo $site_config[SITEURL]; ?>/messages/outbox">-->'.T_("OUTBOX").' :</a></td><td align="center" width="25%">'. " [ $outbox ] ".P_("", $outbox)."</td></tr>");
-        echo('<tr><td align="right" width="25%"><!--<a href="<?php echo $site_config[SITEURL]; ?>/messages/draft">-->'.T_("DRAFT").' :</a></td><td align="center" width="25%">'. " [ $draft ] ".P_("", $draft)."</td></tr>");
-        echo('<tr><td align="right" width="25%"><!--<a href="<?php echo $site_config[SITEURL]; ?>/messages/templates">-->'.T_("TEMPLATES").' :</a></td><td align="center" width="25%">'. " [ $template ] ".P_("", $template)."</td></tr>");
+        echo('<tr><td align="right" width="25%"><!--<a href="<?php echo $config[SITEURL]; ?>/messages/inbox">-->'.T_("INBOX").' :</a></td><td align="center" "width="25%" >'. " [<font color=green> $inbox </font>] ".P_("", $inbox)." (<font color=red>$unread ".T_("UNREAD")."</font>)</td></tr>");
+        echo('<tr><td align="right" width="25%"><!--<a href="<?php echo $config[SITEURL]; ?>/messages/outbox">-->'.T_("OUTBOX").' :</a></td><td align="center" width="25%">'. " [ $outbox ] ".P_("", $outbox)."</td></tr>");
+        echo('<tr><td align="right" width="25%"><!--<a href="<?php echo $config[SITEURL]; ?>/messages/draft">-->'.T_("DRAFT").' :</a></td><td align="center" width="25%">'. " [ $draft ] ".P_("", $draft)."</td></tr>");
+        echo('<tr><td align="right" width="25%"><!--<a href="<?php echo $config[SITEURL]; ?>/messages/templates">-->'.T_("TEMPLATES").' :</a></td><td align="center" width="25%">'. " [ $template ] ".P_("", $template)."</td></tr>");
         echo('</table><br /></div>');
         echo"<br /><br />";
         end_frame();
@@ -46,7 +46,7 @@ class Messages extends Controller
     public function read()
     {
         dbconn();
-        global $site_config, $CURUSER;
+        global $config;
         // Get Message Id from url
         $id = (int) $_GET['id'];
 
@@ -59,33 +59,33 @@ class Messages extends Controller
         // Set button condition
         if (isset($templates)) {
             $button = "
-        <a href='$site_config[SITEURL]/messages/delete?templates&amp;id=$id'><button  class='btn btn-sm btn-success'>Delete</button></a>
-        <a href='$site_config[SITEURL]/messages/update?templates&amp;id=$id'><button  class='btn btn-sm btn-success'>Edit</button></a>
+        <a href='$config[SITEURL]/messages/delete?templates&amp;id=$id'><button  class='btn btn-sm btn-success'>Delete</button></a>
+        <a href='$config[SITEURL]/messages/update?templates&amp;id=$id'><button  class='btn btn-sm btn-success'>Edit</button></a>
         ";
         } elseif (isset($draft)) {
             $button = "
-        <a href='$site_config[SITEURL]/messages/delete?draft&amp;id=$id'><button  class='btn btn-sm btn-success'>Delete</button></a>
-        <a href='$site_config[SITEURL]/messages/update?draft&amp;id=$id'><button  class='btn btn-sm btn-success'>Edit</button></a>
+        <a href='$config[SITEURL]/messages/delete?draft&amp;id=$id'><button  class='btn btn-sm btn-success'>Delete</button></a>
+        <a href='$config[SITEURL]/messages/update?draft&amp;id=$id'><button  class='btn btn-sm btn-success'>Edit</button></a>
         ";
         } elseif (isset($outbox)) {
             $button = "
-            <a href='$site_config[SITEURL]/messages/reply?outbox&amp;id=$id'><button  class='btn btn-sm btn-success'>Reply</button></a>
-            <a href='$site_config[SITEURL]/messages/delete?outbox&amp;id=$id'><button  class='btn btn-sm btn-success'>Delete</button></a>
-            <a href='$site_config[SITEURL]/messages/update?outbox&amp;id=$id'><button  class='btn btn-sm btn-success'>Edit</button></a>
+            <a href='$config[SITEURL]/messages/reply?outbox&amp;id=$id'><button  class='btn btn-sm btn-success'>Reply</button></a>
+            <a href='$config[SITEURL]/messages/delete?outbox&amp;id=$id'><button  class='btn btn-sm btn-success'>Delete</button></a>
+            <a href='$config[SITEURL]/messages/update?outbox&amp;id=$id'><button  class='btn btn-sm btn-success'>Edit</button></a>
             ";
         } else {
             $button = "
-            <a href='$site_config[SITEURL]/messages/reply?inbox&amp;id=$id'><button  class='btn btn-sm btn-success'>Reply</button></a>
-            <a href='$site_config[SITEURL]/messages/delete?inbox&amp;id=$id'><button  class='btn btn-sm btn-success'>Delete</button></a>
-            <a href='$site_config[SITEURL]/messages/update?inbox&amp;id=$id'><button  class='btn btn-sm btn-success'>Edit</button></a>
+            <a href='$config[SITEURL]/messages/reply?inbox&amp;id=$id'><button  class='btn btn-sm btn-success'>Reply</button></a>
+            <a href='$config[SITEURL]/messages/delete?inbox&amp;id=$id'><button  class='btn btn-sm btn-success'>Delete</button></a>
+            <a href='$config[SITEURL]/messages/update?inbox&amp;id=$id'><button  class='btn btn-sm btn-success'>Edit</button></a>
             ";
         }
         // get row
         $res = DB::run("SELECT * FROM messages WHERE id=$id");
         $arr = $res->fetch(PDO::FETCH_ASSOC);
         // mark read
-        if ($arr["unread"] == "yes" && $arr["receiver"] == $CURUSER['id']) {
-            DB::run("UPDATE messages SET `unread` = 'no' WHERE `id` = $arr[id] AND `receiver` = $CURUSER[id]");
+        if ($arr["unread"] == "yes" && $arr["receiver"] == $_SESSION['id']) {
+            DB::run("UPDATE messages SET `unread` = 'no' WHERE `id` = $arr[id] AND `receiver` = $_SESSION[id]");
         }
         // get history
         $arr4 = DB::run("SELECT * FROM messages WHERE subject=? AND added <=?  ORDER BY id DESC ", [$arr["subject"], $arr['added']]);
@@ -114,7 +114,7 @@ class Messages extends Controller
     public function update()
     {
         dbconn();
-        global $site_config, $CURUSER;
+        global $config;
 
         // Get Page from url
         $inbox = isset($_GET['inbox']) ? $_GET['inbox'] : null;
@@ -158,7 +158,7 @@ class Messages extends Controller
             $username = $arr27["username"];
 
 
-            $ress1 = DB::run("SELECT * FROM `messages` WHERE `sender` = $CURUSER[id] AND `location` = 'template' ORDER BY `subject`");
+            $ress1 = DB::run("SELECT * FROM `messages` WHERE `sender` = $_SESSION[id] AND `location` = 'template' ORDER BY `subject`");
         }
 
         stdhead("edit");
@@ -184,7 +184,6 @@ class Messages extends Controller
     {
         dbconn();
         loggedinonly();
-        global $CURUSER;
         // Get Page from url
         $inbox = isset($_GET['inbox']) ? $_GET['inbox'] : null;
         $outbox = isset($_GET['outbox']) ? $_GET['outbox'] : null;
@@ -196,14 +195,14 @@ class Messages extends Controller
         }
         // Update the record
         
-            DB::run("DELETE FROM messages WHERE `location` = 'in' AND `receiver` = $CURUSER[id] AND `id` IN ($messageid)");
-            DB::run("UPDATE messages SET `location` = 'out' WHERE `location` = 'both' AND `receiver` = $CURUSER[id] AND `id` IN ($messageid)");
+            DB::run("DELETE FROM messages WHERE `location` = 'in' AND `receiver` = $_SESSION[id] AND `id` IN ($messageid)");
+            DB::run("UPDATE messages SET `location` = 'out' WHERE `location` = 'both' AND `receiver` = $_SESSION[id] AND `id` IN ($messageid)");
         
            if (isset($outbox)) {
-            DB::run("UPDATE messages SET `location` = 'in' WHERE `location` = 'both' AND `sender` = $CURUSER[id] AND `id` IN ($messageid)");
+            DB::run("UPDATE messages SET `location` = 'in' WHERE `location` = 'both' AND `sender` = $_SESSION[id] AND `id` IN ($messageid)");
         }
 
-        DB::run("DELETE FROM messages WHERE `location` IN ('out', 'draft', 'template') AND `sender` = $CURUSER[id] AND `id` IN ($messageid)");
+        DB::run("DELETE FROM messages WHERE `location` IN ('out', 'draft', 'template') AND `sender` = $_SESSION[id] AND `id` IN ($messageid)");
         
         header("Location: " . TTURL . "/messages/inbox");
         die;
@@ -214,7 +213,7 @@ class Messages extends Controller
     public function create()
     {
         dbconn();
-        global $site_config, $CURUSER;
+        global $config;
         // Get Stuff from URL
         $url_id = isset($_GET['id']) ? $_GET['id'] : null;
         $urlreply = isset($_GET['reply']) ? $_GET['reply'] : null;
@@ -236,12 +235,12 @@ class Messages extends Controller
                     DB::run("INSERT INTO `messages`
                 (`sender`, `receiver`, `added`, `subject`, `msg`, `unread`, `location`)
                 VALUES (?,?,?,?,?,?,?)",
-                        [$CURUSER['id'], $receiver, get_date_time(), $subject, $body, 'yes', 'both']);
+                        [$_SESSION['id'], $receiver, get_date_time(), $subject, $body, 'yes', 'both']);
                 } else {
                     DB::run("INSERT INTO `messages`
                 (`sender`, `receiver`, `added`, `subject`, `msg`, `unread`, `location`)
                 VALUES (?,?,?,?,?,?,?)",
-                        [$CURUSER['id'], $receiver, get_date_time(), $subject, $body, 'yes', 'in']);
+                        [$_SESSION['id'], $receiver, get_date_time(), $subject, $body, 'yes', 'in']);
                 }
                 autolink(TTURL . '/messages/outbox', "yeah i posted a new post!");
                 break;
@@ -253,7 +252,7 @@ class Messages extends Controller
                 INSERT INTO `messages`
                 (`sender`, `receiver`, `added`, `subject`, `msg`, `unread`, `location`)
                 VALUES (?,?,?,?,?,?,?)",
-                    [$CURUSER['id'], $receiver, get_date_time(), $subject, $body, $status, $to]);
+                    [$_SESSION['id'], $receiver, get_date_time(), $subject, $body, $status, $to]);
                 autolink(TTURL . '/messages/draft', "yeah i posted a draft!");
                 break;
 
@@ -264,7 +263,7 @@ class Messages extends Controller
                 INSERT INTO `messages`
                 (`sender`, `receiver`, `added`, `subject`, `msg`, `unread`, `location`)
                 VALUES (?,?,?,?,?,?,?)",
-                    [$CURUSER['id'], $receiver, get_date_time(), $subject, $body, $status, $to]);
+                    [$_SESSION['id'], $receiver, get_date_time(), $subject, $body, $status, $to]);
                 autolink(TTURL . '/messages/templates', "yeah i posted a template!");
                 break;
 
@@ -272,7 +271,7 @@ class Messages extends Controller
 
         // User & Template Dropdown List
         $ress = DB::run("SELECT * FROM users")->fetchAll(PDO::FETCH_ASSOC);
-        $ress1 = DB::run("SELECT * FROM `messages` WHERE `sender` = $CURUSER[id] AND `location` = 'template' ORDER BY `subject`");
+        $ress1 = DB::run("SELECT * FROM `messages` WHERE `sender` = $_SESSION[id] AND `location` = 'template' ORDER BY `subject`");
 
         stdhead("compose");
         begin_frame("compose");
@@ -290,7 +289,7 @@ class Messages extends Controller
     public function reply()
     {
         dbconn();
-        global $site_config, $CURUSER;
+        global $config;
         // Get Stuff from URL
         $url_id = isset($_GET['id']) ? $_GET['id'] : null;
         $urlreply = isset($_GET['reply']) ? $_GET['reply'] : null;
@@ -313,12 +312,12 @@ class Messages extends Controller
                     DB::run("INSERT INTO `messages`
                 (`sender`, `receiver`, `added`, `subject`, `msg`, `unread`, `location`)
                 VALUES (?,?,?,?,?,?,?)",
-                        [$CURUSER['id'], $receiver, get_date_time(), $subject, $body, 'yes', 'both']);
+                        [$_SESSION['id'], $receiver, get_date_time(), $subject, $body, 'yes', 'both']);
                 } else {
                     DB::run("INSERT INTO `messages`
                 (`sender`, `receiver`, `added`, `subject`, `msg`, `unread`, `location`)
                 VALUES (?,?,?,?,?,?,?)",
-                        [$CURUSER['id'], $receiver, get_date_time(), $subject, $body, 'yes', 'in']);
+                        [$_SESSION['id'], $receiver, get_date_time(), $subject, $body, 'yes', 'in']);
                 }
                 autolink(TTURL . '/messages/outbox', "yeah i posted a new post!");
                 break;
@@ -330,7 +329,7 @@ class Messages extends Controller
                 INSERT INTO `messages`
                 (`sender`, `receiver`, `added`, `subject`, `msg`, `unread`, `location`)
                 VALUES (?,?,?,?,?,?,?)",
-                    [$CURUSER['id'], $receiver, get_date_time(), $subject, $body, $status, $to]);
+                    [$_SESSION['id'], $receiver, get_date_time(), $subject, $body, $status, $to]);
                 autolink(TTURL . '/messages/draft', "yeah i posted a draft!");
                 break;
 
@@ -341,7 +340,7 @@ class Messages extends Controller
                 INSERT INTO `messages`
                 (`sender`, `receiver`, `added`, `subject`, `msg`, `unread`, `location`)
                 VALUES (?,?,?,?,?,?,?)",
-                    [$CURUSER['id'], $receiver, get_date_time(), $subject, $body, $status, $to]);
+                    [$_SESSION['id'], $receiver, get_date_time(), $subject, $body, $status, $to]);
                 autolink(TTURL . '/messages/templates', "yeah i posted a template!");
                 break;
 
@@ -352,7 +351,7 @@ class Messages extends Controller
             $stmt = DB::run('SELECT * FROM messages WHERE id = ?', [$url_id]);
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             $arr2 = DB::run("SELECT username FROM users WHERE id=?", [$row['receiver']])->fetch(PDO::FETCH_LAZY);
-            if ($arr2 == $CURUSER["username"]) {
+            if ($arr2 == $_SESSION["username"]) {
                 $username = $arr2["username"];
             } else {
                 $username = "Yourself";
@@ -362,7 +361,7 @@ class Messages extends Controller
 
         // User & Template Dropdown List
         $ress = DB::run("SELECT * FROM users")->fetchAll(PDO::FETCH_ASSOC);
-        $ress1 = DB::run("SELECT * FROM `messages` WHERE `sender` = $CURUSER[id] AND `location` = 'template' ORDER BY `subject`");
+        $ress1 = DB::run("SELECT * FROM `messages` WHERE `sender` = $_SESSION[id] AND `location` = 'template' ORDER BY `subject`");
 
         stdhead("compose");
         begin_frame("compose");
@@ -376,7 +375,7 @@ class Messages extends Controller
     public function outbox()
     {
         dbconn();
-        global $site_config, $CURUSER;
+        global $config;
         loggedinonly();
 
         // Mark or Delete
@@ -389,8 +388,8 @@ class Messages extends Controller
 
                 $ids = array_map("intval", $_POST["del"]);
                 $ids = implode(", ", $ids);
-                DB::run("UPDATE messages SET `location` = 'in' WHERE `location` = 'both' AND `sender` = $CURUSER[id] AND `id` IN ($ids)");
-                DB::run("DELETE FROM messages WHERE `location` IN ('out', 'draft', 'template') AND `sender` = $CURUSER[id] AND `id` IN ($ids)");
+                DB::run("UPDATE messages SET `location` = 'in' WHERE `location` = 'both' AND `sender` = $_SESSION[id] AND `id` IN ($ids)");
+                DB::run("DELETE FROM messages WHERE `location` IN ('out', 'draft', 'template') AND `sender` = $_SESSION[id] AND `id` IN ($ids)");
             }
             autolink(TTURL . "/messages/outbox", "Action Completed");
             stdhead();
@@ -400,7 +399,7 @@ class Messages extends Controller
         }
 
         $pagename = 'Outbox';
-        $where = "`sender` = $CURUSER[id] AND `location` IN ('out','both')";
+        $where = "`sender` = $_SESSION[id] AND `location` IN ('out','both')";
 
         // Pagination
         $row = DB::run("SELECT COUNT(*) FROM messages WHERE $where")->fetch(PDO::FETCH_LAZY);
@@ -424,7 +423,7 @@ class Messages extends Controller
     public function inbox()
     {
         dbconn();
-        global $site_config, $CURUSER;
+        global $config;
         loggedinonly();
 
         // Mark or Delete
@@ -444,8 +443,8 @@ class Messages extends Controller
 
                 $ids = array_map("intval", $_POST["del"]);
                 $ids = implode(", ", $ids);
-                DB::run("DELETE FROM messages WHERE `location` = 'in' AND `receiver` = $CURUSER[id] AND `id` IN ($ids)");
-                DB::run("UPDATE messages SET `location` = 'out' WHERE `location` = 'both' AND `receiver` = $CURUSER[id] AND `id` IN ($ids)");
+                DB::run("DELETE FROM messages WHERE `location` = 'in' AND `receiver` = $_SESSION[id] AND `id` IN ($ids)");
+                DB::run("UPDATE messages SET `location` = 'out' WHERE `location` = 'both' AND `receiver` = $_SESSION[id] AND `id` IN ($ids)");
             }
             autolink(TTURL . "/messages", "Action Completed");
             stdhead();
@@ -458,7 +457,7 @@ class Messages extends Controller
         $inbox = isset($_GET['inbox']) ? $_GET['inbox'] : null;
 
         $pagename = 'Inbox';
-        $where = "`receiver` = $CURUSER[id] AND `location` IN ('in','both') ORDER BY added DESC";
+        $where = "`receiver` = $_SESSION[id] AND `location` IN ('in','both') ORDER BY added DESC";
 
         // Pagination
         $row = DB::run("SELECT COUNT(*) FROM messages WHERE $where")->fetch(PDO::FETCH_LAZY);
@@ -482,7 +481,7 @@ class Messages extends Controller
     public function templates()
     {
         dbconn();
-        global $site_config, $CURUSER;
+        global $config;
         loggedinonly();
 
         // Mark or Delete
@@ -495,8 +494,8 @@ class Messages extends Controller
 
                 $ids = array_map("intval", $_POST["del"]);
                 $ids = implode(", ", $ids);
-                DB::run("DELETE FROM messages WHERE `location` = 'in' AND `receiver` = $CURUSER[id] AND `id` IN ($ids)");
-                DB::run("UPDATE messages SET `location` = 'out' WHERE `location` = 'both' AND `receiver` = $CURUSER[id] AND `id` IN ($ids)");
+                DB::run("DELETE FROM messages WHERE `location` = 'in' AND `receiver` = $_SESSION[id] AND `id` IN ($ids)");
+                DB::run("UPDATE messages SET `location` = 'out' WHERE `location` = 'both' AND `receiver` = $_SESSION[id] AND `id` IN ($ids)");
             }
             autolink(TTURL . "/messages", "Action Completed");
             stdhead();
@@ -506,7 +505,7 @@ class Messages extends Controller
         }
 
         $pagename = 'Templates';
-        $where = "`sender` = $CURUSER[id] AND `location` = 'template'";
+        $where = "`sender` = $_SESSION[id] AND `location` = 'template'";
 
         // Pagination
         $row = DB::run("SELECT COUNT(*) FROM messages WHERE $where")->fetch(PDO::FETCH_LAZY);
@@ -529,7 +528,7 @@ class Messages extends Controller
     public function draft()
     {
         dbconn();
-        global $site_config, $CURUSER;
+        global $config;
         loggedinonly();
 
         // Mark or Delete
@@ -542,8 +541,8 @@ class Messages extends Controller
 
                 $ids = array_map("intval", $_POST["del"]);
                 $ids = implode(", ", $ids);
-                DB::run("DELETE FROM messages WHERE `location` = 'in' AND `receiver` = $CURUSER[id] AND `id` IN ($ids)");
-                DB::run("UPDATE messages SET `location` = 'out' WHERE `location` = 'both' AND `receiver` = $CURUSER[id] AND `id` IN ($ids)");
+                DB::run("DELETE FROM messages WHERE `location` = 'in' AND `receiver` = $_SESSION[id] AND `id` IN ($ids)");
+                DB::run("UPDATE messages SET `location` = 'out' WHERE `location` = 'both' AND `receiver` = $_SESSION[id] AND `id` IN ($ids)");
             }
             autolink(TTURL . "/messages", "Action Completed");
             stdhead();
@@ -553,7 +552,7 @@ class Messages extends Controller
         }
 
         $pagename = 'Draft';
-        $where = "`sender` = $CURUSER[id] AND `location` = 'draft'";
+        $where = "`sender` = $_SESSION[id] AND `location` = 'draft'";
 
         // Pagination
         $row = DB::run("SELECT COUNT(*) FROM messages WHERE $where")->fetch(PDO::FETCH_LAZY);

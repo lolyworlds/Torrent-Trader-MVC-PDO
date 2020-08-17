@@ -22,7 +22,7 @@ if ($action == "ipbans") {
                 $last  = long2ip($row["last"]);
             }
             
-            write_log("IP Ban ($first - $last) was removed by $CURUSER[id] ($CURUSER[username])");
+            write_log("IP Ban ($first - $last) was removed by $_SESSION[id] ($_SESSION[username])");
         }
         show_error_msg(T_("SUCCESS"), "Ban(s) deleted.", 0);
     }
@@ -38,7 +38,7 @@ if ($action == "ipbans") {
             show_error_msg(T_("ERROR"), "Bad IP address.");
         $comment = $comment;
         $added = get_date_time();
-        $bins = DB::run("INSERT INTO bans (added, addedby, first, last, comment) VALUES(?,?,?,?,?)", [$added, $CURUSER['id'], $first, $last, $comment]);
+        $bins = DB::run("INSERT INTO bans (added, addedby, first, last, comment) VALUES(?,?,?,?,?)", [$added, $_SESSION['id'], $first, $last, $comment]);
         $err = $bins->errorCode();
         switch ($err) {
             case 1062:

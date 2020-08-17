@@ -1,5 +1,5 @@
 <?php
-       usermenu($CURUSER["id"]);
+       usermenu($_SESSION["id"]);
         include 'views/message/messagenavbar.php';
     ?><br>
     <div class='table'><table class='table table-striped'><thead>

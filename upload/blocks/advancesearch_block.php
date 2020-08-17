@@ -1,5 +1,5 @@
 <?php
-if (!$site_config["MEMBERSONLY"] || $CURUSER) {
+if (!$config["MEMBERSONLY"] || $_SESSION['loggedin']) {
 	begin_block(T_("SEARCH"));
 ?>
 	<form method="get" action="<?php echo TTURL; ?>/torrents/search">
@@ -23,7 +23,7 @@ if (!$site_config["MEMBERSONLY"] || $CURUSER) {
 			<option value="1"><?php echo T_("INCLUDE_DEAD"); ?></option>
 			<option value="2"><?php echo T_("ONLY_DEAD"); ?></option>
 		</select><br />
-		<?php if ($site_config["ALLOWEXTERNAL"]){?>
+		<?php if ($config["ALLOWEXTERNAL"]){?>
 		<select name="inclexternal" style="width: 95%" >
 			<option value="0"><?php echo T_("LOCAL"); ?>/<?php echo T_("EXTERNAL"); ?></option>
 			<option value="1"><?php echo T_("LOCAL_ONLY"); ?></option>

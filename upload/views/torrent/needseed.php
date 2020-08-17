@@ -21,17 +21,17 @@ echo T_("TORRENT_NEED_SEED_MSG");
                            
                            $type = ($row["external"] == "yes") ? T_("EXTERNAL") : T_("LOCAL"); 
                    
-                           if ($row["anon"] == "yes" && ($CURUSER["edit_torrents"] == "no" || $CURUSER["id"] != $row["owner"]))
+                           if ($row["anon"] == "yes" && ($_SESSION["edit_torrents"] == "no" || $_SESSION["id"] != $row["owner"]))
                                $owner = T_("ANONYMOUS");
                            elseif ($row["username"])
-                               $owner = "<a href='$site_config[SITEURL]/users/profile?id=".$row["owner"]."'>" . class_user_colour($row["username"]) . "</a>";
+                               $owner = "<a href='$config[SITEURL]/users/profile?id=".$row["owner"]."'>" . class_user_colour($row["username"]) . "</a>";
                            else
                                $owner = T_("UNKNOWN_USER");
                    
                            ?>
                            
                            <tbody><tr>
-                              <td><a href="<?php echo $site_config['SITEURL'] ?>/torrents/read?id=<?php echo $row["id"]; ?>"><?php echo CutName(htmlspecialchars($row["name"]), 40) ?></a></td>
+                              <td><a href="<?php echo $config['SITEURL'] ?>/torrents/read?id=<?php echo $row["id"]; ?>"><?php echo CutName(htmlspecialchars($row["name"]), 40) ?></a></td>
                               <td><?php echo $owner; ?></td>
                               <td><?php echo $type; ?></td>
                               <td><?php echo mksize($row["size"]); ?></td>

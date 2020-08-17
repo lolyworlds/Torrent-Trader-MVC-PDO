@@ -8,13 +8,13 @@ if ($action=="rules" && $do=="view"){
 	begin_frame(T_("SITE_RULES_EDITOR"));
 
 	$res = DB::run("SELECT * FROM rules ORDER BY id");
-	print("<center><a href='$site_config[SITEURL]/admincp?action=rules&amp;do=addsect'>Add New Rules Section</a></center>\n");
+	print("<center><a href='$config[SITEURL]/admincp?action=rules&amp;do=addsect'>Add New Rules Section</a></center>\n");
 	while ($arr=$res->fetch(PDO::FETCH_LAZY)){
 		echo '<div class="border border-warning">';		
 		print("<table width='100%' cellspacing='0' class='table_table'><tr>");
         print("<th class='table_head'>".$arr["title"]."</th>");
         print("</tr><tr><td class='table_col1'>");
-        print("<form method='post' action='$site_config[SITEURL]/admincp?action=rules&amp;do=edit'>");
+        print("<form method='post' action='$config[SITEURL]/admincp?action=rules&amp;do=edit'>");
 		print(format_comment($arr["text"]));
 		print("</td></tr><tr><td class='table_head' align='center'><input type='hidden' value='$arr[id]' name='id' /><input type='submit' value='Edit' /></form>");
 		print("</td>");
@@ -34,8 +34,8 @@ if ($action=="rules" && $do=="edit"){
 		$public = $_POST["public"];
 		$class = $_POST["class"];
 		DB::run("update rules set title=?, text=?, public=?, class=? where id=?", [$title, $text, $public, $class, $id]);
-		write_log("Rules have been changed by ($CURUSER[username])");
-		show_error_msg(T_("COMPLETE"), "Rules edited ok<br /><br /><a href='$site_config[SITEURL]/admincp?action=rules&amp;do=view'>Back To Rules</a>",1);
+		write_log("Rules have been changed by ($_SESSION[username])");
+		show_error_msg(T_("COMPLETE"), "Rules edited ok<br /><br /><a href='$config[SITEURL]/admincp?action=rules&amp;do=view'>Back To Rules</a>",1);
 		die;
 	}
 
@@ -47,7 +47,7 @@ if ($action=="rules" && $do=="edit"){
 	$id = (int)$_POST["id"];
 	$res = DB::run("select * from rules where id='$id'")->fetch();
 
-	print("<form method=\"post\" action=\"$site_config[SITEURL]/admincp?action=rules&amp;do=edit&amp;save=1\">");
+	print("<form method=\"post\" action=\"$config[SITEURL]/admincp?action=rules&amp;do=edit&amp;save=1\">");
 	print("<table border=\"0\" cellspacing=\"0\" cellpadding=\"10\" align=\"center\">\n");
 	print("<tr><td>Section Title:</td><td><input style=\"width: 400px;\" type=\"text\" name=\"title\" value=\"$res[title]\" /></td></tr>\n");
 	print("<tr><td style=\"vertical-align: top;\">Rules:</td><td><textarea cols=\"60\" rows=\"15\" name=\"text\">" . stripslashes($res["text"]) . "</textarea><br />NOTE: Remember that BB can be used (NO HTML)</td></tr>\n");
@@ -67,14 +67,14 @@ if ($action=="rules" && $do=="addsect"){
 		$public = $_POST["public"];
 		$class = $_POST["class"];
 		DB::run("insert into rules (title, text, public, class) values(?,?,?,?)", [$title, $text, $public, $class]);
-		show_error_msg(T_("COMPLETE"), "New Section Added<br /><br /><a href='$site_config[SITEURL]/admincp?action=rules&amp;do=view'>Back To Rules</a>",1);
+		show_error_msg(T_("COMPLETE"), "New Section Added<br /><br /><a href='$config[SITEURL]/admincp?action=rules&amp;do=view'>Back To Rules</a>",1);
 		die();
 	}
 	$title = T_("SITE_RULES_EDITOR");
     require 'views/admin/header.php';
 	adminnavmenu();
 	begin_frame(T_("ADD_NEW_RULES_SECTION"));
-	print("<form method=\"post\" action=\"$site_config[SITEURL]/admincp?action=rules&amp;do=addsect&amp;save=1\">");
+	print("<form method=\"post\" action=\"$config[SITEURL]/admincp?action=rules&amp;do=addsect&amp;save=1\">");
 	print("<table border=\"0\" cellspacing=\"0\" cellpadding=\"10\" align=\"center\">\n");
 	print("<tr><td>Section Title:</td><td><input style=\"width: 400px;\" type=\"text\" name=\"title\" /></td></tr>\n");
 	print("<tr><td style=\"vertical-align: top;\">Rules:</td><td><textarea cols=\"60\" rows=\"15\" name=\"text\"></textarea><br />\n");

@@ -10,7 +10,7 @@ class Report extends Controller
     public function index()
     {
         dbconn();
-        global $site_config, $CURUSER;
+        global $config;
         loggedinonly();
         stdhead("Report");
         begin_frame("Report");
@@ -22,7 +22,7 @@ class Report extends Controller
     public function user()
     {
         dbconn();
-        global $site_config, $CURUSER;
+        global $config;
         loggedinonly();
         stdhead("Report");
         begin_frame("Report User");
@@ -41,10 +41,10 @@ class Report extends Controller
                 die;
             }
 
-            $res = DB::run("SELECT id FROM reports WHERE addedby =? AND votedfor =? AND type =?", [$CURUSER['id'], $takeuser, 'user']);
+            $res = DB::run("SELECT id FROM reports WHERE addedby =? AND votedfor =? AND type =?", [$_SESSION['id'], $takeuser, 'user']);
 
             if ($res->rowCount() == 0) {
-                DB::run("INSERT into reports (addedby,votedfor,type,reason) VALUES (?, ?, ?, ?)", [$CURUSER['id'], $takeuser, 'user', $takereason]);
+                DB::run("INSERT into reports (addedby,votedfor,type,reason) VALUES (?, ?, ?, ?)", [$_SESSION['id'], $takeuser, 'user', $takereason]);
                 print("User: $takeuser, Reason: " . htmlspecialchars($takereason) . "<p>Successfully Reported</p>");
                 end_frame();
                 stdfoot();
@@ -69,9 +69,9 @@ class Report extends Controller
 
             $arr = $res->fetch(PDO::FETCH_ASSOC);
 
-            print("<b>Are you sure you would like to report user:</b><br /><a href='$site_config[SITEURL]/users/profile?id=$user'><b>" . class_user_colour($arr['username']) . "</b></a>?<br />");
+            print("<b>Are you sure you would like to report user:</b><br /><a href='$config[SITEURL]/users/profile?id=$user'><b>" . class_user_colour($arr['username']) . "</b></a>?<br />");
             print("<p>Please note, this is <b>not</b> to be used to report leechers, we have scripts in place to deal with them</p>");
-            print("<b>Reason</b> (required): <form method='post' action='$site_config[SITEURL]/report/user'><input type='hidden' name='user' value='$user' /><input type='text' size='100' name='reason' /><input type='submit' value='Confirm' /></form>");
+            print("<b>Reason</b> (required): <form method='post' action='$config[SITEURL]/report/user'><input type='hidden' name='user' value='$user' /><input type='text' size='100' name='reason' /><input type='submit' value='Confirm' /></form>");
             end_frame();
             stdfoot();
             die();
@@ -93,7 +93,7 @@ class Report extends Controller
     public function torrent()
     {
         dbconn();
-        global $site_config, $CURUSER;
+        global $config;
         loggedinonly();
         stdhead("Report");
         begin_frame("Report");
@@ -111,9 +111,9 @@ class Report extends Controller
                 die;
             }
 
-            $res = DB::run("SELECT id FROM reports WHERE addedby =? AND votedfor =? AND type =?", [$CURUSER['id'], $taketorrent, 'torrent']);
+            $res = DB::run("SELECT id FROM reports WHERE addedby =? AND votedfor =? AND type =?", [$_SESSION['id'], $taketorrent, 'torrent']);
             if ($res->rowCount() == 0) {
-                DB::run("INSERT into reports (addedby,votedfor,type,reason) VALUES (?, ?, ?, ?)", [$CURUSER['id'], $taketorrent, 'torrent', $takereason]);
+                DB::run("INSERT into reports (addedby,votedfor,type,reason) VALUES (?, ?, ?, ?)", [$_SESSION['id'], $taketorrent, 'torrent', $takereason]);
                 print("Torrent: $taketorrent, Reason: " . htmlspecialchars($takereason) . "<p>Successfully Reported</p>");
                 end_frame();
                 stdfoot();
@@ -138,8 +138,8 @@ class Report extends Controller
             }
 
             $arr = $res->fetch(PDO::FETCH_LAZY);
-            print("<b>Are you sure you would like to report torrent:</b><br /><a href='$site_config[SITEURL]/torrents/read?id=$torrent'><b>$arr[name]</b></a>?<br />");
-            print("<b>Reason</b> (required): <form method='post' action='$site_config[SITEURL]/report/torrent'><input type='hidden' name='torrent' value='$torrent' /><input type='text' size='100' name='reason' /><input type='submit' value='Confirm' /></form>");
+            print("<b>Are you sure you would like to report torrent:</b><br /><a href='$config[SITEURL]/torrents/read?id=$torrent'><b>$arr[name]</b></a>?<br />");
+            print("<b>Reason</b> (required): <form method='post' action='$config[SITEURL]/report/torrent'><input type='hidden' name='torrent' value='$torrent' /><input type='text' size='100' name='reason' /><input type='submit' value='Confirm' /></form>");
             end_frame();
             stdfoot();
             die();
@@ -161,7 +161,7 @@ class Report extends Controller
     public function comment()
     {
         dbconn();
-        global $site_config, $CURUSER;
+        global $config;
         loggedinonly();
         stdhead("Report");
         begin_frame("Report");
@@ -180,9 +180,9 @@ class Report extends Controller
                 die;
             }
 
-            $res = DB::run("SELECT id FROM reports WHERE addedby =? AND votedfor =? AND type =?", [$CURUSER['id'], $takecomment, 'comment']);
+            $res = DB::run("SELECT id FROM reports WHERE addedby =? AND votedfor =? AND type =?", [$_SESSION['id'], $takecomment, 'comment']);
             if ($res->rowCount() == 0) {
-                DB::run("INSERT into reports (addedby,votedfor,type,reason) VALUES (?, ?, ?, ?)", [$CURUSER['id'], $takecomment, 'comment', $takereason]);
+                DB::run("INSERT into reports (addedby,votedfor,type,reason) VALUES (?, ?, ?, ?)", [$_SESSION['id'], $takecomment, 'comment', $takereason]);
                 print("Comment: $takecomment, Reason: " . htmlspecialchars($takereason) . "<p>Successfully Reported</p>");
                 end_frame();
                 stdfoot();
@@ -209,7 +209,7 @@ class Report extends Controller
 
             print("<b>Are you sure you would like to report Comment:</b><br /><br /><b>" . format_comment($arr["text"]) . "</b>?<br />");
             print("<p>Please note, this is <b>not</b> to be used to report leechers, we have scripts in place to deal with them</p>");
-            print("<b>Reason</b> (required): <form method='post' action='$site_config[SITEURL]/report/comment'><input type='hidden' name='comment' value='$comment' /><input type='text' size='100' name='reason' /><input type='submit'  value='Confirm' /></form>");
+            print("<b>Reason</b> (required): <form method='post' action='$config[SITEURL]/report/comment'><input type='hidden' name='comment' value='$comment' /><input type='text' size='100' name='reason' /><input type='submit'  value='Confirm' /></form>");
             end_frame();
             stdfoot();
             die();
@@ -223,7 +223,7 @@ class Report extends Controller
     public function forum()
     {
         dbconn();
-        global $site_config, $CURUSER;
+        global $config;
         loggedinonly();
         stdhead("Report");
         begin_frame("Report");
@@ -244,11 +244,11 @@ class Report extends Controller
                 die;
             }
 
-            $res = DB::run("SELECT id FROM reports WHERE addedby =? AND votedfor=? AND votedfor_xtra=? AND type =?", [$CURUSER['id'], $takeforumid, $takeforumpost, 'forum']);
+            $res = DB::run("SELECT id FROM reports WHERE addedby =? AND votedfor=? AND votedfor_xtra=? AND type =?", [$_SESSION['id'], $takeforumid, $takeforumpost, 'forum']);
 
             if ($res->rowCount() == 0) {
-                DB::run("INSERT into reports (addedby,votedfor,votedfor_xtra,type,reason) VALUES (?, ?, ?, ?, ?)", [$CURUSER['id'], $takeforumid, $takeforumpost, 'forum', $takereason]);
-                print("User: $CURUSER[username], Reason: " . htmlspecialchars($takereason) . "<p>Successfully Reported</p>");
+                DB::run("INSERT into reports (addedby,votedfor,votedfor_xtra,type,reason) VALUES (?, ?, ?, ?, ?)", [$_SESSION['id'], $takeforumid, $takeforumpost, 'forum', $takereason]);
+                print("User: $_SESSION[username], Reason: " . htmlspecialchars($takereason) . "<p>Successfully Reported</p>");
                 end_frame();
                 stdfoot();
                 die();
@@ -273,8 +273,8 @@ class Report extends Controller
             }
 
             $arr = $res->fetch(PDO::FETCH_LAZY);
-            print("<b>Are you sure you would like to report the following forum post:</b><br /><a href='$site_config[SITEURL]/forums/viewtopic&amp;topicid=$forumid&amp;page=p#post$forumpost'><b>$arr[subject]</b></a>?<br />");
-            print("<b>Reason</b> (required): <form method='post' action='$site_config[SITEURL]/report/forum'><input type='hidden' name='forumid' value='$forumid' /><input type='hidden' name='forumpost' value='$forumpost'><input type='text' size='100' name='reason' /><input type='submit'  value='Confirm' /></form>");
+            print("<b>Are you sure you would like to report the following forum post:</b><br /><a href='$config[SITEURL]/forums/viewtopic&amp;topicid=$forumid&amp;page=p#post$forumpost'><b>$arr[subject]</b></a>?<br />");
+            print("<b>Reason</b> (required): <form method='post' action='$config[SITEURL]/report/forum'><input type='hidden' name='forumid' value='$forumid' /><input type='hidden' name='forumpost' value='$forumpost'><input type='text' size='100' name='reason' /><input type='submit'  value='Confirm' /></form>");
             end_frame();
             stdfoot();
             die;
