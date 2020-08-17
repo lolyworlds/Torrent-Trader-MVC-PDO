@@ -64,10 +64,10 @@ function dbconn($autoclean = false)
     }
     }
     // Set Lang & Theme
-    $stmt = $pdo->run("select uri from stylesheets where id=1");
+    $stmt = $pdo->run("select uri from stylesheets where id='" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "'");
     $ss_a = $stmt->fetch(PDO::FETCH_ASSOC);
     $THEME = $ss_a["uri"];
-    $stmt = $pdo->run("select uri from languages where id=1");
+    $stmt = $pdo->run("select uri from languages where id='" . ($_SESSION['language'] ?: $config['default_language']) . "'");
     $lng_a = $stmt->fetch(PDO::FETCH_ASSOC);
     $LANGUAGE = $lng_a["uri"];
     require_once "languages/$LANGUAGE";
