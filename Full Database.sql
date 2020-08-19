@@ -755,7 +755,7 @@ CREATE TABLE `users` (
   `last_access` datetime NOT NULL default '0000-00-00 00:00:00',
   `editsecret` varchar(20) binary NOT NULL default '' COLLATE latin1_bin,
   `privacy` enum('strong','normal','low') NOT NULL default 'normal',
-  `stylesheet` int(10) NOT NULL default 'default',
+  `stylesheet` varchar(20) NOT NULL default 'default',
   `language` varchar(20) NOT NULL default 'english',
   `info` text,
   `acceptpms` enum('yes','no') NOT NULL default 'yes',
