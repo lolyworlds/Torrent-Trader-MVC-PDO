@@ -27,4 +27,4 @@
 </form>
 </div>
     </div><br />
-<?php require_once "views/themes/" . $THEME . "/footer.php"; ?>
+<?php require_once "views/themes/" . ($_SESSION['stylesheet'] ?: 'dafault') . "/footer.php"; ?>

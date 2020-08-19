@@ -18,4 +18,4 @@
 <p align="center"><a href="<?php echo TTURL; ?>/account/signup"><?php echo T_("SIGNUP"); ?></a> | <a href="<?php echo TTURL; ?>/account/recover"><?php echo T_("RECOVER_ACCOUNT"); ?></a></p>
 </div>
     </div><br />
-<?php require_once "views/themes/" . $THEME . "/footer.php"; ?>
+<?php require_once "views/themes/" . ($_SESSION['stylesheet'] ?: 'dafault') . "/footer.php"; ?>

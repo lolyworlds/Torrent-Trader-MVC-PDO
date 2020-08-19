@@ -24,13 +24,13 @@ function stdhead($title = "")
         $title = $config['SITENAME'] . " : " . htmlspecialchars($title);
     }
 
-    require_once "views/themes/" . $THEME . "/header.php";
+    require_once "views/themes/" . ($_SESSION['stylesheet'] ?: 'dafault') . "/header.php";
 }
 // End of page creation function
 function stdfoot()
 {
     global $config, $THEME, $LANGUAGE;
-    require_once "views/themes/" . $THEME . "/footer.php";
+    require_once "views/themes/" . ($_SESSION['stylesheet'] ?: 'dafault') . "/footer.php";
 }
 
 //BEGIN FRAME
