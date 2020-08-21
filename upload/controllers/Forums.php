@@ -34,18 +34,17 @@ if (isset($_GET["catchup"]))
 // Action: SHOW MAIN FORUM INDEX
 $forums_res = DB::run("SELECT forumcats.id AS fcid, forumcats.name AS fcname, forum_forums.* FROM forum_forums LEFT JOIN forumcats ON forumcats.id = forum_forums.category ORDER BY forumcats.sort, forum_forums.sort, forum_forums.name");
 
+if ($forums_res->rowCount() == 0) {
+  autolink($config['SITEURL'].'/index', 'There is no Forums available');
+}
+
 stdhead("Forums");
 begin_frame("Forum Home");
 forumheader("Index");
 
 latestforumposts();
 
-// MAIN LAYOUT
-
-  
-if ($forums_res->rowCount() == 0)
-    print("<tr class='f-cat' style='border: 1px solid black' ><td colspan='5' align='center'>No Forum Categories</td></tr>\n");  
-  
+// MAIN LAYOUT  
 $fcid = 0;
  
 while ($forums_arr = $forums_res->fetch(PDO::FETCH_ASSOC)){
