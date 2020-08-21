@@ -64,7 +64,7 @@ function dbconn($autoclean = false)
     }
     }
     // Set Lang
-    require_once "languages/" . ($_SESSION['language'] ?: 'english') . ".php";
+    require_once "languages/" . ($_SESSION['language'] ?: $config['default_language']) . ".php";
 
     if ($autoclean) {
         autoclean();

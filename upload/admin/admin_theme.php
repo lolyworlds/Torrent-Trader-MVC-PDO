@@ -93,7 +93,7 @@ if ($action == "style") {
 				$row['uri'] .= " <b>- ".T_("THEME_DIR_DONT_EXIST")."</b>";
 			echo "<tr><td class='table_col1' align='center'>$row[id]</td><td class='table_col2' align='center'>$row[name]</td><td class='table_col1' align='center'>$row[uri]</td><td class='table_col2' align='center'><input name='ids[]' type='checkbox' value='$row[id]' /></td></tr>";
 		}
-		echo "</tbody></table></form><center><input type='submit' value='".T_("SELECTED_DELETE")."' /><center><br>";
+		echo "</tbody></table><center><input type='submit' value='".T_("SELECTED_DELETE")."' /><center></form><br>";
 		
 		echo "<p>".T_("THEME_IN_THEMES_BUT_NOT_IN_DB")."</p><form id='addtheme' action='admincp?action=style&amp;do=add2' method='post'><table class='table table-striped table-bordered table-hover'><thead>".
 			"<tr><th>".T_("NAME")."</th><t>".T_("THEME_FOLDER_NAME")."</th><th><input type='checkbox' name='checkall' onclick='checkAll(this.form.id);' /></th></tr></thead><tbody>";

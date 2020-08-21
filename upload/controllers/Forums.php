@@ -25,7 +25,7 @@ if ($_SESSION["forumbanned"] == "yes" || $_SESSION["view_forum"] == "no")
 
 //Here we decide if the forums is on or off
 if ($config["FORUMS"]) {
-$themedir = $config['SITEURL']."/views/themes/".($_SESSION['stylesheet'] ?: 'default')."/forums/";
+$themedir = $config['SITEURL']."/views/themes/".($_SESSION['stylesheet'] ?: $config['default_theme'])."/forums/";
 
 // Action: DEFAULT ACTION (VIEW FORUMS)
 if (isset($_GET["catchup"]))
@@ -158,7 +158,7 @@ if ($_SESSION["forumbanned"] == "yes" || $_SESSION["view_forum"] == "no")
 
 //Here we decide if the forums is on or off
 if ($config["FORUMS"]) {
-$themedir = $config['SITEURL']."/views/themes/".($_SESSION['stylesheet'] ?: 'default')."/forums/";
+$themedir = $config['SITEURL']."/views/themes/".($_SESSION['stylesheet'] ?: $config['default_theme'])."/forums/";
     $forumid = $_GET["forumid"];
     if (!is_valid_id($forumid))
     showerror(T_("FORUM_ERROR"), "No Forum ID $forumid");
@@ -190,7 +190,7 @@ if ($_SESSION["forumbanned"] == "yes" || $_SESSION["view_forum"] == "no")
 
 //Here we decide if the forums is on or off
 if ($config["FORUMS"]) {
-$themedir = $config['SITEURL']."/views/themes/".($_SESSION['stylesheet'] ?: 'default')."/forums/";
+$themedir = $config['SITEURL']."/views/themes/".($_SESSION['stylesheet'] ?: $config['default_theme'])."/forums/";
 }
 
 	stdhead("Forum Search");
@@ -275,7 +275,7 @@ if ($_SESSION["forumbanned"] == "yes" || $_SESSION["view_forum"] == "no")
 
 //Here we decide if the forums is on or off
 if ($config["FORUMS"]) {
-$themedir = $config['SITEURL']."/views/themes/".($_SESSION['stylesheet'] ?: 'default')."/forums/";
+$themedir = $config['SITEURL']."/views/themes/".($_SESSION['stylesheet'] ?: $config['default_theme'])."/forums/";
 }
 	$userid = $_SESSION['id'];
 	$maxresults = 25;
@@ -343,7 +343,7 @@ if ($_SESSION["forumbanned"] == "yes" || $_SESSION["view_forum"] == "no")
 
 //Here we decide if the forums is on or off
 if ($config["FORUMS"]) {
-$themedir = $config['SITEURL']."/views/themes/".($_SESSION['stylesheet'] ?: 'default')."/forums/";
+$themedir = $config['SITEURL']."/views/themes/".($_SESSION['stylesheet'] ?: $config['default_theme'])."/forums/";
 }
 //Global variables
 $postsperpage = 20;
@@ -569,7 +569,7 @@ if ($_SESSION["forumbanned"] == "yes" || $_SESSION["view_forum"] == "no")
 
 //Here we decide if the forums is on or off
 if ($config["FORUMS"]) {
-$themedir = $config['SITEURL']."/views/themes/".($_SESSION['stylesheet'] ?: 'default')."/forums/";
+$themedir = $config['SITEURL']."/views/themes/".($_SESSION['stylesheet'] ?: $config['default_theme'])."/forums/";
 }
    $forumid = $_GET["forumid"];
    $topicid = $_GET["topicid"];
@@ -596,7 +596,7 @@ if ($_SESSION["forumbanned"] == "yes" || $_SESSION["view_forum"] == "no")
 
 //Here we decide if the forums is on or off
 if ($config["FORUMS"]) {
-$themedir = $config['SITEURL']."/views/themes/".($_SESSION['stylesheet'] ?: 'default')."/forums/";
+$themedir = $config['SITEURL']."/views/themes/".($_SESSION['stylesheet'] ?: $config['default_theme'])."/forums/";
 }
 	$topicid = $_GET["topicid"];
 	if (!is_valid_id($topicid))
@@ -623,7 +623,7 @@ if ($_SESSION["forumbanned"] == "yes" || $_SESSION["view_forum"] == "no")
 
 //Here we decide if the forums is on or off
 if ($config["FORUMS"]) {
-$themedir = $config['SITEURL']."/views/themes/".($_SESSION['stylesheet'] ?: 'default')."/forums/";
+$themedir = $config['SITEURL']."/views/themes/".($_SESSION['stylesheet'] ?: $config['default_theme'])."/forums/";
 }
 	$postid = $_GET["postid"];
 	if (!is_valid_id($postid))
@@ -682,7 +682,7 @@ if ($_SESSION["forumbanned"] == "yes" || $_SESSION["view_forum"] == "no")
 
 //Here we decide if the forums is on or off
 if ($config["FORUMS"]) {
-$themedir = $config['SITEURL']."/views/themes/".($_SESSION['stylesheet'] ?: 'default')."/forums/";
+$themedir = $config['SITEURL']."/views/themes/".($_SESSION['stylesheet'] ?: $config['default_theme'])."/forums/";
 }
 	$forumid = $_POST["forumid"];
 	$topicid = $_POST["topicid"];
@@ -760,7 +760,7 @@ if ($_SESSION["forumbanned"] == "yes" || $_SESSION["view_forum"] == "no")
 
 //Here we decide if the forums is on or off
 if ($config["FORUMS"]) {
-$themedir = $config['SITEURL']."/views/themes/".($_SESSION['stylesheet'] ?: 'default')."/forums/";
+$themedir = $config['SITEURL']."/views/themes/".($_SESSION['stylesheet'] ?: $config['default_theme'])."/forums/";
 }
 //Global variables
 $postsperpage = 20;
@@ -1110,7 +1110,7 @@ if ($_SESSION["forumbanned"] == "yes" || $_SESSION["view_forum"] == "no")
 
 //Here we decide if the forums is on or off
 if ($config["FORUMS"]) {
-$themedir = $config['SITEURL']."/views/themes/".($_SESSION['stylesheet'] ?: 'default')."/forums/";
+$themedir = $config['SITEURL']."/views/themes/".($_SESSION['stylesheet'] ?: $config['default_theme'])."/forums/";
 }
 	$topicid = $_GET["topicid"];
 	if (!is_valid_id($topicid) || $_SESSION["delete_forum"] != "yes")
@@ -1142,7 +1142,7 @@ if ($_SESSION["forumbanned"] == "yes" || $_SESSION["view_forum"] == "no")
 
 //Here we decide if the forums is on or off
 if ($config["FORUMS"]) {
-$themedir = $config['SITEURL']."/views/themes/".($_SESSION['stylesheet'] ?: 'default')."/forums/";
+$themedir = $config['SITEURL']."/views/themes/".($_SESSION['stylesheet'] ?: $config['default_theme'])."/forums/";
 }
 	if ($_SESSION["delete_forum"] != "yes" && $_SESSION["edit_forum"] != "yes")
         showerror(T_("ERROR"), T_("FORUMS_DENIED"));
@@ -1175,7 +1175,7 @@ if ($_SESSION["forumbanned"] == "yes" || $_SESSION["view_forum"] == "no")
 
 //Here we decide if the forums is on or off
 if ($config["FORUMS"]) {
-$themedir = $config['SITEURL']."/views/themes/".($_SESSION['stylesheet'] ?: 'default')."/forums/";
+$themedir = $config['SITEURL']."/views/themes/".($_SESSION['stylesheet'] ?: $config['default_theme'])."/forums/";
 }
     $forumid = $_POST["forumid"];
     $topicid = $_GET["topicid"];
@@ -1216,7 +1216,7 @@ if ($_SESSION["forumbanned"] == "yes" || $_SESSION["view_forum"] == "no")
 
 //Here we decide if the forums is on or off
 if ($config["FORUMS"]) {
-$themedir = $config['SITEURL']."/views/themes/".($_SESSION['stylesheet'] ?: 'default')."/forums/";
+$themedir = $config['SITEURL']."/views/themes/".($_SESSION['stylesheet'] ?: $config['default_theme'])."/forums/";
 }
 	$forumid = $_GET["forumid"];
 	$topicid = $_GET["topicid"];
@@ -1243,7 +1243,7 @@ if ($_SESSION["forumbanned"] == "yes" || $_SESSION["view_forum"] == "no")
 
 //Here we decide if the forums is on or off
 if ($config["FORUMS"]) {
-$themedir = $config['SITEURL']."/views/themes/".($_SESSION['stylesheet'] ?: 'default')."/forums/";
+$themedir = $config['SITEURL']."/views/themes/".($_SESSION['stylesheet'] ?: $config['default_theme'])."/forums/";
 }
 
 	$postid = $_GET["postid"];
@@ -1292,7 +1292,7 @@ if ($_SESSION["forumbanned"] == "yes" || $_SESSION["view_forum"] == "no")
 
 //Here we decide if the forums is on or off
 if ($config["FORUMS"]) {
-$themedir = $config['SITEURL']."/views/themes/".($_SESSION['stylesheet'] ?: 'default')."/forums/";
+$themedir = $config['SITEURL']."/views/themes/".($_SESSION['stylesheet'] ?: $config['default_theme'])."/forums/";
 }   
 
     $forumid = $_GET["forumid"];
@@ -1320,7 +1320,7 @@ if ($_SESSION["forumbanned"] == "yes" || $_SESSION["view_forum"] == "no")
 
 //Here we decide if the forums is on or off
 if ($config["FORUMS"]) {
-$themedir = $config['SITEURL']."/views/themes/".($_SESSION['stylesheet'] ?: 'default')."/forums/";
+$themedir = $config['SITEURL']."/views/themes/".($_SESSION['stylesheet'] ?: $config['default_theme'])."/forums/";
 }   
    $forumid = $_GET["forumid"];
    $topicid = $_GET["topicid"];

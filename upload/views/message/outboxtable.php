@@ -48,5 +48,5 @@ else $receiver = T_("SYSTEM");
 }?>
 
     <tbody></table></div>
-    <?php echo '<div style="float: left;">read&nbsp;<img src="'.$config["SITEURL"].'/views/themes/default/forums/folder.png" alt="read" width="20" height="20">&nbsp;unread&nbsp;<img src="'.$config["SITEURL"].'/views/themes/default/forums/folder_new.png" alt="unread" width="20" height="20"></div>'; ?>
+    <?php echo '<div style="float: left;">read&nbsp;<img src="'.$config["SITEURL"].'/views/themes/'.($_SESSION['stylesheet'] ?: $config['default_theme']).'/forums/folder.png" alt="read" width="20" height="20">&nbsp;unread&nbsp;<img src="'.$config["SITEURL"].'/views/'.($_SESSION['stylesheet'] ?: $config['default_theme']).'/default/forums/folder_new.png" alt="unread" width="20" height="20"></div>'; ?>
     <center><input type='submit' value='Delete Checked' /></center></form>

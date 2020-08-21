@@ -29,7 +29,7 @@ you should not see this, there is a issue with a link try
 
             </div>
     </div><br />
-<?php require_once "views/themes/" . ($_SESSION['stylesheet'] ?: 'default') . "/footer.php";
+<?php require_once "views/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/footer.php";
       }
 
 
@@ -196,7 +196,7 @@ stdhead(T_("user"));
             </div>
             </div>
     </div><br />
-<?php require_once "views/themes/" . ($_SESSION['stylesheet'] ?: 'default') . "/footer.php";
+<?php require_once "views/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/footer.php";
       }
 
       public function details()
@@ -290,7 +290,7 @@ stdhead(T_("user"));
             </div>
             </div>
     </div><br />
-<?php require_once "views/themes/" . ($_SESSION['stylesheet'] ?: 'default') . "/footer.php";
+<?php require_once "views/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/footer.php";
       }
 
       public function other()
@@ -317,7 +317,7 @@ stdhead(T_("user"));
             </div>
             </div>
     </div><br />
-<?php require_once "views/themes/" . ($_SESSION['stylesheet'] ?: 'default') . "/footer.php";
+<?php require_once "views/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/footer.php";
       }
 
 
@@ -376,7 +376,7 @@ stdhead(T_("user"));
             </div>
         </div>
               </div><br />
-          <?php require_once "views/themes/" . ($_SESSION['stylesheet'] ?: 'default') . "/footer.php";
+          <?php require_once "views/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/footer.php";
               die();
           }//do
 
@@ -414,7 +414,7 @@ stdhead(T_("user"));
             </div>
     </div>
     </div><br />
-<?php require_once "views/themes/" . ($_SESSION['stylesheet'] ?: 'default') . "/footer.php";
+<?php require_once "views/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/footer.php";
       }
 
       public function signature()
@@ -462,7 +462,7 @@ $user = DB::run("SELECT id, title, signature FROM users WHERE id=?", [$id])->fet
             </div>
             </div>
     </div><br />
-<?php require_once "views/themes/" . ($_SESSION['stylesheet'] ?: 'default') . "/footer.php";
+<?php require_once "views/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/footer.php";
       }
 
 
@@ -529,7 +529,7 @@ $user = DB::run("SELECT id, title, signature FROM users WHERE id=?", [$id])->fet
             </div>
             </div>
     </div><br />
-<?php require_once "views/themes/" . ($_SESSION['stylesheet'] ?: 'default') . "/footer.php";
+<?php require_once "views/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/footer.php";
       }
 
       public function email()
@@ -588,7 +588,7 @@ autolink(TTURL."/users/profile?id=$id", T_("Email Edited"));
             </div>
             </div>
     </div><br />
-<?php require_once "views/themes/" . ($_SESSION['stylesheet'] ?: 'default') . "/footer.php";
+<?php require_once "views/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/footer.php";
       }
 
 
@@ -761,7 +761,7 @@ unset( $x );
 echo "</table>";
 end_frame();
     ///end IP history///
- require_once "views/themes/" . ($_SESSION['stylesheet'] ?: 'default') . "/footer.php";
+ require_once "views/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/footer.php";
       }
 
   }

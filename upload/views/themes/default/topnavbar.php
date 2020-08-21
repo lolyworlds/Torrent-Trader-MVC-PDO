@@ -44,7 +44,7 @@
           <img src='$config[SITEURL]/images/up.gif' border='none' height='20' width='20' alt='Uploaded' title='Uploaded'> <font color='#33CCCC'><b>$useruploaded</b></font> 
           <img src='$config[SITEURL]/images/button_online.png' border='none' height='20' width='20' alt='Ratio' title='Ratio'> (<b><font color='#FFF'>$userratio</font></b>)&nbsp
           //&nbsp;Bonus points:&nbsp;<a href='" .$config["SITEURL"]. "/bonus' title='Seed Bonus Points'><font color=#00cc00>$_SESSION[seedbonus]</font></a>&nbsp
-          //&nbsp;Donated: <a href='" .$config["SITEURL"]. "/donate' title='Donated Amount'><font color=#ffff00>&nbsp;$_SESSION[donated]</font>&nbsp;");
+          //&nbsp;Donated: <a href='" .$config["SITEURL"]. "/donate' title='Donated Amount'><font color=#ffff00>&nbsp;$_SESSION[donated]</font></a>&nbsp;");
 //////connectable yes or know////////
 if ($_SESSION["view_torrents"]=="yes") {
   $activeseed = get_row_count("peers", "WHERE userid = '$_SESSION[id]' AND seeder = 'yes'");
@@ -74,7 +74,7 @@ print("<font color=#fff><i>Connected:</i></font> ".$connectable.")");
     <!-- END HEADER -->
     <!-- START NAVIGATION -->
     <nav class="navbar navbar-expand-lg">
-  <a class="navbar-brand" href="<?php echo TTURL; ?>/index.php"><img src='<?php echo TTURL; ?>/views/themes/<?php echo $_SESSION['stylesheet'] ?: 'default'; ?>/images/logo.gif' height='50px'></a>
+  <a class="navbar-brand" href="<?php echo TTURL; ?>/index.php"><img src='<?php echo TTURL; ?>/views/themes/<?php echo $_SESSION['stylesheet'] ?: $config['default_theme']; ?>/images/logo.gif' height='50px'></a>
       <?php if ($_SESSION['loggedin']){ ?>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>

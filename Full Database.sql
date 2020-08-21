@@ -473,7 +473,7 @@ CREATE TABLE `languages` (
 ) ENGINE=MyISAM AUTO_INCREMENT=1 ;
 
 INSERT INTO `languages` (`id`, `uri`, `name`) VALUES 
-(1, 'english.php', 'English');
+(1, 'english', 'english');
 
 
 DROP TABLE IF EXISTS `log`;
