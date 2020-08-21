@@ -7,13 +7,15 @@ PRIMARY KEY (`id`),
 UNIQUE KEY `userfriend` (`userid`,`friendid`)
 ) ENGINE=MyISAM;
 
+DROP TABLE IF EXISTS iplog;
 CREATE TABLE `iplog` (
-  `id` int(10) UNSIGNED NOT NULL,
+  `id` int(10)  unsigned NOT NULL auto_increment,
   `ip` varchar(15) NOT NULL DEFAULT '',
   `userid` int(10) UNSIGNED NOT NULL DEFAULT '0',
   `added` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `lastused` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `timesused` int(10) NOT NULL DEFAULT '1'
+  `timesused` int(10) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`)
 ) ENGINE=MyISAM;
 
 CREATE TABLE `staffmessages` (
