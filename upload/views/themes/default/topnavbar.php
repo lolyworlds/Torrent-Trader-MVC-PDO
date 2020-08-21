@@ -74,7 +74,7 @@ print("<font color=#fff><i>Connected:</i></font> ".$connectable.")");
     <!-- END HEADER -->
     <!-- START NAVIGATION -->
     <nav class="navbar navbar-expand-lg">
-  <a class="navbar-brand" href="<?php echo TTURL; ?>/index.php"><img src='<?php echo TTURL; ?>/views/themes/<?php echo $THEME; ?>/images/logo.gif' height='50px'></a>
+  <a class="navbar-brand" href="<?php echo TTURL; ?>/index.php"><img src='<?php echo TTURL; ?>/views/themes/<?php echo $_SESSION['stylesheet'] ?: 'default'; ?>/images/logo.gif' height='50px'></a>
       <?php if ($_SESSION['loggedin']){ ?>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
@@ -159,6 +159,5 @@ print("<font color=#fff><i>Connected:</i></font> ".$connectable.")");
   </div>
     <?php } ?>
 </nav>
-<!-- <br> -->
-
+<br>
     <!-- END NAVIGATION -->

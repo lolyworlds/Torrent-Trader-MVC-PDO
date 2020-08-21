@@ -7,7 +7,7 @@ $languages = '';
 	$ss_sa = array();
 
 	while ($ss_a = $ss_r->fetch(PDO::FETCH_ASSOC)){
-		$ss_id = $ss_a["id"];
+		$ss_id = $ss_a["uri"];
 		$ss_name = $ss_a["name"];
 		$ss_sa[$ss_name] = $ss_id;
 	}
@@ -24,7 +24,7 @@ $languages = '';
 	$lang_sa = array();
 
 	while ($lang_a = $lang_r->fetch(PDO::FETCH_ASSOC)){
-		$lang_id = $lang_a["id"];
+		$lang_id = $lang_a["name"];
 		$lang_name = $lang_a["name"];
 		$lang_sa[$lang_name] = $lang_id;
 	}

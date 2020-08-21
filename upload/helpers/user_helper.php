@@ -73,7 +73,7 @@ function get_user_class_name($i)
 // Function That Returns The Class Of A Given Member
 function get_user_class()
 {
-    return $GLOBALS["CURUSER"]["class"];
+    return $_SESSION["class"];
 }
 function get_others_class($user)
 {

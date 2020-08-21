@@ -105,7 +105,9 @@ if ($action == "style") {
 			if (is_file("views/themes/$file/header.php")) {
 					$res = DB::run("SELECT id FROM stylesheets WHERE uri = '$file' ");
 					if ($res->rowCount() == 0) {
-						echo "<tr><td class='table_col1' align='center'><input type='text' name='add[$i][name]' value='$file' /></td><td class='table_col2' align='center'>$file<input type='hidden' name='add[$i][uri]' value='$file' /></td><td class='table_col1' align='center'><input type='checkbox' name='add[$i][add]' value='1' /></td></tr>";
+						echo "<tr><td class='table_col1' align='center'><input type='text' name='add[$i][name]' value='$file' /></td>
+						<td class='table_col2' align='center'>$file<input type='hidden' name='add[$i][uri]' value='$file' /></td>
+						<td class='table_col1' align='center'><input type='checkbox' name='add[$i][add]' value='1' /></td></tr>";
 						$i++;
 					}
 				}

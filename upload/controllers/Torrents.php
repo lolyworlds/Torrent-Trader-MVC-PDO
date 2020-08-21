@@ -582,19 +582,17 @@ end_frame();
                         $anon = "no";
                     }
                 
-                 //$fixnullimage = var_dump($inames);
-				 //die($fixnullimage);
-				 
-                    $filecounts = (int)$filecount;
+					$filecounts = (int)$filecount;
+					
+					try {
                     $ret = DB::run("INSERT INTO torrents (filename, owner, name, descr, image1, image2, category, tube, added, info_hash, size, numfiles, save_as, announce, external, nfo, torrentlang, anon, last_action) 
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                     [$fname, $_SESSION['id'], $name, $descr, $inames[0], $inames[1], $catid, $tube, get_date_time(), $infohash, $torrentsize, $filecounts, $fname, $announce, $external, $nfo, $langid, $anon, get_date_time()]);
-                     
+                    } catch (PDOException $e) {
+                        autolink($config[SITEURL].'/index.php', 'Torrent already added. Duplicate Hash');
+                    }
                     $id = DB::lastInsertId();
                     
-                    if ($ret->errorCode() == 1062)
-                        show_error_msg(T_("UPLOAD_FAILED"), T_("UPLOAD_ALREADY_UPLOADED"), 1);
-                        
                     if($id == 0){
                         unlink("$torrent_dir/$fname");
                         $message = T_("UPLOAD_NO_ID");

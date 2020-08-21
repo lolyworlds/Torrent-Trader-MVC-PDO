@@ -37,11 +37,9 @@ if($res["nfo"] == "yes"){
     $shortname = CutName(htmlspecialchars($res["name"]), $char1);
     
 	$nfo_dir = $config["nfo_dir"];
-
     $nfofilelocation = "$nfo_dir/$id.nfo";
     $filegetcontents = file_get_contents($nfofilelocation);
-    $nfo = htmlspecialchars($filegetcontents);
-    
+    $nfo = $filegetcontents;
     
     if ($nfo) {
 		$nfo = my_nfo_translate($nfo);
@@ -54,8 +52,7 @@ if($res["nfo"] == "yes"){
 
         end_frame();
     }
-
-}//has nfo
+}
 
 stdfoot();
 }
@@ -111,10 +108,10 @@ begin_frame(T_("NFO_EDIT"));
 ?>
 
 <center>
-<form method="post" action="nfo/edit">
+<form method="post" action="<?php echo $config['SITEURL']; ?>/nfo/edit">
 <input type="hidden" name="id" value="<?php echo $id; ?>" />
 <input type="hidden" name="do" value="update" />
-<textarea class="nfo" name="content" cols="100%" rows="80"><?php echo htmlspecialchars(stripslashes($contents)); ?></textarea><br />
+<textarea class="nfo" name="content" cols="100%" rows="80"><?php echo $contents; ?></textarea><br />
 <input type="reset" value="<?php echo T_("RESET"); ?>" />
 <button type='submit' class='btn btn-sm btn-primary'><?php echo T_("SAVE"); ?></button>
 </form>

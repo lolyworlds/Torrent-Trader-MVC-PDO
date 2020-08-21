@@ -199,13 +199,13 @@ function latestforumposts()
 {
     global $pdo, $config;
     
-    print("<div><table style='border: 1px solid black;'>
-    <thead><tr>
-        <th>Latest Topic Title</th>
-        <th>Replies</th>
-        <th>Views</th>
-        <th>Author</th>
-        <th>Last Post</th>
+    print("<div class='table'><table class='table table-striped'>
+    <thead><tr style='border: 1px solid black'>
+        <th style='border: 1px solid black'>Latest Topic Title</th>
+        <th style='border: 1px solid black'>Replies</th>
+        <th style='border: 1px solid black'>Views</th>
+        <th style='border: 1px solid black'>Author</th>
+        <th style='border: 1px solid black'>Last Post</th>
     </tr></thead>");
 
 /// HERE GOES THE QUERY TO RETRIEVE DATA FROM THE DATABASE AND WE START LOOPING ///
@@ -268,14 +268,14 @@ function latestforumposts()
             $subject = "<a href='".$config['SITEURL']."/forums/viewtopic&amp;topicid=$topicid'><b>" . stripslashes(encodehtml($topicarr["subject"])) . "</b></a>";
 
             print("<tr style='border: 1px solid black;'>
-                 <td class='f-img' width='100%'>$subject</td>" .
-                "<td style='plainborder' align='center'>$replies</td>" .
+                 <td style='border: 1px solid black' width='40%'>$subject</td>" .
+                "<td style='border: 1px solid black' align='center'>$replies</td>" .
                 "<td style='border: 1px solid black' align='center'>$views</td>" .
-                "<td style='border: 1px solid black' align='center'>$author</td>" .
-                "<td style='border: 1px solid black'  align='right'><font size=1>$subject</font><small>&nbsp;by&nbsp;$username<br /></small><small style='white-space: nowrap'>$added</small></td>");
+                "<td style='border: 1px solid black' align='center'><b>$author</b></td>" .
+                "<td style='border: 1px solid black'  align='right'><b>$subject</b><small>&nbsp;by&nbsp;<b>$username</b><br /></small><small style='white-space: nowrap'>$added</small></td>");
 
             print("</tr>");
         } // while
     }
-    print("</table></div><br />");
+    print("</table></div>");
 } // end function

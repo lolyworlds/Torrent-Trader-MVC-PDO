@@ -11,24 +11,24 @@
   <meta name="keywords" content="https://github.com/M-jay84/Torrent-Trader-MVC-PDO-OOP" />
 
   <title><?php echo $title; ?></title>
-  <link rel="shortcut icon" href="<?php echo $config["SITEURL"]; ?>/views/themes/<?php echo ($_SESSION['stylesheet'] ?: 'dafault'); ?>/images/favicon.ico" />
+  <link rel="shortcut icon" href="<?php echo $config["SITEURL"]; ?>/views/themes/<?php echo ($_SESSION['stylesheet'] ?: 'default'); ?>/images/favicon.ico" />
   
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
   <!-- jQuery -->
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
   <!-- Bootstrap -->
-  <link rel="stylesheet" href="<?php echo TTURL; ?>/views/themes/<?php echo ($_SESSION['stylesheet'] ?: 'dafault'); ?>/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="<?php echo TTURL; ?>/views/themes/<?php echo ($_SESSION['stylesheet'] ?: 'default'); ?>/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
   <!-- TT old JS -->
-  <script src="<?php echo TTURL; ?>/views/themes/<?php echo ($_SESSION['stylesheet'] ?: 'dafault'); ?>/js/java_klappe.js"></script>
+  <script src="<?php echo TTURL; ?>/views/themes/<?php echo ($_SESSION['stylesheet'] ?: 'default'); ?>/js/java_klappe.js"></script>
   <!-- TT Custom CSS, any edits must go here-->
-  <link href="<?php echo TTURL; ?>/views/themes/<?php echo ($_SESSION['stylesheet'] ?: 'dafault'); ?>/css/customstyle.css" rel="stylesheet">
+  <link href="<?php echo TTURL; ?>/views/themes/<?php echo ($_SESSION['stylesheet'] ?: 'default'); ?>/css/customstyle.css" rel="stylesheet">
 
 </head>
 
 <body>
-<?php require "views/themes/" . ($_SESSION['stylesheet'] ?: 'dafault') . "/topnavbar.php";?>
+<?php require "views/themes/" . ($_SESSION['stylesheet'] ?: 'default') . "/topnavbar.php";?>
   <!-- START MAIN COLUMN -->
   <div class="container-fluid">
   <div class="row content">

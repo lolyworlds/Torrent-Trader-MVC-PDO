@@ -1,24 +1,24 @@
 <br>
-<div class="border border-primary"> 
+<div class="border border-primary">
     <ul class="list-group">
-    <li class="list-group-item"><a href="<?php echo TTURL; ?>/admincp?action=polls&amp;do=view"><img src="images/admin/polls.png" border="0" width="20" height="20" alt="" />&nbsp;<b><?php echo T_("POLLS"); ?></b></a></li>
-    <li class="list-group-item"><a href="<?php echo TTURL; ?>/admincp?action=reports&amp;do=view"><img src="images/admin/report_system.png" border="0" width="20" height="20" alt="" />&nbsp;<b><?php echo T_("REPORTS"); ?></b></a></li>
-    <li class="list-group-item"><a href="<?php echo TTURL; ?>/admincp?action=rules&amp;do=view"><img src="images/admin/rules.png" border="0" width="20" height="20" alt="" />&nbsp;<b><?php echo T_("RULES"); ?></b></a></li>
-    <li class="list-group-item"><a href="<?php echo TTURL; ?>/admincp?action=sitelog"><img src="images/admin/site_log.png" border="0" width="20" height="20" alt="" />&nbsp;<b><?php echo T_("SITELOG"); ?></b></a></li>
-    <li class="list-group-item"><a href="<?php echo TTURL; ?>/teams/create"><img src="images/admin/teams.png" border="0" width="20" height="20" alt="" />&nbsp;<b><?php echo T_("TEAMS"); ?></b></a></li>
-    <li class="list-group-item"><a href="<?php echo TTURL; ?>/admincp?action=style"><img src="images/admin/themes.png" border="0" width="20" height="20" alt="" />&nbsp;<b><?php echo T_("THEME_MANAGEMENT"); ?></b></a></li>
-    <li class="list-group-item"><a href="<?php echo TTURL; ?>/admincp?action=categories&amp;do=view"><img src="images/admin/torrent_cats.png" border="0" width="20" height="20" alt="" />&nbsp;<b><?php echo T_("TORRENT_CAT_VIEW"); ?></b></a></li>
-    <li class="list-group-item"><a href="<?php echo TTURL; ?>/admincp?action=torrentlangs&amp;do=view"><img src="images/admin/torrent_lang.png" border="0" width="20" height="20" alt="" />&nbsp;<b><?php echo T_("TORRENT_LANG"); ?></b></a></li>
-    <li class="list-group-item"><a href="<?php echo TTURL; ?>/admincp?action=torrentmanage"><img src="images/admin/torrents.png" border="0" width="20" height="20" alt="" />&nbsp;<b><?php echo T_("TORRENTS"); ?></b></a></li>
-    <li class="list-group-item"><a href="<?php echo TTURL; ?>/admincp?action=groups&amp;do=view"><img src="images/admin/user_groups.png" border="0" width="20" height="20" alt="" />&nbsp;<b><?php echo T_("USER_GROUPS_VIEW"); ?></b></a></li>
-    <li class="list-group-item"><a href="<?php echo TTURL; ?>/admincp?action=warned"><img src="images/admin/warned_user.png" border="0" width="20" height="20" alt="" />&nbsp;<b><?php echo T_("WARNED_USERS"); ?></b></a></li>
-    <li class="list-group-item"><a href="<?php echo TTURL; ?>/admincp?action=whoswhere"><img src="images/admin/whos_where.png" border="0" width="20" height="20" alt="" />&nbsp;<b><?php echo T_("WHOS_WHERE"); ?></b></a></li>
-    <li class="list-group-item"><a href="<?php echo TTURL; ?>/admincp?action=censor"><img src="images/admin/word_censor.png" border="0" width="20" height="20" alt="" />&nbsp;<b><?php echo T_("WORD_CENSOR"); ?></b></a></li>
-    <li class="list-group-item"><a href="<?php echo TTURL; ?>/admincp?action=forum"><img src="images/admin/forums.png" border="0" width="20" height="20" alt="" />&nbsp;<b><?php echo T_("FORUM_MANAGEMENT"); ?></b></a></li>
-    <li class="list-group-item"><a href="<?php echo TTURL; ?>/admincp?action=users"><img src="images/admin/simple_user_search.png" border="0" width="20" height="20" alt="" />&nbsp;<b>Simple User Search</b></a></li> 
-    <li class="list-group-item"><a href="<?php echo TTURL; ?>/admincp?action=privacylevel"><img src="images/admin/privacy_level.png" border="0" width="20" height="20" alt="" />&nbsp;<b>Privacy Level</b></a></li>    
-    <li class="list-group-item"><a href="<?php echo TTURL; ?>/admincp?action=pendinginvite"><img src="images/admin/pending_invited_user.png" border="0" width="20" height="20" alt="" />&nbsp;<b>Pending Invited Users</b></b></a></li>
+    <li class="list-group-item"><a href="<?php echo TTURL; ?>/admincp?action=usersearch"><img src="images/admin/user_search.png" border="0" width="20" height="20" alt="" />&nbsp;<b><?php echo T_("ADVANCED_USER_SEARCH"); ?></b></a></li>
+    <li class="list-group-item"><a href="<?php echo TTURL; ?>/admincp?action=avatars"><img src="images/admin/avatar_log.png" border="0" width="20" height="20" alt="" />&nbsp;<b><?php echo T_("AVATAR_LOG"); ?></b></a></li>
+    <li class="list-group-item"><a href="<?php echo TTURL; ?>/admincp?action=backups"><img src="images/admin/db_backup.png" border="0" width="20" height="20" alt="" />&nbsp;<b><?php echo T_("BACKUPS"); ?></b></a></li>
+    <li class="list-group-item"><a href="<?php echo TTURL; ?>/admincp?action=ipbans"><img src="images/admin/ip_block.png" border="0" width="20" height="20" alt="" />&nbsp;<b><?php echo T_("BANNED_IPS"); ?></b></a></li>
+    <li class="list-group-item"><a href="<?php echo TTURL; ?>/admincp?action=bannedtorrents"><img src="images/admin/banned_torrents.png" border="0" width="20" height="20" alt="" />&nbsp;<b><?php echo T_("BANNED_TORRENTS"); ?></b></a></li>
+    <li class="list-group-item"><a href="<?php echo TTURL; ?>/admincp?action=blocks&amp;do=view"><img src="images/admin/blocks.png" border="0" width="20" height="20" alt="" />&nbsp;<b><?php echo T_("BLOCKS"); ?></b></a></li>
     <li class="list-group-item"><a href="<?php echo TTURL; ?>/client"><img src="images/admin/client.png" border="0" width="20" height="20" alt="" />&nbsp;<b>Client Ban</b></b></a></li>
-    <li class="list-group-item"><a href="<?php echo TTURL; ?>/contactstaff/staffbox"><img src="images/admin/staffmess.png" border="0" width="20" height="20" alt="" />&nbsp;<b>Staff Messages</b></b></a></li>
+    <li class="list-group-item"><a href="<?php echo TTURL; ?>/admincp?action=cheats"><img src="images/admin/cheats.png" border="0" width="20" height="20" alt="" />&nbsp;<b><?php echo T_("Detect Cheats"); ?></b></a></li>
+    <li class="list-group-item"><a href="<?php echo TTURL; ?>/admincp?action=duplicateips"><img src="images/admin/double-ip.ico" border="0" width="20" height="20" alt="" />&nbsp;<b><?php echo T_("DUPLICATEIP"); ?></b></a></li> 
+    <li class="list-group-item"><a href="<?php echo TTURL; ?>/admincp?action=emailbans"><img src="images/admin/mail_bans.png" border="0" width="20" height="20" alt="" />&nbsp;<b><?php echo T_("EMAIL_BANS"); ?></b></a></li>
+    <li class="list-group-item"><a href="<?php echo TTURL; ?>/faq/manage"><img src="images/admin/faq.png" border="0" width="20" height="20" alt="" />&nbsp;<b><?php echo T_("FAQ"); ?></b></a></li>
+    <li class="list-group-item"><a href="<?php echo TTURL; ?>/admincp?action=forum"><img src="images/admin/forums.png" border="0" width="20" height="20" alt="" />&nbsp;<b><?php echo T_("FORUM_MANAGEMENT"); ?></b></a></li>
+	<li class="list-group-item"><a href="<?php echo TTURL; ?>/admincp?action=freetorrents"><img src="images/admin/free_leech.png" border="0" width="20" height="20" alt="" />&nbsp;<b>Freeleech Torrents</b></a></li>
+    <li class="list-group-item"><a href="<?php echo TTURL; ?>/admincp?action=lastcomm"><img src="images/admin/comments.png" border="0" width="20" height="20" alt="" />&nbsp;<b><?php echo T_("LATEST_COMMENTS"); ?></b></a></li>
+    <li class="list-group-item"><a href="<?php echo TTURL; ?>/admincp?action=masspm"><img src="images/admin/mass_pm.png" border="0" width="20" height="20" alt="" />&nbsp;<b><?php echo T_("MASS_PM"); ?></b></a></li>
+    <li class="list-group-item"><a href="<?php echo TTURL; ?>/admincp?action=messagespy"><img src="images/admin/message_spy.png" border="0" width="20" height="20" alt="" />&nbsp;<b><?php echo T_("MESSAGE_SPY"); ?></b></a></li>
+    <li class="list-group-item"><a href="<?php echo TTURL; ?>/admincp?action=news&amp;do=view"><img src="images/admin/news.png" border="0" width="20" height="20" alt="" />&nbsp;<b><?php echo T_("NEWS"); ?></b></a></li>
+    <li class="list-group-item"><a href="<?php echo TTURL; ?>/admincp?action=peers"><img src="images/admin/peer_list.png" border="0" width="20" height="20" alt="" />&nbsp;<b><?php echo T_("PEERS_LIST"); ?></b></a></li>
+    <li class="list-group-item"><a href="<?php echo TTURL; ?>/admincp?action=invited"><img src="images/admin/invited_user.png" border="0" width="20" height="20" alt="" />&nbsp;<b>Invited Users</b></a></li>   
     </ul>
 </div>
