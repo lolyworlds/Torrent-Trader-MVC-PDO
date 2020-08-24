@@ -14,7 +14,12 @@
         echo "<br /><input type='file' name='nfofile' size='60' /></td></tr>";
         
         echo "<tr><td class='table_col1' align='right'><b>".T_("CATEGORIES").": </b></td><td class='table_col2'>".$catdropdown."</td></tr>";
+        if ($config["imdb"]) {
+            echo "<tr><td class='table_col1' align='right'><b>".T_("IMDB")."</b></td><td class='table_col2'><input type=\"text\" name=\"imdb\" value=\"" . htmlspecialchars($row["imdb"]) . "\" size=\"60\" /></td></tr>";
+        }
+        if ($config["youtube"]) {
         echo "<tr><td align='right'><b>".T_("VIDEOTUBE").": <b></td><td class='table_col2'><input type='text' name='tube' value='" . htmlspecialchars($row["tube"]) . "' size='60' />&nbsp;<i>".T_("FORMAT").": </i> <span style='color:#FF0000'><b>https://www.youtube.com/watch?v=aYzVrjB-CWs</b></span></td></tr>";
+        }
         echo "<tr><td class='table_col1' align='right'><b>".T_("LANG").": </b></td><td class='table_col2'>".$langdropdown."</td></tr>";
         
         if ($_SESSION["edit_torrents"] == "yes")

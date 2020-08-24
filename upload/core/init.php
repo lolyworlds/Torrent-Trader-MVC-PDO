@@ -30,8 +30,8 @@ require "core/Controller.php"; // Load Models/Views
 spl_autoload_register(function($className) {
 	include_once 'classes/' . $className . '.php';
 });
-
-// Session Handler
+/* Revisit Caused Browser Issues
+// Session Handler 
 $sess = new Session();
 session_set_save_handler(
   array($sess,'_open'),
@@ -42,6 +42,7 @@ session_set_save_handler(
   array($sess,'_gc')
   );
 register_shutdown_function('session_write_close');
+*/
 session_start();
 
 // Micro Time

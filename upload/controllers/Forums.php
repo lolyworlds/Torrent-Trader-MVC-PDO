@@ -1038,11 +1038,10 @@ if ($forumid == $config['hideforum'] && $_SESSION['id'] !== $mypost['userid']) {
     if ($newtopic)
 		print("<tr><td class='alt2'>".T_("FORUMS_SUBJECT")."</td><td class='alt1' align='left' style='padding: 0px'><input type='text' size='100' maxlength='$maxsubjectlength' name='subject' style='border: 0px; height: 19px' /></td></tr>\n");
 
-	echo "<tr><td align='center' colspan='3'>";
-	textbbcode("Form", "body");
-	echo "</td></tr>\n";
-    print("<tr><td colspan='3' align='center'><br /><input type='image' src='". $themedir ."button_reply.png' alt='' /></td></tr>\n");
-    print("</table></form>\n");
+	  print("</table>");
+    textbbcode("Form", "body");
+    print("<center><br /><input type='image' src='". $themedir ."button_reply.png' alt='' /></center>");
+    print("</form>\n");
 	//end_frame();
 	print (" </fieldset>");
 	}else{

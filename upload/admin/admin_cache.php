@@ -3,7 +3,7 @@ if ($action == "prune") {
     $title = T_("_BLC_MAN_");
 	require 'views/admin/header.php';
     adminnavmenu();
-    begin_frame(T_("BLC_VIEW"));
+    begin_frame('Purge');
 
 # Prune Block Cache.
     $TTCache = new Cache();
@@ -15,7 +15,7 @@ if ($action == "prune") {
     $TTCache->Delete("newestmember_block");
     $TTCache->Delete("seedwanted_block");
     $TTCache->Delete("usersonline_block");
-    echo 'success';
+    echo 'Purge Cache Successful';
     end_frame();
     require 'views/admin/footer.php';
 }

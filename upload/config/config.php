@@ -11,14 +11,14 @@ $config = array();
 $config['mysql_host'] = "localhost";  //leave this as localhost if you are unsure
 $config['mysql_user'] = "user";  //Username to connect
 $config['mysql_pass'] = "pass"; //Password to connect
-$config['mysql_db'] = "dbname";  //Database name
+$config['mysql_db'] = "name";  //Database name
 
-$config['ttversion'] = 'MVC/PDO';							//DONT CHANGE THIS!
+$config['ttversion'] = 'PDO/MVC';							//DONT CHANGE THIS!
 
 // Main Site Settings
 $config['SITENAME'] = 'TorrentTrader';					//Site Name
-$config['SITEEMAIL'] = 'change@myemailsux.com';		//Emails will be sent from this address
-$config['SITEURL'] = 'http://changemydomain.com';	//Main Site URL
+$config['SITEEMAIL'] = 'something@email.com';		//Emails will be sent from this address
+$config['SITEURL'] = 'http://localhost/pdo';	//Main Site URL
 $config['default_language'] = "english";						//DEFAULT LANGUAGE ID
 $config['default_theme'] = "default";						//DEFAULT THEME ID
 $config['CHARSET'] = "utf-8";						//Site Charset
@@ -127,7 +127,7 @@ $config["ratiowarn_mingigs"] = 4;  //Min GB Downloaded
 $config["ratiowarn_daystowarn"] = 14; //Days to ban
 
 // category = Category Image/Name, name = Torrent Name, dl = Download Link, uploader, comments = # of comments, completed = times completed, size, seeders, leechers, health = seeder/leecher ratio, external, wait = Wait Time (if enabled), rating = Torrent Rating, added = Date Added, nfo = link to nfo (if exists)
-$config["torrenttable_columns"] = "category,name,dl,magnet,tube,uploader,comments,size,seeders,leechers,health,external";
+$config["torrenttable_columns"] = "category,name,dl,magnet,tube,imdb,uploader,comments,size,seeders,leechers,health,external";
 // size, speed, added = Date Added, tracker, completed = times completed
 $config["torrenttable_expand"] = "";
 
@@ -165,4 +165,9 @@ $config['hideforum'] = 2; // Hide replys until after member replys
 // Ip Check
 $config["ipcheck"]  = true;
 $config["accountmax"] = "1";
+
+// IMDB
+$config["imdb"]  = true; // Set key from  in classes/TTIMDB
+// Youtube
+$config["youtube"]  = true;
 ?>

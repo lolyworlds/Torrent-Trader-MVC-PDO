@@ -3,8 +3,8 @@
 require "tzs_helper.php"; // Get Timezones
 require "language_helper.php";
 require "cleanup_helper.php";
-require "security_helper.php"; // todo
-require "nfo_helper.php"; // todo
+require "security_helper.php";
+require "nfo_helper.php";
 require "forum_helper.php";
 require "blocks_helper.php";
 require "pagination_helper.php";
@@ -18,7 +18,6 @@ require "layout_helper.php";
 require "user_helper.php";
 require "validation_helper.php";
 require "torrent_helper.php";
-require "mod_helper.php";
 require "helpers/smileys.php";
 
 // Set user up globals

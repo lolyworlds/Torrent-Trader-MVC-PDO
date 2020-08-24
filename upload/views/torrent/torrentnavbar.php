@@ -6,6 +6,9 @@
         <?php if ($row["external"] != 'yes') { ?>
         <a href='<?php echo TTURL; ?>/peers/peerlist?id=<?php echo $id; ?>'><button type="button" class="btn btn-sm btn-primary">Peers</button></a>
         <?php } ?>
+        <?php if ($config["imdb"] == 'yes') {?>
+        <a href='<?php echo TTURL; ?>/imdbs?id=<?php echo $id; ?>'><button type="button" class="btn btn-sm btn-primary">IMDB</button></a>
+        <?php } ?>
         <?php if ($row["external"] == 'yes') {?>
         <a href='<?php echo TTURL; ?>/torrents/torrenttrackerlist?id=<?php echo $id; ?>'><button type="button" class="btn btn-sm btn-primary">Trackers</button></a>
         <?php }

@@ -55,7 +55,7 @@ class Admincp extends Controller
             $pending = get_row_count("users", "WHERE status = 'pending' AND invited_by = '0'");
             echo "<center><b>" . T_("USERS_AWAITING_VALIDATION") . ":</b> <a href='/admincp?action=confirmreg'><b>($pending)</b></a></center>";
             echo "<center>" . T_("VERSION_MYSQL") . ": <b>" . $mysqlver . "</b>&nbsp;-&nbsp;" . T_("VERSION_PHP") . ": <b>" . phpversion() . "</b>&nbsp;-&nbsp;" . T_("Apache Version") . ": <b>" . apache_version() . "</b></center>";
-            echo "<center><a href=$config[SITEURL]/admincp?action=prune><b>Prune Cache</b></a><br></center>";
+            echo "<center><a href=$config[SITEURL]/admincp?action=prune><b>Purge Cache</b></a><br></center>";
 
             echo '</div></div><br>';
         }

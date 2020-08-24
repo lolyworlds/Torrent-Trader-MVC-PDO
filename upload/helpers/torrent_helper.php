@@ -207,6 +207,9 @@ function torrenttable($res)
             case 'tube':
                     echo "<th>".T_("YOUTUBE")."</th>";
                 break;
+            case 'imdb':
+                    echo "<th>IMDB</th>";
+                break;
             case 'comments':
                 echo "<th>" . T_("COMM") . "</th>";
                 break;
@@ -306,7 +309,7 @@ function torrenttable($res)
 
                     break;
                 case 'dl':
-                    print("<td class='ttable_col$x' align='center'><a href=\"download?id=$id&amp;name=" . rawurlencode($row["filename"]) . "\"><img src='" . $config['SITEURL'] . "/images/icon_download.gif' border='0' alt=\"Download .torrent\" /></a></td>");
+                    print("<td class='ttable_col$x' align='center'><a href=\"$config[SITEURL]/download?id=$id&amp;name=" . rawurlencode($row["filename"]) . "\"><img src='" . $config['SITEURL'] . "/images/icon_download.gif' border='0' alt=\"Download .torrent\" /></a></td>");
                     break;
                 case 'magnet':
                     $magnet = $pdo->run("SELECT info_hash FROM torrents WHERE id=?", [$id])->fetch();
@@ -340,11 +343,17 @@ function torrenttable($res)
                     break;
                 case 'tube':
                         if ($row["tube"]) 
-                              print("<td class='ttable_col$x' align='center'><a rel=\"prettyPhoto\"  href=".$row['tube']." ><".htmlspecialchars($row['tube'])."><img src='" . $config['SITEURL'] . "/images/youtube1.png'  border='0' width='30' height='30' alt=\"\" /></a></td>");  
+                              print("<td class='ttable_col$x' align='center'><a rel=\"prettyPhoto\"  href=".$row['tube']." ><".htmlspecialchars($row['tube'])."><img src='" . $config['SITEURL'] . "/images/youtube1.png'  border='0' width='20' height='20' alt=\"\" /></a></td>");  
                               else
                            print("<td class='ttable_colx' align='center'>-</td>"); 
                            break;
-                case 'comments':
+                case 'imdb':
+                            if ($row["imdb"])   
+                                  print("<td class='ttable_col$x' align='center'><a href=".$row['imdb']." target='_blank'><".htmlspecialchars($row['imdb'])."><img src='" . $config['SITEURL'] . "/images/imdb.png'  border='0' width='20' height='20' alt=\"\" /></a></td>");
+                               else
+                               print("<td class='ttable_colx' align='center'>-</td>");   
+                               break;
+                 case 'comments':
                     print("<td class='ttable_col$x' align='center'><font size='1' face='verdana'><a href='$config[SITEURL]/comments?type=torrent&amp;id=$id'>" . number_format($row["comments"]) . "</a></font></td>\n");
                     break;
                 case 'nfo':

@@ -170,23 +170,17 @@ function insert_compose_frame($id, $newtopic = true)
     print("<center><b>Compose Message</b></center>");
     print("<form name='Form' method='post' action='$config[SITEURL]/forums/post'>\n");
     if ($newtopic) {
-        print("<table class='table'>
-        <tr>
-        <td align='center'><strong>Subject:</strong>
-        <input type='text' maxlength='$maxsubjectlength' name='subject' /></td></tr>");
+        print("<div><center><strong>Subject:</strong>&nbsp;<input type='text' size='30%' maxlength='$maxsubjectlength' name='subject' /></center>");
         print("<input type='hidden' name='forumid' value='$id' />\n");
     } else {
         print("<input type='hidden' name='topicid' value='$id' />\n");
     }
 
     if ($newtopic) {
-        print("<tr><td align='center'>");
         textbbcode("Form", "body");
-        print("</td></tr><tr><td align='center'><br /><button type='submit' class='btn btn-sm btn-primary'>" . T_("SUBMIT") . "</button></td></tr></table>
-			");
+        print("<center><button type='submit' class='btn btn-sm btn-primary'>" . T_("SUBMIT") . "</button></center></div>");
 
     }
-    print("</center>");
     print("</form>\n");
     print("</div>");
     #end_frame();

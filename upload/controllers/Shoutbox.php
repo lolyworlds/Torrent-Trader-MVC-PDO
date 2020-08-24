@@ -124,7 +124,7 @@ class Shoutbox extends Controller
                 require 'views/shoutbox/shoutboxmessage.php';
                 require 'views/shoutbox/shoutboxmain.php';
                 require 'views/shoutbox/shoutboxfooter.php';
-            } elseif ($_SESSION['loggedin'] || !$_SESSION['loggedin'] === false) {
+            } elseif ($_SESSION['loggedin'] || !$_SESSION["loggedin"] === false) {
                 require 'views/shoutbox/shoutboxheader.php';
                 print("<br><br><center><font color=red><b>You dont have permissions to use the Shoutbox! Contact the staff!</b><br><b>Or You are not logged in</b></font></center>");
                 require 'views/shoutbox/shoutboxfooter.php';
