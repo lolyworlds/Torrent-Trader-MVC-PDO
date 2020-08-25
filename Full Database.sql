@@ -736,6 +736,7 @@ CREATE TABLE `torrents` (
   `torrentlang` int(10) unsigned NOT NULL default '1',
   `freeleech` enum('0','1') NOT NULL default '0',
   `tube` varchar(100) DEFAULT NULL,
+  `imdb` varchar(100) DEFAULT NULL,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `info_hash` (`info_hash`(20)),
   KEY `owner` (`owner`),
