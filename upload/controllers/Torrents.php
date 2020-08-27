@@ -1354,7 +1354,7 @@ if (!empty($_POST['imdb']))
                  
             }
             
-            if ($_SESSION['loggedin'])
+            if ($_SESSION['loggedin']  == true)
                 DB::run("UPDATE users SET last_browse=".gmtime()." WHERE id=$_SESSION[id]");
             end_frame();
             stdfoot();

@@ -3,7 +3,7 @@
 // Connection Verification Function Otherwise Connection Page
 function loggedinonly()
 {
-    if (!$_SESSION['loggedin']) {
+    if (!$_SESSION['loggedin']  == true) {
         header("Refresh: 0; url=".TTURL."/account/login");
         exit();
     }

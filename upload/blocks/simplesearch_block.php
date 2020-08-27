@@ -1,5 +1,5 @@
 <?php
-if ($_SESSION['loggedin']) {
+if ($_SESSION['loggedin']  == true) {
     $_GET['search'] = $_GET['search'] ?? '';
 	begin_block(T_("SEARCH")); ?>
 	<form method="get" action="<?php echo TTURL; ?>/torrents/search" class="form-inline">

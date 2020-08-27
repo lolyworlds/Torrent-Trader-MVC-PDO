@@ -1,5 +1,5 @@
 <?php
-if ($_SESSION['loggedin']) {
+if ($_SESSION['loggedin']  == true) {
     if ($config['NEWSON']) { //check news is turned on first
         begin_block(T_("LATEST_NEWS"));
 

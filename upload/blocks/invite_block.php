@@ -1,5 +1,5 @@
 <?php
-if (($config["INVITEONLY"] || $config["ENABLEINVITES"]) && $_SESSION['loggedin']) {
+if (($config["INVITEONLY"] || $config["ENABLEINVITES"]) && $_SESSION['loggedin']  == true) {
 	$invites = $_SESSION["invites"];
 	begin_block(T_("INVITES"));
 	?>

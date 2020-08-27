@@ -20,7 +20,7 @@ function catch_up()
 {
     global $pdo;
 
-    if (!$_SESSION['loggedin']) {
+    if (!$_SESSION['loggedin']  == true) {
         return;
     }
 

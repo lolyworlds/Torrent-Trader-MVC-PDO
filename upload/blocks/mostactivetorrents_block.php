@@ -1,5 +1,5 @@
 <?php
-if (!$config["MEMBERSONLY"] || $_SESSION['loggedin']) {
+if (!$config["MEMBERSONLY"] || $_SESSION['loggedin']  == true) {
 	begin_block(T_("MOST_ACTIVE"));
 
 	$where = "WHERE banned = 'no' AND visible = 'yes'";

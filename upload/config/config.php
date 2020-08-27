@@ -166,8 +166,13 @@ $config['hideforum'] = 2; // Hide replys until after member replys
 $config["ipcheck"]  = true;
 $config["accountmax"] = "1";
 
-// IMDB
+// IMDB (also remove from config[torrenttable])
 $config["imdb"]  = true; // Set key from  in classes/TTIMDB
-// Youtube
+// Youtube (hidden either way just remove from config[torrenttable])
 $config["youtube"]  = true;
+// Freeleech above xgb
+$config['freeleechgbon'] = true;
+$config['freeleechgb'] = 8589934592; // 8gb
+// Request
+$config["REQUESTSON"] = true;
 ?>

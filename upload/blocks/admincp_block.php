@@ -1,6 +1,6 @@
 <?php
     
-   if ($_SESSION["control_panel"] == "yes") 
+   if ($_SESSION['loggedin']  === true && $_SESSION["control_panel"] == "yes") 
    {
        begin_block("AdminCP");
        ?>

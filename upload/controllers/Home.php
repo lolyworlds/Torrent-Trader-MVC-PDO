@@ -103,7 +103,7 @@ if ($config["MEMBERSONLY"] && !$_SESSION) {
 		print("</div>");
 
 	}
-	if ($_SESSION['loggedin'])
+	if ($_SESSION['loggedin']  == true)
 		DB::run("UPDATE users SET last_browse=".gmtime()." WHERE id=?", [$_SESSION['id']]);
 
 }

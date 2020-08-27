@@ -1,5 +1,5 @@
 <?php
-if ($_SESSION['loggedin']) {
+if ($_SESSION['loggedin']  == true) {
     begin_block(T_("POLL"));
 
     if (!function_exists("srt")) {
@@ -15,7 +15,7 @@ if ($_SESSION['loggedin']) {
         }
     }
 
-    if ($_SERVER["REQUEST_METHOD"] == "POST" && $_SESSION['loggedin'] && $_POST["act"] == "takepoll") {
+    if ($_SERVER["REQUEST_METHOD"] == "POST" && $_SESSION['loggedin']  == true && $_POST["act"] == "takepoll") {
         $choice = $_POST["choice"];
         if ($choice != "" && $choice < 256 && $choice == floor($choice)) {
 			$res = $pdo->run("SELECT * FROM polls ORDER BY added DESC LIMIT 1");
@@ -41,7 +41,7 @@ if ($_SESSION['loggedin']) {
 	}
 
     // Get current poll
-    if ($_SESSION['loggedin']) {
+    if ($_SESSION['loggedin']  == true) {
 		$res = $pdo->run("SELECT * FROM polls ORDER BY added DESC LIMIT 1");
 
 		if($pollok=($res->rowCount())) {

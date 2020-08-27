@@ -88,7 +88,7 @@ class RssXmlParser{
 }	
 
 
-if ($_SESSION['loggedin']) {
+if ($_SESSION['loggedin']  == true) {
 begin_block("RSS");
 $FeedUrl = "";
 if (!$FeedUrl) { ?>

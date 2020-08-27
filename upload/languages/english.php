@@ -1113,4 +1113,36 @@ $LANG["ACTORS"] = "Actors";
 $LANG["PLOT"] = "Plot";
 $LANG["SHORT"] = "IMDB";
 $LANG["UPDATE"] = "Last Updated";
+
+//Requests Pages
+$LANG["ADD_REQUEST"] = "Add new request";
+$LANG["REQUESTED"] = "Requested Torrents";
+$LANG["MY_REQUEST"] = "View my requests";
+$LANG["REQUEST"] = "Request";
+$LANG["REQUEST_NAME"] = "Request Name";
+$LANG["REQUESTS"] = "Requests";
+$LANG["MAKE_REQUEST"] = "Make a Request";
+$LANG["VOTES"] = "Votes";
+$LANG["VOTE_FOR_THIS"] = "Vote for this";
+$LANG["DATE_ADDED"] = "Date Added";
+$LANG["SORT_BY"] = "Sort By";
+$LANG["ADDED_BY"] = "Added By";
+$LANG["FILLED"] = "Filled?";
+$LANG["FILLED_BY"] = "Filled By";
+$LANG["DO_DELETE"] = "Delete";
+$LANG["REQUESTS_OFFLINE"] = "Sorry - the requests are currently offline.";
+$LANG["SEARCH"] = "Search";
+$LANG["DEL"] = "Del";
+$LANG["SHOW_ALL"] = "Show all";
+$LANG["DISPLAY"] = "Display";
+$LANG["TYPE"] = "Type";
+$LANG["COMMENTS"] = "Comment";
+$LANG["TORRENT"] = "Torrent";
+$LANG["INC_DEAD"] = "Include Dead";
+$LANG["SUBMIT"] = "Submit";
+$LANG["DOWNLOADED"] = "Downloaded";
+$LANG["USERNAME"] = "Username";
+$LANG["RATIO"] = "Ratio";
+$LANG["UPLOADED"] = "Uploaded";
+$LANG["NOTHING_FOUND"] = "Nothing found";
 ?>

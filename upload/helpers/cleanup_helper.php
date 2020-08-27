@@ -90,7 +90,6 @@ function do_cleanup()
             if (!isset($torr[$field])) {
                 $torr[$field] = 0;
             }
-
         }
         $update = array();
         foreach ($fields as $field) {
@@ -98,20 +97,18 @@ function do_cleanup()
                 if ($torr[$field] != $row[$field]) {
                     $update[] = "$field = " . $torr[$field];
                 }
-
             }
         }
         if (count($update)) {
             $pdo->run("UPDATE torrents SET " . implode(",", $update) . " WHERE id = $id");
         }
-
     }
 
-// DELETE OLD SESSION ENTRIES
+    // DELETE OLD SESSION ENTRIES
     $ts = gmtime() - $config["session_time"];
     $pdo->run("DELETE FROM sessions WHERE _access > FROM_UNIXTIME($ts)");
 
-//LOCAL TORRENTS - MAKE NON-ACTIVE/OLD TORRENTS INVISIBLE
+    //LOCAL TORRENTS - MAKE NON-ACTIVE/OLD TORRENTS INVISIBLE
     $deadtime = gmtime() - $config["max_dead_torrent_time"];
     $pdo->run("UPDATE torrents SET visible='no' WHERE visible='yes' AND last_action < FROM_UNIXTIME($deadtime) AND seeders = '0' AND leechers = '0' AND external !='yes'");
 
@@ -129,50 +126,48 @@ function do_cleanup()
 
     $ts = $row['last_time']; // $row['0'] returned null
    
-    if ($ts + $config['add_bonus'] < $now){
-        
-    $qry = "SELECT DISTINCT userid as peer, (
+    if ($ts + $config['add_bonus'] < $now) {
+        $qry = "SELECT DISTINCT userid as peer, (
     SELECT DISTINCT COUNT( torrent )
     FROM peers
     WHERE seeder = 'yes'  AND userid = peer) AS count
     FROM peers WHERE seeder = 'yes'";
 
-    $res1 = DB::run($qry);
-    while ( $row = $res1->fetch(PDO::FETCH_LAZY) )
-    {
-        DB::run("UPDATE users SET seedbonus = seedbonus + '" . ($config["bonuspertime"] * $row->count) . "' WHERE id = '" . $row->peer . "'");
-        DB::run("UPDATE tasks SET last_time=$now WHERE task='bonus'");
-        // write_log("bonus and task inserted every hour");
-    }
+        $res1 = DB::run($qry);
+        while ($row = $res1->fetch(PDO::FETCH_LAZY)) {
+            DB::run("UPDATE users SET seedbonus = seedbonus + '" . ($config["bonuspertime"] * $row->count) . "' WHERE id = '" . $row->peer . "'");
+            DB::run("UPDATE tasks SET last_time=$now WHERE task='bonus'");
+            // write_log("bonus and task inserted every hour");
+        }
     }
     // End
-// Start Vipuntil mod vip
-$timenow = get_date_time();
+    // Start Vipuntil mod vip
+    $timenow = get_date_time();
 
-$subject = 'Your VIP class stay has just expired';
-$msg = 'Your VIP class stay has just expired';
+    $subject = 'Your VIP class stay has just expired';
+    $msg = 'Your VIP class stay has just expired';
 
-$resv = DB::run("SELECT id, oldclass FROM users WHERE vipuntil < ? AND vipuntil <> ?", [$timenow, '0000-00-00 00:00:00']);
+    $resv = DB::run("SELECT id, oldclass FROM users WHERE vipuntil < ? AND vipuntil <> ?", [$timenow, '0000-00-00 00:00:00']);
 
-if ($resv->rowCount()) {
-    $rowv = $resv->fetch(PDO::FETCH_LAZY);
-    $id = $rowv->id;
-    $oldclass = $rowv->oldclass;
-    DB::run("UPDATE users SET class =?, oldclass=?, vipuntil =? WHERE vipuntil < ? AND vipuntil <> ?", [$oldclass, 1, '0000-00-00 00:00:00', $timenow, '0000-00-00 00:00:00']);
-    DB::run("INSERT INTO messages (sender, receiver, added, subject, msg, poster) VALUES(?, ?, ?, ?, ?, ?)", [0, $id, $timenow, $subject, $msg, 0]);
-}
-// End Remove Vipuntil mod vip
+    if ($resv->rowCount()) {
+        $rowv = $resv->fetch(PDO::FETCH_LAZY);
+        $id = $rowv->id;
+        $oldclass = $rowv->oldclass;
+        DB::run("UPDATE users SET class =?, oldclass=?, vipuntil =? WHERE vipuntil < ? AND vipuntil <> ?", [$oldclass, 1, '0000-00-00 00:00:00', $timenow, '0000-00-00 00:00:00']);
+        DB::run("INSERT INTO messages (sender, receiver, added, subject, msg, poster) VALUES(?, ?, ?, ?, ?, ?)", [0, $id, $timenow, $subject, $msg, 0]);
+    }
+    // End Remove Vipuntil mod vip
 
 
-//DELETE PENDING USER ACCOUNTS OVER TIMOUT AGE
+    //DELETE PENDING USER ACCOUNTS OVER TIMOUT AGE
     $deadtime = gmtime() - $config["signup_timeout"];
     $pdo->run("DELETE FROM users WHERE status = 'pending' AND added < FROM_UNIXTIME($deadtime)");
 
-// DELETE OLD LOG ENTRIES
+    // DELETE OLD LOG ENTRIES
     $ts = gmtime() - $config["LOGCLEAN"];
     $pdo->run("DELETE FROM log WHERE added < FROM_UNIXTIME($ts)");
 
-//LEECHWARN USERS WITH LOW RATIO
+    //LEECHWARN USERS WITH LOW RATIO
 
     if ($config["ratiowarn_enable"]) {
         $minratio = $config["ratiowarn_minratio"];
@@ -224,7 +219,6 @@ if ($resv->rowCount()) {
                 }
             }
         }
-
     } //check if warning system is on
     // REMOVE WARNINGS
     $res = $pdo->run("SELECT users.id, users.username, warnings.expiry FROM users INNER JOIN warnings ON users.id=warnings.userid WHERE type != 'Poor Ratio' AND warned = 'yes'  AND enabled='yes' AND warnings.active = 'yes' AND warnings.expiry < '" . get_date_time() . "'");
@@ -233,10 +227,21 @@ if ($resv->rowCount()) {
         $pdo->run("UPDATE warnings SET active = 'no' WHERE userid = $arr1[id] AND expiry < '" . get_date_time() . "'");
         write_log("Removed warning for $arr1[username]. Expiry: $arr1[expiry]");
     }
-// WARN USERS THAT STILL HAVE ACTIVE WARNINGS
+    // WARN USERS THAT STILL HAVE ACTIVE WARNINGS
     $pdo->run("UPDATE users SET warned = 'yes' WHERE warned = 'no' AND id IN (SELECT userid FROM warnings WHERE active = 'yes')");
-//END//
+    //END//
 
+    // set freeleech
+    if ($config['freeleechgbon']); {
+    $gigs  = $config['freeleechgb'];
+    $query = $pdo->run("SELECT `id`, `name` FROM `torrents` WHERE `banned` = 'no' AND `freeleech` = '0' AND `size` >= $gigs");
+    if ($query->rowCount() > 0) {
+        while ($row =$query->fetch(PDO::FETCH_ASSOC)) {
+            $pdo->run("UPDATE `torrents` SET `freeleech` = '1' WHERE `id` = '$row[id]'");
+            write_log("Freeleech added on  <a href='torrents/read?id=$row[id]'>$row[name]</a> because it is bigger than  8gb.");
+        }
+    }
+    }
     // START INVITES UPDATE
     // SET INVITE AMOUNTS ACCORDING TO RATIO/GIGS ETC
     // autoinvites(interval to give invites (days), min downloaded GB, max downloaded GB, min ratio, invites to give, max invites allowed (array))

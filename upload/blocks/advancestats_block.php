@@ -23,7 +23,7 @@ while ($row =  $result->fetch(PDO::FETCH_LAZY)) {
 	$totaluploaded      = $row["totalul"]; 
 }
 $localpeers = $leechers+$seeders;
-if($_SESSION["edit_users"]=="yes") {
+if($_SESSION['loggedin']  === true && $_SESSION["edit_users"]=="yes") {
 begin_block(T_("STATS"));
 ?>
 

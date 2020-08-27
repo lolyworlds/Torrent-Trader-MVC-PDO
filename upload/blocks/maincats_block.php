@@ -1,5 +1,5 @@
 <?php
-if (!$config["MEMBERSONLY"] || $_SESSION['loggedin']) {
+if (!$config["MEMBERSONLY"] || $_SESSION['loggedin']  == true) {
 begin_block(T_("BROWSE_TORRENTS"));
 $catsquery = $pdo->run("SELECT distinct parent_cat FROM categories ORDER BY parent_cat"); ?>
 	<div class="list-group">

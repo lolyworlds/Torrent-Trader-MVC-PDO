@@ -9,7 +9,7 @@
 dbconn();
 global $config;
 // CHECK THE ADMIN PRIVILEGES
-if (!$_SESSION['loggedin'] || $_SESSION["control_panel"]!="yes"){
+if (!$_SESSION['loggedin']  == true || $_SESSION["control_panel"]!="yes"){
     show_error_msg(T_("ERROR"), T_("SORRY_NO_RIGHTS_TO_ACCESS"), 1);
 }
   

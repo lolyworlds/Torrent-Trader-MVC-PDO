@@ -19,6 +19,7 @@ require "user_helper.php";
 require "validation_helper.php";
 require "torrent_helper.php";
 require "helpers/smileys.php";
+require "helpers/topten_helper.php";
 
 // Set user up globals
 function dbconn($autoclean = false)

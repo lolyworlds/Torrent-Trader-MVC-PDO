@@ -1,5 +1,5 @@
 <?php
-if (!$config["MEMBERSONLY"] || $_SESSION['loggedin']) {
+if (!$config["MEMBERSONLY"] || $_SESSION['loggedin']  == true) {
 		begin_block(T_("Ip Details"));
 
         $info = new IPconnected();

@@ -10,7 +10,7 @@ dbconn();
 global $config, $pdo;
 loggedinonly();
 
-if (!$_SESSION['loggedin'] || $_SESSION["control_panel"]!="yes"){
+if (!$_SESSION['loggedin']  == true || $_SESSION["control_panel"]!="yes"){
     show_error_msg(T_("ERROR"), T_("_ACCESS_DEN_"), 1);
 }
                          

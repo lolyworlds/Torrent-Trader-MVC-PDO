@@ -15,6 +15,7 @@ if ($action == "prune") {
     $TTCache->Delete("newestmember_block");
     $TTCache->Delete("seedwanted_block");
     $TTCache->Delete("usersonline_block");
+	$TTCache->Delete("request_block");
     echo 'Purge Cache Successful';
     end_frame();
     require 'views/admin/footer.php';

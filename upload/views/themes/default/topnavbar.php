@@ -2,7 +2,7 @@
         <!-- Start Infobar -->
 
             <?php
-                if (!$_SESSION['loggedin']){
+                if (!$_SESSION['loggedin']  == true){
                     echo "&nbsp&nbsp<a href=".$config['SITEURL']."/account/login\><font color='#fff'>".T_("LOGIN")."</font></a>&nbsp//&nbsp<a href=".$config['SITEURL']."/faq\><font color='#fff'>".T_("FAQ")."</font></a>&nbsp//&nbsp<a href=".$config['SITEURL']."/rules\><font color='#fff'>".T_("RULES")."</font></a><b>";
                 }else{
 					
@@ -75,7 +75,7 @@ print("<font color=#fff><i>Connected:</i></font> ".$connectable.")");
     <!-- START NAVIGATION -->
     <nav class="navbar navbar-expand-lg">
   <a class="navbar-brand" href="<?php echo TTURL; ?>/index.php"><img src='<?php echo TTURL; ?>/views/themes/<?php echo $_SESSION['stylesheet'] ?: $config['default_theme']; ?>/images/logo.gif' height='50px'></a>
-      <?php if ($_SESSION['loggedin']){ ?>
+      <?php if ($_SESSION['loggedin']  == true){ ?>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -98,7 +98,7 @@ print("<font color=#fff><i>Connected:</i></font> ".$connectable.")");
 			<a class="dropdown-item" href="<?php echo TTURL; ?>/torrents/browse"><?php echo T_("BROWSE_TORRENTS");?></a>
 			<a class="dropdown-item" href="<?php echo TTURL; ?>/torrents/create"><?php echo T_("UPLOAD_TORRENT");?></a>
 			<a class="dropdown-item" href="<?php echo TTURL; ?>/torrents/search"><?php echo T_("SEARCH_TORRENTS");?></a>
-			<a class="dropdown-item" href="<?php echo TTURL; ?>/torrents/request"><?php echo T_("MAKE_REQUEST");?></a>
+			<a class="dropdown-item" href="<?php echo TTURL; ?>/request"><?php echo T_("MAKE_REQUEST");?></a>
 			<a class="dropdown-item" href="<?php echo TTURL; ?>/torrents/today"><?php echo T_("TODAYS_TORRENTS");?></a>
 			<a class="dropdown-item" href="<?php echo TTURL; ?>/torrents/needseed"><?php echo T_("TORRENT_NEED_SEED");?></a>
         </div>

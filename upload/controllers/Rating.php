@@ -67,7 +67,7 @@ $xrow = $xres->fetch(PDO::FETCH_ASSOC);
 
       }
       $srating .= "\n";
-      if (!isset($_SESSION['loggedin'])) {
+      if (!isset($_SESSION['loggedin']  == true)) {
           $srating .= "(<a href='$config[SITEURL]/account/login'>Log in</a> to rate it)";
       } else {
           $ratings = array(

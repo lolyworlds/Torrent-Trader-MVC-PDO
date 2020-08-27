@@ -122,6 +122,34 @@ CREATE TABLE `bans` (
   KEY `first_last` (`first`,`last`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 ;
 
+DROP TABLE IF EXISTS `requests`;
+    CREATE TABLE `requests` (
+      `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+      `userid` int(10) unsigned NOT NULL DEFAULT '0',
+      `request` varchar(225) COLLATE utf8_unicode_ci DEFAULT NULL,
+      `descr` text COLLATE utf8_unicode_ci NOT NULL,
+      `added` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+      `hits` int(10) unsigned NOT NULL DEFAULT '0',
+      `cat` int(10) unsigned NOT NULL DEFAULT '0',
+      `filled` varchar(75) COLLATE utf8_unicode_ci DEFAULT NULL,
+      `filledby` int(10) unsigned NOT NULL DEFAULT '0',
+      `comments` int(11) NOT NULL,
+      `profilled` int(10) unsigned NOT NULL DEFAULT '0',
+      `done` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+      `poster` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+      PRIMARY KEY (`id`),
+      KEY `userid` (`userid`)
+    ) ENGINE=MyISAM;
+
+DROP TABLE IF EXISTS `addedrequests`;
+    CREATE TABLE `addedrequests` (
+      `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+      `requestid` int(10) unsigned NOT NULL DEFAULT '0',
+      `userid` int(10) unsigned NOT NULL DEFAULT '0',
+      PRIMARY KEY (`id`),
+      KEY `userid` (`userid`)
+    ) ENGINE=MyISAM;
+
 DROP TABLE IF EXISTS `blocks`;
 CREATE TABLE `blocks` (
 `id` int(11) NOT NULL auto_increment,
@@ -140,10 +168,10 @@ INSERT INTO `blocks` (`id`, `named`, `name`, `position`, `description`, `enabled
 (2, 'invite', 'invite', 'right', 'Description here...', 1, 3),
 (3, 'Main Navigation', 'navigate', 'right', 'Description here...', 1, 1),
 (4, 'Login Block', 'login', 'left', 'Description here...', 1, 1),
-(5, 'rss', 'rss', 'right', 'Description here...', 1, 12),
+(5, 'rss', 'rss', 'right', 'Description here...', 1, 14),
 (6, 'latestuploads', 'latestuploads', 'left', 'Description here...', 1, 7),
 (7, 'advancestats', 'advancestats', 'left', 'Description here...', 1, 8),
-(8, 'serverload', 'serverload', 'right', 'Description here...', 1, 13),
+(8, 'serverload', 'serverload', 'right', 'Description here...', 1, 15),
 (9, 'usersonline', 'usersonline', 'right', 'Description here...', 1, 2),
 (10, 'Main Category', 'maincats', 'left', 'Description here...', 1, 3),
 (11, 'simplesearch', 'simplesearch', 'right', 'Description here...', 1, 5),
@@ -156,7 +184,9 @@ INSERT INTO `blocks` (`id`, `named`, `name`, `position`, `description`, `enabled
 (18, 'seedwanted', 'seedwanted', 'left', 'Description here...', 1, 4),
 (19, 'Theme & Language', 'themelang', 'left', 'Description here...', 1, 2),
 (20, 'Powered By', 'poweredby', 'right', 'Description here...', 1, 4),
-(21, 'admincp', 'admincp', 'right', '', 1, 8);
+(21, 'admincp', 'admincp', 'right', 'Description here...', 1, 8),
+(22, 'request', 'request', 'right', 'Description here...', 1, 12),
+(23, 'ipconnected', 'ipconnected', 'right', 'Description here...', 1, 13);
 
 DROP TABLE IF EXISTS `categories`;
 CREATE TABLE `categories` (
@@ -215,17 +245,21 @@ INSERT INTO `categories` (`id`, `name`, `sort_index`, `image`, `subcat`, `parent
 (46, 'GameCube', 19, '', 'yes', 'Games', '19');
 
 DROP TABLE IF EXISTS `comments`;
-CREATE TABLE `comments` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `user` int(10) unsigned NOT NULL default '0',
-  `torrent` int(10) unsigned NOT NULL default '0',
-  `added` datetime NOT NULL default '0000-00-00 00:00:00',
-  `text` text NOT NULL,
-  `news` int(10) unsigned NOT NULL default '0',
-  PRIMARY KEY  (`id`),
-  KEY `user` (`user`),
-  KEY `torrent` (`torrent`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 ;
+    CREATE TABLE `comments` (
+      `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+      `user` int(10) unsigned NOT NULL DEFAULT '0',
+      `torrent` int(10) unsigned NOT NULL DEFAULT '0',
+      `added` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+      `text` text NOT NULL,
+      `news` int(10) unsigned NOT NULL DEFAULT '0',
+      `req` int(11) NOT NULL,
+      `ori_text` text NOT NULL,
+      `editedby` text NOT NULL,
+      `editedat` datetime NOT NULL,
+      PRIMARY KEY (`id`),
+      KEY `user` (`user`),
+      KEY `torrent` (`torrent`)
+    ) ENGINE=MyISAM;
 
 DROP TABLE IF EXISTS `completed`;
 CREATE TABLE `completed` (
@@ -600,7 +634,7 @@ CREATE TABLE `reports` (
   `addedby` int(10) unsigned NOT NULL default '0',
   `votedfor` int(10) unsigned NOT NULL default '0',
   `votedfor_xtra` int(10) unsigned NOT NULL default '0',
-  `type` enum('torrent','user','forum','comment','other') NOT NULL default 'torrent',
+  `type` enum('torrent','user','forum','comment','other','request') NOT NULL DEFAULT 'torrent',
   `reason` varchar(255) NOT NULL default '',
   `dealtby` int(10) unsigned NOT NULL default '0',
   `dealtwith` tinyint(1) NOT NULL default '0',
@@ -737,6 +771,7 @@ CREATE TABLE `torrents` (
   `freeleech` enum('0','1') NOT NULL default '0',
   `tube` varchar(100) DEFAULT NULL,
   `imdb` varchar(100) DEFAULT NULL,
+  `uplreq` enum('yes', 'no') DEFAULT 'no',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `info_hash` (`info_hash`(20)),
   KEY `owner` (`owner`),

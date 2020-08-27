@@ -35,7 +35,7 @@ if (isset($_GET["custom"])){
 		if ($_POST["dllink"])
 			$params[] = "dllink=1";
 
-		if (!$_POST["cookies"] && $_SESSION['loggedin'])
+		if (!$_POST["cookies"] && $_SESSION['loggedin']  == true)
 			$params[] = "passkey=$_SESSION[passkey]";
 
 		if ($params)

@@ -1,5 +1,5 @@
 <?php
-if ($_SESSION['loggedin']) {
+if ($_SESSION['loggedin']  == true) {
 begin_block(class_user_colour($_SESSION["username"]));
 
 	$avatar = htmlspecialchars($_SESSION["avatar"]);

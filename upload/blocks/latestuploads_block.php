@@ -1,5 +1,5 @@
 <?php
-if (!$config["MEMBERSONLY"] || $_SESSION['loggedin']) {
+if (!$config["MEMBERSONLY"] || $_SESSION['loggedin']  == true) {
 	begin_block(T_("LATEST_TORRENTS"));
 
 	$expire = 900; // time in seconds

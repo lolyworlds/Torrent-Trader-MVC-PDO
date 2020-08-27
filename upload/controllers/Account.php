@@ -29,7 +29,7 @@ class Account extends Controller
             if (!$message) {
                 $_SESSION['id'] = $row->id;
                 $_SESSION['password'] = $row->password;
-                $_SESSION['loggedin'] = true;
+                $_SESSION["loggedin"] = true;
                 if (isset($cookie)) {
                     Cookie::set();
                 }

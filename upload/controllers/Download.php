@@ -67,7 +67,7 @@ $name = $friendlyname ."[". $friendlyurl ."]". $friendlyext;
 DB::run("UPDATE torrents SET hits = hits + 1 WHERE id = $id");
 
 // if user dont have a passkey generate one, only if current member, note - it was membersonly
-if ($_SESSION['loggedin']){
+if ($_SESSION['loggedin']  == true){
 	if (strlen($_SESSION['passkey']) != 32) {
 		$rand = array_sum(explode(" ", microtime()));
 		$_SESSION['passkey'] = md5($_SESSION['username'].$rand.$_SESSION['secret'].($rand*mt_rand()));
@@ -79,7 +79,7 @@ require_once("classes/BDecode.php");
 require_once("classes/BEncode.php");
 
 // if not external and current member, note - it was membersonly
-if ($row["external"]!='yes' && $_SESSION['loggedin']){// local torrent so add passkey
+if ($row["external"]!='yes' && $_SESSION['loggedin']  == true){// local torrent so add passkey
 	// BDe Class
 	$dict = BDecode(file_get_contents($fn));
 	$dict['announce'] = sprintf($config["PASSKEYURL"], $_SESSION["passkey"]);

@@ -17,7 +17,7 @@ if (!$config["FORUMS_GUESTREAD"]) {
 
 $action = strip_tags($_REQUEST["action"]);
     
-if (!$_SESSION['loggedin'] && ($action == "newtopic" || $action == "post")) 
+if (!$_SESSION['loggedin']  == true && ($action == "newtopic" || $action == "post")) 
     showerror(T_("FORUM_ERROR"), T_("FORUM_NO_ID"));
 
 if ($_SESSION["forumbanned"] == "yes" || $_SESSION["view_forum"] == "no")
@@ -97,7 +97,7 @@ print("<th  style='border: 1px solid black' align='left' colspan='2'>".htmlspeci
 		$lastpost = "<small><a href='$config[SITEURL]/forums/viewtopic&amp;topicid=$lasttopicid&amp;page=last#last'><b>" . CutName($lasttopic, $latestleng) . "</b></a> by <a href='$config[SITEURL]/users/profile?id=$lastposterid'><b>$lastposter</b></a><br />$lastpostdate</small>";
 
 
-		if ($_SESSION['loggedin']) {
+		if ($_SESSION['loggedin']  == true) {
             $a = DB::run("SELECT lastpostread FROM forum_readposts WHERE userid=$_SESSION[id] AND topicid=$lasttopicid")->fetch();
 		}
 
@@ -291,7 +291,7 @@ $themedir = $config['SITEURL']."/views/themes/".($_SESSION['stylesheet'] ?: $con
       $forumid = $arr['forumid'];
 
       //---- Check if post is read
-	  if ($_SESSION['loggedin']) {
+	  if ($_SESSION['loggedin']  == true) {
 		$a = DB::run("SELECT lastpostread FROM forum_readposts WHERE userid=$userid AND topicid=$topicid")->fetch();
 	  }
       if ($a && $a[0] == $arr['lastpost'])
@@ -419,7 +419,7 @@ $maxsubjectlength = 50;
     begin_frame("$forumname");
 	forumheader("<a href='$config[SITEURL]/forums/viewforum&amp;forumid=$forumid'>$forumname</a>");
 	
-	if ($_SESSION['loggedin'])
+	if ($_SESSION['loggedin']  == true)
 		print ("<table class='table table-striped' style=''>
     <tr><td><div align='right'><a href='$config[SITEURL]/forums/newtopic&amp;forumid=$forumid'><img src='". $themedir. "button_new_post.png' alt='' /></a></div></td></tr></table>");
 
@@ -880,7 +880,7 @@ if ($forumid == $config['hideforum'] && $_SESSION['id'] !== $mypost['userid']) {
 //------ Print table of posts
     $pc = $res->rowCount();
     $pn = 0;
-	if ($_SESSION['loggedin']) {
+	if ($_SESSION['loggedin']  == true) {
 	    $r = DB::run("SELECT lastpostread FROM forum_readposts WHERE userid=? AND topicid=?", [$_SESSION['id'], $topicid]);
 	    $a = $r->fetch(PDO::FETCH_LAZY);
 	    $lpr = $a[0];
@@ -946,7 +946,7 @@ if ($forumid == $config['hideforum'] && $_SESSION['id'] !== $mypost['userid']) {
         print("<a id='post$postid'></a>");
         if ($pn == $pc) {
             print("<a name='last'></a>\n");
-            if ($postid > $lpr && $_SESSION['loggedin'])
+            if ($postid > $lpr && $_SESSION['loggedin']  == true)
                 DB::run("UPDATE forum_readposts SET lastpostread=$postid WHERE userid=? AND topicid=?", [$userid, $topicid]);
         }
 //working here
@@ -1023,7 +1023,7 @@ if ($forumid == $config['hideforum'] && $_SESSION['id'] !== $mypost['userid']) {
 	print($pagemenu);
 
 	//quick reply
-	if (!$locked && $_SESSION['loggedin']){
+	if (!$locked && $_SESSION['loggedin']  == true){
 	//begin_frame("Reply", $newtopic = false);
 	print ("<fieldset class='download'><legend><b>".T_("FORUMS_POST_REPLY")."</b></legend>");
 	$newtopic = false;

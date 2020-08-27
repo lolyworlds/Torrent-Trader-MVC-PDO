@@ -1,5 +1,5 @@
 <?php
-if (!$config["MEMBERSONLY"] || $_SESSION['loggedin']) {
+if ($_SESSION['loggedin']) {
 	begin_block(T_("SEARCH"));
 ?>
 	<form method="get" action="<?php echo TTURL; ?>/torrents/search">
