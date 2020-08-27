@@ -16,7 +16,8 @@ class Request extends Controller
             stdhead("Requests");
             begin_frame(T_('REQUESTS'));
             print("<a href=$config[SITEURL]/request/makereq><button  class='btn btn-sm btn-success'>Add New Request</button></a>&nbsp;
-                   <a href=$config[SITEURL]/request?requestorid=$_SESSION[id]><button  class='btn btn-sm btn-success'>View my requests</button></a>");
+                   <a href=$config[SITEURL]/request?requestorid=$_SESSION[id]><button  class='btn btn-sm btn-success'>View my requests</button></a>&nbsp;
+                   <a href=$config[SITEURL]/request><button  class='btn btn-sm btn-success'>All requests</button>");
             $categ = (int) $_GET["category"];
             $requestorid = (int) $_GET["requestorid"];
             $sort = $_GET["sort"];
@@ -521,6 +522,7 @@ class Request extends Controller
         end_frame();
         begin_frame("comments");
         $commcount = DB::run("SELECT COUNT(*) FROM comments WHERE req = $id")->fetchColumn();
+        $commentbar = "<p align=center><a class=index href=$config[SITEURL]/request/reqcomment?action=add&amp;tid=$id>Add comment</a></p>\n";
         if ($commcount) {
             //list($pagertop, $pagerbottom, $limit) = pager(10, $commcount, "comments/req?id=$id&amp;");
             $commquery =    "SELECT comments.id, text, user, comments.added, editedby, editedat, avatar, warned, username, title, class, donated FROM comments LEFT JOIN users ON comments.user = users.id WHERE req = $id ORDER BY comments.id";
@@ -530,9 +532,11 @@ class Request extends Controller
         }
         if ($commcount) {
             //print($pagertop);
+            print($commentbar);
             reqcommenttable($commres, 'req');
             //print($pagerbottom);
         } else {
+            print($commentbar);
             print("<br /><b>" . T_("NOCOMMENTS") . "</b><br />\n");
         }
         end_frame();
