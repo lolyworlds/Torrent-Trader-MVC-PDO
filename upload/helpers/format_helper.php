@@ -105,7 +105,20 @@ function format_comment($text)
             "<br /><img src='images/plus.gif' id='pic$r$i' title='Spoiler' onclick='klappe_torrent(\"$r$i\")' alt='' /><b>\\1</b><div id='k$r$i' style='display: none;'>\\2<br /></div>", $s);
         $i++;
     }
-
+	
+    //[hide]Link[/hide]
+    if ($config['HideBBcode']) {
+        $id = (int) $_GET["topicid"];
+        $reply = DB::run("SELECT * FROM forum_posts WHERE topicid=$id AND userid=$_SESSION[id]");
+        if ($reply->rowCount() == 0) {
+            $s = preg_replace(
+                "/\[hide\]\s*((\s|.)+?)\s*\[\/hide\]\s*/i",
+                "<p style='border: 3px solid red; '><font color=red><b>Please reply to view Links</b></font></p>",
+                $s
+            );
+        }
+    }
+	
     //[hr]
     $s = preg_replace("/\[hr\]/i", "<hr />", $s);
 
