@@ -403,6 +403,9 @@ class Account extends Controller
                 //make first member admin
                 if ($numsitemembers == '0') {
                     $signupclass = '7';
+                    // Shout new user
+                    $msg_shout = "New User: ".$wantusername." has joined.";
+                    DB::run("INSERT INTO shoutbox (userid, date, user, message) VALUES(?,?,?,?)", [0, get_date_time(), 'System' , $msg_shout]);
                 } else {
                     $signupclass = '1';
                 }

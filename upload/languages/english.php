@@ -1145,4 +1145,10 @@ $LANG["USERNAME"] = "Username";
 $LANG["RATIO"] = "Ratio";
 $LANG["UPLOADED"] = "Uploaded";
 $LANG["NOTHING_FOUND"] = "Nothing found";
+// User Theme 
+$LANG["THEME_NAME"] = "Theme Uses";
+// clear shoutbox
+$LANG["CLEAR_SHOUTBOX_TEXT"] = "Are you sure you want to clear the shoutbox? You can't undo this";
+$LANG["SHOUTBOX_CLEARED_MESSAGE"] = "The shoutbox has been cleared";
+$LANG["CLEAR_SHOUTBOX"] = "Clear Shoutbox";
 ?>

@@ -14,6 +14,8 @@
         echo "<br /><input type='file' name='nfofile' size='60' /></td></tr>";
         
         echo "<tr><td class='table_col1' align='right'><b>".T_("CATEGORIES").": </b></td><td class='table_col2'>".$catdropdown."</td></tr>";
+        if(get_user_class() >= 5)  // lowest class to make torrent sticky.
+            echo "<tr><td class='table_col1' align='right'><b>".T_("STICKY").": </b></td><td class='table_col2'><input type='checkbox' name='sticky'" . (($row["sticky"] == "yes") ? " checked='checked'" : "" ) . " value='yes' />Set sticky this torrent!</td></tr>";
         if ($config["imdb"]) {
             echo "<tr><td class='table_col1' align='right'><b>".T_("IMDB")."</b></td><td class='table_col2'><input type=\"text\" name=\"imdb\" value=\"" . htmlspecialchars($row["imdb"]) . "\" size=\"60\" /></td></tr>";
         }

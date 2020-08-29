@@ -16,6 +16,13 @@ if (($config["INVITEONLY"] || $config["ENABLEINVITES"]) && $_SESSION['loggedin']
         </td>
     </tr>
 	<?php } ?>
+	<?php if ($_SESSION["invitees"] > 0 ){ ?>
+    <tr>
+        <td align="center">
+        <a href="<?php echo $config['SITEURL'] ?>/invite/invitetree"><?php echo T_("Invite Tree"); ?></a>
+        </td>
+    </tr>
+    <?php } ?>
 	</table>
 	<?php
 	end_block();

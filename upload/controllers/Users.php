@@ -77,7 +77,7 @@ if ($show != 0 && $_SESSION["control_panel"] != "yes")
           if (!$country) {
               $country = "<b>Unknown</b>";
           }
-  
+
           // $ratio
           if ($user["downloaded"] > 0) {
               $ratio = $user["uploaded"] / $user["downloaded"];

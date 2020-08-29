@@ -123,23 +123,23 @@ CREATE TABLE `bans` (
 ) ENGINE=MyISAM AUTO_INCREMENT=1 ;
 
 DROP TABLE IF EXISTS `requests`;
-    CREATE TABLE `requests` (
-      `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-      `userid` int(10) unsigned NOT NULL DEFAULT '0',
-      `request` varchar(225) DEFAULT NULL,
-      `descr` text default NULL,
-      `added` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-      `hits` int(10) unsigned NOT NULL DEFAULT '0',
-      `cat` int(10) unsigned NOT NULL DEFAULT '0',
-      `filled` varchar(75) DEFAULT NULL,
-      `filledby` int(10) unsigned NOT NULL DEFAULT '0',
-      `comments` int(11) default NULL,
-      `profilled` int(10) unsigned NOT NULL DEFAULT '0',
-      `done` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-      `poster` varchar(255) default NOT NULL,
-      PRIMARY KEY (`id`),
-      KEY `userid` (`userid`)
-    ) ENGINE=MyISAM;
+CREATE TABLE `requests` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `userid` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `request` varchar(225)  DEFAULT NULL,
+  `descr` text  NOT NULL,
+  `added` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `hits` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `cat` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `filled` varchar(75) DEFAULT NULL,
+  `filledby` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `comments` int(11) NOT NULL,
+  `profilled` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `done` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `poster` varchar(255) NOT NULL,
+   PRIMARY KEY (`id`),
+   KEY `userid` (`userid`)
+) ENGINE=MyISAM;
 
 DROP TABLE IF EXISTS `addedrequests`;
     CREATE TABLE `addedrequests` (

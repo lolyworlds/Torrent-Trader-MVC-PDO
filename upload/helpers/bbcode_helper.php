@@ -79,6 +79,20 @@ switch(tag)
 		document.forms[form].elements[text].value = document.forms[form].elements[text].value + "[i][/i]";
 	}
         break;
+    case '[hide]':
+	var start = document.forms[form].elements[text].selectionStart;
+	var end = document.forms[form].elements[text].selectionEnd;
+	if (start != end) {
+		var body = document.forms[form].elements[text].value;
+		var left = body.substring(0, start);
+		var middle = "[hide]" + body.substring(start, end) + "[/hide]";
+		var rightpos = start + body.substring(start, end).length;
+		var right = body.substring(rightpos, end);
+		document.forms[form].elements[text].value = left + middle + right;
+	} else {
+		document.forms[form].elements[text].value = document.forms[form].elements[text].value + "[hide][/hide]";
+	}
+        break;
     case '[u]':
 	var start = document.forms[form].elements[text].selectionStart;
 	var end = document.forms[form].elements[text].selectionEnd;
@@ -105,6 +119,7 @@ switch(tag)
     <input type="button" name="quote" value="QUOTE " onclick="javascript: BBTag('[quote]','quote','<?php echo $name; ?>','<?php echo $form; ?>')" />
     <input type="button" name="url" value="URL " onclick="javascript: BBTag('[url]','url','<?php echo $name; ?>','<?php echo $form; ?>')" />
     <input type="button" name="img" value="IMG " onclick="javascript: BBTag('[img]','img','<?php echo $name; ?>','<?php echo $form; ?>')" />
+	<input type="button" name="hide" value="HIDE " onclick="javascript: BBTag('[hide]','hide','<?php echo $name; ?>','<?php echo $form; ?>')" />
 </center>
 
 <div class="container">

@@ -36,6 +36,7 @@
         Search: <input type='text' name='search' value='<?php echo $search; ?>' size='30' />
         <input type='submit' value='Search' />
         </form>
+        <center><a href='<?php echo TTURL; ?>/peers/dead'>Dead Torrents</a></center>
         <br>
         <form id="myform" method='post' action='<?php echo TTURL; ?>/admincp?action=torrentmanage'>
         <input type='hidden' name='do' value='delete' />

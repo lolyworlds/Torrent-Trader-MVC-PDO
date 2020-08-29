@@ -20,5 +20,6 @@
     <li class="list-group-item"><a href="<?php echo TTURL; ?>/admincp?action=warned"><img src="images/admin/warned_user.png" border="0" width="20" height="20" alt="" />&nbsp;<b><?php echo T_("WARNED_USERS"); ?></b></a></li>
     <li class="list-group-item"><a href="<?php echo TTURL; ?>/admincp?action=whoswhere"><img src="images/admin/whos_where.png" border="0" width="20" height="20" alt="" />&nbsp;<b><?php echo T_("WHOS_WHERE"); ?></b></a></li>
     <li class="list-group-item"><a href="<?php echo TTURL; ?>/admincp?action=censor"><img src="images/admin/word_censor.png" border="0" width="20" height="20" alt="" />&nbsp;<b><?php echo T_("WORD_CENSOR"); ?></b></a></li>
+    <li class="list-group-item"><a href="<?php echo TTURL; ?>/admincp?action=clearshout"><img src="images/shoutclear.png" border="0" width="20" height="20" alt="" />&nbsp;<b><?php echo T_("CLEAR_SHOUTBOX"); ?></b></a></li>
     </ul>
 </div>

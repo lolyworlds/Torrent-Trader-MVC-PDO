@@ -158,3 +158,11 @@ insert_tag(
 	"[spoiler=Heading]The quick brown fox jumps over the lazy dog.[/spoiler]",
 	""
 );
+
+insert_tag(
+	"Hide content",
+	"Hide content in a post or comment",
+	"[hide]text or url[/hide]",
+	"[hide]This text was hidden until you clicked that button[/hide]",
+	"wrap in [hide] tags"
+ );

@@ -203,3 +203,50 @@ function uploadimage($x, $imgname, $tid)
         return $ifilename;
     }
 } //end func
+
+// Polls
+function get_poolsleft($i){
+    global $config; 
+    if ($i == 0 || $i == 5 || $i == 10 || $i == 15) return "<img src=".$config['SITEURL']."/images/polls/bar1-l.png border=0>";
+    if ($i == 1 || $i == 6 || $i == 11 || $i == 16) return "<img src=".$config['SITEURL']."/images/polls/bar2-l.png border=0>";
+    if ($i == 2 || $i == 7 || $i == 12 || $i == 17) return "<img src=".$config['SITEURL']."/images/polls/bar3-l.png border=0>";
+    if ($i == 3 || $i == 8 || $i == 13 || $i == 18) return "<img src=".$config['SITEURL']."/images/polls/bar4-l.png border=0>";
+    if ($i == 4 || $i == 9 || $i == 14 || $i == 19) return "<img src=".$config['SITEURL']."/images/polls/bar5-l.png border=0>";
+    return "";
+    }
+    function get_poolsmiddle($i){
+    global $config;
+    if ($i == 0 || $i == 5 || $i == 10 || $i == 15) return "<img src=".$config['SITEURL']."/images/polls/bar1.png border=0";
+    if ($i == 1 || $i == 6 || $i == 11 || $i == 16) return "<img src=".$config['SITEURL']."/images/polls/bar2.png border=0";
+    if ($i == 2 || $i == 7 || $i == 12 || $i == 17) return "<img src=".$config['SITEURL']."/images/polls/bar3.png border=0";
+    if ($i == 3 || $i == 8 || $i == 13 || $i == 18) return "<img src=".$config['SITEURL']."/images/polls/bar4.png border=0";
+    if ($i == 4 || $i == 9 || $i == 14 || $i == 19) return "<img src=".$config['SITEURL']."/images/polls/bar5.png border=0";
+    return "";
+    }
+    function get_poolsright($i) {
+    global $config;
+    if ($i == 0 || $i == 5 || $i == 10 || $i == 15) return "<img src=".$config['SITEURL']."/images/polls/bar1-r.png border=0>";
+    if ($i == 1 || $i == 6 || $i == 11 || $i == 16) return "<img src=".$config['SITEURL']."/images/polls/bar2-r.png border=0>";
+    if ($i == 2 || $i == 7 || $i == 12 || $i == 17) return "<img src=".$config['SITEURL']."/images/polls/bar3-r.png border=0>";
+    if ($i == 3 || $i == 8 || $i == 13 || $i == 18) return "<img src=".$config['SITEURL']."/images/polls/bar4-r.png border=0>";
+    if ($i == 4 || $i == 9 || $i == 14 || $i == 19) return "<img src=".$config['SITEURL']."/images/polls/bar5-r.png border=0>";
+    return "";
+    }
+
+// Error Block
+function block_error_msg($title, $message, $wrapper = "1") {
+    if ($wrapper) {
+        ob_start();
+        ob_clean();
+        stdhead($title);
+    }
+    begin_block("<font class='error'>". htmlspecialchars($title) ."</font>");
+    print("<center><b>" . $message . "</b></center>\n");
+    end_block();
+
+    if ($wrapper){
+        stdfoot();
+        die();
+    }
+}
+    // End Poll

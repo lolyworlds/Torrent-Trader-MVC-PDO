@@ -31,7 +31,7 @@ public function getTorrentByCat ($where, $parent_check, $orderby, $limit)
 {
     $row = $this->db->run("
 	SELECT 
-	torrents.id, torrents.anon, torrents.announce, torrents.tube,  torrents.imdb, torrents.category, torrents.leechers, torrents.nfo, torrents.seeders, torrents.name, torrents.times_completed, 
+	torrents.id, torrents.anon, torrents.announce, torrents.tube,  torrents.imdb, torrents.category, torrents.sticky, torrents.leechers, torrents.nfo, torrents.seeders, torrents.name, torrents.times_completed, 
 	torrents.size, torrents.added, torrents.comments, torrents.numfiles, torrents.filename, torrents.owner, torrents.external, torrents.freeleech, categories.name 
 	AS cat_name, categories.parent_cat AS cat_parent, categories.image AS cat_pic, users.username, users.privacy, 
 	IF(torrents.numratings < 2, NULL, ROUND(torrents.ratingsum / torrents.numratings, 1)) 
@@ -82,7 +82,7 @@ public function getCatSortAll($where, $date_time, $orderby, $limit)
 {
     $row = $this->db->run("
     SELECT 
-    torrents.id, torrents.anon, torrents.category, torrents.imdb, torrents.tube, torrents.tube, torrents.leechers, torrents.nfo, torrents.seeders, torrents.name, torrents.times_completed, torrents.size, 
+    torrents.id, torrents.anon, torrents.category, torrents.sticky, torrents.imdb, torrents.tube, torrents.tube, torrents.leechers, torrents.nfo, torrents.seeders, torrents.name, torrents.times_completed, torrents.size, 
     torrents.added, torrents.comments, torrents.numfiles, torrents.filename, torrents.owner, torrents.external, torrents.freeleech, categories.name 
     AS cat_name, categories.parent_cat 
     AS cat_parent, categories.image 

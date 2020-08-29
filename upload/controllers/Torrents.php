@@ -234,6 +234,12 @@ end_frame();
                }           
             $updateset[] = "descr = " . sqlesc($_POST["descr"]);
             $updateset[] = "category = " . (int) $_POST["type"];
+            if(get_user_class() >= 5){   // lowest class to make torrent sticky.
+                if ($_POST["sticky"] == "yes")
+                          $updateset[] = "sticky = 'yes'";
+                   else
+                          $updateset[] = "sticky = 'no'";
+                }
             $updateset[] = "torrentlang = " . (int) $_POST["language"];
         
             if ($_SESSION["edit_torrents"] == "yes") {
@@ -593,13 +599,14 @@ if (!empty($_POST['imdb']))
                 
 					$filecounts = (int)$filecount;
 					
-					//try {
+					try {
                     $ret = DB::run("INSERT INTO torrents (filename, owner, name, descr, image1, image2, category, tube, added, info_hash, size, numfiles, save_as, announce, external, nfo, torrentlang, anon, last_action, imdb) 
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                     [$fname, $_SESSION['id'], $name, $descr, $inames[0], $inames[1], $catid, $tube, get_date_time(), $infohash, $torrentsize, $filecounts, $fname, $announce, $external, $nfo, $langid, $anon, get_date_time(), $imdb]);
-                    //} catch (PDOException $e) {
-                    //    autolink($config['SITEURL'].'/index.php', 'Torrent already added. Duplicate Hash');
-                    //}
+                    } catch (PDOException $e) {
+                        rename("$torrent_dir/$fname", "$torrent_dir/duplicate.torrent"); // todo
+                        autolink(TTURL.'/index.php', 'Torrent already added. Duplicate Hash');
+                    }
                     $id = DB::lastInsertId();
                     
                     if($id == 0){
@@ -655,7 +662,9 @@ if (!empty($_POST['imdb']))
                     //END SCRAPE
                 
                     write_log( sprintf(T_("TORRENT_UPLOADED"), htmlspecialchars($name), $_SESSION["username"]) );
-                
+                    // Shout new torrent
+                    $msg_shout = "New Torrent: [url=".$config['SITEURL']."/torrents/read?id=".$id."]".$torrent."[/url] has been uploaded ".($anon == 'no' ? "by [url=".$config['SITEURL']."/account-details.php?id=".$_SESSION['id']."]" .$_SESSION['username']. "[/url]" : "")."";
+                    DB::run("INSERT INTO shoutbox (userid, date, user, message) VALUES(?,?,?,?)", [0, get_date_time(), 'System' , $msg_shout]);
                     //Uploaded ok message (update later)
                     if ($external=='no')
                         $message = sprintf( T_("TORRENT_UPLOAD_LOCAL"), $name, $id, $id );
@@ -934,7 +943,7 @@ if (!empty($_POST['imdb']))
                   
                           while($cat = $catresult->fetch(PDO::FETCH_ASSOC))
                           {
-                              $orderby = "ORDER BY torrents.id DESC"; //Order
+                              $orderby = "ORDER BY torrents.sticky ASC, torrents.id DESC"; //Order
                               $where = "WHERE banned = 'no' AND category='$cat[id]' AND visible='yes'";
                               $limit = "LIMIT 10"; //Limit
                   
@@ -1435,7 +1444,7 @@ if (!empty($_POST['imdb']))
                         $orderby = "ORDER BY $sort";
                     
                         }else{
-                            $orderby = "ORDER BY torrents.id DESC";
+                            $orderby = "ORDER BY torrents.sticky ASC, torrents.id DESC";
                             $_GET["sort"] = "id";
                             $_GET["order"] = "desc";
                         }
@@ -1446,7 +1455,7 @@ if (!empty($_POST['imdb']))
                     //get sql info
                     if ($count) {
                         list($pagertop, $pagerbottom, $limit) = pager(20, $count, "torrents/browse?" . $addparam);
-                        $query = "SELECT torrents.id, torrents.anon, torrents.announce, torrents.category, torrents.leechers, torrents.nfo, torrents.seeders, torrents.name, torrents.times_completed, torrents.tube, torrents.imdb, torrents.size, torrents.added, torrents.comments, torrents.numfiles, torrents.filename, torrents.owner, torrents.external, torrents.freeleech, categories.name AS cat_name, categories.parent_cat AS cat_parent, categories.image AS cat_pic, users.username, users.privacy, IF(torrents.numratings < 2, NULL, ROUND(torrents.ratingsum / torrents.numratings, 1)) AS rating FROM torrents LEFT JOIN categories ON category = categories.id LEFT JOIN users ON torrents.owner = users.id $where $orderby $limit";
+                        $query = "SELECT torrents.id, torrents.anon, torrents.announce, torrents.category, torrents.sticky, torrents.leechers, torrents.nfo, torrents.seeders, torrents.name, torrents.times_completed, torrents.tube, torrents.imdb, torrents.size, torrents.added, torrents.comments, torrents.numfiles, torrents.filename, torrents.owner, torrents.external, torrents.freeleech, categories.name AS cat_name, categories.parent_cat AS cat_parent, categories.image AS cat_pic, users.username, users.privacy, IF(torrents.numratings < 2, NULL, ROUND(torrents.ratingsum / torrents.numratings, 1)) AS rating FROM torrents LEFT JOIN categories ON category = categories.id LEFT JOIN users ON torrents.owner = users.id $where $orderby $limit";
                         $res = DB::run($query);
                     }else{
                         unset($res);

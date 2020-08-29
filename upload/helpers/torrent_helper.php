@@ -304,7 +304,9 @@ function torrenttable($res)
                     if ($row["freeleech"] == 1) {
                         $dispname .= " <img src='images/free.gif' border='0' alt='' />";
                     }
-
+                    if ($row["sticky"] == "yes") {
+                        $dispname .= " <img src='images/sticky.gif' bored='0' alt='sticky' title='sticky'>";
+                    }
                     print("<td class='ttable_col$x' nowrap='nowrap'>" . (count($expandrows) ? "<a href=\"javascript: klappe_torrent('t" . $row['id'] . "')\"><img border=\"0\" src=\"" . $config["SITEURL"] . "/images/plus.gif\" id=\"pict" . $row['id'] . "\" alt=\"Show/Hide\" class=\"showthecross\" /></a>" : "") . "&nbsp;<a title=\"" . $row["name"] . "\" href=\"".$config['SITEURL']."/torrents/read?id=$id&amp;hit=1\">$dispname</a></td>");
 
                     break;

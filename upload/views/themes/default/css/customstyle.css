@@ -139,3 +139,16 @@ border: 10px solid #3895D3 !IMPORTANT;
     background-repeat: repeat-x;
 	color: #fff;
 }
+
+/* Poll */
+.pollsanswer {
+    color:#000;
+    border: 0px solid #486386;
+}
+.pollspercent {
+    background: none;
+    color: #F0F8FF;
+    border-bottom: 0px solid #486386;
+    border-left: 0px solid #486386;
+    border-right: 0px solid #486386;
+}

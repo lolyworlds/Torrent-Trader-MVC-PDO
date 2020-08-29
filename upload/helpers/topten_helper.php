@@ -1,6 +1,6 @@
 <?php
 function usertable($res, $frame_caption) {
-    global $CURUSER;
+    global $config;
       
     begin_frame($frame_caption, true);
     ?>
@@ -21,7 +21,7 @@ function usertable($res, $frame_caption) {
         $num = 0;
     while ($a = $res->fetch(PDO::FETCH_ASSOC)) {
           ++$num;
-        $highlight = $CURUSER["id"] == $a["userid"] ? " bgcolor=#fff" : "";
+        $highlight = $_SESSION["id"] == $a["userid"] ? " bgcolor=#fff" : "";
     if ($a["downloaded"]) {
         $ratio = $a["uploaded"] / $a["downloaded"];
         $color = get_ratio_color($ratio);
@@ -50,6 +50,7 @@ function usertable($res, $frame_caption) {
     function _torrenttable($res, $frame_caption) {
     
     begin_frame($frame_caption, true);
+    global $config;
     ?>
     
     <table class=table_table width=100% align=center border=0 cellpadding=4>
@@ -90,7 +91,6 @@ function usertable($res, $frame_caption) {
     }
     
     function countriestable($res, $frame_caption, $what) {
-    global $CURUSER;
     
     begin_frame($frame_caption, true);
     ?>

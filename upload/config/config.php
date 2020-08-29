@@ -175,4 +175,7 @@ $config['freeleechgbon'] = true;
 $config['freeleechgb'] = 8589934592; // 8gb
 // Request
 $config["REQUESTSON"] = true;
+// Hide links in forum
+$config['HideBBcode'] = true; // hide links
+
 ?>

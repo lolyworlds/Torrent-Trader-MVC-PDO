@@ -11,6 +11,7 @@
 				<td align="left">
 				<?php echo T_("USERNAME"); ?>: <?php echo class_user_colour($user["username"])?><br />
 				<?php echo T_("USERCLASS"); ?>: <?php echo get_user_class_name($user["class"])?><br />
+				<?php echo T_("THEME_NAME"); ?>: <?php echo $user["stylesheet"]?><br />
 				<?php echo T_("TITLE"); ?>: <i><?php echo format_comment($user["title"])?></i><br />
 				<?php echo T_("JOINED"); ?>: <?php echo htmlspecialchars(utc_to_tz($user["added"]))?><br />
 				<?php echo T_("LAST_VISIT"); ?>: <?php echo htmlspecialchars(utc_to_tz($user["last_access"]))?><br />
@@ -48,7 +49,7 @@
 				</td>
 		
 				<td align="left">
-                
+                <?php if ($_SESSION["class"] >= 5 && $_SESSION["class"] > $user["class"]) { ?>[<a href="<?php echo $config['SITEURL'] ?>/invite/invitetree?id=<?php echo $user["id"]?>">Invite Tree</a>]<?php } ?><br />
 				<img src="<?php echo $avatar; ?>" alt="" title="<?php echo class_user_colour($user["username"]); ?>" height="80" width="80" /><br />
 				<a href="<?php echo $config['SITEURL'] ?>/messages/create?id=<?php echo $user["id"]?>"><button type='button' class='btn btn-sm btn-success'><?php echo T_("SEND_PM") ?></button></a><br />
 				<!-- <a href=#>View Forum Posts</a><br />

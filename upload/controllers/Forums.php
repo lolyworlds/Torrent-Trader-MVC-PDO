@@ -842,21 +842,7 @@ $maxsubjectlength = 50;
     $pagemenu .= "</small>";
       
 //Get topic posts
-
-// Hide Reply Mod
-$data = DB::run("SELECT * FROM forum_posts WHERE topicid=$topicid ORDER BY id LIMIT 1");
-$mypost = $data->fetch(PDO::FETCH_ASSOC);
-$data1 = DB::run("SELECT user FROM thanks WHERE thanked = ? AND type = ? AND user = ?", [$topicid, 'forum', $_SESSION['id']]);
-$like = $data1->fetch(PDO::FETCH_ASSOC);
-if ($forumid == $config['hideforum'] && $_SESSION['id'] !== $mypost['userid']) {
-  if (!$like) {
-      $res = DB::run("SELECT * FROM forum_posts WHERE topicid=$topicid ORDER BY id LIMIT 1");
-  } elseif ($like) {
-    $res = DB::run("SELECT * FROM forum_posts WHERE topicid=$topicid ORDER BY id LIMIT $offset,$perpage");
-  }
-} else {	
     $res = DB::run("SELECT * FROM forum_posts WHERE topicid=$topicid ORDER BY id LIMIT $offset,$perpage");	
-}	
 
     stdhead("View Topic: $subject");
     begin_frame("$forum &gt; $subject");

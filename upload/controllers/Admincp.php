@@ -117,5 +117,6 @@ class Admincp extends Controller
         include "admin/admin_torrents.php";
         include "admin/admin_warnedusers.php";
         include "admin/admin_whoswhere.php";
+        include "admin/admin_cleanshout.php";
     }
 }
