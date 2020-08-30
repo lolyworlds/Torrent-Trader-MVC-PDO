@@ -49,6 +49,14 @@ $torrent_dir = $config["torrent_dir"];
 
 $fn = "$torrent_dir/$id.torrent";
 
+$res = DB::run("SELECT filename, vip FROM torrents WHERE id = $id");
+$arr = $res->fetch(PDO::FETCH_ASSOC);
+$name = $arr['filename'];
+$vip = $arr['vip'];
+if ($vip == "yes" && $_SESSION["class"]<4 ){
+    show_error_msg("Error","<b>You can not download, you have to be VIP</b>",1);
+}
+
 if (!$row)
 	show_error_msg(T_("FILE_NOT_FOUND"), T_("ID_NOT_FOUND"),1);
 if ($row["banned"] == "yes")

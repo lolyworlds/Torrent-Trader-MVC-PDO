@@ -304,6 +304,9 @@ function torrenttable($res)
                     if ($row["freeleech"] == 1) {
                         $dispname .= " <img src='images/free.gif' border='0' alt='' />";
                     }
+                    if ($row["vip"] == "yes") {
+                    $dispname .= " <img src='images/vip.gif' border='0' alt='' />";
+                    }
                     if ($row["sticky"] == "yes") {
                         $dispname .= " <img src='images/sticky.gif' bored='0' alt='sticky' title='sticky'>";
                     }
@@ -392,7 +395,8 @@ function torrenttable($res)
                     }
                     break;
                 case 'added':
-                    print("<td class='ttable_col$x' align='center'>" . date("d-m-Y H:i:s", utc_to_tz_time($row['added'])) . "</td>");
+                    //print("<td class='ttable_col$x' align='center'>" . date("d-m-Y H:i:s", utc_to_tz_time($row['added'])) . "</td>");
+                    print("<td class='ttable_col$x' align='center'>".get_time_elapsed($row['added'])."</td>");
                     break;
                 case 'speed':
                     if ($row["external"] != "yes" && $row["leechers"] >= 1) {
@@ -671,6 +675,7 @@ function ParseTorrent($filename)
     return $TorrentInfo;
 } //End Function
 
+/* sure this can be removed
 // snatch
 function seedtime($ts = 0)
 {
@@ -680,3 +685,4 @@ function seedtime($ts = 0)
     $secs = $ts % 60;
     return sprintf('%d days, %d hours, %d minutes, %d seconds...', $days, $hours, $mins, $secs);
 }
+*/

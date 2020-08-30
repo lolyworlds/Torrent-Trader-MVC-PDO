@@ -127,7 +127,7 @@ $config["ratiowarn_mingigs"] = 4;  //Min GB Downloaded
 $config["ratiowarn_daystowarn"] = 14; //Days to ban
 
 // category = Category Image/Name, name = Torrent Name, dl = Download Link, uploader, comments = # of comments, completed = times completed, size, seeders, leechers, health = seeder/leecher ratio, external, wait = Wait Time (if enabled), rating = Torrent Rating, added = Date Added, nfo = link to nfo (if exists)
-$config["torrenttable_columns"] = "category,name,dl,magnet,tube,imdb,uploader,comments,size,seeders,leechers,health,external";
+$config["torrenttable_columns"] = "category,name,dl,magnet,tube,imdb,uploader,comments,size,seeders,leechers,health,external,added";
 // size, speed, added = Date Added, tracker, completed = times completed
 $config["torrenttable_expand"] = "";
 
@@ -160,7 +160,6 @@ $config['Administrator'] = "7";
 
 // FORUM POST ON INDEX & Hidden Replys
 $config['FORUMONINDEX'] = true;
-$config['hideforum'] = 2; // Hide replys until after member replys
 
 // Ip Check
 $config["ipcheck"]  = true;
@@ -177,5 +176,11 @@ $config['freeleechgb'] = 8589934592; // 8gb
 $config["REQUESTSON"] = true;
 // Hide links in forum
 $config['HideBBcode'] = true; // hide links
-
+// Hit & Run mod
+$config["hnr_on"] = false; // Not Finished only for testing 
+$config["hnr_deadline"] = 7*86400; // 7 days to hit the seed target
+$config["hnr_seedtime"] = 172800; // target is to seed for 48 hours
+$config["hnr_warn"] = 5; // 5 hit & runs then warned
+$config["hnr_stop_dl"] = 5;  // After 5 H & R stop downloading
+$config["hnr_ban"] = 50;  // After 50 H&R they are banned
 ?>

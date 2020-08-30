@@ -31,7 +31,9 @@
         if ($row["external"] != "yes" && $_SESSION["edit_torrents"] == "yes"){
             echo "<tr><td class='table_col1' align='right'><b>".T_("FREE_LEECH").": </b></td><td class='table_col2'><input type=\"checkbox\" name=\"freeleech\"" . (($row["freeleech"] == "1") ? " checked=\"checked\"" : "" ) . " value=\"1\" />".T_("FREE_LEECH_MSG")."<br /></td></tr>";
         }
-        
+        if ($row["external"] != "yes" && $_SESSION["edit_torrents"] == "yes"){
+            echo "<tr><td class='table_col1' align='right'><b>VIP:</b></td><td class='table_col2'><input name=vip type='checkbox'" . (($row["vip"] == "yes") ? " checked='checked'" : "" ) . " value='yes' /> Check the box to make the torrent VIP only.";
+        }
         if ($config['ANONYMOUSUPLOAD']) {
             echo "<tr><td class='table_col1' align='right'><b>".T_("ANONYMOUS_UPLOAD").": </b></td><td class='table_col2'><input type=\"checkbox\" name=\"anon\"" . (($row["anon"] == "yes") ? " checked=\"checked\"" : "" ) . " value=\"1\" />(".T_("ANONYMOUS_UPLOAD_MSG").")<br /></td></tr>";
         }

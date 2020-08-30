@@ -1,37 +1,26 @@
-CREATE TABLE IF NOT EXISTS `friends` (
-`id` int(10) unsigned NOT NULL auto_increment,
-`userid` int(10) unsigned NOT NULL default '0',
-`friendid` int(10) unsigned NOT NULL default '0',
-`friend` varchar(6) NOT NULL DEFAULT 'maybe',
-PRIMARY KEY (`id`),
-UNIQUE KEY `userfriend` (`userid`,`friendid`)
-) ENGINE=MyISAM;
 
-DROP TABLE IF EXISTS iplog;
-CREATE TABLE `iplog` (
-  `id` int(10)  unsigned NOT NULL auto_increment,
-  `ip` varchar(15) NOT NULL DEFAULT '',
-  `userid` int(10) UNSIGNED NOT NULL DEFAULT '0',
-  `added` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `lastused` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `timesused` int(10) NOT NULL DEFAULT '1',
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM;
+--
+-- Table structure for table `addedrequests`
+--
 
-CREATE TABLE `staffmessages` (
+DROP TABLE IF EXISTS `addedrequests`;
+CREATE TABLE IF NOT EXISTS `addedrequests` (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `sender` int(10) UNSIGNED NOT NULL DEFAULT 0,
-  `added` datetime DEFAULT NULL,
-  `msg` text DEFAULT NULL,
-  `subject` varchar(100) NOT NULL DEFAULT '',
-  `answeredby` int(10) UNSIGNED NOT NULL DEFAULT 0,
-  `answered` tinyint(1) NOT NULL DEFAULT 0,
-  `answer` text DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  `requestid` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `userid` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  KEY `userid` (`userid`)
 ) ENGINE=MyISAM;
 
-CREATE TABLE `agents` (
-  `agent_id` int(10) unsigned NOT NULL auto_increment,
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `agents`
+--
+
+DROP TABLE IF EXISTS `agents`;
+CREATE TABLE IF NOT EXISTS `agents` (
+  `agent_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `agent_name` varchar(255) NOT NULL DEFAULT '',
   `hits` int(10) UNSIGNED NOT NULL DEFAULT 0,
   `ins_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -39,129 +28,61 @@ CREATE TABLE `agents` (
   UNIQUE KEY `agent_name` (`agent_name`) USING HASH
 ) ENGINE=MyISAM;
 
-create table sessions(
-  id serial,
-  sess_id text not null,
-  _access integer,
-  data text,
-  primary key (id)
-);
+-- --------------------------------------------------------
 
-CREATE TABLE `thanks` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `user` int(10) unsigned NOT NULL default '0',
-  `thanked` int(10) unsigned NOT NULL default '0',
-  `added` datetime NOT NULL default '0000-00-00 00:00:00',
-  `type` text NOT NULL,
-  PRIMARY KEY  (`id`),
-  KEY `user` (`user`),
-  KEY `thanked` (`thanked`)
-) ENGINE=MyISAM;
-
-CREATE TABLE `likes` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `user` int(10) unsigned NOT NULL default '0',
-  `liked` int(10) unsigned NOT NULL default '0',
-  `added` datetime NOT NULL default '0000-00-00 00:00:00',
-  `reaction` text NOT NULL,
-  `type` text NOT NULL,
-  PRIMARY KEY  (`id`),
-  KEY `user` (`user`),
-  KEY `liked` (`liked`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 ;
-
-DROP TABLE IF EXISTS `bonus`;
-CREATE TABLE `bonus` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `title` varchar(50) NOT NULL,
-  `cost` decimal(10,1) unsigned NOT NULL DEFAULT '0.0',
-  `value` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `descr` varchar(100) NOT NULL,
-  `type` enum('traffic','invite','VIP','other','HnR')  NOT NULL DEFAULT 'other',
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM ;
-
-INSERT INTO `bonus` (`id`, `title`, `cost`, `value`, `descr`, `type`) VALUES
-(1, '1GB Uploaded', '70.0', 1073741824, 'Exchange 70 points for 1 GB upload.', 'traffic'),
-(2, '2 GB Uploaded', '100.0', 2147483648, 'Exchange 100 points for  GB upload.', 'traffic'),
-(3, '5 GB Uploaded', '250.0', 5368709120, 'Exchange 250 points for 5 GB upload.', 'traffic'),
-(4, '10 GB Uploaded', '500.0', 10737418240, 'Exchange 500 points for 10 GB upload.', 'traffic'),
-(5, 'Invitations', '1000.0', 2, 'Receive 2 Invites for 1000.00 seedbonus points.', 'invite');
-
-DROP TABLE IF EXISTS `files`;
-CREATE TABLE `files` (
-`id` BIGINT( 20 ) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,
-`torrent` INT( 10 ) UNSIGNED NOT NULL ,
-`path` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
-`filesize` BIGINT( 20 ) UNSIGNED NOT NULL ,
-INDEX ( `torrent` )
-) ENGINE = MYISAM ;
+--
+-- Table structure for table `announce`
+--
 
 DROP TABLE IF EXISTS `announce`;
-CREATE TABLE `announce` (
-`id` INT( 20 ) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,
-`url` VARCHAR( 255 ) NOT NULL ,
-`torrent` INT( 10 ) UNSIGNED NOT NULL ,
-`seeders` INT( 10 ) UNSIGNED NOT NULL DEFAULT '0',
-`leechers` INT( 10 ) UNSIGNED NOT NULL DEFAULT '0',
-`times_completed` INT( 10 ) UNSIGNED NOT NULL DEFAULT '0',
-`online` ENUM( 'yes', 'no' ) NOT NULL DEFAULT 'yes',
-INDEX ( `torrent` )
-) ENGINE = MYISAM ; 
-
-
-DROP TABLE IF EXISTS `bans`;
-CREATE TABLE `bans` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `added` datetime NOT NULL default '0000-00-00 00:00:00',
-  `addedby` int(10) unsigned NOT NULL default '0',
-  `comment` varchar(255) NOT NULL default '',
-  `first` varchar(39) default NULL,
-  `last` varchar(39) default NULL,
-  PRIMARY KEY  (`id`),
-  KEY `first_last` (`first`,`last`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 ;
-
-DROP TABLE IF EXISTS `requests`;
-CREATE TABLE `requests` (
-  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `userid` int(10) UNSIGNED NOT NULL DEFAULT 0,
-  `request` varchar(225)  DEFAULT NULL,
-  `descr` text  NOT NULL,
-  `added` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `hits` int(10) UNSIGNED NOT NULL DEFAULT 0,
-  `cat` int(10) UNSIGNED NOT NULL DEFAULT 0,
-  `filled` varchar(75) DEFAULT NULL,
-  `filledby` int(10) UNSIGNED NOT NULL DEFAULT 0,
-  `comments` int(11) NOT NULL,
-  `profilled` int(10) UNSIGNED NOT NULL DEFAULT 0,
-  `done` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `poster` varchar(255) NOT NULL,
-   PRIMARY KEY (`id`),
-   KEY `userid` (`userid`)
+CREATE TABLE IF NOT EXISTS `announce` (
+  `id` int(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `url` varchar(255) NOT NULL,
+  `torrent` int(10) UNSIGNED NOT NULL,
+  `seeders` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `leechers` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `times_completed` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `online` enum('yes','no') NOT NULL DEFAULT 'yes',
+  PRIMARY KEY (`id`),
+  KEY `torrent` (`torrent`)
 ) ENGINE=MyISAM;
 
-DROP TABLE IF EXISTS `addedrequests`;
-    CREATE TABLE `addedrequests` (
-      `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-      `requestid` int(10) unsigned NOT NULL DEFAULT '0',
-      `userid` int(10) unsigned NOT NULL DEFAULT '0',
-      PRIMARY KEY (`id`),
-      KEY `userid` (`userid`)
-    ) ENGINE=MyISAM;
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `bans`
+--
+
+DROP TABLE IF EXISTS `bans`;
+CREATE TABLE IF NOT EXISTS `bans` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `added` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `addedby` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `comment` varchar(255) NOT NULL DEFAULT '',
+  `first` varchar(39) DEFAULT NULL,
+  `last` varchar(39) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `first_last` (`first`,`last`)
+) ENGINE=MyISAM;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `blocks`
+--
 
 DROP TABLE IF EXISTS `blocks`;
-CREATE TABLE `blocks` (
-`id` int(11) NOT NULL auto_increment,
-`named` varchar(255) NOT NULL default '',
-`name` varchar(255) NOT NULL default '',
-`position` varchar(10) NOT NULL default '',
-`description` varchar(255) NOT NULL default '',
-`enabled` tinyint(3) NOT NULL default '0',
-`sort` int(11) NOT NULL default '0',
-PRIMARY KEY (`id`),
-KEY `position_enabled` (`position`,`enabled`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 ;
+CREATE TABLE IF NOT EXISTS `blocks` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `named` varchar(255) NOT NULL DEFAULT '',
+  `name` varchar(255) NOT NULL DEFAULT '',
+  `position` varchar(10) NOT NULL DEFAULT '',
+  `description` varchar(255) NOT NULL DEFAULT '',
+  `enabled` tinyint(3) NOT NULL DEFAULT 0,
+  `sort` int(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  KEY `position_enabled` (`position`,`enabled`)
+) ENGINE=MyISAM;
 
 INSERT INTO `blocks` (`id`, `named`, `name`, `position`, `description`, `enabled`, `sort`) VALUES
 (1, 'donate', 'donate', 'right', 'Description here...', 1, 11),
@@ -170,7 +91,7 @@ INSERT INTO `blocks` (`id`, `named`, `name`, `position`, `description`, `enabled
 (4, 'Login Block', 'login', 'left', 'Description here...', 1, 1),
 (5, 'rss', 'rss', 'right', 'Description here...', 1, 14),
 (6, 'latestuploads', 'latestuploads', 'left', 'Description here...', 1, 7),
-(7, 'advancestats', 'advancestats', 'left', 'Description here...', 1, 8),
+(7, 'advancestats', 'advancestats', 'left', 'Description here...', 1, 9),
 (8, 'serverload', 'serverload', 'right', 'Description here...', 1, 15),
 (9, 'usersonline', 'usersonline', 'right', 'Description here...', 1, 2),
 (10, 'Main Category', 'maincats', 'left', 'Description here...', 1, 3),
@@ -186,99 +107,113 @@ INSERT INTO `blocks` (`id`, `named`, `name`, `position`, `description`, `enabled
 (20, 'Powered By', 'poweredby', 'right', 'Description here...', 1, 4),
 (21, 'admincp', 'admincp', 'right', 'Description here...', 1, 8),
 (22, 'request', 'request', 'right', 'Description here...', 1, 12),
-(23, 'ipconnected', 'ipconnected', 'right', 'Description here...', 1, 13);
+(23, 'ipconnected', 'ipconnected', 'right', 'Description here...', 1, 13),
+(24, 'qbit', 'qbit', 'left', 'Description here...', 1, 8);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `bonus`
+--
+
+DROP TABLE IF EXISTS `bonus`;
+CREATE TABLE IF NOT EXISTS `bonus` (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `title` varchar(50) NOT NULL,
+  `cost` decimal(10,1) UNSIGNED NOT NULL DEFAULT 0.0,
+  `value` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `descr` varchar(100) NOT NULL,
+  `type` enum('traffic','invite','VIP','other','HnR') NOT NULL DEFAULT 'other',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `categories`
+--
 
 DROP TABLE IF EXISTS `categories`;
-CREATE TABLE `categories` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `name` varchar(30) NOT NULL default '',
-  `sort_index` int(10) unsigned NOT NULL default '0',
-  `image` varchar(255) NOT NULL default '',
-  `subcat` char(3) NOT NULL default 'no',
-  `parent_cat` varchar(15) NOT NULL default '',
-  `sub_sort` char(3) NOT NULL default '',
-  PRIMARY KEY  (`id`),
-  UNIQUE KEY `parent_cat-name` (`parent_cat`, `name` )
-) ENGINE=MyISAM AUTO_INCREMENT=1 ;
+CREATE TABLE IF NOT EXISTS `categories` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` varchar(30) NOT NULL DEFAULT '',
+  `sort_index` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `image` varchar(255) NOT NULL DEFAULT '',
+  `subcat` char(3) NOT NULL DEFAULT 'no',
+  `parent_cat` varchar(15) NOT NULL DEFAULT '',
+  `sub_sort` char(3) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `parent_cat-name` (`parent_cat`,`name`)
+) ENGINE=MyISAM;
 
-INSERT INTO `categories` (`id`, `name`, `sort_index`, `image`, `subcat`, `parent_cat`, `sub_sort`) VALUES 
-(1, 'DVD', 1, '', 'yes', 'Movies', '1'),
-(2, 'Divx/Xvid', 2, '', 'yes', 'Movies', '2'),
-(3, 'SVCD/VCD', 3, '', 'yes', 'Movies', '3'),
-(4, 'Other', 4, '', 'no', 'Movies', '4'),
-(5, 'DVD', 5, '', 'yes', 'TV', '5'),
-(6, 'Divx/Xvid', 6, '', 'yes', 'TV', '6'),
-(7, 'SVCD/VCD', 7, '', 'yes', 'TV', '7'),
-(9, 'All', 9, '', 'yes', 'Documentaries', '9'),
-(10, 'PC', 10, '', 'yes', 'Games', '10'),
-(11, 'PS2', 11, '', 'yes', 'Games', '11'),
-(12, 'PSP', 12, '', 'yes', 'Games', '12'),
-(13, 'Xbox', 13, '', 'yes', 'Games', '13'),
-(14, 'Xbox360', 14, '', 'yes', 'Games', '14'),
-(15, 'PS1', 15, '', 'yes', 'Games', '15'),
-(16, 'Dreamcast', 16, '', 'yes', 'Games', '16'),
-(17, 'Other', 20, '', 'yes', 'Games', '20'),
-(18, 'PC', 18, '', 'yes', 'Apps', '18'),
-(19, 'Mac', 19, '', 'yes', 'Apps', '19'),
-(20, 'Linux', 20, '', 'yes', 'Apps', '20'),
-(21, 'Other', 21, '', 'yes', 'Apps', '21'),
-(22, 'MP3', 22, '', 'yes', 'Music', '22'),
-(23, 'Lossless', 23, '', 'yes', 'Music', '23'),
-(24, 'DVD', 24, '', 'yes', 'Music', '24'),
-(25, 'Video', 25, '', 'yes', 'Music', '25'),
-(26, 'Radio', 26, '', 'yes', 'Music', '26'),
-(27, 'Other', 27, '', 'yes', 'Music', '27'),
-(28, 'All', 0, 'anime.jpg', 'yes', 'Anime', '28'),
-(33, 'Emulation', 33, '', 'yes', 'Other', '33'),
-(34, 'PPC/PDA', 34, '', 'yes', 'Other', '34'),
-(35, 'Sounds', 35, '', 'yes', 'Other', '35'),
-(36, 'E-Books', 36, '', 'yes', 'Other', '36'),
-(37, 'Images', 37, '', 'yes', 'Other', '37'),
-(38, 'Mobile Phone', 38, '', 'yes', 'Other', '38'),
-(39, 'Extra Pars/Fills', 39, '', 'yes', 'Other', '39'),
-(40, 'Other', 40, '', 'yes', 'Other', '40'),
-(41, 'HD', 6, '', 'yes', 'TV', '6'),
-(42, 'HD', 3, '', 'yes', 'Movies', '3'),
-(43, 'PS3', 12, '', 'yes', 'Games', '12'),
-(44, 'Wii', 17, '', 'yes', 'Games', '17'),
-(45, 'DS', 18, '', 'yes', 'Games', '18'),
-(46, 'GameCube', 19, '', 'yes', 'Games', '19');
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `censor`
+--
+
+DROP TABLE IF EXISTS `censor`;
+CREATE TABLE IF NOT EXISTS `censor` (
+  `word` varchar(25) NOT NULL DEFAULT '',
+  `censor` varchar(25) NOT NULL DEFAULT ''
+) ENGINE=MyISAM;
+
+INSERT INTO `censor` VALUES ('fuck', 'f**k');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `comments`
+--
 
 DROP TABLE IF EXISTS `comments`;
-    CREATE TABLE `comments` (
-      `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-      `user` int(10) unsigned NOT NULL DEFAULT '0',
-      `torrent` int(10) unsigned NOT NULL DEFAULT '0',
-      `added` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-      `text` text default NULL,
-      `news` int(10) unsigned NOT NULL DEFAULT '0',
-      `req` int(11) default NULL,
-      `ori_text` text default NULL,
-      `editedby` text default NULL,
-      `editedat` datetime default NULL,
-      PRIMARY KEY (`id`),
-      KEY `user` (`user`),
-      KEY `torrent` (`torrent`)
-    ) ENGINE=MyISAM;
+CREATE TABLE IF NOT EXISTS `comments` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `torrent` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `added` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `text` text DEFAULT NULL,
+  `news` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `req` int(11) DEFAULT NULL,
+  `ori_text` text DEFAULT NULL,
+  `editedby` text DEFAULT NULL,
+  `editedat` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user` (`user`),
+  KEY `torrent` (`torrent`)
+) ENGINE=MyISAM;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `completed`
+--
 
 DROP TABLE IF EXISTS `completed`;
-CREATE TABLE `completed` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `userid` int(10) NOT NULL default '0',
-  `torrentid` int(10) NOT NULL default '0',
-  `date` datetime NOT NULL default '0000-00-00 00:00:00',
-  PRIMARY KEY  (`id`),
-  UNIQUE `userid_torrentid` (`userid`, `torrentid`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 ;
+CREATE TABLE IF NOT EXISTS `completed` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `userid` int(10) NOT NULL DEFAULT 0,
+  `torrentid` int(10) NOT NULL DEFAULT 0,
+  `date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `userid_torrentid` (`userid`,`torrentid`)
+) ENGINE=MyISAM;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `countries`
+--
 
 DROP TABLE IF EXISTS `countries`;
-CREATE TABLE `countries` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `name` varchar(50) default NULL,
-  `flagpic` varchar(50) default NULL,
-  `domain` char(3) default NULL,
-  PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 ;
+CREATE TABLE IF NOT EXISTS `countries` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) DEFAULT NULL,
+  `flagpic` varchar(50) DEFAULT NULL,
+  `domain` char(3) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM;
+
 
 INSERT INTO `countries` (`id`, `name`, `flagpic`, `domain`) VALUES 
 (1, 'Sweden', 'sweden.gif', 'SE'),
@@ -379,28 +314,41 @@ INSERT INTO `countries` (`id`, `name`, `flagpic`, `domain`) VALUES
 (100, 'England', 'england.gif', 'GB'),
 (101, 'Egypt', 'egypt.gif', 'EG');
 
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `email_bans`
+--
+
 DROP TABLE IF EXISTS `email_bans`;
-CREATE TABLE `email_bans` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `userid` int(11) default '0',
-  `added` datetime NOT NULL default '0000-00-00 00:00:00',
-  `addedby` int(10) unsigned NOT NULL default '0',
-  `comment` varchar(255) NOT NULL default '',
-  `mail_domain` varchar(255) default NULL,
-  PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 ;
+CREATE TABLE IF NOT EXISTS `email_bans` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `userid` int(11) DEFAULT 0,
+  `added` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `addedby` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `comment` varchar(255) NOT NULL DEFAULT '',
+  `mail_domain` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `faq`
+--
 
 DROP TABLE IF EXISTS `faq`;
-CREATE TABLE `faq` (
-  `id` int(10) NOT NULL auto_increment,
-  `type` set('categ','item') NOT NULL default 'item',
+CREATE TABLE IF NOT EXISTS `faq` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `type` set('categ','item') NOT NULL DEFAULT 'item',
   `question` text NOT NULL,
   `answer` text NOT NULL,
-  `flag` set('0','1','2','3') NOT NULL default '1',
-  `categ` int(10) NOT NULL default '0',
-  `order` int(10) NOT NULL default '0',
-  PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 ;
+  `flag` set('0','1','2','3') NOT NULL DEFAULT '1',
+  `categ` int(10) NOT NULL DEFAULT 0,
+  `order` int(10) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM;
 
 INSERT INTO `faq` (`id`, `type`, `question`, `answer`, `flag`, `categ`, `order`) VALUES
 (1, 'categ', 'Site information', '', '1', 0, 1),
@@ -456,9 +404,139 @@ INSERT INTO `faq` (`id`, `type`, `question`, `answer`, `flag`, `categ`, `order`)
 (63, 'item', 'Your ISP blocks the site''s address', '(In first place, it''s unlikely your ISP is doing so. DNS name resolution and/or network problems are the usual culprits.)\r\n<br />\r\nThere''s nothing we can do.\r\nYou should contact your ISP (or get a new one). Note that you can still visit the site via a proxy, follow the instructions\r\nin the relevant section. In this case it doesn''t matter if the proxy is anonymous or not, or which port it listens to.<br />\r\n<br />\r\nNotice that you will always be listed as an &quot;unconnectable&quot; client because the tracker will be unable to\r\ncheck that you''re capable of accepting incoming connections.', '1', 8, 2),
 (65, 'item', 'You can try these:', 'Post in the <a href="forums.php">Forums</a>, by all means. You''ll find they\r\nare usually a friendly and helpful place,\r\nprovided you follow a few basic guidelines:\r\n<ul>\r\n<li>Make sure your problem is not really in this FAQ. There''s no point in posting just to be sent\r\nback here.</li>\r\n<li>Before posting read the sticky topics (the ones at the top). Many times new information that\r\nstill hasn''t been incorporated in the FAQ can be found there.</li>\r\n<li>Help us in helping you. Do not just say "it doesn''t work!". Provide details so that we don''t\r\nhave to guess or waste time asking. What client do you use? What''s your OS? What''s your network setup? What''s the exact\r\nerror message you get, if any? What are the torrents you are having problems with? The more\r\nyou tell the easiest it will be for us, and the more probable your post will get a reply.</li>\r\n<li>And needless to say: be polite. Demanding help rarely works, asking for it usually does\r\nthe trick.</li></ul>', '1', 9, 1);
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `files`
+--
+
+DROP TABLE IF EXISTS `files`;
+CREATE TABLE IF NOT EXISTS `files` (
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `torrent` int(10) UNSIGNED NOT NULL,
+  `path` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `filesize` bigint(20) UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `torrent` (`torrent`)
+) ENGINE=MyISAM;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `forumcats`
+--
+
+DROP TABLE IF EXISTS `forumcats`;
+CREATE TABLE IF NOT EXISTS `forumcats` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` varchar(60) NOT NULL DEFAULT '',
+  `sort` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `forum_forums`
+--
+
+DROP TABLE IF EXISTS `forum_forums`;
+CREATE TABLE IF NOT EXISTS `forum_forums` (
+  `sort` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` varchar(60) NOT NULL DEFAULT '',
+  `description` varchar(200) DEFAULT NULL,
+  `minclassread` tinyint(3) UNSIGNED NOT NULL DEFAULT 1,
+  `minclasswrite` tinyint(3) UNSIGNED NOT NULL DEFAULT 1,
+  `guest_read` enum('yes','no') DEFAULT 'yes',
+  `category` tinyint(2) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `forum_posts`
+--
+
+DROP TABLE IF EXISTS `forum_posts`;
+CREATE TABLE IF NOT EXISTS `forum_posts` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `topicid` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `userid` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `added` datetime DEFAULT NULL,
+  `body` longtext DEFAULT NULL,
+  `editedby` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `editedat` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`),
+  KEY `topicid` (`topicid`),
+  KEY `userid` (`userid`)
+) ENGINE=MyISAM;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `forum_readposts`
+--
+
+DROP TABLE IF EXISTS `forum_readposts`;
+CREATE TABLE IF NOT EXISTS `forum_readposts` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `userid` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `topicid` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `lastpostread` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  KEY `userid` (`id`),
+  KEY `topicid` (`topicid`)
+) ENGINE=MyISAM;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `forum_topics`
+--
+
+DROP TABLE IF EXISTS `forum_topics`;
+CREATE TABLE IF NOT EXISTS `forum_topics` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `userid` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `subject` varchar(40) DEFAULT NULL,
+  `locked` enum('yes','no') NOT NULL DEFAULT 'no',
+  `forumid` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `lastpost` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `moved` enum('yes','no') NOT NULL DEFAULT 'no',
+  `sticky` enum('yes','no') NOT NULL DEFAULT 'no',
+  `views` int(10) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  KEY `userid` (`userid`),
+  KEY `subject` (`subject`),
+  KEY `lastpost` (`lastpost`)
+) ENGINE=MyISAM;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `friends`
+--
+
+DROP TABLE IF EXISTS `friends`;
+CREATE TABLE IF NOT EXISTS `friends` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `userid` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `friendid` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `friend` varchar(6) NOT NULL DEFAULT 'maybe',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `userfriend` (`userid`,`friendid`)
+) ENGINE=MyISAM;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `groups`
+--
 
 DROP TABLE IF EXISTS `groups`;
-CREATE TABLE `groups` (
+CREATE TABLE IF NOT EXISTS `groups` (
   `group_id` int(10) NOT NULL AUTO_INCREMENT,
   `level` varchar(50) NOT NULL DEFAULT '',
   `Color` varchar(7) NOT NULL DEFAULT '#856A00',
@@ -479,253 +557,470 @@ CREATE TABLE `groups` (
   `control_panel` enum('yes','no') NOT NULL DEFAULT 'no',
   `staff_page` enum('yes','no') NOT NULL DEFAULT 'no',
   `staff_public` enum('yes','no') NOT NULL DEFAULT 'no',
-  `staff_sort` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `staff_sort` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `maxslots` int(10) NOT NULL DEFAULT 0,
   UNIQUE KEY `base` (`group_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM;
 
+INSERT INTO `groups` (`group_id`, `level`, `Color`, `view_torrents`, `edit_torrents`, `delete_torrents`, `view_users`, `edit_users`, `delete_users`, `view_news`, `edit_news`, `delete_news`, `can_upload`, `can_download`, `view_forum`, `edit_forum`, `delete_forum`, `control_panel`, `staff_page`, `staff_public`, `staff_sort`, `maxslots`) VALUES
+(1, 'Member', '#856A00', 'yes', 'no', 'no', 'yes', 'no', 'no', 'yes', 'no', 'no', 'yes', 'yes', 'yes', 'no', 'no', 'no', 'no', 'no', 7, 2),
+(2, 'Power User', '#BD8B00', 'yes', 'no', 'no', 'yes', 'no', 'no', 'yes', 'no', 'no', 'yes', 'yes', 'yes', 'no', 'no', 'no', 'no', 'no', 6, 4),
+(3, 'VIP', '#FF5E00', 'yes', 'no', 'no', 'yes', 'no', 'no', 'yes', 'no', 'no', 'yes', 'yes', 'yes', 'no', 'no', 'no', 'no', 'no', 5, 6),
+(4, 'Uploader', '#00ABA6', 'yes', 'no', 'no', 'yes', 'no', 'no', 'yes', 'no', 'no', 'yes', 'yes', 'yes', 'no', 'no', 'no', 'no', 'no', 4, 8),
+(5, 'Moderator', '#007F00', 'yes', 'yes', 'no', 'yes', 'yes', 'no', 'yes', 'yes', 'no', 'yes', 'yes', 'yes', 'yes', 'no', 'no', 'yes', 'yes', 3, 10),
+(6, 'Super Moderator', '#00C000', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 2, 12),
+(7, 'Administrator', '#FF0000', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 1, 14);
 
-INSERT INTO `groups` (`group_id`, `level`, `Color`, `view_torrents`, `edit_torrents`, `delete_torrents`, `view_users`, `edit_users`, `delete_users`, `view_news`, `edit_news`, `delete_news`, `can_upload`, `can_download`, `view_forum`, `edit_forum`, `delete_forum`, `control_panel`, `staff_page`, `staff_public`, `staff_sort`) VALUES
-(1, 'Member', '#856A00', 'yes', 'no', 'no', 'yes', 'no', 'no', 'yes', 'no', 'no', 'yes', 'yes', 'yes', 'no', 'no', 'no', 'no', 'no', 7),
-(2, 'Power User', '#BD8B00', 'yes', 'no', 'no', 'yes', 'no', 'no', 'yes', 'no', 'no', 'no', 'yes', 'yes', 'no', 'no', 'no', 'no', 'no', 6),
-(3, 'VIP', '#FF5E00', 'yes', 'no', 'no', 'yes', 'no', 'no', 'yes', 'no', 'no', 'yes', 'yes', 'yes', 'no', 'no', 'no', 'no', 'no', 5),
-(4, 'Uploader', '#00ABA6', 'yes', 'no', 'no', 'yes', 'no', 'no', 'yes', 'no', 'no', 'yes', 'yes', 'yes', 'no', 'no', 'no', 'yes', 'no', 4),
-(5, 'Moderator', '#007F00', 'yes', 'yes', 'no', 'yes', 'yes', 'no', 'yes', 'yes', 'no', 'yes', 'yes', 'yes', 'yes', 'no', 'no', 'yes', 'yes', 3),
-(6, 'Super Moderator', '#00C000', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'no', 'yes', 'yes', 2),
-(7, 'Administrator', '#FF0000', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'no', 1);
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `guests`
+--
 
 DROP TABLE IF EXISTS `guests`;
-CREATE TABLE `guests` (
-  `ip` varchar(39) NOT NULL default '',
-  `time` decimal(20,0) unsigned NOT NULL default '0',
+CREATE TABLE IF NOT EXISTS `guests` (
+  `ip` varchar(39) NOT NULL DEFAULT '',
+  `time` decimal(20,0) UNSIGNED NOT NULL DEFAULT 0,
   UNIQUE KEY `IP` (`ip`)
 ) ENGINE=MyISAM;
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `iplog`
+--
+
+DROP TABLE IF EXISTS `iplog`;
+CREATE TABLE IF NOT EXISTS `iplog` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `ip` varchar(15) NOT NULL DEFAULT '',
+  `userid` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `added` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `lastused` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `timesused` int(10) NOT NULL DEFAULT 1,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `languages`
+--
+
 DROP TABLE IF EXISTS `languages`;
-CREATE TABLE `languages` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `uri` varchar(255) NOT NULL default '',
-  `name` varchar(64) NOT NULL default '',
-  PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 ;
+CREATE TABLE IF NOT EXISTS `languages` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `uri` varchar(255) NOT NULL DEFAULT '',
+  `name` varchar(64) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM;
 
 INSERT INTO `languages` (`id`, `uri`, `name`) VALUES 
 (1, 'english', 'english');
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `likes`
+--
+
+DROP TABLE IF EXISTS `likes`;
+CREATE TABLE IF NOT EXISTS `likes` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `liked` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `added` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `reaction` text NOT NULL,
+  `type` text NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user` (`user`),
+  KEY `liked` (`liked`)
+) ENGINE=MyISAM;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `log`
+--
 
 DROP TABLE IF EXISTS `log`;
-CREATE TABLE `log` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `added` datetime default NULL,
-  `txt` text,
-  PRIMARY KEY  (`id`),
+CREATE TABLE IF NOT EXISTS `log` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `added` datetime DEFAULT NULL,
+  `txt` text DEFAULT NULL,
+  PRIMARY KEY (`id`),
   KEY `added` (`added`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `messages`
+--
 
 DROP TABLE IF EXISTS `messages`;
-CREATE TABLE `messages` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `sender` int(10) unsigned NOT NULL default '0',
-  `receiver` int(10) unsigned NOT NULL default '0',
-  `added` datetime default NULL,
-  `msg` text,
-  `unread` enum('yes','no') NOT NULL default 'yes',
-  `poster` bigint(20) unsigned NOT NULL default '0',
+CREATE TABLE IF NOT EXISTS `messages` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `sender` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `receiver` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `added` datetime DEFAULT NULL,
+  `msg` text DEFAULT NULL,
+  `unread` enum('yes','no') NOT NULL DEFAULT 'yes',
+  `poster` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
   `subject` text NOT NULL DEFAULT '',
-  `location` enum('in','out','both','draft','template') NOT NULL default 'in',
-  PRIMARY KEY  (`id`),
+  `location` enum('in','out','both','draft','template') NOT NULL DEFAULT 'in',
+  PRIMARY KEY (`id`),
   KEY `receiver` (`receiver`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `news`
+--
 
 DROP TABLE IF EXISTS `news`;
-CREATE TABLE `news` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `userid` int(11) NOT NULL default '0',
-  `added` datetime NOT NULL default '0000-00-00 00:00:00',
-  `title` varchar(255) NOT NULL default '',
+CREATE TABLE IF NOT EXISTS `news` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `userid` int(11) NOT NULL DEFAULT 0,
+  `added` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `title` varchar(255) NOT NULL DEFAULT '',
   `body` text NOT NULL,
-  PRIMARY KEY  (`id`),
+  PRIMARY KEY (`id`),
   KEY `added` (`added`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM;
 
 INSERT INTO `news` (`id`, `userid`, `added`, `title`, `body`) VALUES 
 (1, 1, '2011-07-27 09:29:22', 'Welcome', 'Welcome To TorrentTrader MVC/PDO');
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `peers`
+--
+
 DROP TABLE IF EXISTS `peers`;
-CREATE TABLE `peers` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `torrent` int(10) unsigned NOT NULL default '0',
-  `peer_id` varchar(40) NOT NULL default '',
-  `ip` varchar(64) NOT NULL default '',
-  `port` smallint(5) unsigned NOT NULL default '0',
-  `uploaded` bigint(20) unsigned NOT NULL default '0',
-  `downloaded` bigint(20) unsigned NOT NULL default '0',
-  `to_go` bigint(20) unsigned NOT NULL default '0',
-  `seeder` enum('yes','no') NOT NULL default 'no',
-  `started` datetime NOT NULL default '0000-00-00 00:00:00',
-  `last_action` datetime NOT NULL default '0000-00-00 00:00:00',
-  `connectable` enum('yes','no') NOT NULL default 'yes',
-  `client` varchar(60) NOT NULL default '',
-  `userid` varchar(32) NOT NULL default '',
-  `passkey` varchar(32) NOT NULL default '',
-  PRIMARY KEY  (`id`),
+CREATE TABLE IF NOT EXISTS `peers` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `torrent` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `peer_id` varchar(40) NOT NULL DEFAULT '',
+  `ip` varchar(64) NOT NULL DEFAULT '',
+  `port` smallint(5) UNSIGNED NOT NULL DEFAULT 0,
+  `uploaded` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `downloaded` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `to_go` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `seeder` enum('yes','no') NOT NULL DEFAULT 'no',
+  `started` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `last_action` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `connectable` enum('yes','no') NOT NULL DEFAULT 'yes',
+  `client` varchar(60) NOT NULL DEFAULT '',
+  `userid` varchar(32) NOT NULL DEFAULT '',
+  `passkey` varchar(32) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
   UNIQUE KEY `torrent_peer_id` (`torrent`,`peer_id`),
   KEY `torrent` (`torrent`),
   KEY `torrent_seeder` (`torrent`,`seeder`),
   KEY `last_action` (`last_action`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM;
 
-DROP TABLE IF EXISTS `pollanswers`; 
-CREATE TABLE `pollanswers` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `pollid` int(10) unsigned NOT NULL default '0',
-  `userid` int(10) unsigned NOT NULL default '0',
-  `selection` tinyint(3) unsigned NOT NULL default '0',
-  PRIMARY KEY  (`id`),
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `pollanswers`
+--
+
+DROP TABLE IF EXISTS `pollanswers`;
+CREATE TABLE IF NOT EXISTS `pollanswers` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `pollid` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `userid` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `selection` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
   KEY `pollid` (`pollid`),
   KEY `selection` (`selection`),
   KEY `userid` (`userid`)
-) ENGINE=MyISAM AUTO_INCREMENT=1;
+) ENGINE=MyISAM;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `polls`
+--
 
 DROP TABLE IF EXISTS `polls`;
-CREATE TABLE `polls` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `added` datetime NOT NULL default '0000-00-00 00:00:00',
-  `question` varchar(255) NOT NULL default '',
-  `option0` varchar(40) NOT NULL default '',
-  `option1` varchar(40) NOT NULL default '',
-  `option2` varchar(40) NOT NULL default '',
-  `option3` varchar(40) NOT NULL default '',
-  `option4` varchar(40) NOT NULL default '',
-  `option5` varchar(40) NOT NULL default '',
-  `option6` varchar(40) NOT NULL default '',
-  `option7` varchar(40) NOT NULL default '',
-  `option8` varchar(40) NOT NULL default '',
-  `option9` varchar(40) NOT NULL default '',
-  `option10` varchar(40) NOT NULL default '',
-  `option11` varchar(40) NOT NULL default '',
-  `option12` varchar(40) NOT NULL default '',
-  `option13` varchar(40) NOT NULL default '',
-  `option14` varchar(40) NOT NULL default '',
-  `option15` varchar(40) NOT NULL default '',
-  `option16` varchar(40) NOT NULL default '',
-  `option17` varchar(40) NOT NULL default '',
-  `option18` varchar(40) NOT NULL default '',
-  `option19` varchar(40) NOT NULL default '',
-  `sort` enum('yes','no') NOT NULL default 'yes',
-  PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 ;
+CREATE TABLE IF NOT EXISTS `polls` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `added` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `question` varchar(255) NOT NULL DEFAULT '',
+  `option0` varchar(40) NOT NULL DEFAULT '',
+  `option1` varchar(40) NOT NULL DEFAULT '',
+  `option2` varchar(40) NOT NULL DEFAULT '',
+  `option3` varchar(40) NOT NULL DEFAULT '',
+  `option4` varchar(40) NOT NULL DEFAULT '',
+  `option5` varchar(40) NOT NULL DEFAULT '',
+  `option6` varchar(40) NOT NULL DEFAULT '',
+  `option7` varchar(40) NOT NULL DEFAULT '',
+  `option8` varchar(40) NOT NULL DEFAULT '',
+  `option9` varchar(40) NOT NULL DEFAULT '',
+  `option10` varchar(40) NOT NULL DEFAULT '',
+  `option11` varchar(40) NOT NULL DEFAULT '',
+  `option12` varchar(40) NOT NULL DEFAULT '',
+  `option13` varchar(40) NOT NULL DEFAULT '',
+  `option14` varchar(40) NOT NULL DEFAULT '',
+  `option15` varchar(40) NOT NULL DEFAULT '',
+  `option16` varchar(40) NOT NULL DEFAULT '',
+  `option17` varchar(40) NOT NULL DEFAULT '',
+  `option18` varchar(40) NOT NULL DEFAULT '',
+  `option19` varchar(40) NOT NULL DEFAULT '',
+  `sort` enum('yes','no') NOT NULL DEFAULT 'yes',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM;
 
 INSERT INTO `polls` (`id`, `added`, `question`, `option0`, `option1`, `option2`, `option3`, `option4`, `option5`, `option6`, `option7`, `option8`, `option9`, `option10`, `option11`, `option12`, `option13`, `option14`, `option15`, `option16`, `option17`, `option18`, `option19`, `sort`) VALUES 
 (1, '0000-00-00 00:00:00', 'Do You Like This Site', 'Excellent!', 'Its OK', 'Its my first visit', 'Don''t Like It', 'Im Off', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'yes');
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ratings`
+--
+
 DROP TABLE IF EXISTS `ratings`;
-CREATE TABLE `ratings` (
-  `torrent` int(10) unsigned NOT NULL default '0',
-  `user` int(10) unsigned NOT NULL default '0',
-  `rating` tinyint(3) unsigned NOT NULL default '0',
-  `added` datetime NOT NULL default '0000-00-00 00:00:00',
-  PRIMARY KEY  (`torrent`,`user`),
+CREATE TABLE IF NOT EXISTS `ratings` (
+  `torrent` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `user` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `rating` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `added` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`torrent`,`user`),
   KEY `user` (`user`)
 ) ENGINE=MyISAM;
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `reports`
+--
+
 DROP TABLE IF EXISTS `reports`;
-CREATE TABLE `reports` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `addedby` int(10) unsigned NOT NULL default '0',
-  `votedfor` int(10) unsigned NOT NULL default '0',
-  `votedfor_xtra` int(10) unsigned NOT NULL default '0',
+CREATE TABLE IF NOT EXISTS `reports` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `addedby` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `votedfor` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `votedfor_xtra` int(10) UNSIGNED NOT NULL DEFAULT 0,
   `type` enum('torrent','user','forum','comment','other','request') NOT NULL DEFAULT 'torrent',
-  `reason` varchar(255) NOT NULL default '',
-  `dealtby` int(10) unsigned NOT NULL default '0',
-  `dealtwith` tinyint(1) NOT NULL default '0',
-  `complete` tinyint(1) NOT NULL default '0',
-  PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 ;
+  `reason` varchar(255) NOT NULL DEFAULT '',
+  `dealtby` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `dealtwith` tinyint(1) NOT NULL DEFAULT 0,
+  `complete` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `requests`
+--
+
+DROP TABLE IF EXISTS `requests`;
+CREATE TABLE IF NOT EXISTS `requests` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `userid` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `request` varchar(225) DEFAULT NULL,
+  `descr` text NOT NULL,
+  `added` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `hits` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `cat` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `filled` varchar(75) DEFAULT NULL,
+  `filledby` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `comments` int(11) NOT NULL,
+  `profilled` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `done` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `poster` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `userid` (`userid`)
+) ENGINE=MyISAM;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `rules`
+--
 
 DROP TABLE IF EXISTS `rules`;
-CREATE TABLE `rules` (
-  `id` int(11) NOT NULL auto_increment,
-  `title` varchar(255) NOT NULL default '',
+CREATE TABLE IF NOT EXISTS `rules` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL DEFAULT '',
   `text` text NOT NULL,
-  `public` enum('yes','no') NOT NULL default 'yes',
-  `class` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 ;
+  `public` enum('yes','no') NOT NULL DEFAULT 'yes',
+  `class` int(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM;
 
 INSERT INTO `rules` (`id`, `title`, `text`, `public`, `class`) VALUES 
 (1, 'General rules - Breaking these rules can and will get you banned!', '- We are a English only site, so please only talk in english! \r\n\r\n- Keep your overall ratio at or above 0.5 at all times! \r\n\r\n- Do not defy the moderators expressed wishes! ', 'yes', 0),
 (2, 'General Forum Guidelines', '- No aggressive behaviour or flaming in the forums. \r\n- No trashing of other peoples topics (i.e. SPAM). \r\n- No language other than English in the forums. \r\n- No links to warez or crack sites in the forums. \r\n- No serials, CD keys, passwords or cracks in the forums. \r\n- No requesting if the release is over 7 days old. \r\n- No bumping... (All bumped threads will be deleted.) \r\n- No double posting. If you wish to post again, and yours is the last post in the thread please use the EDIT function,instead of posting a double.\r\n- Please ensure all questions are posted in the correct section!', 'yes', 0),
 (3, 'Moderating Rules', '- The most important rule!; Use your better judgement! \r\n- Don''t defy another mod in public, instead send a PM or make a post in the "Site admin". \r\n- Be tolerant! give the user(s) a chance to reform. \r\n- Don''t act prematurely, Let the users make their mistake and THEN correct them. \r\n- Try correcting any "off topics" rather then closing the thread. \r\n- Move topics rather than locking / deleting them. \r\n- Be tolerant when moderating the Chit-chat section. (give them some slack) \r\n- If you lock a topic, Give a brief explanation as to why you''re locking it. \r\n- Before banning a user, Send him/her a PM and If they reply, put them on a 2 week trial. \r\n- Don''t ban a user until he or she has been a member for at least 4 weeks. \r\n- Always state a reason (in the user comment box) as to why the user is being banned. \r\n', 'no', 5);
 
-DROP TABLE IF EXISTS `shoutbox`;
-CREATE TABLE `shoutbox` (
-  `msgid` int(10) unsigned NOT NULL auto_increment,
-  `user` varchar(50) NOT NULL default '0',
-  `message` text,
-  `date` datetime NOT NULL default '0000-00-00 00:00:00',
-  `userid` int(8) unsigned NOT NULL default '0',
-  `staff` tinyint(3) unsigned NOT NULL default '0',
-  PRIMARY KEY  (`msgid`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 ;
+-- --------------------------------------------------------
 
+--
+-- Table structure for table `shoutbox`
+--
+
+DROP TABLE IF EXISTS `shoutbox`;
+CREATE TABLE IF NOT EXISTS `shoutbox` (
+  `msgid` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user` varchar(50) NOT NULL DEFAULT '0',
+  `message` text DEFAULT NULL,
+  `date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `userid` int(8) UNSIGNED NOT NULL DEFAULT 0,
+  `staff` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  PRIMARY KEY (`msgid`)
+) ENGINE=MyISAM;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `snatched`
+--
+
+DROP TABLE IF EXISTS `snatched`;
 CREATE TABLE IF NOT EXISTS `snatched` (
-  `sid` int(11) unsigned NOT NULL auto_increment,
-  `tid` int(11) unsigned NOT NULL default '0',
-  `uid` int(11) unsigned NOT NULL default '0',
-  `stime` int(11) unsigned NOT NULL default '0',
-  `utime` int(11) unsigned NOT NULL default '0',
-  `ltime` int(11) unsigned NOT NULL default '0',
-  `uload` bigint(20) unsigned NOT NULL default '0',
-  `dload` bigint(20) unsigned NOT NULL default '0',
-  `completed` enum('0','1') NOT NULL default '0',
-  `hnr` enum('no','yes') NOT NULL default 'no',
-  PRIMARY KEY  (`sid`),
+  `sid` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `tid` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `uid` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `stime` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `utime` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `ltime` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `uload` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `dload` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `completed` enum('0','1') NOT NULL DEFAULT '0',
+  `hnr` enum('no','yes') NOT NULL DEFAULT 'no',
+  `done` enum('yes','no') NOT NULL DEFAULT 'no',
+  `hitrun` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `hitrunwarn` enum('yes','pending','no') NOT NULL DEFAULT 'no',
+  PRIMARY KEY (`sid`),
   UNIQUE KEY `tid_uid` (`tid`,`uid`),
   KEY `completed` (`completed`),
   KEY `tid` (`tid`),
   KEY `uid` (`uid`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `sqlerr`
+--
+
+DROP TABLE IF EXISTS `sqlerr`;
+CREATE TABLE IF NOT EXISTS `sqlerr` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `txt` text NOT NULL DEFAULT '',
+  `time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `staffmessages`
+--
+
+DROP TABLE IF EXISTS `staffmessages`;
+CREATE TABLE IF NOT EXISTS `staffmessages` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `sender` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `added` datetime DEFAULT NULL,
+  `msg` text DEFAULT NULL,
+  `subject` varchar(100) NOT NULL DEFAULT '',
+  `answeredby` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `answered` tinyint(1) NOT NULL DEFAULT 0,
+  `answer` text DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `stylesheets`
+--
 
 DROP TABLE IF EXISTS `stylesheets`;
-CREATE TABLE `stylesheets` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `uri` varchar(255) NOT NULL default '',
-  `name` varchar(64) NOT NULL default '',
-  PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 ;
+CREATE TABLE IF NOT EXISTS `stylesheets` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `uri` varchar(255) NOT NULL DEFAULT '',
+  `name` varchar(64) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM;
 
 INSERT INTO `stylesheets` (`id`, `uri`, `name`) VALUES 
 (1, 'default', 'Default');
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tasks`
+--
+
 DROP TABLE IF EXISTS `tasks`;
-CREATE TABLE `tasks` (
-  `task` varchar(20) NOT NULL default '',
-  `last_time` int(10) NOT NULL default '0',
-  PRIMARY KEY  (`task`)
+CREATE TABLE IF NOT EXISTS `tasks` (
+  `task` varchar(20) NOT NULL DEFAULT '',
+  `last_time` int(10) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`task`)
 ) ENGINE=MyISAM;
 
 INSERT INTO `tasks` (`task`, `last_time`) VALUES 
 ('cleanup', 0);
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `teams`
+--
+
 DROP TABLE IF EXISTS `teams`;
-CREATE TABLE `teams` (
-  `id` int(10) NOT NULL auto_increment,
-  `added` datetime NOT NULL default '0000-00-00 00:00:00',
-  `owner` int(10) NOT NULL default '0',
-  `info` text,
-  `name` varchar(255) default NULL,
-  `image` varchar(255) default NULL,
+CREATE TABLE IF NOT EXISTS `teams` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `added` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `owner` int(10) NOT NULL DEFAULT 0,
+  `info` text DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `image` varchar(255) DEFAULT NULL,
   UNIQUE KEY `id` (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `thanks`
+--
+
+DROP TABLE IF EXISTS `thanks`;
+CREATE TABLE IF NOT EXISTS `thanks` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `thanked` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `added` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `type` text NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user` (`user`),
+  KEY `thanked` (`thanked`)
+) ENGINE=MyISAM;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `torrentlang`
+--
 
 DROP TABLE IF EXISTS `torrentlang`;
-CREATE TABLE `torrentlang` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `name` varchar(30) NOT NULL default '',
-  `image` varchar(255) NOT NULL default '',
-  `sort_index` int(10) unsigned NOT NULL default '0',
-  PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 ;
+CREATE TABLE IF NOT EXISTS `torrentlang` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` varchar(30) NOT NULL DEFAULT '',
+  `image` varchar(255) NOT NULL DEFAULT '',
+  `sort_index` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM;
 
 INSERT INTO `torrentlang` (`id`, `name`, `image`, `sort_index`) VALUES 
 (1, 'English', 'english.gif', 1),
@@ -736,199 +1031,150 @@ INSERT INTO `torrentlang` (`id`, `name`, `image`, `sort_index`) VALUES
 (6, 'Spanish', 'spanish.gif', 1),
 (7, 'Russian', 'russian.gif', 1);
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `torrents`
+--
+
 DROP TABLE IF EXISTS `torrents`;
-CREATE TABLE `torrents` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `info_hash` varchar(40) default NULL,
-  `name` varchar(255) NOT NULL default '',
-  `filename` varchar(255) NOT NULL default '',
-  `save_as` varchar(255) NOT NULL default '',
+CREATE TABLE IF NOT EXISTS `torrents` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `info_hash` varchar(40) DEFAULT NULL,
+  `name` varchar(255) NOT NULL DEFAULT '',
+  `filename` varchar(255) NOT NULL DEFAULT '',
+  `save_as` varchar(255) NOT NULL DEFAULT '',
   `descr` text NOT NULL,
-  `image1` text default NULL,
-  `image2` text default NULL,
-  `category` int(10) unsigned NOT NULL default '0',
-  `size` bigint(20) unsigned NOT NULL default '0',
-  `added` datetime NOT NULL default '0000-00-00 00:00:00',
-  `type` enum('single','multi') NOT NULL default 'single',
-  `numfiles` int(10) unsigned NOT NULL default '0',
-  `comments` int(10) unsigned NOT NULL default '0',
-  `views` int(10) unsigned NOT NULL default '0',
-  `hits` int(10) unsigned NOT NULL default '0',
-  `times_completed` int(10) unsigned NOT NULL default '0',
-  `leechers` int(10) unsigned NOT NULL default '0',
-  `seeders` int(10) unsigned NOT NULL default '0',
-  `last_action` datetime NOT NULL default '0000-00-00 00:00:00',
-  `visible` enum('yes','no') NOT NULL default 'yes',
-  `banned` enum('yes','no') NOT NULL default 'no',
-  `owner` int(10) unsigned NOT NULL default '0',
-  `anon` enum('yes','no') NOT NULL default 'no',
-  `numratings` int(10) unsigned NOT NULL default '0',
-  `ratingsum` int(10) unsigned NOT NULL default '0',
-  `nfo` enum('yes','no') NOT NULL default 'no',
-  `announce` varchar(255) NOT NULL default '',
-  `external` enum('yes', 'no') NOT NULL DEFAULT 'no',
-  `torrentlang` int(10) unsigned NOT NULL default '1',
-  `freeleech` enum('0','1') NOT NULL default '0',
+  `image1` text DEFAULT NULL,
+  `image2` text DEFAULT NULL,
+  `category` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `size` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `added` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `type` enum('single','multi') NOT NULL DEFAULT 'single',
+  `numfiles` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `comments` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `views` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `hits` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `times_completed` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `leechers` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `seeders` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `last_action` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `visible` enum('yes','no') NOT NULL DEFAULT 'yes',
+  `banned` enum('yes','no') NOT NULL DEFAULT 'no',
+  `owner` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `anon` enum('yes','no') NOT NULL DEFAULT 'no',
+  `numratings` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `ratingsum` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `nfo` enum('yes','no') NOT NULL DEFAULT 'no',
+  `announce` varchar(255) NOT NULL DEFAULT '',
+  `external` enum('yes','no') NOT NULL DEFAULT 'no',
+  `torrentlang` int(10) UNSIGNED NOT NULL DEFAULT 1,
+  `freeleech` enum('0','1') NOT NULL DEFAULT '0',
   `tube` varchar(100) DEFAULT NULL,
   `imdb` varchar(100) DEFAULT NULL,
-  `uplreq` enum('yes', 'no') DEFAULT 'no',
-  PRIMARY KEY  (`id`),
+  `uplreq` enum('yes','no') DEFAULT 'no',
+  `sticky` enum('yes','no') NOT NULL DEFAULT 'no',
+  `vip` enum('yes','no') NOT NULL DEFAULT 'no',
+  PRIMARY KEY (`id`),
   UNIQUE KEY `info_hash` (`info_hash`(20)),
   KEY `owner` (`owner`),
   KEY `visible` (`visible`),
-  KEY `category_visible` (`category`,`visible`),
-  FULLTEXT KEY `name` (`name`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 ;
+  KEY `category_visible` (`category`,`visible`)
+) ENGINE=MyISAM;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `users`
+--
 
 DROP TABLE IF EXISTS `users`;
-CREATE TABLE `users` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `username` varchar(40) NOT NULL default '',
-  `password` varchar(255) NOT NULL default '',
-  `secret` varchar(20) binary NOT NULL default '' COLLATE latin1_bin,
-  `email` varchar(80) NOT NULL default '',
-  `status` enum('pending','confirmed') NOT NULL default 'pending',
-  `added` datetime NOT NULL default '0000-00-00 00:00:00',
-  `last_login` datetime NOT NULL default '0000-00-00 00:00:00',
-  `last_access` datetime NOT NULL default '0000-00-00 00:00:00',
-  `editsecret` varchar(20) binary NOT NULL default '' COLLATE latin1_bin,
-  `privacy` enum('strong','normal','low') NOT NULL default 'normal',
-  `stylesheet` varchar(20) NOT NULL default 'default',
-  `language` varchar(20) NOT NULL default 'english',
-  `info` text,
-  `acceptpms` enum('yes','no') NOT NULL default 'yes',
-  `ip` varchar(39) NOT NULL default '',
-  `class` tinyint(3) unsigned NOT NULL default '1',
-  `avatar` varchar(100) NOT NULL default '',
-  `uploaded` bigint(20) unsigned NOT NULL default '0',
-  `downloaded` bigint(20) unsigned NOT NULL default '0',
-  `title` varchar(30) NOT NULL default '',
-  `donated` int(5) unsigned NOT NULL default '0',
-  `country` int(10) unsigned NOT NULL default '0',
-  `notifs` varchar(100) NOT NULL default '',
-  `enabled` varchar(10) NOT NULL default 'yes',
-  `modcomment` text default NULL,
-  `gender` varchar(6) NOT NULL default '',
-  `client` varchar(25) NOT NULL default '',
-  `age` int(3) NOT NULL default '0',
-  `warned` char(3) NOT NULL default 'no',
-  `signature` varchar(200) NOT NULL default '',
-  `last_browse` int(11) NOT NULL default '0',
-  `forumbanned` char(3) NOT NULL default 'no',
-  `invited_by` int(10) NOT NULL default '0',
-  `invitees` varchar(100) NOT NULL default '',
-  `invites` smallint(5) NOT NULL default '0',
-  `invitedate` datetime NOT NULL default '0000-00-00 00:00:00',
-  `commentpm` enum('yes','no') NOT NULL default 'yes',
-  `passkey` varchar(32) NOT NULL default '',
-  `page` text,
-  `team` int(10) unsigned NOT NULL default '0',
-  `tzoffset` int(4) default 0,
-  `hideshoutbox` enum('yes', 'no') NOT NULL DEFAULT 'no',
-  `token` varchar(255) NOT NULL default '',
-  `seedbonus` decimal(10,1) NOT NULL default '0',
-  `vipuntil` datetime NOT NULL default '0000-00-00 00:00:00',
-  `oldclass` int(10) unsigned NOT NULL default '0',
-  `shoutboxpos` char(3) NOT NULL default 'no',
-  `downloadbanned` char(3) NOT NULL default 'no',
-  PRIMARY KEY  (`id`),
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `username` varchar(40) NOT NULL DEFAULT '',
+  `password` varchar(255) NOT NULL DEFAULT '',
+  `secret` varchar(20) NOT NULL DEFAULT '',
+  `email` varchar(80) NOT NULL DEFAULT '',
+  `status` enum('pending','confirmed') NOT NULL DEFAULT 'pending',
+  `added` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `last_login` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `last_access` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `editsecret` varchar(20) NOT NULL DEFAULT '',
+  `privacy` enum('strong','normal','low') NOT NULL DEFAULT 'normal',
+  `stylesheet` varchar(20) NOT NULL DEFAULT 'default',
+  `language` varchar(20) NOT NULL DEFAULT 'english',
+  `info` text DEFAULT NULL,
+  `acceptpms` enum('yes','no') NOT NULL DEFAULT 'yes',
+  `ip` varchar(39) NOT NULL DEFAULT '',
+  `class` tinyint(3) UNSIGNED NOT NULL DEFAULT 1,
+  `avatar` varchar(100) NOT NULL DEFAULT '',
+  `uploaded` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `downloaded` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `title` varchar(30) NOT NULL DEFAULT '',
+  `donated` int(5) UNSIGNED NOT NULL DEFAULT 0,
+  `country` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `notifs` varchar(100) NOT NULL DEFAULT '',
+  `enabled` varchar(10) NOT NULL DEFAULT 'yes',
+  `modcomment` text DEFAULT NULL,
+  `gender` varchar(6) NOT NULL DEFAULT '',
+  `client` varchar(25) NOT NULL DEFAULT '',
+  `age` int(3) NOT NULL DEFAULT 0,
+  `warned` char(3) NOT NULL DEFAULT 'no',
+  `signature` varchar(200) NOT NULL DEFAULT '',
+  `last_browse` int(11) NOT NULL DEFAULT 0,
+  `forumbanned` char(3) NOT NULL DEFAULT 'no',
+  `invited_by` int(10) NOT NULL DEFAULT 0,
+  `invitees` varchar(100) NOT NULL DEFAULT '',
+  `invites` smallint(5) NOT NULL DEFAULT 0,
+  `invitedate` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `commentpm` enum('yes','no') NOT NULL DEFAULT 'yes',
+  `passkey` varchar(32) NOT NULL DEFAULT '',
+  `page` text DEFAULT NULL,
+  `team` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `tzoffset` int(4) DEFAULT 0,
+  `hideshoutbox` enum('yes','no') NOT NULL DEFAULT 'no',
+  `token` varchar(255) NOT NULL DEFAULT '',
+  `seedbonus` decimal(10,1) NOT NULL DEFAULT 0.0,
+  `vipuntil` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `oldclass` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `shoutboxpos` char(3) NOT NULL DEFAULT 'no',
+  `downloadbanned` char(3) NOT NULL DEFAULT 'no',
+  `hitruns` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
   KEY `status_added` (`status`,`added`),
   KEY `ip` (`ip`),
   KEY `uploaded` (`uploaded`),
   KEY `downloaded` (`downloaded`),
   KEY `country` (`country`)
-) ENGINE=MyISAM PACK_KEYS=0 AUTO_INCREMENT=1 ;
-
-DROP TABLE IF EXISTS `warnings`;
-CREATE TABLE `warnings` (
-  `id` int(10) NOT NULL auto_increment,
-  `userid` int(10) NOT NULL default '0',
-  `reason` varchar(255) NOT NULL default '',
-  `added` datetime NOT NULL default '0000-00-00 00:00:00',
-  `expiry` datetime NOT NULL default '0000-00-00 00:00:00',
-  `warnedby` int(10) NOT NULL default '0',
-  `type` varchar(10) NOT NULL default '',
-  `active` ENUM('yes', 'no') DEFAULT 'yes',
-  PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 ;
-
-DROP TABLE IF EXISTS `censor`;
-CREATE TABLE `censor` (
-  `word` varchar(25) NOT NULL default '',
-  `censor` varchar(25) NOT NULL default ''
 ) ENGINE=MyISAM;
 
-INSERT INTO `censor` VALUES ('fuck', 'f**k');
+-- --------------------------------------------------------
 
-DROP TABLE IF EXISTS `forum_forums`;
-CREATE TABLE `forum_forums` (
-`sort` tinyint(3) unsigned NOT NULL default '0',
-`id` int(10) unsigned NOT NULL auto_increment,
-`name` varchar(60) NOT NULL default '',
-`description` varchar(200) default NULL,
-`minclassread` tinyint(3) unsigned NOT NULL default '1',
-`minclasswrite` tinyint(3) unsigned NOT NULL default '1',
-`guest_read` enum('yes', 'no') default 'yes',
-`category` tinyint(2) NOT NULL default '0',
-PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 ;
+--
+-- Table structure for table `warnings`
+--
 
-DROP TABLE IF EXISTS `forum_posts`;
-CREATE TABLE `forum_posts` (
-`id` int(10) unsigned NOT NULL auto_increment,
-`topicid` int(10) unsigned NOT NULL default '0',
-`userid` int(10) unsigned NOT NULL default '0',
-`added` datetime default NULL,
-`body` longtext,
-`editedby` int(10) unsigned NOT NULL default '0',
-`editedat` datetime NOT NULL default '0000-00-00 00:00:00',
-PRIMARY KEY (`id`),
-KEY `topicid` (`topicid`),
-KEY `userid` (`userid`),
-FULLTEXT KEY `body` (`body`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 ;
+DROP TABLE IF EXISTS `warnings`;
+CREATE TABLE IF NOT EXISTS `warnings` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `userid` int(10) NOT NULL DEFAULT 0,
+  `reason` varchar(255) NOT NULL DEFAULT '',
+  `added` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `expiry` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `warnedby` int(10) NOT NULL DEFAULT 0,
+  `type` varchar(10) NOT NULL DEFAULT '',
+  `active` enum('yes','no') DEFAULT 'yes',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM;
 
-DROP TABLE IF EXISTS `forum_readposts`;
-CREATE TABLE `forum_readposts` (
-`id` int(10) unsigned NOT NULL auto_increment,
-`userid` int(10) unsigned NOT NULL default '0',
-`topicid` int(10) unsigned NOT NULL default '0',
-`lastpostread` int(10) unsigned NOT NULL default '0',
-PRIMARY KEY (`id`),
-KEY `userid` (`id`),
-KEY `topicid` (`topicid`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 ;
+--
+-- Indexes for table `forum_posts`
+--
+ALTER TABLE `forum_posts` ADD FULLTEXT KEY `body` (`body`);
 
-DROP TABLE IF EXISTS `forum_topics`;
-CREATE TABLE `forum_topics` (
-`id` int(10) unsigned NOT NULL auto_increment,
-`userid` int(10) unsigned NOT NULL default '0',
-`subject` varchar(40) default NULL,
-`locked` enum('yes','no') NOT NULL default 'no',
-`forumid` int(10) unsigned NOT NULL default '0',
-`lastpost` int(10) unsigned NOT NULL default '0',
-`moved` enum('yes','no') NOT NULL default 'no',
-`sticky` enum('yes','no') NOT NULL default 'no',
-`views` int(10) NOT NULL default '0',
-PRIMARY KEY (`id`),
-KEY `userid` (`userid`),
-KEY `subject` (`subject`),
-KEY `lastpost` (`lastpost`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 ;
+--
+-- Indexes for table `torrents`
+--
+ALTER TABLE `torrents` ADD FULLTEXT KEY `name` (`name`);
 
-DROP TABLE IF EXISTS `forumcats`;
-CREATE TABLE `forumcats` (
-`id` int(10) unsigned NOT NULL auto_increment,
-`name` varchar(60) NOT NULL default '',
-`sort` int(10) unsigned NOT NULL default '0',
-PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 ;
-
-DROP TABLE IF EXISTS `sqlerr`;
-CREATE TABLE `sqlerr` (
-`id`   int(10) unsigned NOT NULL auto_increment,
-`txt`  text NOT NULL DEFAULT '',
-`time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-PRIMARY KEY (`id`)
-) ENGINE = MyISAM AUTO_INCREMENT = 1;

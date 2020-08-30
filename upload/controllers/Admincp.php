@@ -79,7 +79,8 @@ class Admincp extends Controller
             do_cleanup();
             autolink(TTURL . '/admincp', T_("FORCE_CLEAN_COMPLETED"));
         }
-
+        include "admin/admin_hitnrun.php";
+        include "admin/admin_adduser.php";
         include "admin/admin_cache.php";
         include "admin/admin_confirmusers.php";
         include "admin/admin_seedbonus.php";

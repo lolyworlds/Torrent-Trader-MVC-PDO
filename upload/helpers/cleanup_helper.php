@@ -6,7 +6,7 @@ function autoclean()
     require_once "cleanup_helper.php";
 
     $now = gmtime();
-	$docleanup = 0;
+    $docleanup = 0;
 
     $res = $pdo->run("SELECT last_time FROM tasks WHERE task='cleanup'");
     $row = $res->fetch(PDO::FETCH_ASSOC);
@@ -17,10 +17,10 @@ function autoclean()
     }
 
     $ts = $row['last_time']; // $row['0'] returned null now int string
-    if ($ts + $config["autoclean_interval"] > $now){
+    if ($ts + $config["autoclean_interval"] > $now) {
         return;
-	}
-    
+    }
+
     $planned_clean = $pdo->run("UPDATE tasks SET last_time=? WHERE task=? AND last_time =?", [$now, 'cleanup', $ts]);
 //  $planned_clean = $pdo->run("UPDATE tasks SET last_time=$now WHERE task='cleanup'");
     if (!$planned_clean) {
@@ -104,10 +104,6 @@ function do_cleanup()
         }
     }
 
-    // DELETE OLD SESSION ENTRIES
-    $ts = gmtime() - $config["session_time"];
-    $pdo->run("DELETE FROM sessions WHERE _access > FROM_UNIXTIME($ts)");
-
     //LOCAL TORRENTS - MAKE NON-ACTIVE/OLD TORRENTS INVISIBLE
     $deadtime = gmtime() - $config["max_dead_torrent_time"];
     $pdo->run("UPDATE torrents SET visible='no' WHERE visible='yes' AND last_action < FROM_UNIXTIME($deadtime) AND seeders = '0' AND leechers = '0' AND external !='yes'");
@@ -125,7 +121,7 @@ function do_cleanup()
     }
 
     $ts = $row['last_time']; // $row['0'] returned null
-   
+
     if ($ts + $config['add_bonus'] < $now) {
         $qry = "SELECT DISTINCT userid as peer, (
     SELECT DISTINCT COUNT( torrent )
@@ -157,7 +153,6 @@ function do_cleanup()
         DB::run("INSERT INTO messages (sender, receiver, added, subject, msg, poster) VALUES(?, ?, ?, ?, ?, ?)", [0, $id, $timenow, $subject, $msg, 0]);
     }
     // End Remove Vipuntil mod vip
-
 
     //DELETE PENDING USER ACCOUNTS OVER TIMOUT AGE
     $deadtime = gmtime() - $config["signup_timeout"];
@@ -232,15 +227,15 @@ function do_cleanup()
     //END//
 
     // set freeleech
-    if ($config['freeleechgbon']); {
-    $gigs  = $config['freeleechgb'];
-    $query = $pdo->run("SELECT `id`, `name` FROM `torrents` WHERE `banned` = 'no' AND `freeleech` = '0' AND `size` >= $gigs");
-    if ($query->rowCount() > 0) {
-        while ($row =$query->fetch(PDO::FETCH_ASSOC)) {
-            $pdo->run("UPDATE `torrents` SET `freeleech` = '1' WHERE `id` = '$row[id]'");
-            write_log("Freeleech added on  <a href='torrents/read?id=$row[id]'>$row[name]</a> because it is bigger than  8gb.");
+    if ($config['freeleechgbon']);{
+        $gigs = $config['freeleechgb'];
+        $query = $pdo->run("SELECT `id`, `name` FROM `torrents` WHERE `banned` = 'no' AND `freeleech` = '0' AND `size` >= $gigs");
+        if ($query->rowCount() > 0) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+                $pdo->run("UPDATE `torrents` SET `freeleech` = '1' WHERE `id` = '$row[id]'");
+                write_log("Freeleech added on  <a href='torrents/read?id=$row[id]'>$row[name]</a> because it is bigger than  8gb.");
+            }
         }
-    }
     }
     // START INVITES UPDATE
     // SET INVITE AMOUNTS ACCORDING TO RATIO/GIGS ETC
@@ -266,16 +261,75 @@ function do_cleanup()
     autoinvites(14, 10, 100000, 1.05, 4, $maxinvites);
     //END INVITES
 
-    //ORIGINAL OPTIMIZE TABLES
+    //HIT & RUN mod
+    if ($config["hnr_on"]) {
+        $timenow = gmtime();
+        DB::run("UPDATE snatched SET hnr = 'yes' WHERE completed = '1' AND hnr = 'no' AND uload < dload AND $timenow - $config[hnr_deadline] > stime AND $config[hnr_seedtime] > ltime AND done='no'");
+        DB::run("UPDATE `snatched` SET `hnr` = 'no' WHERE `hnr` = 'yes' AND uload >= dload");
+        DB::run("UPDATE `snatched` SET `hnr` = 'no' WHERE `hnr` = 'yes' AND ltime >= $config[hnr_seedtime]");
+        $a = DB::run("SELECT DISTINCT uid FROM snatched WHERE hnr = 'yes' AND done='no'");
+        if ($a->rowCount() > 0):
+        while ($b = $a->fetch(PDO::FETCH_ASSOC)):
+            $c = DB::run("SELECT COUNT( hnr ) FROM snatched WHERE uid = $b[0] AND hnr = 'yes'");
+        $d = $c->fetch(PDO::FETCH_ASSOC);
+        $count = $d[0];
+        $user = $b[0];
 
-//    $res = DB::run("SHOW TABLES");
-    //
-    //    while ( $table = $res->fetch() )
-    //    {
-    //        DB::run("OPTIMIZE TABLE `$table[0]`;");
-    //    }
+        $length = $config["hnr_disabled"];
+        $expiretime = gmdate("Y-m-d H:i:s", $timenow + $length);
 
-    //NEW OPTIMIZE TABLES
+        $e = DB::run("SELECT type, active FROM warnings WHERE userid = '$user'");
+        $f = $e->fetch(PDO::FETCH_ASSOC);
+        $type = $f[0];
+        $active = $f[1];
+        //warn
+        if ($count >= $config["hnr_warn"] && $type != "HnR"):
+                $reason = "" . T_("CLEANUP_WARNING_FOR_ACCUMULATING") . " " . $config['hnr_warn'] . " H&R.";
+        $subject = "" . T_("CLEANUP_WARNING_FOR_H&R") . "";
+        $msg = "" . T_("CLEANUP_YOU_HAVE_BEEN_WARNEWD_ACCUMULATED") . " " . $config['hnr_warn'] . " " . T_("CLEANUP_H&R_INVITE_CHECK_RULE") . "\n[color=red]" . T_("CLEANUP_MSG_WARNING_7_DAYS_BANNED") . "[/color]";
+
+        $rev = DB::run("SELECT enabled FROM users WHERE id = $user");
+        $rov = mysqli_fetch_assoc($rev);
+        if ($rov["enabled"] == "yes"):
+                    DB::run("UPDATE users SET warned = 'yes' WHERE id = $user");
+        DB::run("INSERT INTO warnings (userid, reason, added, expiry, warnedby, type) VALUES ($user," . sqlesc($reason) . ",'" . get_date_time() . "','" . $expiretime . "','0','HnR')");
+        DB::run("INSERT INTO messages (sender, receiver, added, subject, msg, poster) VALUES (0, $user, '" . get_date_time() . "', " . sqlesc($subject) . ", " . sqlesc($msg) . ", 1)");
+        endif;
+        endif;
+        //Unwarned
+        if ($count < $config["hnr_warn"] && $type == "HnR"):
+                $subject = "" . T_("CLEANUP_REMOVAL_OF_H&R_WARNING") . "";
+        $msg = "" . T_("CLEANUP_YOU_NOW_HAVE_LESS_THAN") . " " . $config['hnr_warn'] . " H&R.\n" . T_("CLEANUP_YOUR_WARNING_FOR_H&R_HAS_REMOVED") . "";
+        DB::run("UPDATE users SET warned = 'no' WHERE id = $user");
+        DB::run("DELETE FROM warnings WHERE userid = $user AND type = 'HnR'");
+        DB::run("INSERT INTO messages (sender, receiver, added, subject, msg, poster) VALUES (0, $user, '" . get_date_time() . "', " . sqlesc($subject) . ", " . sqlesc($msg) . ", 1)");
+        endif;
+        //Ban
+        if ($count >= $config["hnr_ban"]):
+                $g = DB::run("SELECT username, email, modcomment FROM users WHERE id = $user");
+        $h = mysqli_fetch_row($g);
+        $modcomment = $h[2];
+        $modcomment = gmdate("d/m/Y") . " - " . T_("CLEANUP_BANNED_FOR") . " " . $count . " H&R.\n " . $modcomment;
+        DB::run("UPDATE users SET enabled = 'no', warned = 'no', modcomment = '$modcomment' WHERE id = $user");
+        DB::run("DELETE FROM warnings WHERE userid = $user AND type = 'HnR'");
+        write_log(T_("CLEANUP_THE_MEMBER") . " <a href='account-details.php?id=" . $user . "'>" . $h[0] . "</a> " . T_("CLEANUP_HAS_BEEN_BANNED_REASON") . " " . $count . " H&R.");
+        $subject = "" . T_("CLEANUP_YOUR_ACCOUNT") . " $config[SITENAME] " . T_("CLEANUP_HAS_BEEN_DISABLED") . "";
+        $body = "" . T_("CLEANUP_YOU_WERE_BANNED_FOLLOWING") . "\n
+			------------------------------
+			\n/" . T_("CLEANUP_YOU_HAVE_ACCUMULATED") . " $count H&R.\n
+			------------------------------
+			\n" . T_("CLEANUP_YOU_CAN_CONTACT_BY_LINK") . " :
+			" . $config['SITEURL'] . "/contact.php
+			\n\n\n" . $config['SITENAME'] . " " . T_("ADMIN");
+        $TTMail = new TTMail();
+        $TTMail->Send($h[1], "$subject", "$body", "" . T_("OF") . ": $config[SITEEMAIL]", "-f$config[SITEEMAIL]");
+        endif;
+        endwhile;
+        endif;
+    }
+    // END HIT & RUN
+
+    // NEW OPTIMIZE TABLES
     $res = $pdo->run("SHOW TABLES");
 
     while ($table = $res->fetch(PDO::FETCH_LAZY)) {

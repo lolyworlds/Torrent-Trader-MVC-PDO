@@ -88,7 +88,10 @@ if ($show != 0 && $_SESSION["control_panel"] != "yes")
           $numtorrents = get_row_count("torrents", "WHERE owner = $id");
           $numcomments = get_row_count("comments", "WHERE user = $id");
           $numforumposts = get_row_count("forum_posts", "WHERE userid = $id");
-  
+          $qry = DB::run("SELECT COUNT(`hnr`) FROM `snatched` WHERE `uid` = '$id' AND `hnr` = 'yes'");
+          $res = $qry->fetch(PDO::FETCH_ASSOC);
+          $numhnr = $res[0];
+          
           $avatar = htmlspecialchars($user["avatar"]);
           if (!$avatar) {
               $avatar = $config["SITEURL"] . "/images/default_avatar.png";
@@ -619,6 +622,7 @@ autolink(TTURL."/users/profile?id=$id", T_("Email Edited"));
             $enabled = $_POST["enabled"];
             $invites =(int) $_POST["invites"];
             $email = $_POST["email"];
+            $bonus = $_POST["bonus"];
         
             if (!validemail($email))
                 show_error_msg(T_("EDITING_FAILED"), T_("EMAIL_ADDRESS_NOT_VALID"), 1);
@@ -647,11 +651,12 @@ autolink(TTURL."/users/profile?id=$id", T_("Email Edited"));
             //continue updates
         
         
+            
             DB::run("UPDATE users 
             SET email=?, downloaded=?, uploaded=?, ip=?, donated=?, forumbanned=?, warned=?,
-             modcomment=?, enabled=?, invites=? , downloadbanned=?, shoutboxpos=?
+             modcomment=?, enabled=?, invites=? , downloadbanned=?, shoutboxpos=?, seedbonus=?
             WHERE id=?", [$email, $downloaded, $uploaded, $ip, $donated, $forumbanned, $warned, $modcomment,
-             $enabled, $invites, $downloadbanned, $shoutboxpos, $id]);
+             $enabled, $invites, $downloadbanned, $shoutboxpos, $bonus, $id]);
          
         
             write_log($_SESSION['username']." has edited user: $id details");
@@ -720,6 +725,7 @@ $user = DB::run("SELECT * FROM users WHERE id=?", [$id])->fetch(PDO::FETCH_ASSOC
 
 
                 print("<tr><td>" . T_("DONATED_US") . ": </td><td align='left'><input type='text' size='4' name='donated' value='$user[donated]' /></td></tr>\n");
+                print("<tr><td>" . T_("SEEDING_BONUS") . ": </td><td align='left'><input type='text' size='10' name='bonus' value='$user[seedbonus]'></td></tr>");
                 print("<tr><td>" . T_("PASSWORD") . ": </td><td align='left'><input type='password' size='40' name='password' value=\"$user[password]\" /></td></tr>\n");
                 print("<tr><td>" . T_("CHANGE_PASS") . ": </td><td align='left'><input type='checkbox' name='chgpasswd' value='yes'/></td></tr>");
                 print("<tr><td>" . T_("MOD_COMMENT") . ": </td><td align='left'><textarea cols='40' rows='10' name='modcomment'>$modcomment</textarea></td></tr>\n");

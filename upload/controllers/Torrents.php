@@ -46,12 +46,19 @@ end_frame();
         }
 
         //GET ALL MYSQL VALUES FOR THIS TORRENT
-        $res = $pdo->run("SELECT torrents.anon, torrents.seeders, torrents.tube, torrents.banned, torrents.leechers, torrents.info_hash, torrents.filename, torrents.nfo, torrents.last_action, torrents.numratings, torrents.name, torrents.imdb, torrents.owner, torrents.save_as, torrents.descr, torrents.visible, torrents.size, torrents.added, torrents.views, torrents.hits, torrents.times_completed, torrents.id, torrents.type, torrents.external, torrents.image1, torrents.image2, torrents.announce, torrents.numfiles, torrents.freeleech, IF(torrents.numratings < 2, NULL, ROUND(torrents.ratingsum / torrents.numratings, 1)) AS rating, torrents.numratings, categories.name AS cat_name, torrentlang.name AS lang_name, torrentlang.image AS lang_image, categories.parent_cat as cat_parent, users.username, users.privacy FROM torrents LEFT JOIN categories ON torrents.category = categories.id LEFT JOIN torrentlang ON torrents.torrentlang = torrentlang.id LEFT JOIN users ON torrents.owner = users.id WHERE torrents.id = $id");
+        $res = $pdo->run("SELECT torrents.anon, torrents.seeders, torrents.tube, torrents.banned, torrents.leechers, torrents.info_hash, torrents.filename, torrents.nfo, torrents.last_action, torrents.numratings, torrents.name, torrents.imdb, torrents.owner, torrents.save_as, torrents.descr, torrents.visible, torrents.size, torrents.added, torrents.views, torrents.hits, torrents.times_completed, torrents.id, torrents.type, torrents.external, torrents.image1, torrents.image2, torrents.announce, torrents.numfiles, torrents.freeleech, torrents.vip, IF(torrents.numratings < 2, NULL, ROUND(torrents.ratingsum / torrents.numratings, 1)) AS rating, torrents.numratings, categories.name AS cat_name, torrentlang.name AS lang_name, torrentlang.image AS lang_image, categories.parent_cat as cat_parent, users.username, users.privacy FROM torrents LEFT JOIN categories ON torrents.category = categories.id LEFT JOIN torrentlang ON torrents.torrentlang = torrentlang.id LEFT JOIN users ON torrents.owner = users.id WHERE torrents.id = $id");
         $row = $res->fetch(PDO::FETCH_ASSOC);
 
         //DECIDE IF TORRENT EXISTS
         if (!$row || ($row["banned"] == "yes" && $_SESSION["edit_torrents"] == "no")) {
             show_error_msg(T_("ERROR"), T_("TORRENT_NOT_FOUND"), 1);
+        }
+        // vip
+        $vip = $row["vip"];
+        if ($vip == "yes") {
+        $vip = "<b>Yes</b>";
+        } else {
+        $vip = "<b>No</b>";
         }
 
         //torrent is availiable so do some stuff
@@ -260,7 +267,7 @@ end_frame();
 
             if ($_SESSION["edit_torrents"] == "yes")
                 $updateset[] = "freeleech = '".($_POST["freeleech"] ? "1" : "0")."'";
-        
+                $updateset[] = "vip = '" . ($_POST["vip"] ? "yes" : "no") . "'";
             $updateset[] = "anon = '" . ($_POST["anon"] ? "yes" : "no") . "'";
         
             //update images
@@ -451,10 +458,11 @@ end_frame();
                     }
                 
                     $descr = $_POST["descr"];
-                
-                    if (!$descr)
+                    
+                    if (!$descr) {
                         $descr = T_("UPLOAD_NO_DESC");
-                
+                    }
+                    $vip = $_POST["vip"];
                     $langid = (int) $_POST["lang"];
                     
                     /*if (!is_valid_id($langid))
@@ -600,9 +608,9 @@ if (!empty($_POST['imdb']))
 					$filecounts = (int)$filecount;
 					
 					try {
-                    $ret = DB::run("INSERT INTO torrents (filename, owner, name, descr, image1, image2, category, tube, added, info_hash, size, numfiles, save_as, announce, external, nfo, torrentlang, anon, last_action, imdb) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                    [$fname, $_SESSION['id'], $name, $descr, $inames[0], $inames[1], $catid, $tube, get_date_time(), $infohash, $torrentsize, $filecounts, $fname, $announce, $external, $nfo, $langid, $anon, get_date_time(), $imdb]);
+                    $ret = DB::run("INSERT INTO torrents (filename, owner, name, vip, descr, image1, image2, category, tube, added, info_hash, size, numfiles, save_as, announce, external, nfo, torrentlang, anon, last_action, imdb) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                    [$fname, $_SESSION['id'], $name, $vip, $descr, $inames[0], $inames[1], $catid, $tube, get_date_time(), $infohash, $torrentsize, $filecounts, $fname, $announce, $external, $nfo, $langid, $anon, get_date_time(), $imdb]);
                     } catch (PDOException $e) {
                         rename("$torrent_dir/$fname", "$torrent_dir/duplicate.torrent"); // todo
                         autolink(TTURL.'/index.php', 'Torrent already added. Duplicate Hash');

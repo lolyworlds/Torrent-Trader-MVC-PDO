@@ -5,16 +5,16 @@ THERE IS NO INSTALLER REQUIRED!
 2) Import via phpmyadmin "Full Database.sql"
 
 3) Edit the file config/config.php to suit your needs
-   special note should be taken for sql connections, urls, emails, paths (use check.php if unsure)
+   special note should be taken for sql connections, siteurl, email
 
 4) Apply the following CHMOD's
-777 - cache/
-777 - cache/get_row_count/
-777 - cache/queries/
-777 - backups/
-777 - uploads/
-777 - uploads/images/
-777 - import/
+777 - cache
+777 - cache/imdb
+777 - backups
+777 - uploads
+777 - uploads/images
+777 - uploads/imdb
+777 - import
 600 - censor.txt
 
 5) Run check.php from your browser to check you have configured everything ok
@@ -27,4 +27,6 @@ THERE IS NO INSTALLER REQUIRED!
 
 8) You should properly secure backupdatabase.php and the backups dir. (htaccess/htpasswd)
 
-Any problems please visit http://www.torrenttrader.xyz/
+Any problems please visit http://www.torrenttrader.xyz
+
+For xampp please use folder provided at http://www.torrenttrader.xyz

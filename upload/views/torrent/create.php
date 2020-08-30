@@ -43,6 +43,10 @@
 	$language .= "</select>\n";
 	print ("<tr><td align='right'>".T_("LANGUAGE").": </td><td align='left'>".$language."</td></tr>");
 	
+	if (get_user_class() > $config['VIP'])
+	print ("<tr><td align='right'>VIP: </td><td align=left><input type='checkbox' name='vip' " .
+	(($row["vip"] == "yes") ? " checked='checked' " : "" ) . " value='yes'>Check this box if you want the torrent or only for VIP.</td></tr>");
+
 	if ($config['ANONYMOUSUPLOAD'] && $config["MEMBERSONLY"] ){ ?>
 		<tr><td align="right"><?php echo T_("UPLOAD_ANONY");?>: </td><td><?php printf("<input name='anonycheck' value='yes' type='radio' " . ($anonycheck ? " checked='checked'" : "") . " />".T_("YES")." <input name='anonycheck' value='no' type='radio' " . (!$anonycheck ? " checked='checked'" : "") . " />".T_("NO").""); ?> &nbsp;<i><?php echo T_("UPLOAD_ANONY_MSG");?></i>
 		</td></tr>

@@ -17,6 +17,7 @@ if ($action=="groups" && $do=="view"){
 	print("<th class='table_head'>".T_("FORUM")."<br />".T_("GROUPS_VIEW_EDIT_DEL")."</th>\n");
 	print("<th class='table_head'>".T_("UPLOAD")."</th>\n");
 	print("<th class='table_head'>".T_("DOWNLOAD")."</th>\n");
+	print("<th class='table_head'>".T_("SLOTS")."</th>\n");
 	print("<th class='table_head'>".T_("CP_VIEW")."</th>\n");
     print("<th class='table_head'>".T_("CP_STAFF_PAGE")."</th>");
     print("<th class='table_head'>".T_("CP_STAFF_PUBLIC")."</th>");
@@ -34,6 +35,7 @@ if ($action=="groups" && $do=="view"){
 		 print("<td class='table_col1'>".$level["view_forum"]."/".$level["edit_forum"]."/".$level["delete_forum"]."</td>\n");
 		 print("<td class='table_col2'>".$level["can_upload"]."</td>\n");
 		 print("<td class='table_col1'>".$level["can_download"]."</td>\n");
+		 print("<td class='table_col1'>".$level["maxslots"]."</td>\n");
 		 print("<td class='table_col2'>".$level["control_panel"]."</td>\n");
          print("<td class='table_col1'>".$level["staff_page"]."</td>\n");
          print("<td class='table_col2'>".$level["staff_public"]."</td>\n");  
@@ -81,6 +83,7 @@ if ($action=="groups" && $do=="edit"){
 	<tr><td>Delete In Forums:</td><td>  <?php echo T_("YES");?> <input type="radio" name="dforum" value="yes" <?php if ($level["delete_forum"]=="yes") echo "checked = 'checked'" ?> />&nbsp;&nbsp; <?php echo T_("NO");?> <input type="radio" name="dforum" value="no" <?php if ($level["delete_forum"]=="no") echo "checked = 'checked'"; ?> /></td></tr>
 	<tr><td>Can Upload:</td><td>  <?php echo T_("YES");?> <input type="radio" name="upload" value="yes" <?php if ($level["can_upload"]=="yes") echo "checked = 'checked'" ?> />&nbsp;&nbsp; <?php echo T_("NO");?> <input type="radio" name="upload" value="no" <?php if ($level["can_upload"]=="no") echo "checked = 'checked'"; ?> /></td></tr>
 	<tr><td>Can Download:</td><td>  <?php echo T_("YES");?> <input type="radio" name="down" value="yes" <?php if ($level["can_download"]=="yes") echo "checked = 'checked'" ?> />&nbsp;&nbsp; <?php echo T_("NO");?> <input type="radio" name="down" value="no" <?php if ($level["can_download"]=="no") echo "checked = 'checked'"; ?> /></td></tr>
+	<tr><td>Download  Slots:</td><td><input type="text" name="downslots"  value="<?php echo number_format($level["maxslots"]);?>" size="40"  /></td></tr>
 	<tr><td>Can View CP:</td><td>  <?php echo T_("YES");?> <input type="radio" name="admincp" value="yes" <?php if ($level["control_panel"]=="yes") echo "checked = 'checked'" ?> />&nbsp;&nbsp; <?php echo T_("NO");?> <input type="radio" name="admincp" value="no" <?php if ($level["control_panel"]=="no") echo "checked = 'checked'"; ?> /></td></tr>
 	<tr><td>Staff Page:</td><td>  <?php echo T_("YES");?> <input type="radio" name="staffpage" value="yes" <?php if ($level["staff_page"]=="yes") echo "checked = 'checked'" ?> />&nbsp;&nbsp; <?php echo T_("NO");?> <input type="radio" name="staffpage" value="no" <?php if ($level["staff_page"]=="no") echo "checked = 'checked'"; ?> /></td></tr> 
     <tr><td>Staff Public:</td><td>  <?php echo T_("YES");?> <input type="radio" name="staffpublic" value="yes" <?php if ($level["staff_public"]=="yes") echo "checked = 'checked'" ?> />&nbsp;&nbsp; <?php echo T_("NO");?> <input type="radio" name="staffpublic" value="no" <?php if ($level["staff_public"]=="no") echo "checked = 'checked'"; ?> /></td></tr>
@@ -116,7 +119,8 @@ if ($action=="groups" && $do=="update"){
      $update[] = "delete_forum = " . sqlesc($_POST["dforum"]);
      $update[] = "can_upload = " . sqlesc($_POST["upload"]);
      $update[] = "can_download = " . sqlesc($_POST["down"]);
-     $update[] = "control_panel = " . sqlesc($_POST["admincp"]);
+	 $update[] = "maxslots= ' ".$_POST["downslots"]." ' "; // TODO
+	 $update[] = "control_panel = " . sqlesc($_POST["admincp"]);
      $update[] = "staff_page = " . sqlesc($_POST["staffpage"]);
      $update[] = "staff_public = " . sqlesc($_POST["staffpublic"]);
      $update[] = "staff_sort = " . intval($_POST['sort']);
@@ -188,12 +192,12 @@ if ($action=="groups" && $do=="addnew") {
 $test =	DB::run("INSERT INTO groups 
   (level, color, view_torrents, edit_torrents, delete_torrents, view_users, edit_users, delete_users,
 	view_news, edit_news, delete_news, view_forum, edit_forum, delete_forum, can_upload, can_download,
-	control_panel, staff_page, staff_public, staff_sort) 
-VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", 
+	control_panel, staff_page, staff_public, staff_sort, maxslots) 
+VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", 
 	[$gname, $gcolor, $level['view_torrents'], $level["edit_torrents"], $level["delete_torrents"], $level["view_users"],
 	$level["edit_users"], $level["delete_users"], $level["view_news"], $level["edit_news"], $level["delete_news"],
 	$level["edit_forum"], $level["edit_forum"], $level["delete_forum"], $level["can_upload"], $level["can_download"], $level["control_panel"],
-	$level["staff_page"], $level["staff_public"], $level["staff_sort"]]);
+	$level["staff_page"], $level["staff_public"], $level["staff_sort"], $level["maxslots"]]);
 
 	autolink(TTURL."/admincp?action=groups&do=view", T_("SUCCESS"),"Groups Updated!");
 	end_frame();

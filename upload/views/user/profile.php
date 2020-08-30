@@ -41,6 +41,7 @@
 				<?php echo T_("UPLOADED"); ?>: <?php echo mksize($user["uploaded"]); ?><br />
 				<?php echo T_("DOWNLOADED"); ?>: <?php echo mksize($user["downloaded"]); ?><br />
 				<?php echo T_("RATIO"); ?>: <?php echo $ratio; ?><br />
+				<?php echo T_("Hit & Run"); ?>: <?php echo $numhnr; ?><br />
 				<?php echo T_("AVG_DAILY_DL"); ?>: <?php echo mksize($user["downloaded"] / (DateDiff($user["added"], time()) / 86400)); ?><br />
 				<?php echo T_("AVG_DAILY_UL"); ?>: <?php echo mksize($user["uploaded"] / (DateDiff($user["added"], time()) / 86400)); ?><br />
 				<?php echo T_("TORRENTS_POSTED"); ?>: <?php echo number_format($numtorrents); ?><br />

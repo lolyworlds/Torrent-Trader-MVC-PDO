@@ -1,6 +1,7 @@
 <br>
 <div class="border border-primary">
     <ul class="list-group">
+    <li class="list-group-item"><a href="<?php echo TTURL; ?>/admincp?action=adduser"><img src="images/admin/adduser.png" border="0" width="20" height="20" alt="" />&nbsp;<b><?php echo T_("Add User"); ?></b></a></li>
     <li class="list-group-item"><a href="<?php echo TTURL; ?>/admincp?action=usersearch"><img src="images/admin/user_search.png" border="0" width="20" height="20" alt="" />&nbsp;<b><?php echo T_("ADVANCED_USER_SEARCH"); ?></b></a></li>
     <li class="list-group-item"><a href="<?php echo TTURL; ?>/admincp?action=avatars"><img src="images/admin/avatar_log.png" border="0" width="20" height="20" alt="" />&nbsp;<b><?php echo T_("AVATAR_LOG"); ?></b></a></li>
     <li class="list-group-item"><a href="<?php echo TTURL; ?>/admincp?action=backups"><img src="images/admin/db_backup.png" border="0" width="20" height="20" alt="" />&nbsp;<b><?php echo T_("BACKUPS"); ?></b></a></li>
@@ -14,6 +15,7 @@
     <li class="list-group-item"><a href="<?php echo TTURL; ?>/faq/manage"><img src="images/admin/faq.png" border="0" width="20" height="20" alt="" />&nbsp;<b><?php echo T_("FAQ"); ?></b></a></li>
     <li class="list-group-item"><a href="<?php echo TTURL; ?>/admincp?action=forum"><img src="images/admin/forums.png" border="0" width="20" height="20" alt="" />&nbsp;<b><?php echo T_("FORUM_MANAGEMENT"); ?></b></a></li>
 	<li class="list-group-item"><a href="<?php echo TTURL; ?>/admincp?action=freetorrents"><img src="images/admin/free_leech.png" border="0" width="20" height="20" alt="" />&nbsp;<b>Freeleech Torrents</b></a></li>
+    <li class="list-group-item"><a href="<?php echo TTURL; ?>/admincp?action=hnr"><img src="images/hitnrun.png" border="0" width="20" height="20" alt="" />&nbsp;<b>Hit & Runs</b></a></li>
     <li class="list-group-item"><a href="<?php echo TTURL; ?>/admincp?action=lastcomm"><img src="images/admin/comments.png" border="0" width="20" height="20" alt="" />&nbsp;<b><?php echo T_("LATEST_COMMENTS"); ?></b></a></li>
     <li class="list-group-item"><a href="<?php echo TTURL; ?>/admincp?action=masspm"><img src="images/admin/mass_pm.png" border="0" width="20" height="20" alt="" />&nbsp;<b><?php echo T_("MASS_PM"); ?></b></a></li>
     <li class="list-group-item"><a href="<?php echo TTURL; ?>/admincp?action=messagespy"><img src="images/admin/message_spy.png" border="0" width="20" height="20" alt="" />&nbsp;<b><?php echo T_("MESSAGE_SPY"); ?></b></a></li>

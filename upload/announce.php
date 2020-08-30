@@ -233,6 +233,14 @@ $selfwhere = "torrent = $torrentid AND peer_id = ".sqlesc($peer_id);
 // FILL $SELF WITH DETAILS FROM PEERS TABLE (CONNECTING PEERS DETAILS)
 if (!isset($self)){
 
+	if ($MEMBERSONLY){ // todo slots mod
+		$countslot = DB::run("SELECT DISTINCT torrent FROM peers WHERE userid =?  AND seeder=?", [$_SESSION['id'], 'no']);
+		$slot = $countslot->rowCount();
+		$maxslot = DB::run("SELECT `maxslots` FROM `groups` WHERE `group_id` = $user[class]")->fetchColumn();
+		if ($slot >= $maxslot)
+		err("Maximum Slot exceeded! You may only download $maxslot torrent at a time.");
+	}
+
 	//check passkey isnt leaked
 	if ($MEMBERSONLY) {
 		$valid = DB::run("SELECT COUNT(*) FROM peers WHERE torrent=$torrentid AND passkey=" . sqlesc($passkey))->fetch();
@@ -299,6 +307,14 @@ $updateset = array();
 ////////////////// NOW WE DO THE TRACKER EVENT UPDATES ///////////////////
 
 if ($event == "stopped") { // UPDATE "STOPPED" EVENT
+/* todo
+// SNATCHED
+$res_se = DB::run("SELECT uid, utime, tid FROM snatched WHERE tid = $torrentid AND uid = $userid");
+while ($row_se = $res_se->fetch(PDO::FETCH_ASSOC)) {
+	DB::run("UPDATE snatched SET utime  =? WHERE completed =? AND tid =? AND uid =?", [$dt, 'yes', $row_se['tid'], $row_se['uid']]);
+}
+*/
+
         $sql = DB::run("DELETE FROM peers WHERE $selfwhere");
         if ($sql){
             if ($self["seeder"] == "yes")

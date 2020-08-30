@@ -9,7 +9,10 @@ begin_block(class_user_colour($_SESSION["username"]));
 	$userdownloaded = mksize($_SESSION["downloaded"]);
 	$useruploaded = mksize($_SESSION["uploaded"]);
 	$privacylevel = T_($_SESSION["privacy"]);
-
+	$countslot = DB::run("SELECT DISTINCT torrent FROM peers WHERE userid =?  AND seeder=?", [$_SESSION['id'], 'yes']);
+	$maxslotdownload = $countslot->rowCount();
+	$slots = number_format($_SESSION["maxslots"]) . "/" . number_format($maxslotdownload);
+	
 	if ($_SESSION["uploaded"] > 0 && $_SESSION["downloaded"] == 0)
 		$userratio = '<span class="label label-success pull-right">Inf.</span>';
 	elseif ($_SESSION["downloaded"] > 0)
@@ -24,6 +27,7 @@ begin_block(class_user_colour($_SESSION["username"]));
 		<li class="list-group-item"><?php echo T_("ACCOUNT_PRIVACY_LVL");?>: <div class="pull-right"><?php echo $privacylevel;?></div></li>
 		<li class="list-group-item"><?php echo T_("SEEDBONUS");?>: <a href="<?php echo TTURL; ?>/bonus"><?php echo $_SESSION['seedbonus'];?></a></span></li>
 		<li class="list-group-item"><?php echo T_("RATIO");?>: <?php echo $userratio;?></span></li>
+		<li class="list-group-item"><?php echo T_("SLOTS_USED");?>: <?php echo $slots;?></span></li>
 	</ul>
 	<div class="text-center">
 	<a href='<?php echo TTURL; ?>/users/profile?id=<?php echo $_SESSION["id"];?>'><button class="btn btn-primary"><?php echo T_("ACCOUNT"); ?></button></a>

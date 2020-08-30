@@ -71,7 +71,9 @@ if (isset($row["lang_image"]) && $row["lang_image"] != "") {
             if ($row["external"] != 'yes' && $row["freeleech"] == '1') {
                 print("<b>" . T_("FREE_LEECH") . ": </b><font color='#ff0000'>" . T_("FREE_LEECH_MSG") . "</font><br />");
             }
-
+            if ($row["external"]!='yes' && $row["vip"]== 'yes'){
+                print ("<b>Torrent VIP: </b><font color='orange'>Torrent reserved for VIP</font><br><br>");
+            }
             print("<b>" . T_("LAST_CHECKED") . ": </b>" . date("d-m-Y H:i:s", utc_to_tz_time($row["last_action"])) . "<br><br>");
             // Like Mod
             if (!$config["forcethanks"]) {

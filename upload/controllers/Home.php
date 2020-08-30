@@ -20,6 +20,22 @@ if (file_exists("check.php") && $_SESSION["class"] == 7){
 	show_error_msg("WARNING", "check still exists, please delete or rename the file as it could pose a security risk<br /><br /><a href='".$config["SITEURL"]."/check.php'>View /check</a> - Use to check your config!<br />",0);
 }
 
+// Start Hit and Run Warning
+if ($config["hnr_on"]) {
+    $query = DB::run("SELECT count(hnr) FROM `snatched` WHERE `uid` = '".$_SESSION["id"]."' AND `hnr` = 'yes'");
+    $res2 = $query->fetch(PDO::FETCH_ASSOC);
+    $hnr = "<b><b>&nbsp; ".$res2[0]." &nbsp;</b>";
+    $hnr2 = $res2[0];   
+    if ($res2[0] > 0) {
+		begin_frame(T_("Warning"));
+		echo"<table><tr>
+			<td align=center>Hey $_SESSION[username], you have ".$hnr." recording".($hnr2 > 1 ? "s" : "")." for Hit and Run!&nbsp; View the recordings into <a href=$config[SITEURL]/snatched><b>Your Snatch List</b></a>
+			You must to keep seeding or you can <a href=$config[SITEURL]/bonus/trade><b>Trade to Delete</b></a> ".($hnr2 > 1 ? "these recordings" : "this recording")." with Seed Bonus or Upload
+			</td></tr></table>";
+			end_frame();
+    }
+}
+
 //Site Notice
 if ($config['SITENOTICEON']){
 	begin_frame(T_("NOTICE"));
@@ -89,7 +105,7 @@ print("<br /><center><a href='$config[SITEURL]/torrents/browse'>".T_("BROWSE_TOR
 if ($config["MEMBERSONLY"] && !$_SESSION) {
 	echo "<br /><br /><center><b>".T_("BROWSE_MEMBERS_ONLY")."</b></center><br /><br />";
 } else {
-	$query = "SELECT torrents.id, torrents.anon, torrents.announce, torrents.category, torrents.sticky,  torrents.tube,  torrents.imdb, torrents.leechers, torrents.nfo, torrents.seeders, torrents.name, torrents.times_completed, torrents.size, torrents.added, torrents.comments, torrents.numfiles, torrents.filename, torrents.owner, torrents.external, torrents.freeleech, categories.name AS cat_name, categories.image AS cat_pic, categories.parent_cat AS cat_parent, users.username, users.privacy, IF(torrents.numratings < 2, NULL, ROUND(torrents.ratingsum / torrents.numratings, 1)) AS rating FROM torrents LEFT JOIN categories ON category = categories.id LEFT JOIN users ON torrents.owner = users.id WHERE visible = 'yes' AND banned = 'no' ORDER BY sticky ASC, id DESC LIMIT 25";
+	$query = "SELECT torrents.id, torrents.anon, torrents.announce, torrents.category, torrents.sticky,  torrents.vip,  torrents.tube,  torrents.imdb, torrents.leechers, torrents.nfo, torrents.seeders, torrents.name, torrents.times_completed, torrents.size, torrents.added, torrents.comments, torrents.numfiles, torrents.filename, torrents.owner, torrents.external, torrents.freeleech, categories.name AS cat_name, categories.image AS cat_pic, categories.parent_cat AS cat_parent, users.username, users.privacy, IF(torrents.numratings < 2, NULL, ROUND(torrents.ratingsum / torrents.numratings, 1)) AS rating FROM torrents LEFT JOIN categories ON category = categories.id LEFT JOIN users ON torrents.owner = users.id WHERE visible = 'yes' AND banned = 'no' ORDER BY sticky ASC, id DESC LIMIT 25";
 	$res = DB::run($query);
 	if ($res->rowCount()) {
 		torrenttable($res);
