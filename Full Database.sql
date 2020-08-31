@@ -146,6 +146,49 @@ CREATE TABLE IF NOT EXISTS `categories` (
   UNIQUE KEY `parent_cat-name` (`parent_cat`,`name`)
 ) ENGINE=MyISAM;
 
+INSERT INTO `categories` (`id`, `name`, `sort_index`, `image`, `subcat`, `parent_cat`, `sub_sort`) VALUES 
+(1, 'DVD', 1, '', 'yes', 'Movies', '1'),
+(2, 'Divx/Xvid', 2, '', 'yes', 'Movies', '2'),
+(3, 'SVCD/VCD', 3, '', 'yes', 'Movies', '3'),
+(4, 'Other', 4, '', 'no', 'Movies', '4'),
+(5, 'DVD', 5, '', 'yes', 'TV', '5'),
+(6, 'Divx/Xvid', 6, '', 'yes', 'TV', '6'),
+(7, 'SVCD/VCD', 7, '', 'yes', 'TV', '7'),
+(9, 'All', 9, '', 'yes', 'Documentaries', '9'),
+(10, 'PC', 10, '', 'yes', 'Games', '10'),
+(11, 'PS2', 11, '', 'yes', 'Games', '11'),
+(12, 'PSP', 12, '', 'yes', 'Games', '12'),
+(13, 'Xbox', 13, '', 'yes', 'Games', '13'),
+(14, 'Xbox360', 14, '', 'yes', 'Games', '14'),
+(15, 'PS1', 15, '', 'yes', 'Games', '15'),
+(16, 'Dreamcast', 16, '', 'yes', 'Games', '16'),
+(17, 'Other', 20, '', 'yes', 'Games', '20'),
+(18, 'PC', 18, '', 'yes', 'Apps', '18'),
+(19, 'Mac', 19, '', 'yes', 'Apps', '19'),
+(20, 'Linux', 20, '', 'yes', 'Apps', '20'),
+(21, 'Other', 21, '', 'yes', 'Apps', '21'),
+(22, 'MP3', 22, '', 'yes', 'Music', '22'),
+(23, 'Lossless', 23, '', 'yes', 'Music', '23'),
+(24, 'DVD', 24, '', 'yes', 'Music', '24'),
+(25, 'Video', 25, '', 'yes', 'Music', '25'),
+(26, 'Radio', 26, '', 'yes', 'Music', '26'),
+(27, 'Other', 27, '', 'yes', 'Music', '27'),
+(28, 'All', 0, 'anime.jpg', 'yes', 'Anime', '28'),
+(33, 'Emulation', 33, '', 'yes', 'Other', '33'),
+(34, 'PPC/PDA', 34, '', 'yes', 'Other', '34'),
+(35, 'Sounds', 35, '', 'yes', 'Other', '35'),
+(36, 'E-Books', 36, '', 'yes', 'Other', '36'),
+(37, 'Images', 37, '', 'yes', 'Other', '37'),
+(38, 'Mobile Phone', 38, '', 'yes', 'Other', '38'),
+(39, 'Extra Pars/Fills', 39, '', 'yes', 'Other', '39'),
+(40, 'Other', 40, '', 'yes', 'Other', '40'),
+(41, 'HD', 6, '', 'yes', 'TV', '6'),
+(42, 'HD', 3, '', 'yes', 'Movies', '3'),
+(43, 'PS3', 12, '', 'yes', 'Games', '12'),
+(44, 'Wii', 17, '', 'yes', 'Games', '17'),
+(45, 'DS', 18, '', 'yes', 'Games', '18'),
+(46, 'GameCube', 19, '', 'yes', 'Games', '19');
+
 -- --------------------------------------------------------
 
 --
