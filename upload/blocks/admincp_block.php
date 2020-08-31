@@ -1,10 +1,8 @@
 <?php
-    
-   if ($_SESSION['loggedin']  === true && $_SESSION["control_panel"] == "yes") 
-   {
-       begin_block("AdminCP");
-       ?>
-       
+
+if ($_SESSION['loggedin'] === true && $_SESSION["control_panel"] == "yes") {
+    begin_block("AdminCP");
+    ?>
        <select name="admin" style="width: 95%" onchange="if(this.options[this.selectedIndex].value != -1){ window.location = this.options[this.selectedIndex].value; }">
        <option value="-1">Navigation</option>
        <option value="<?php echo TTURL; ?>/admincp?action=usersearch">Advanced User Search</option>
@@ -37,9 +35,9 @@
        <option value="<?php echo TTURL; ?>/admincp?action=censor">Word Censor</option>
        <option value="<?php echo TTURL; ?>/admincp?action=forum">Forum Management</option>
        </select>
-    
-       <?php
-       end_block();
-   }   
+
+    <?php
+    end_block();
+}
 
 ?>

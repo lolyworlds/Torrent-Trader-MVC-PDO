@@ -1,7 +1,7 @@
 <?php
 class TTMail
 {
-// Declaration Of Variables Necessary For The Class
+    // Declaration Of Variables Necessary For The Class
     public $type;
 
     public $smtp_host;

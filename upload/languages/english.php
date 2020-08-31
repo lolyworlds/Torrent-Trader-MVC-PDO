@@ -439,7 +439,6 @@ $LANG["FORUMS_TOPIC_LOCKED"] = "This topic is locked; no new posts are allowed."
 $LANG["FORUMS_YOU_MUST_ENTER_NEW_TITLE"] = "You must enter a new title!";
 $LANG["FORUMS_YOU_NOT_PERM_POST_FORUM"] = "You are not permitted to post in this forum.";
 
-
 // Forums Cpanel
 $LANG["CP_COULD_NOT_SAVE_TO_DB"] = "Could not save to DB - check your connection & settings!";
 $LANG["CP_FORUM_CAT_DELETED"] = "forum cat deleted ...";
@@ -1145,10 +1144,9 @@ $LANG["USERNAME"] = "Username";
 $LANG["RATIO"] = "Ratio";
 $LANG["UPLOADED"] = "Uploaded";
 $LANG["NOTHING_FOUND"] = "Nothing found";
-// User Theme 
+// User Theme
 $LANG["THEME_NAME"] = "Theme Uses";
 // clear shoutbox
 $LANG["CLEAR_SHOUTBOX_TEXT"] = "Are you sure you want to clear the shoutbox? You can't undo this";
 $LANG["SHOUTBOX_CLEARED_MESSAGE"] = "The shoutbox has been cleared";
 $LANG["CLEAR_SHOUTBOX"] = "Clear Shoutbox";
-?>

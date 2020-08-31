@@ -133,7 +133,7 @@ class Request extends Controller
                     $filledbydata = "<i>nobody</i>";
                 }
                 print("<tr><td class=table_col1 align=left><a href=$config[SITEURL]/request/reqdetails?id=$arr[id]><b>$arr[request]</b></a></td>" .
-                      "<td class=table_col2 align=center>$arr[parent_cat]: $arr[cat]</td><td align=center
+                    "<td class=table_col2 align=center>$arr[parent_cat]: $arr[cat]</td><td align=center
                       class=table_col1>$arr[added]</td>$addedby<td
                       class=table_col2>$filled</td>
                       <td class=table_col1>$filledbydata</td>
@@ -150,7 +150,7 @@ class Request extends Controller
             print("<p align=right><input type=submit value=" . T_('DO_DELETE') . "></p>");
             print("</form>");
             echo $pagerbottom;
-        
+
             end_frame();
             stdfoot();
         } else {
@@ -203,7 +203,7 @@ class Request extends Controller
                 $deadchkbox .= " checked=\"checked\"";
             }
             $deadchkbox .= " /> " . T_('INC_DEAD') . "\n";
-            $catdropdown ?>
+            $catdropdown?>
             </select>
             <?php $deadchkbox?>
             <input type="submit" value="<?php print("" . T_('SEARCH') . "\n");?>"  />
@@ -230,7 +230,7 @@ class Request extends Controller
                 }
                 $catdropdown .= ">" . htmlspecialchars($cat["parent_cat"]) . ": " . htmlspecialchars($cat["name"]) . "</option>\n";
             }
-            echo $catdropdown ?>
+            echo $catdropdown?>
             </select>
             <?php
             print("<tr><td align=center>Additional Information <b>(Optional - but be generous!</b>)<br><textarea name=descr rows=7
@@ -257,7 +257,7 @@ class Request extends Controller
         $arr = $res->fetch(PDO::FETCH_ASSOC);
         $voted = $arr;
         if ($voted) {
-        ?>
+            ?>
         <p>You've already voted for this request, only 1 vote for each request is allowed</p><p>Back to <a href=$config[SITEURL]/request><b>requests</b></a></p>
         <?php
         } else {
@@ -525,7 +525,7 @@ class Request extends Controller
         $commentbar = "<p align=center><a class=index href=$config[SITEURL]/request/reqcomment?action=add&amp;tid=$id>Add comment</a></p>\n";
         if ($commcount) {
             //list($pagertop, $pagerbottom, $limit) = pager(10, $commcount, "comments/req?id=$id&amp;");
-            $commquery =    "SELECT comments.id, text, user, comments.added, editedby, editedat, avatar, warned, username, title, class, donated FROM comments LEFT JOIN users ON comments.user = users.id WHERE req = $id ORDER BY comments.id";
+            $commquery = "SELECT comments.id, text, user, comments.added, editedby, editedat, avatar, warned, username, title, class, donated FROM comments LEFT JOIN users ON comments.user = users.id WHERE req = $id ORDER BY comments.id";
             $commres = DB::run($commquery);
         } else {
             unset($commres);
@@ -583,7 +583,7 @@ class Request extends Controller
             stdhead("Add comment to \"" . $arr["request"] . "\"");
             begin_frame("Add a request comment");
             print("<a href=$config[SITEURL]/request><button  class='btn btn-sm btn-success'>All Request</button></a>&nbsp;
-            <a href=$config[SITEURL]/request?requestorid=$_SESSION[id]><button  class='btn btn-sm btn-success'>View my requests</button></a>");    
+            <a href=$config[SITEURL]/request?requestorid=$_SESSION[id]><button  class='btn btn-sm btn-success'>View my requests</button></a>");
             print("<b>Add comment to \"" . htmlspecialchars($arr["request"]) . "\"</b>\n");
             print("<p><form name=\"Form\" method=\"post\" action=\"$config[SITEURL]/request/reqcomment?action=add\">\n");
             print("<input type=\"hidden\" name=\"tid\" value=\"$reqid\"/>\n");
@@ -601,7 +601,7 @@ class Request extends Controller
             end_frame();
             stdfoot();
             die;
-           } elseif ($action == "edit") {
+        } elseif ($action == "edit") {
             $commentid = 0 + $_GET["cid"];
             if (!is_valid_id($commentid)) {
                 show_error_msg("Error", "Wrong ID $commentid.", 1);

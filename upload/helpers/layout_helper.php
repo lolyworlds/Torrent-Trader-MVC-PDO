@@ -14,7 +14,7 @@ function stdhead($title = "")
     }
     //end check
 
-    if (!$_SESSION['loggedin']  == true) {
+    if (!$_SESSION['loggedin'] == true) {
         guestadd();
     }
 

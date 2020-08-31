@@ -1,28 +1,28 @@
 <?php
 
-if ($action=="bannedtorrents"){
-	$title = "Banned Torrents";
-	require 'views/admin/header.php';
-	adminnavmenu();
-		
-	$res2 = DB::run("SELECT COUNT(*) FROM torrents WHERE banned=?", ['yes']);
-	$row = $res2->fetch(PDO::FETCH_LAZY);
-	$count = $row[0];
+if ($action == "bannedtorrents") {
+    $title = "Banned Torrents";
+    require 'views/admin/header.php';
+    adminnavmenu();
 
-	$perpage = 50;
+    $res2 = DB::run("SELECT COUNT(*) FROM torrents WHERE banned=?", ['yes']);
+    $row = $res2->fetch(PDO::FETCH_LAZY);
+    $count = $row[0];
 
-	list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, "/admincp?action=bannedtorrents&amp;");
+    $perpage = 50;
 
-	begin_frame("Banned ".T_("TORRENT_MANAGEMENT"));
+    list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, "/admincp?action=bannedtorrents&amp;");
 
-	print("<center><form method='get' action='?'>\n");
-	print("<input type='hidden' name='action' value='bannedtorrents' />\n");
-	print(T_("SEARCH").": <input type='text' size='30' name='search' />\n");
-	print("<input type='submit' value='Search' />\n");
-	print("</form></center>\n");
+    begin_frame("Banned " . T_("TORRENT_MANAGEMENT"));
 
-	echo $pagertop;
-	?>
+    print("<center><form method='get' action='?'>\n");
+    print("<input type='hidden' name='action' value='bannedtorrents' />\n");
+    print(T_("SEARCH") . ": <input type='text' size='30' name='search' />\n");
+    print("<input type='submit' value='Search' />\n");
+    print("</form></center>\n");
+
+    echo $pagertop;
+    ?>
 	<table class='table table-striped table-bordered table-hover'><thead>
 	<tr>
 	<th class="table_head"><?php echo T_("NAME"); ?></th>
@@ -33,18 +33,18 @@ if ($action=="bannedtorrents"){
 	<th class="table_head">Edit?</th>
 	</tr></thead><tbody>
 	<?php
-	$resqq = DB::run("SELECT id, name, seeders, leechers, visible, banned, external FROM torrents WHERE banned=? ORDER BY name", ['yes']);
-	while ($row = $resqq->fetch(PDO::FETCH_ASSOC)){
-		$char1 = 35; //cut name length
-		$smallname = CutName(htmlspecialchars($row["name"]), $char1);
+$resqq = DB::run("SELECT id, name, seeders, leechers, visible, banned, external FROM torrents WHERE banned=? ORDER BY name", ['yes']);
+    while ($row = $resqq->fetch(PDO::FETCH_ASSOC)) {
+        $char1 = 35; //cut name length
+        $smallname = CutName(htmlspecialchars($row["name"]), $char1);
 
-		echo "<tr><td class='table_col1'>" . $smallname . "</td><td class='table_col2'>$row[visible]</td><td class='table_col1'>".number_format($row["seeders"])."</td><td class='table_col2'>".number_format($row["leechers"])."</td><td class='table_col1'>$row[external]</td><td class='table_col2'><a href=\"torrents/edit?returnto=" . urlencode($_SERVER["REQUEST_URI"]) . "&amp;id=" . $row["id"] . "\"><font size='1' face='verdana'>EDIT</font></a></td></tr>\n";
-	}
+        echo "<tr><td class='table_col1'>" . $smallname . "</td><td class='table_col2'>$row[visible]</td><td class='table_col1'>" . number_format($row["seeders"]) . "</td><td class='table_col2'>" . number_format($row["leechers"]) . "</td><td class='table_col1'>$row[external]</td><td class='table_col2'><a href=\"torrents/edit?returnto=" . urlencode($_SERVER["REQUEST_URI"]) . "&amp;id=" . $row["id"] . "\"><font size='1' face='verdana'>EDIT</font></a></td></tr>\n";
+    }
 
-	echo "</tbody></table>\n";
+    echo "</tbody></table>\n";
 
-	print($pagerbottom);
+    print($pagerbottom);
 
-	end_frame();
-	require 'views/admin/footer.php';
+    end_frame();
+    require 'views/admin/footer.php';
 }

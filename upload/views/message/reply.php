@@ -1,13 +1,13 @@
 <?php
-            usermenu($_SESSION["id"]);
-            include 'views/message/messagenavbar.php';
-            ?>
+usermenu($_SESSION["id"]);
+include 'views/message/messagenavbar.php';
+?>
             <br>
             <div><center>
             <form name="form" action="create" method="post">
             <label for="receiver">To</label>
-        <input type="text" name="receiver" placeholder="To" value="<?php echo $username;?>" id="receiver"><br>
-        
+        <input type="text" name="receiver" placeholder="To" value="<?php echo $username; ?>" id="receiver"><br>
+
         <label for="template">Template:</label>&nbsp;
             <select name="template">
             <option name='0'>---</option>
@@ -16,10 +16,10 @@
             <?php endforeach;?>
             </select><br>
             <label for="name">Subject</label>
-        <input type="text" name="subject" placeholder="Subject" value="<?php echo $row['subject'];?>" id="subject">
-        
+        <input type="text" name="subject" placeholder="Subject" value="<?php echo $row['subject']; ?>" id="subject">
+
         <?php require_once "helpers/bbcode_helper.php";
-        print textbbcode("form", "body", "$msg");?>
+print textbbcode("form", "body", "$msg");?>
         <input type="submit"  name="Update" value="create">&nbsp;
         <label>Save Copy In Outbox</label>
         <input type="checkbox" name="save" checked='Checked'>&nbsp;

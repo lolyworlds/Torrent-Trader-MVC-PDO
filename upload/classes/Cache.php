@@ -14,18 +14,7 @@ class Cache
                 if (!@$this->obj->Connect($config["cache_memcache_host"], $config["cache_memcache_port"])) {
                     $this->type = "disk";
                 }
-
                 break;
-            case "apc":
-                if (function_exists("apc_store")) {
-                    break;
-                }
-
-            case "xcache":
-                if (function_exists("xcache_set")) {
-                    break;
-                }
-
             default:
                 $this->type = "disk";
         }
@@ -42,17 +31,11 @@ class Cache
             case "memcache":
                 return $this->obj->set($config['SITENAME'] . "_" . $var, $val, 0, $expire);
                 break;
-            case "apc":
-                return apc_store($var, $val, $expire);
-                break;
             case "disk":
                 $fp = fopen($this->cachedir . "/$var.cache", "w");
                 fwrite($fp, serialize($val));
                 fclose($fp);
                 return;
-                break;
-            case "xcache":
-                return xcache_set($var, serialize($val), $expire);
                 break;
         }
     }
@@ -65,14 +48,8 @@ class Cache
             case "memcache":
                 return $this->obj->delete($config['SITENAME'] . "_" . $var);
                 break;
-            case "apc":
-                return apc_delete($var);
-                break;
             case "disk":
                 @unlink($this->cachedir . "/$var.cache");
-                break;
-            case "xcache":
-                return xcache_unset($var);
                 break;
         }
     }
@@ -88,22 +65,11 @@ class Cache
             case "memcache":
                 return $this->obj->get($config['SITENAME'] . "_" . $var);
                 break;
-            case "apc":
-                return apc_fetch($var);
-                break;
             case "disk":
                 $file = $this->cachedir . "/$var.cache";
                 if (file_exists($file) && (time() - filemtime($file)) < $expire) {
                     return unserialize(file_get_contents($file));
                 }
-
-                return false;
-                break;
-            case "xcache":
-                if (xcache_isset($var)) {
-                    return unserialize(xcache_get($var));
-                }
-
                 return false;
                 break;
         }

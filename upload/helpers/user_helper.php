@@ -3,8 +3,8 @@
 // Connection Verification Function Otherwise Connection Page
 function loggedinonly()
 {
-    if (!$_SESSION['loggedin']  == true) {
-        header("Refresh: 0; url=".TTURL."/account/login");
+    if (!$_SESSION['loggedin'] == true) {
+        header("Refresh: 0; url=" . TTURL . "/account/login");
         exit();
     }
 }
@@ -42,21 +42,25 @@ function getguests()
     return get_row_count("guests");
 }
 // Function Who Finds Where The Member Is
-function where ($where, $userid, $update=1){
-        if (!is_valid_id($userid))
-                die;
+function where($where, $userid, $update = 1)
+{
+    if (!is_valid_id($userid)) {
+        die;
+    }
 
-        if(empty($where))
-                $where = "Unknown Location...";
+    if (empty($where)) {
+        $where = "Unknown Location...";
+    }
 
-        if ($update)
-                $stmt = DB::run("UPDATE users SET page=? WHERE id=?", [$where, $userid]);
+    if ($update) {
+        $stmt = DB::run("UPDATE users SET page=? WHERE id=?", [$where, $userid]);
+    }
 
-        if (!$update){
-                return $where;
-                }else{
-                return;
-                }
+    if (!$update) {
+        return $where;
+    } else {
+        return;
+    }
 }
 // Function That Returns The Group Name
 function get_user_class_name($i)

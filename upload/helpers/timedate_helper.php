@@ -1,6 +1,5 @@
 <?php
 
-
 // Function that calculates the Hours Minutes Seconds of a Timestamp
 function mkprettytime($s)
 {
@@ -186,18 +185,16 @@ function get_time_elapsed($datetime, $full = false)
         'i' => 'minute',
         's' => 'second',
     );
-    foreach ($string as $k => &$v)
-    {
-        if ($diff->$k)
-        {
+    foreach ($string as $k => &$v) {
+        if ($diff->$k) {
             $v = $diff->$k . ' ' . $v . ($diff->$k > 1 ? 's' : '');
-        }
-        else
-        {
+        } else {
             unset($string[$k]);
-     }
+        }
     }
-    if (!$full) $string = array_slice($string, 0, 1);
+    if (!$full) {
+        $string = array_slice($string, 0, 1);
+    }
+
     return $string ? implode(', ', $string) . ' ago' : 'just now';
 }
-///END ELAPSE TIME

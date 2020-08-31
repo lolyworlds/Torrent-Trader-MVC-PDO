@@ -1,10 +1,10 @@
 <?php
-            usermenu($_SESSION["id"]);
-            include 'views/message/messagenavbar.php';
-            ?>
+usermenu($_SESSION["id"]);
+include 'views/message/messagenavbar.php';
+?>
             <form id='messagespy' method='post' action='messages&amp;do=del'>
-            
-                   
+
+
             <div class='table-responsive'><table class='table table-striped'>
                    <thead>
                    <tr>
@@ -14,14 +14,13 @@
 <?php
 while ($arr = $res->fetch(PDO::FETCH_ASSOC)) {
 
-            $res2 = DB::run("SELECT username FROM users WHERE id=?", [$arr["receiver"]]);
-            
-            $subject = "<a href='" . TTURL . "/messages/read?templates&amp;id=" . $arr["id"] . "'><b>" . format_comment($arr["subject"]) . "</b></a>";
-  
-            $added = utc_to_tz($arr["added"]);
+    $res2 = DB::run("SELECT username FROM users WHERE id=?", [$arr["receiver"]]);
 
+    $subject = "<a href='" . TTURL . "/messages/read?templates&amp;id=" . $arr["id"] . "'><b>" . format_comment($arr["subject"]) . "</b></a>";
 
-            ?>
+    $added = utc_to_tz($arr["added"]);
+
+    ?>
         <tbody><tr>
         <td><input type='checkbox' name='del[]' value='<?php echo $arr['id']; ?>' /></td>
         <td><?php echo $subject; ?></td>

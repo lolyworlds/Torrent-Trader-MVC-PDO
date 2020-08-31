@@ -1,8 +1,8 @@
 <?php
 if ($action == "adduser") {
 
-    if ($_SESSION["class"] < "7"){
-    show_error_msg("Error","Sorry you do not have the rights to view this page!",1);
+    if ($_SESSION["class"] < "7") {
+        show_error_msg("Error", "Sorry you do not have the rights to view this page!", 1);
     }
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -23,16 +23,17 @@ if ($action == "adduser") {
         /*
         $count = get_row_count("users", "WHERE username=$username");
         if (!$count !=0) {
-            show_error_msg("Error", "Unable to create the account. The user name is possibly already taken.");
-            header("Refresh: 2; url=".TTURL."/admincp");
-            die;
+        show_error_msg("Error", "Unable to create the account. The user name is possibly already taken.");
+        header("Refresh: 2; url=".TTURL."/admincp");
+        die;
         }
-        */
+         */
         DB::run("INSERT INTO users (added, last_access, secret, username, password, status, email) VALUES (?,?,?,?,?,?,?)", [get_date_time(), get_date_time(), $secret, $username, $passhash, 'confirmed', $email]);
-        autolink(TTURL."/admincp", T_("COMPLETE"));
+        autolink(TTURL . "/admincp", T_("COMPLETE"));
     }
-    
-    stdhead("Add user");
+
+    $title = "Add User";
+    require 'views/admin/header.php';
     adminnavmenu();
     begin_frame();
     ?>
@@ -55,6 +56,6 @@ if ($action == "adduser") {
 
     </div>
     <?php
-    end_frame();
+end_frame();
     stdfoot();
-    }
+}

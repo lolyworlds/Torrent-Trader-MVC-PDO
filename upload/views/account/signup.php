@@ -6,10 +6,10 @@
 <?php echo T_("COOKIES"); ?>
 
 <form method="post" action="<?php echo TTURL; ?>/account/signup?takesignup=1">
-	<?php if ($invite_row) { ?>
+	<?php if ($invite_row) {?>
 	<input type="hidden" name="invite" value="<?php echo $_GET["invite"]; ?>" />
 	<input type="hidden" name="secret" value="<?php echo htmlspecialchars($_GET["secret"]); ?>" />
-	<?php } ?>
+	<?php }?>
 	<table cellspacing="0" cellpadding="2" border="0">
 			<tr>
 				<td><?php echo T_("USERNAME"); ?>: <font class="required">*</font></td>
@@ -28,7 +28,7 @@
 				<td><?php echo T_("EMAIL"); ?>: <font class="required">*</font></td>
 				<td><input type="text" size="40" name="email" /></td>
 			</tr>
-			<?php } ?>
+			<?php }?>
 			<tr>
 				<td><?php echo T_("AGE"); ?>:</td>
 				<td><input type="text" size="40" name="age" maxlength="3" /></td>
@@ -38,13 +38,13 @@
 				<td>
 					<select name="country" size="1">
 						<?php
-						$countries = "<option value=\"0\">---- ".T_("NONE_SELECTED")." ----</option>\n";
-                        $ct_r = DB::run("SELECT id,name,domain from countries ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
+$countries = "<option value=\"0\">---- " . T_("NONE_SELECTED") . " ----</option>\n";
+$ct_r = DB::run("SELECT id,name,domain from countries ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
 
-                        foreach ($ct_r as $ct_a){
-							$countries .= "<option value=\"$ct_a[id]\">$ct_a[name]</option>\n";
-						}
-						?>
+foreach ($ct_r as $ct_a) {
+    $countries .= "<option value=\"$ct_a[id]\">$ct_a[name]</option>\n";
+}
+?>
 						<?php echo $countries; ?>
 					</select>
 				</td>
@@ -70,4 +70,4 @@
 </form>
 </div>
     </div><br />
-<?php require_once "views/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/footer.php"; ?>
+<?php require_once "views/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/footer.php";?>

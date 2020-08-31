@@ -17,9 +17,9 @@ function checkipban($ip)
             $banned = $nip >= $row["first"] && $nip <= $row["last"];
         }
         if ($banned) {
-        header("HTTP/1.0 403 Forbidden");
-        echo '<html><head><title>Forbidden</title> </head><body> <h1>Forbidden</h1>Unauthorized IP address.<br> </body></html>';
-        die;
+            header("HTTP/1.0 403 Forbidden");
+            echo '<html><head><title>Forbidden</title> </head><body> <h1>Forbidden</h1>Unauthorized IP address.<br> </body></html>';
+            die;
         }
     }
 }

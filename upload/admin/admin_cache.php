@@ -5,7 +5,7 @@ if ($action == "prune") {
     adminnavmenu();
     begin_frame('Purge');
 
-# Prune Block Cache.
+    # Prune Block Cache.
     $TTCache = new Cache();
     $TTCache->Delete("blocks_left");
     $TTCache->Delete("blocks_middle");

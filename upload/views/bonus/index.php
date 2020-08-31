@@ -18,7 +18,7 @@
       <td><input type="submit" value="Exchange"></td>
   </tr></tbody>
   </form>
-  <?php endforeach; ?>
+  <?php endforeach;?>
   </table>
   <ul>
      <li>You recieve <font color=red><?php echo $data['configbonuspertime']; ?></font> points per <?php echo $data['configautoclean_interval']; ?> minutes the system registers you as a seeder by torrent.</li>

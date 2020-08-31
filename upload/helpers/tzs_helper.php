@@ -2,7 +2,6 @@
 // Table With Different World Time Zones
 // Left In English For Question Of Call Class Php DateTimeZone (Language International Used is English !!!)
 $tzs = array();
-
 $tzs["-720"] = array("(GMT - 12:00 hours) Enitwetok, Kwajalien", "Pacific/Kwajalein");
 $tzs["-660"] = array("(GMT - 11:00 hours) Midway Island, Samoa", "Pacific/Samoa");
 $tzs["-600"] = array("(GMT - 10:00 hours) Hawaii", "Etc/GMT+10");
@@ -13,7 +12,6 @@ $tzs["-360"] = array("(GMT - 6:00 hours) Central Time (US &amp; Canada), Mexico 
 $tzs["-300"] = array("(GMT - 5:00 hours) Eastern Time (US &amp; Canada), Bogota, Lima, Quito", "America/New_York");
 $tzs["-240"] = array("(GMT - 4:00 hours) Atlantic Time (Canada), Caracas, La Paz", "America/Guadeloupe");
 $tzs["-210"] = array("(GMT - 3:30 hours) Newfoundland", "America/St_Johns");
-//$tzs["-210"] ="America/St_Johns";
 $tzs["-180"] = array("(GMT - 3:00 hours) Brazil, Buenos Aires, Georgetown, Falkland Isl.", "Etc/GMT+3");
 $tzs["-120"] = array("(GMT - 2:00 hours) Mid-Atlantic, Ascention Isl., St Helena", "Atlantic/St_Helena");
 $tzs["-60"] = array("(GMT - 1:00 hour) Azores, Cape Verde Islands", "Atlantic/Azores");

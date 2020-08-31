@@ -21,7 +21,7 @@ class Shoutbox extends Controller
         $quickedit = isset($_GET['quickedit']) ? $_GET['quickedit'] : null;
 
         // Get theme & language
-        if ($_SESSION['loggedin']  == true) {
+        if ($_SESSION['loggedin'] == true) {
             $ss_a = DB::run("SELECT uri FROM stylesheets WHERE id=?", [$_SESSION["stylesheet"]])->fetch();
             if ($ss_a) {
                 $THEME = $ss_a["uri"];
@@ -50,12 +50,12 @@ class Shoutbox extends Controller
             }
         }
         // Edit
-        if (!empty($_POST['update']) && $_SESSION['loggedin']  == true) {
+        if (!empty($_POST['update']) && $_SESSION['loggedin'] == true) {
             $update = $_POST['update'];
             DB::run("UPDATE shoutbox SET message=? WHERE msgid=?", [$update, $id]);
         }
         // Staff
-        if (!empty($_POST['staffmsg']) && $_SESSION['loggedin']  == true) {
+        if (!empty($_POST['staffmsg']) && $_SESSION['loggedin'] == true) {
             $update = $_POST['staffmsg'];
             $qry = DB::run("INSERT INTO shoutbox (msgid, user, message, date, userid, staff) VALUES (?, ?, ?, ?, ?, ?)", [null, $_SESSION['username'], $update, get_date_time(), $_SESSION['id'], 1]);
         }
@@ -89,7 +89,7 @@ class Shoutbox extends Controller
             require 'views/shoutbox/shoutboxfooter.php';
 
         } elseif (isset($reply)) {
-            if (!$_SESSION['loggedin']  == true) {
+            if (!$_SESSION['loggedin'] == true) {
                 autolink(TTURL . "/index", T_("You dont have permission"));
             }
             require 'views/shoutbox/shoutboxheader.php';
@@ -109,7 +109,7 @@ class Shoutbox extends Controller
         } else {
             if ($_SESSION["shoutboxpos"] == 'no') {
                 //INSERT MESSAGE
-                if (!empty($_POST['message']) && $_SESSION['loggedin']  == true) {
+                if (!empty($_POST['message']) && $_SESSION['loggedin'] == true) {
                     $_POST['message'] = $_POST['message'];
                     $result = DB::run("SELECT COUNT(*) FROM shoutbox WHERE message=? AND user=? AND UNIX_TIMESTAMP(?)-UNIX_TIMESTAMP(date) < ?", [$_POST['message'], $_SESSION['username'], get_date_time(), 30]);
                     $row = $result->fetch(PDO::FETCH_LAZY);

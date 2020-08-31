@@ -72,7 +72,7 @@ class BEncode
 
         }
         $this->encodeEntry($unknown, $fd);
-    }// Encodes dictionaries
+    } // Encodes dictionaries
     public function encodeDict($array, &$fd)
     {
         $fd .= "d";

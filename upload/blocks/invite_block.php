@@ -1,30 +1,29 @@
 <?php
-if (($config["INVITEONLY"] || $config["ENABLEINVITES"]) && $_SESSION['loggedin']  == true) {
-	$invites = $_SESSION["invites"];
-	begin_block(T_("INVITES"));
-	?>
+if (($config["INVITEONLY"] || $config["ENABLEINVITES"]) && $_SESSION['loggedin'] == true) {
+    $invites = $_SESSION["invites"];
+    begin_block(T_("INVITES"));
+    ?>
 	<table border="0" width="100%">
 	<tr>
         <td align="center">
-        <?php printf(P_("YOU_HAVE_INVITES", $invites), $invites); ?>
+        <?php printf(P_("YOU_HAVE_INVITES", $invites), $invites);?>
         </td>
     </tr>
-	<?php if ($invites > 0 ){?>
+	<?php if ($invites > 0) {?>
 	<tr>
         <td align="center">
         <a href="<?php echo $config['SITEURL'] ?>/invite"><?php echo T_("SEND_AN_INVITE"); ?></a>
         </td>
     </tr>
-	<?php } ?>
-	<?php if ($_SESSION["invitees"] > 0 ){ ?>
+	<?php }?>
+	<?php if ($_SESSION["invitees"] > 0) {?>
     <tr>
         <td align="center">
         <a href="<?php echo $config['SITEURL'] ?>/invite/invitetree"><?php echo T_("Invite Tree"); ?></a>
         </td>
     </tr>
-    <?php } ?>
+    <?php }?>
 	</table>
 	<?php
-	end_block();
+    end_block();
 }
-?>

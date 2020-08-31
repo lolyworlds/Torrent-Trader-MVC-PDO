@@ -1,8 +1,8 @@
 <?php
 echo T_("TORRENT_NEED_SEED_MSG");
-                        
-                        ?>
-                   
+
+?>
+
                         <div class='table-responsive'><table class='table table-striped'>
                         <thead><tr>
                             <th><?php echo T_("TORRENT_NAME"); ?></th>
@@ -14,22 +14,23 @@ echo T_("TORRENT_NEED_SEED_MSG");
                             <th><?php echo T_("COMPLETE"); ?></th>
                             <th><?php echo T_("ADDED"); ?></th>
                         </tr></thead>
-                        
-                        <?php 
-                        
-                        while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
-                           
-                           $type = ($row["external"] == "yes") ? T_("EXTERNAL") : T_("LOCAL"); 
-                   
-                           if ($row["anon"] == "yes" && ($_SESSION["edit_torrents"] == "no" || $_SESSION["id"] != $row["owner"]))
-                               $owner = T_("ANONYMOUS");
-                           elseif ($row["username"])
-                               $owner = "<a href='$config[SITEURL]/users/profile?id=".$row["owner"]."'>" . class_user_colour($row["username"]) . "</a>";
-                           else
-                               $owner = T_("UNKNOWN_USER");
-                   
-                           ?>
-                           
+
+                        <?php
+
+while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
+
+    $type = ($row["external"] == "yes") ? T_("EXTERNAL") : T_("LOCAL");
+
+    if ($row["anon"] == "yes" && ($_SESSION["edit_torrents"] == "no" || $_SESSION["id"] != $row["owner"])) {
+        $owner = T_("ANONYMOUS");
+    } elseif ($row["username"]) {
+        $owner = "<a href='$config[SITEURL]/users/profile?id=" . $row["owner"] . "'>" . class_user_colour($row["username"]) . "</a>";
+    } else {
+        $owner = T_("UNKNOWN_USER");
+    }
+
+    ?>
+
                            <tbody><tr>
                               <td><a href="<?php echo $config['SITEURL'] ?>/torrents/read?id=<?php echo $row["id"]; ?>"><?php echo CutName(htmlspecialchars($row["name"]), 40) ?></a></td>
                               <td><?php echo $owner; ?></td>
@@ -40,11 +41,11 @@ echo T_("TORRENT_NEED_SEED_MSG");
                               <td><?php echo number_format($row["times_completed"]); ?></td>
                               <td><?php echo utc_to_tz($row["added"]); ?></td>
                            </tr></tbody>
-                           
+
                         <?php
-                        
-                        }
-                        
-                        ?>
-                        
+
+}
+
+?>
+
                         </table></div>

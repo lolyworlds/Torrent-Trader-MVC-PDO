@@ -108,18 +108,17 @@ EOD;
         stdhead(T_("INVITE"));
         begin_frame(T_("INVITE"));
         ?>
-
-<form method="post" action="<?php echo TTURL ?>/invite?take=1">
-<table border="0" cellspacing="0" cellpadding="3">
-<tr valign="top"><td align="right"><b><?php echo T_("EMAIL_ADDRESS"); ?>:</b></td><td align="left"><input type="text" size="40" name="email" />
-<table width="250" border="0" cellspacing="0" cellpadding="0"><tr><td><font class="small"><?php echo T_("EMAIL_ADDRESS_VALID_MSG"); ?></font></td></tr></table></td></tr>
-<tr><td align="right"><b><?php echo T_("MESSAGE"); ?>:</b></td><td align="left"><textarea name="mess" rows="10" cols="80"></textarea>
-</td></tr>
-<tr><td colspan="2" align="center"><input type="submit" value="<?php echo T_("SEND_AN_INVITE"); ?>" /></td></tr>
-</table>
-</form>
-<?php
-end_frame();
+        <form method="post" action="<?php echo TTURL ?>/invite?take=1">
+        <table border="0" cellspacing="0" cellpadding="3">
+        <tr valign="top"><td align="right"><b><?php echo T_("EMAIL_ADDRESS"); ?>:</b></td><td align="left"><input type="text" size="40" name="email" />
+        <table width="250" border="0" cellspacing="0" cellpadding="0"><tr><td><font class="small"><?php echo T_("EMAIL_ADDRESS_VALID_MSG"); ?></font></td></tr></table></td></tr>
+        <tr><td align="right"><b><?php echo T_("MESSAGE"); ?>:</b></td><td align="left"><textarea name="mess" rows="10" cols="80"></textarea>
+        </td></tr>
+        <tr><td colspan="2" align="center"><input type="submit" value="<?php echo T_("SEND_AN_INVITE"); ?>" /></td></tr>
+        </table>
+        </form>
+        <?php
+        end_frame();
         stdfoot();
     }
 
@@ -139,7 +138,7 @@ end_frame();
         $invitees = number_format(get_row_count("users", "WHERE status = 'confirmed' && invited_by = $id"));
         if ($invitees == 0) {
             show_error_msg("Nothing to see here!", "<div style='margin-top:10px; margin-bottom:10px' align='center'><font size=2>This member has no invitees</font></div>
-	<div style='margin-bottom:10px' align='center'>[<a href=$config[SITEURL]/users/profile?id=$id>Go Back to User Profile</a>]</div>");
+	       <div style='margin-bottom:10px' align='center'>[<a href=$config[SITEURL]/users/profile?id=$id>Go Back to User Profile</a>]</div>");
         }
 
         if ($id != $_SESSION["id"]) {
@@ -150,15 +149,15 @@ end_frame();
         print("<br />"); //one small space here!
         print("<table class=table_table border=1 cellspacing=0 cellpadding=5 align=center>\n");
         print("<tr>
-	<td class=table_head><b>Invited&nbsp;Members</b></td>
-	<td class=table_head><b>Class</b></td>
-	<td class=table_head align=center><b>Registered</b></td>
-	<td class=table_head align=center><b>Last&nbsp;access</b></td>
-	<td class=table_head align=center><b>Downloaded</b></td>
-	<td class=table_head align=center><b>Uploaded<b></td>
-	<td class=table_head align=center><b>Ratio</b></td>
-	<td class=table_head align=center><b>Warned</b></td>
-	</tr>\n");
+	    <td class=table_head><b>Invited&nbsp;Members</b></td>
+    	<td class=table_head><b>Class</b></td>
+    	<td class=table_head align=center><b>Registered</b></td>
+	    <td class=table_head align=center><b>Last&nbsp;access</b></td>
+    	<td class=table_head align=center><b>Downloaded</b></td>
+	    <td class=table_head align=center><b>Uploaded<b></td>
+	    <td class=table_head align=center><b>Ratio</b></td>
+	    <td class=table_head align=center><b>Warned</b></td>
+	    </tr>\n");
         for ($i = 1; $i <= $num; $i++) {
             $arr = $res->fetch(PDO::FETCH_ASSOC);
             if ($arr["invited_by"] != $_SESSION['id'] && $_SESSION["class"] < 5) {
@@ -193,14 +192,14 @@ end_frame();
             $downloaded = mksize($arr["downloaded"]);
             $uploaded = mksize($arr["uploaded"]);
             print("<tr><td class=table_col1 align=left><a href=$config[SITEURL]/users/profile?id=$arr[id]><b>" . class_user_colour($arr['username']) . "</b></a></td>
-	<td class=table_col2 align=left>$class</td>
-	<td class=table_col1 align=center>$added</td>
-	<td class=table_col2 class=table_col1 align=center>$last_access</td>
-	<td class=table_col1 align=center><font color=orangered>$downloaded</font></td>
-	<td class=table_col2 align=center><font color=limegreen>$uploaded</font></td>
-	<td class=table_col1 align=center>$ratio</td>
-	<td class=table_col2 align=center>$warned</td>
-	</tr>\n");
+	        <td class=table_col2 align=left>$class</td>
+	        <td class=table_col1 align=center>$added</td>
+	        <td class=table_col2 class=table_col1 align=center>$last_access</td>
+	        <td class=table_col1 align=center><font color=orangered>$downloaded</font></td>
+	        <td class=table_col2 align=center><font color=limegreen>$uploaded</font></td>
+	        <td class=table_col1 align=center>$ratio</td>
+	        <td class=table_col2 align=center>$warned</td>
+	        </tr>\n");
         }
         print("</table>\n");
         if ($arr["invited_by"] != $_SESSION['id']) {

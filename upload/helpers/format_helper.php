@@ -105,7 +105,7 @@ function format_comment($text)
             "<br /><img src='images/plus.gif' id='pic$r$i' title='Spoiler' onclick='klappe_torrent(\"$r$i\")' alt='' /><b>\\1</b><div id='k$r$i' style='display: none;'>\\2<br /></div>", $s);
         $i++;
     }
-	
+
     //[hide]Link[/hide]
     if ($config['HideBBcode']) {
         $id = (int) $_GET["topicid"];
@@ -118,7 +118,7 @@ function format_comment($text)
             );
         }
     }
-	
+
     //[hr]
     $s = preg_replace("/\[hr\]/i", "<hr />", $s);
 

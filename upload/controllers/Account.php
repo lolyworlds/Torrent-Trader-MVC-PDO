@@ -33,7 +33,7 @@ class Account extends Controller
                 if (isset($cookie)) {
                     Cookie::set();
                 }
-                DB::run("UPDATE users SET last_login = ? WHERE id = ? ",[get_date_time(), $row->id]);
+                DB::run("UPDATE users SET last_login = ? WHERE id = ? ", [get_date_time(), $row->id]);
                 DB::run("INSERT INTO iplog (ip, userid, added, lastused) VALUES(?,?,?,?) ON DUPLICATE KEY UPDATE timesused=timesused+1, lastused=?", [getip(), $row->id, get_date_time(), get_date_time(), get_date_time()]);
 
                 header("Location: " . TTURL . "/index.php");
@@ -243,7 +243,7 @@ class Account extends Controller
             end_frame();
         }
 
-//invite code
+        //invite code
         elseif ($type == "invite" && $_GET["email"]) {
             stdhead(T_("INVITE_USER"));
             begin_frame();
@@ -280,13 +280,15 @@ class Account extends Controller
         $username_length = 15; // Max username length. You shouldn't set this higher without editing the database first
         $password_minlength = 6;
         $password_maxlength = 60;
-            
+
         //check if IP is already a peer
         if ($config["ipcheck"]) {
-                $ip = $_SERVER['REMOTE_ADDR'];
-                $ipq = get_row_count("users", "WHERE ip = '$ip'");
-                if ($ipq >= $config["accountmax"])
-                autolink(TTURL."/account/login", "This IP is already in use !");
+            $ip = $_SERVER['REMOTE_ADDR'];
+            $ipq = get_row_count("users", "WHERE ip = '$ip'");
+            if ($ipq >= $config["accountmax"]) {
+                autolink(TTURL . "/account/login", "This IP is already in use !");
+            }
+
         }
 
         // Disable checks if we're signing up with an invite
@@ -404,8 +406,8 @@ class Account extends Controller
                 if ($numsitemembers == '0') {
                     $signupclass = '7';
                     // Shout new user
-                    $msg_shout = "New User: ".$wantusername." has joined.";
-                    DB::run("INSERT INTO shoutbox (userid, date, user, message) VALUES(?,?,?,?)", [0, get_date_time(), 'System' , $msg_shout]);
+                    $msg_shout = "New User: " . $wantusername . " has joined.";
+                    DB::run("INSERT INTO shoutbox (userid, date, user, message) VALUES(?,?,?,?)", [0, get_date_time(), 'System', $msg_shout]);
                 } else {
                     $signupclass = '1';
                 }
@@ -426,7 +428,7 @@ class Account extends Controller
 
                 if ($config["CONFIRMEMAIL"]) { //email confirmation is on
                     $TTMail = new TTMail();
-$TTMail->Send($email, "Your $config[SITENAME] User Account", $body, "", "-f$config[SITEEMAIL]");
+                    $TTMail->Send($email, "Your $config[SITENAME] User Account", $body, "", "-f$config[SITEEMAIL]");
                     header("Refresh: 0; url=" . TTURL . "/account/confirmok?type=signup&email=" . urlencode($email));
                 } else { //email confirmation is off
                     header("Refresh: 0; url=" . TTURL . "/account/confirmok?type=noconf");

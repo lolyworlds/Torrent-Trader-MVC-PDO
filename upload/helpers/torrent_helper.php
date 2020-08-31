@@ -35,7 +35,7 @@ function health($leechers, $seeders)
 // Transformation Function For Torrent URL
 function torrent_scrape_url($scrape, $hash)
 {
-    
+
     if (function_exists("curl_exec")) {
         $ch = curl_init();
         $timeout = 5;
@@ -205,10 +205,10 @@ function torrenttable($res)
                 echo "<th>" . T_("UPLOADER") . "</th>";
                 break;
             case 'tube':
-                    echo "<th>".T_("YOUTUBE")."</th>";
+                echo "<th>" . T_("YOUTUBE") . "</th>";
                 break;
             case 'imdb':
-                    echo "<th>IMDB</th>";
+                echo "<th>IMDB</th>";
                 break;
             case 'comments':
                 echo "<th>" . T_("COMM") . "</th>";
@@ -305,12 +305,12 @@ function torrenttable($res)
                         $dispname .= " <img src='images/free.gif' border='0' alt='' />";
                     }
                     if ($row["vip"] == "yes") {
-                    $dispname .= " <img src='images/vip.gif' border='0' alt='' />";
+                        $dispname .= " <img src='images/vip.gif' border='0' alt='' />";
                     }
                     if ($row["sticky"] == "yes") {
                         $dispname .= " <img src='images/sticky.gif' bored='0' alt='sticky' title='sticky'>";
                     }
-                    print("<td class='ttable_col$x' nowrap='nowrap'>" . (count($expandrows) ? "<a href=\"javascript: klappe_torrent('t" . $row['id'] . "')\"><img border=\"0\" src=\"" . $config["SITEURL"] . "/images/plus.gif\" id=\"pict" . $row['id'] . "\" alt=\"Show/Hide\" class=\"showthecross\" /></a>" : "") . "&nbsp;<a title=\"" . $row["name"] . "\" href=\"".$config['SITEURL']."/torrents/read?id=$id&amp;hit=1\">$dispname</a></td>");
+                    print("<td class='ttable_col$x' nowrap='nowrap'>" . (count($expandrows) ? "<a href=\"javascript: klappe_torrent('t" . $row['id'] . "')\"><img border=\"0\" src=\"" . $config["SITEURL"] . "/images/plus.gif\" id=\"pict" . $row['id'] . "\" alt=\"Show/Hide\" class=\"showthecross\" /></a>" : "") . "&nbsp;<a title=\"" . $row["name"] . "\" href=\"" . $config['SITEURL'] . "/torrents/read?id=$id&amp;hit=1\">$dispname</a></td>");
 
                     break;
                 case 'dl':
@@ -319,18 +319,18 @@ function torrenttable($res)
                 case 'magnet':
                     $magnet = $pdo->run("SELECT info_hash FROM torrents WHERE id=?", [$id])->fetch();
                     // Like Mod
-                    if(!$config["forcethanks"]) {
-                    print("<td class='ttable_col$x' align='center'><a href=\"magnet:?xt=urn:btih:" . $magnet["info_hash"] . "&dn=" . rawurlencode($row['name']) . "&tr=" . $row['announce'] . "?passkey=" . $_SESSION['passkey'] . "\"><img src='" . $config['SITEURL'] . "/images/magnetique.png' border='0' title='Download via Magnet' /></a></td>");
+                    if (!$config["forcethanks"]) {
+                        print("<td class='ttable_col$x' align='center'><a href=\"magnet:?xt=urn:btih:" . $magnet["info_hash"] . "&dn=" . rawurlencode($row['name']) . "&tr=" . $row['announce'] . "?passkey=" . $_SESSION['passkey'] . "\"><img src='" . $config['SITEURL'] . "/images/magnetique.png' border='0' title='Download via Magnet' /></a></td>");
                     }
-                    if($_SESSION["id"] != $row["owner"] && $config["forcethanks"]) {
-                    $data = DB::run("SELECT user FROM thanks WHERE thanked = ? AND type = ? AND user = ?", [$id, 'torrent', $_SESSION['id']]);
-                    $like = $data->fetch(PDO::FETCH_ASSOC);
-                    if($like){
-                    print("<td class='ttable_col$x' align='center'><a href=\"magnet:?xt=urn:btih:" . $magnet["info_hash"] . "&dn=" . rawurlencode($row['name']) . "&tr=" . $row['announce'] . "?passkey=" . $_SESSION['passkey'] . "\"><img src='" . $config['SITEURL'] . "/images/magnetique.png' border='0' title='Download via Magnet' /></a></td>");
-                    }else {
-                    print ("<td class='ttable_col$x' align='center'><a href='$config[SITEURL]/likes/index?id=$id' ><button  class='btn btn-sm btn-danger'>Thanks</button></td>");
-                    }
-                    }else{
+                    if ($_SESSION["id"] != $row["owner"] && $config["forcethanks"]) {
+                        $data = DB::run("SELECT user FROM thanks WHERE thanked = ? AND type = ? AND user = ?", [$id, 'torrent', $_SESSION['id']]);
+                        $like = $data->fetch(PDO::FETCH_ASSOC);
+                        if ($like) {
+                            print("<td class='ttable_col$x' align='center'><a href=\"magnet:?xt=urn:btih:" . $magnet["info_hash"] . "&dn=" . rawurlencode($row['name']) . "&tr=" . $row['announce'] . "?passkey=" . $_SESSION['passkey'] . "\"><img src='" . $config['SITEURL'] . "/images/magnetique.png' border='0' title='Download via Magnet' /></a></td>");
+                        } else {
+                            print("<td class='ttable_col$x' align='center'><a href='$config[SITEURL]/likes/index?id=$id' ><button  class='btn btn-sm btn-danger'>Thanks</button></td>");
+                        }
+                    } else {
                         print("<td class='ttable_col$x' align='center'><a href=\"magnet:?xt=urn:btih:" . $magnet->info_hash . "&dn=" . rawurlencode($row['name']) . "&tr=" . $row['announce'] . "?passkey=" . $_SESSION['passkey'] . "\"><img src='" . $config['SITEURL'] . "/images/magnetique.png' border='0' title='Download via Magnet' /></a></td>");
                     }
                     break;
@@ -339,7 +339,7 @@ function torrenttable($res)
                     if (($row["anon"] == "yes" || $row["privacy"] == "strong") && $_SESSION["id"] != $row["owner"] && $_SESSION["edit_torrents"] != "yes") {
                         echo "Anonymous";
                     } elseif ($row["username"]) {
-                        echo "<a href='".$config['SITEURL']."/users/profile?id=$row[owner]'>" . class_user_colour($row['username']) . "</a>";
+                        echo "<a href='" . $config['SITEURL'] . "/users/profile?id=$row[owner]'>" . class_user_colour($row['username']) . "</a>";
                     } else {
                         echo "Unknown";
                     }
@@ -347,18 +347,22 @@ function torrenttable($res)
                     echo "</td>";
                     break;
                 case 'tube':
-                        if ($row["tube"]) 
-                              print("<td class='ttable_col$x' align='center'><a rel=\"prettyPhoto\"  href=".$row['tube']." ><".htmlspecialchars($row['tube'])."><img src='" . $config['SITEURL'] . "/images/youtube1.png'  border='0' width='20' height='20' alt=\"\" /></a></td>");  
-                              else
-                           print("<td class='ttable_colx' align='center'>-</td>"); 
-                           break;
+                    if ($row["tube"]) {
+                        print("<td class='ttable_col$x' align='center'><a rel=\"prettyPhoto\"  href=" . $row['tube'] . " ><" . htmlspecialchars($row['tube']) . "><img src='" . $config['SITEURL'] . "/images/youtube1.png'  border='0' width='20' height='20' alt=\"\" /></a></td>");
+                    } else {
+                        print("<td class='ttable_colx' align='center'>-</td>");
+                    }
+
+                    break;
                 case 'imdb':
-                            if ($row["imdb"])   
-                                  print("<td class='ttable_col$x' align='center'><a href=".$row['imdb']." target='_blank'><".htmlspecialchars($row['imdb'])."><img src='" . $config['SITEURL'] . "/images/imdb.png'  border='0' width='20' height='20' alt=\"\" /></a></td>");
-                               else
-                               print("<td class='ttable_colx' align='center'>-</td>");   
-                               break;
-                 case 'comments':
+                    if ($row["imdb"]) {
+                        print("<td class='ttable_col$x' align='center'><a href=" . $row['imdb'] . " target='_blank'><" . htmlspecialchars($row['imdb']) . "><img src='" . $config['SITEURL'] . "/images/imdb.png'  border='0' width='20' height='20' alt=\"\" /></a></td>");
+                    } else {
+                        print("<td class='ttable_colx' align='center'>-</td>");
+                    }
+
+                    break;
+                case 'comments':
                     print("<td class='ttable_col$x' align='center'><font size='1' face='verdana'><a href='$config[SITEURL]/comments?type=torrent&amp;id=$id'>" . number_format($row["comments"]) . "</a></font></td>\n");
                     break;
                 case 'nfo':
@@ -396,7 +400,7 @@ function torrenttable($res)
                     break;
                 case 'added':
                     //print("<td class='ttable_col$x' align='center'>" . date("d-m-Y H:i:s", utc_to_tz_time($row['added'])) . "</td>");
-                    print("<td class='ttable_col$x' align='center'>".get_time_elapsed($row['added'])."</td>");
+                    print("<td class='ttable_col$x' align='center'>" . get_time_elapsed($row['added']) . "</td>");
                     break;
                 case 'speed':
                     if ($row["external"] != "yes" && $row["leechers"] >= 1) {
@@ -584,8 +588,8 @@ filelist
 // Torrent Information Retrieval Function With File Decoding
 function ParseTorrent($filename)
 {
-    require_once("classes/BDecode.php");
-    require_once("classes/BEncode.php");
+    require_once "classes/BDecode.php";
+    require_once "classes/BEncode.php";
 
     $TorrentInfo = array();
 
@@ -673,16 +677,4 @@ function ParseTorrent($filename)
         }
     }
     return $TorrentInfo;
-} //End Function
-
-/* sure this can be removed
-// snatch
-function seedtime($ts = 0)
-{
-    $days = floor($ts / 86400);
-    $hours = floor($ts / 3600) % 24;
-    $mins = floor($ts / 60) % 60;
-    $secs = $ts % 60;
-    return sprintf('%d days, %d hours, %d minutes, %d seconds...', $days, $hours, $mins, $secs);
 }
-*/

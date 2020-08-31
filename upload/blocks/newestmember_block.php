@@ -1,5 +1,5 @@
 <?php
-if ($_SESSION['loggedin']  == true) {
+if ($_SESSION['loggedin'] == true) {
     begin_block(T_("NEWEST_MEMBERS"));
     $TTCache = new Cache();
     $expire = 600; // time in seconds
@@ -15,14 +15,14 @@ if ($_SESSION['loggedin']  == true) {
     }
 
     if (!$rows) {?>
-	<p class="text-center"><?php echo T_("NOTHING_FOUND");?></p>
-<?php } else { ?>
+	<p class="text-center"><?php echo T_("NOTHING_FOUND"); ?></p>
+    <?php } else {?>
 		<div class="list-group">
-	<?php foreach ($rows as $row) { ?>
-			<a href='<?php echo TTURL; ?>/users/profile?id=<?php echo $row["id"];?>' class="list-group-item"><?php echo class_user_colour($row["username"]);?></a>
-	<?php } ?>
+	<?php foreach ($rows as $row) {?>
+			<a href='<?php echo TTURL; ?>/users/profile?id=<?php echo $row["id"]; ?>' class="list-group-item"><?php echo class_user_colour($row["username"]); ?></a>
+	<?php }?>
 		</div>
-<?php }
+    <?php }
 
     end_block();
 }

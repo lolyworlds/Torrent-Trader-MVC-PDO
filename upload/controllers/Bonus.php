@@ -116,9 +116,9 @@ class Bonus extends Controller
         $uid = (int) $_SESSION['id'];
         $count_uid = get_row_count('snatched', 'WHERE `uid` = \'' . $uid . '\' AND `hnr` = \'yes\'');
         if ($count_uid > 0) {
-          stdhead(T_("YOUR_RECORDINGS_OF_HIT_AND_RUN"));
-          begin_frame(T_("YOUR_RECORDINGS_OF_HIT_AND_RUN"));
-          $qry = "SELECT
+            stdhead(T_("YOUR_RECORDINGS_OF_HIT_AND_RUN"));
+            begin_frame(T_("YOUR_RECORDINGS_OF_HIT_AND_RUN"));
+            $qry = "SELECT
           snatched.tid as tid,
           torrents.name,
           torrents.size,
@@ -137,34 +137,34 @@ class Bonus extends Controller
           AND snatched.hnr = 'yes'
           AND snatched.done = 'no'
           ORDER BY stime DESC";
-          $res = DB::run($qry);
+            $res = DB::run($qry);
 
-          if ($_POST["requestpoints"]) {
-               while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
+            if ($_POST["requestpoints"]) {
+                while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
                     $torid = $row[0];
                     $modcom = $row[9];
-               }
-               $modcomment = gmdate("d-M-Y") . " - " . T_("DELETED_RECORDING") . ": " . $torid . " " . T_("POINTS_OF_SEED_BONUS") . "\n" . $modcom;
-               DB::run("UPDATE users SET seedbonus = seedbonus - '100', modcomment = " . sqlesc($modcomment) . " WHERE id = '$uid'");
-               DB::run("UPDATE snatched SET ltime = '86400', hnr = 'no', done = 'yes' WHERE tid = '$torid' AND uid = '$uid'");
-               write_log("<a href=$config[SITEURL]/users/profile?id=$_SESSION[id]><b>$_SESSION[username]</b></a> " . T_("DELETED_RECORDING") . ": <a href=$config[SITEURL]/torrents/read?id=$torid><b>$torid</b></a> " . T_("POINTS_OF_SEED_BONUS") . "");
-               autolink(TTURL."/bonus/trade", T_("ONE_RECORDING_HIT_AND_RUN_DELETED"));
-          }
+                }
+                $modcomment = gmdate("d-M-Y") . " - " . T_("DELETED_RECORDING") . ": " . $torid . " " . T_("POINTS_OF_SEED_BONUS") . "\n" . $modcom;
+                DB::run("UPDATE users SET seedbonus = seedbonus - '100', modcomment = " . sqlesc($modcomment) . " WHERE id = '$uid'");
+                DB::run("UPDATE snatched SET ltime = '86400', hnr = 'no', done = 'yes' WHERE tid = '$torid' AND uid = '$uid'");
+                write_log("<a href=$config[SITEURL]/users/profile?id=$_SESSION[id]><b>$_SESSION[username]</b></a> " . T_("DELETED_RECORDING") . ": <a href=$config[SITEURL]/torrents/read?id=$torid><b>$torid</b></a> " . T_("POINTS_OF_SEED_BONUS") . "");
+                autolink(TTURL . "/bonus/trade", T_("ONE_RECORDING_HIT_AND_RUN_DELETED"));
+            }
 
-          if ($_POST["requestupload"]) {
-               while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
+            if ($_POST["requestupload"]) {
+                while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
                     $torid = $row[0];
                     $torsize = $row[2];
                     $viewsize = mksize($row[2]);
                     $modcom = $row[9];
-               }
-               $modcomment = gmdate("d-M-Y") . " - " . T_("DELETED_RECORDING") . ": " . $torid . " with " . $viewsize . " " . T_("OF_UPLOAD") . "\n" . $modcom;
-               DB::run("UPDATE users SET uploaded = uploaded - '$torsize', modcomment = " . sqlesc($modcomment) . " WHERE id = '$uid'");
-               DB::run("UPDATE snatched SET ltime = '86400', hnr = 'no', done = 'yes' WHERE tid = '$torid' AND uid = '$uid'");
-               write_log("<a href=$config[SITEURL]/users/profile?id=$_SESSION[id]><b>$_SESSION[username]</b></a> " . T_("DELETED_RECORDING") . ": <a href=$config[SITEURL]/torrents/read?id=$torid><b>$torid</b></a> " . T_("HIT_AND_RUN_WITH") . " <b>$viewsize</b> " . T_("OF_UPLOAD") . "");
-               autolink(TTURL."/bonus/trade", T_("ONE_RECORDING_HIT_AND_RUN_DELETED"));
-          }
-          echo "<div style='margin-top:5px; margin-bottom:20px;' align='center'>
+                }
+                $modcomment = gmdate("d-M-Y") . " - " . T_("DELETED_RECORDING") . ": " . $torid . " with " . $viewsize . " " . T_("OF_UPLOAD") . "\n" . $modcom;
+                DB::run("UPDATE users SET uploaded = uploaded - '$torsize', modcomment = " . sqlesc($modcomment) . " WHERE id = '$uid'");
+                DB::run("UPDATE snatched SET ltime = '86400', hnr = 'no', done = 'yes' WHERE tid = '$torid' AND uid = '$uid'");
+                write_log("<a href=$config[SITEURL]/users/profile?id=$_SESSION[id]><b>$_SESSION[username]</b></a> " . T_("DELETED_RECORDING") . ": <a href=$config[SITEURL]/torrents/read?id=$torid><b>$torid</b></a> " . T_("HIT_AND_RUN_WITH") . " <b>$viewsize</b> " . T_("OF_UPLOAD") . "");
+                autolink(TTURL . "/bonus/trade", T_("ONE_RECORDING_HIT_AND_RUN_DELETED"));
+            }
+            echo "<div style='margin-top:5px; margin-bottom:20px;' align='center'>
           <font size='2' color='#0080FF'>
           <div style='margin-top:5px;' align='center'>
           " . T_("TO_SOLVE_THIS_PROBLEM_SEEDING") . " " . ($count_uid > 1 ? "these torrents" : "this torrent") . " " . T_("HIT_AND_RUN_FOR") . " <b>" . number_format($config["hnr_seedtime"] / 3600) . "</b> " . T_("HIT_AND_RUN_HOURS_RATIO_BECOMES") . " <b>1:1</b>
@@ -173,8 +173,8 @@ class Bonus extends Controller
 		</font>
           </div>";
 
-          if ($res->rowCount() > 0):
-          ?>
+            if ($res->rowCount() > 0):
+            ?>
           <form method="post" action="<?php echo $config['SITEURL']; ?>/bonus/trade">
           <table border="0" class="table_table" cellpadding="4" cellspacing="0" align="center">
           <tr>
@@ -185,47 +185,47 @@ class Bonus extends Controller
           <th class="table_head" align="left"><?php echo T_("DELETE"); ?> <?php echo $count_uid > 1 ? "These Recordings" : "This Recording"; ?>!</th>
           </tr>
           <?php
-          while ($row = $res->fetch(PDO::FETCH_ASSOC)):
-               $tosize = $row[2];
-               $upload = $row[7];
-               $points = $row[8];
-               $maxchar = 40; //===| cut name length
-               $smallname = htmlspecialchars(CutName($row[1], $maxchar));
-               $dispname = "<b>" . $smallname . "</b>";?>
+while ($row = $res->fetch(PDO::FETCH_ASSOC)):
+                $tosize = $row[2];
+                $upload = $row[7];
+                $points = $row[8];
+                $maxchar = 40; //===| cut name length
+                $smallname = htmlspecialchars(CutName($row[1], $maxchar));
+                $dispname = "<b>" . $smallname . "</b>";?>
 
-		<tr align="center">
-          <?php print("<td align='left' class='table_col1' nowrap='nowrap'>" . (count($expandrows) ? "<a href=\"javascript: klappe_torrent('t" . $row['0'] . "')\"><img border=\"0\" src=\"" . $config["SITEURL"] . "/images/plus.gif\" id=\"pict" . $row['0'] . "\" alt=\"Show/Hide\" class=\"showthecross\" /></a>" : "") . " <a title=\"" . $row["1"] . "\" href=\"$config[SITEURL]/torrents/read?id=$row[0]&amp;hit=1\">$dispname</a></td>");?>
-	     <td class="table_col2"><font color="#27B500"><?php echo mksize($row[3]); ?></font></td>
-	     <td class="table_col1"><font color="#FF2200"><?php echo mksize($row[4]); ?></font></td>
-	     <td class="table_col2"><?php echo ($row[6]) ? mkprettytime($row[5]) : '---'; ?></td>
-	     <td class="table_col1" align="left">
+			<tr align="center">
+	          <?php print("<td align='left' class='table_col1' nowrap='nowrap'>" . (count($expandrows) ? "<a href=\"javascript: klappe_torrent('t" . $row['0'] . "')\"><img border=\"0\" src=\"" . $config["SITEURL"] . "/images/plus.gif\" id=\"pict" . $row['0'] . "\" alt=\"Show/Hide\" class=\"showthecross\" /></a>" : "") . " <a title=\"" . $row["1"] . "\" href=\"$config[SITEURL]/torrents/read?id=$row[0]&amp;hit=1\">$dispname</a></td>");?>
+		     <td class="table_col2"><font color="#27B500"><?php echo mksize($row[3]); ?></font></td>
+		     <td class="table_col1"><font color="#FF2200"><?php echo mksize($row[4]); ?></font></td>
+		     <td class="table_col2"><?php echo ($row[6]) ? mkprettytime($row[5]) : '---'; ?></td>
+		     <td class="table_col1" align="left">
 
-          <?php if ($points >= 100) {?>
-	     <input type="submit" class="button" name="requestpoints" value="Delete">&nbsp; <?php echo T_("SNATCHLIST_COST"); ?> <font color="#FF2200"><b>100</b></font> <?php echo T_("SNATCHLIST_POINTS_OF_SEED_BONUS"); ?>
-          <?php } else {?>
-          <font color="#FF1200">&nbsp;<?php echo T_("SNATCHLIST_YOU_DONT_HAVE_ENOUGH"); ?> <b><?php echo T_("SNATCHLIST_SEEDBONUS"); ?></b> <?php echo T_("SNATCHLIST_FOR_TRADING"); ?></font>
-	     <?php }?>
-	     <?php if ($upload > $tosize) {?>
-	     <div style="margin-top:2px"><input type="submit" class="button" name="requestupload" value="Delete">&nbsp; <?php echo T_("SNATCHLIST_COST"); ?> <font color="#FF2200"><b><?php echo mksize($tosize); ?></b></font> <?php echo T_("SNATCHLIST_UPLOAD"); ?></div>
-          <?php } else {?>
-          <div style="margin-top:2px"><font color="#FF1200">&nbsp;<?php echo T_("SNATCHLIST_YOU_DONT_HAVE_ENOUGH"); ?> <b><?php echo T_("SNATCHLIST_UPLOAD"); ?></b> <?php echo T_("SNATCHLIST_FOR_TRADING"); ?></font></div>
-          <?php }?>
-          </td>
-	     </tr>
-		<?php endwhile;?>
+	          <?php if ($points >= 100) {?>
+		     <input type="submit" class="button" name="requestpoints" value="Delete">&nbsp; <?php echo T_("SNATCHLIST_COST"); ?> <font color="#FF2200"><b>100</b></font> <?php echo T_("SNATCHLIST_POINTS_OF_SEED_BONUS"); ?>
+	          <?php } else {?>
+	          <font color="#FF1200">&nbsp;<?php echo T_("SNATCHLIST_YOU_DONT_HAVE_ENOUGH"); ?> <b><?php echo T_("SNATCHLIST_SEEDBONUS"); ?></b> <?php echo T_("SNATCHLIST_FOR_TRADING"); ?></font>
+		     <?php }?>
+		     <?php if ($upload > $tosize) {?>
+		     <div style="margin-top:2px"><input type="submit" class="button" name="requestupload" value="Delete">&nbsp; <?php echo T_("SNATCHLIST_COST"); ?> <font color="#FF2200"><b><?php echo mksize($tosize); ?></b></font> <?php echo T_("SNATCHLIST_UPLOAD"); ?></div>
+	          <?php } else {?>
+	          <div style="margin-top:2px"><font color="#FF1200">&nbsp;<?php echo T_("SNATCHLIST_YOU_DONT_HAVE_ENOUGH"); ?> <b><?php echo T_("SNATCHLIST_UPLOAD"); ?></b> <?php echo T_("SNATCHLIST_FOR_TRADING"); ?></font></div>
+	          <?php }?>
+	          </td>
+		     </tr>
+			<?php endwhile;?>
           </table>
           </form>
           <?php
-          echo "<br />";
-          endif;
-          end_frame();
-          stdfoot();
-          die;
+echo "<br />";
+            endif;
+            end_frame();
+            stdfoot();
+            die;
         } else {
             stdhead(T_("YOUR_LIST_OF_HITS_AND_RUN"));
             begin_frame(T_("YOUR_LIST_OF_HITS_AND_RUN"));
             echo '<div style="margin-top:10px; margin-bottom:10px;" align="center"><font size="2">' . T_("THERE_ARE_NO_RECORDINGS") . '</font></div>';
-            echo '<div style="margin-bottom:10px;" align="center"> [ <a href="'.$config['SITEURL'].'/snatched"><b>' . T_("HIT_AND_RUN_YOUR_SNATCH_LIST") . '</b></a> ] </div>';
+            echo '<div style="margin-bottom:10px;" align="center"> [ <a href="' . $config['SITEURL'] . '/snatched"><b>' . T_("HIT_AND_RUN_YOUR_SNATCH_LIST") . '</b></a> ] </div>';
             end_frame();
             stdfoot();
         }

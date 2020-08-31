@@ -5,7 +5,7 @@ function textbbcode($form, $name, $content = "")
     //$form = form name
     //$name = textarea name
     //$content = textarea content (only for edit pages etc)
-      global $config;
+    global $config;
     ?>
 <script type="text/javascript">
 function BBTag(tag,s,text,form){

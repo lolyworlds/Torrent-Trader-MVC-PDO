@@ -1,8 +1,5 @@
 <?php
 
-// Plural forms: http://www.gnu.org/software/hello/manual/gettext/Plural-forms.html
-// $LANG["PLURAL_FORMS"] is in the plural= format
-
 function T_($s)
 {
     global $LANG;

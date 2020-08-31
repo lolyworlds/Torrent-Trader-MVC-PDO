@@ -14,7 +14,7 @@ class Admincp extends Controller
         global $config, $THEME;
         // Checks
         loggedinonly();
-        if (!$_SESSION['loggedin']  == true || $_SESSION["control_panel"] != "yes") {
+        if (!$_SESSION['loggedin'] == true || $_SESSION["control_panel"] != "yes") {
             show_error_msg(T_("ERROR"), T_("SORRY_NO_RIGHTS_TO_ACCESS"), 1);
         }
         // Calls
@@ -96,7 +96,6 @@ class Admincp extends Controller
         include "admin/admin_config.php";
         include "admin/admin_duplicateip.php";
         include "admin/admin_emailban.php";
-        include "admin/admin_exceptionlog.php";
         include "admin/admin_forum.php";
         include "admin/admin_freetorrent.php";
         include "admin/admin_groups.php";

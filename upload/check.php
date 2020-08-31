@@ -1,39 +1,40 @@
 <?php
 error_reporting(E_ALL ^ E_NOTICE);
 
-if ($_GET["phpinfo"] == 1){
-	echo "<br /><center><a href='$config[SITEURL]/check'>Back To Check</a></center><br /><br />";
-	phpinfo();
-	die();
+if ($_GET["phpinfo"] == 1) {
+    echo "<br /><center><a href='$config[SITEURL]/check'>Back To Check</a></center><br /><br />";
+    phpinfo();
+    die();
 }
 
-function get_php_setting($val) {
-	$r =(ini_get($val) == '1' ? 1 : 0);
-	return $r ? 'ON' : 'OFF';
+function get_php_setting($val)
+{
+    $r = (ini_get($val) == '1' ? 1 : 0);
+    return $r ? 'ON' : 'OFF';
 }
 
-function writableCell( $folder, $relative=1, $text='' ) {
-	$writeable = '<b><font color="green">Writeable</font></b>';
-	$unwriteable = '<b><font color="red">Unwriteable</font></b>';
+function writableCell($folder, $relative = 1, $text = '')
+{
+    $writeable = '<b><font color="green">Writeable</font></b>';
+    $unwriteable = '<b><font color="red">Unwriteable</font></b>';
 
-	echo '<tr>';
-	echo '<td>' . $folder . '</td>';
-	echo '<td align="right">';
-	if ( $relative ) {
-		echo is_writable( "./$folder" ) ? $writeable : $unwriteable;
-	} else {
-		echo is_writable( "$folder" ) ? $writeable : $unwriteable;
-	}
+    echo '<tr>';
+    echo '<td>' . $folder . '</td>';
+    echo '<td align="right">';
+    if ($relative) {
+        echo is_writable("./$folder") ? $writeable : $unwriteable;
+    } else {
+        echo is_writable("$folder") ? $writeable : $unwriteable;
+    }
     echo '</td>';
-	echo '</tr>';
+    echo '</tr>';
 }
-
 
 view();
 
-
-function view() {
-?>
+function view()
+{
+    ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -64,9 +65,9 @@ This system check is designed for unix based servers, windows based servers may 
 	<td>PHP version >= 7.2.0</td>
 	<td>
 	<?php
-		echo phpversion() < '7.2' ? '<b><font color="red">No</font> 7.2 or above required</b>' : '<b><font color="green">Yes</font></b>';
-		echo " - Your PHP version is ".phpversion();
-	?>
+echo phpversion() < '7.2' ? '<b><font color="red">No</font> 7.2 or above required</b>' : '<b><font color="green">Yes</font></b>';
+    echo " - Your PHP version is " . phpversion();
+    ?>
 	</td>
 </tr>
 
@@ -82,47 +83,47 @@ This system check is designed for unix based servers, windows based servers may 
 
 <tr>
 	<td>&nbsp; - MySQLi support</td>
-	<td><?php echo function_exists( 'mysqli_connect' ) ? '<b><font color="green">Available</font></b>' : '<b><font color="red">Unavailable</font></b>'; ?></td>
+	<td><?php echo function_exists('mysqli_connect') ? '<b><font color="green">Available</font></b>' : '<b><font color="red">Unavailable</font></b>'; ?></td>
 </tr>
 
 <tr>
 	<td>&nbsp; - curl support (Not required but external torrents may scrape faster)</td>
-	<td><?php echo function_exists( 'curl_init' ) ? '<b><font color="green">Available</font></b>' : '<b><font color="red">Unavailable</font></b>'; ?></td>
+	<td><?php echo function_exists('curl_init') ? '<b><font color="green">Available</font></b>' : '<b><font color="red">Unavailable</font></b>'; ?></td>
 </tr>
 <tr>
 	<td>&nbsp; - openSSL (for the torrent encryption mod)</td>
-	<td><?php echo extension_loaded( 'openssl' ) ? '<b><font color="green">Available</font></b>' : '<b><font color="red">Unavailable</font></b>'; ?></td>
+	<td><?php echo extension_loaded('openssl') ? '<b><font color="green">Available</font></b>' : '<b><font color="red">Unavailable</font></b>'; ?></td>
 </tr>
 <tr>
 	<td>&nbsp; - gmp support (Required for IPv6)</td>
-	<td><?php echo extension_loaded( 'gmp' ) ? '<b><font color="green">Available</font></b>' : '<b><font color="red">Unavailable</font></b>'; ?></td>
+	<td><?php echo extension_loaded('gmp') ? '<b><font color="green">Available</font></b>' : '<b><font color="red">Unavailable</font></b>'; ?></td>
 </tr>
 
 <tr>
 	<td>&nbsp; - bcmath support (Required for IPv6)</td>
-	<td><?php echo extension_loaded( 'bcmath' ) ? '<b><font color="green">Available</font></b>' : '<b><font color="red">Unavailable</font></b>'; ?></td>
+	<td><?php echo extension_loaded('bcmath') ? '<b><font color="green">Available</font></b>' : '<b><font color="red">Unavailable</font></b>'; ?></td>
 </tr>
 
 <tr>
 	<td>&nbsp; - hash_hmac support (Recommended - For better password encryption)</td>
-	<td><?php echo function_exists( 'hash_hmac' ) ? '<b><font color="green">Available</font></b>' : '<b><font color="red">Unavailable</font></b>'; ?></td>
+	<td><?php echo function_exists('hash_hmac') ? '<b><font color="green">Available</font></b>' : '<b><font color="red">Unavailable</font></b>'; ?></td>
 </tr>
 
 <tr>
 	<td>&nbsp; - suhosin extension (Optional)</td>
-	<td><?php echo extension_loaded( 'suhosin' ) ? '<b><font color="green">Available</font></b><br /><br />Add to your php.ini (otherwise you may have issues):<br />suhosin.get.disallow_nul = Off<br />suhosin.request.disallow_nul = Off' : '<b><font color="red">Unavailable</font></b>'; ?></td>
+	<td><?php echo extension_loaded('suhosin') ? '<b><font color="green">Available</font></b><br /><br />Add to your php.ini (otherwise you may have issues):<br />suhosin.get.disallow_nul = Off<br />suhosin.request.disallow_nul = Off' : '<b><font color="red">Unavailable</font></b>'; ?></td>
 </tr>
 
 <tr>
 	<td>config/config.php</td>
 	<td>
 	<?php
-	if (@file_exists('config/config.php') && @is_writable( 'config/config.php' )){
-		echo '<b><font color="red">Writeable</font></b><br />Warning: leaving config/config.php writeable is a security risk';
-	} else {
-		echo '<b><font color="green">Unwriteable</font></b>';
-	}
-	?>
+if (@file_exists('config/config.php') && @is_writable('config/config.php')) {
+        echo '<b><font color="red">Writeable</font></b><br />Warning: leaving config/config.php writeable is a security risk';
+    } else {
+        echo '<b><font color="green">Unwriteable</font></b>';
+    }
+    ?>
 	</td>
 </tr>
 
@@ -142,39 +143,39 @@ However, TorrentTrader! will still operate if your settings do not quite match t
 <tr><td width="500px">Directive</td><td>Recommended</td><td>Actual</td></tr>
 
 <?php
-$php_recommended_settings = array(array ('Safe Mode','safe_mode','OFF'),
-array ('Display Errors (Can be off, but does make debugging difficult.)','display_errors','ON'),
-array ('File Uploads','file_uploads','ON'),
-array ('Magic Quotes Runtime','magic_quotes_runtime','OFF'),
-array ('Register Globals','register_globals','OFF'),
-array ('Output Buffering','output_buffering','OFF'),
-array ('Session auto start','session.auto_start','OFF'),
-array ('allow_url_fopen (Required for external torrents)', 'allow_url_fopen', 'ON')
-);
+$php_recommended_settings = array(array('Safe Mode', 'safe_mode', 'OFF'),
+        array('Display Errors (Can be off, but does make debugging difficult.)', 'display_errors', 'ON'),
+        array('File Uploads', 'file_uploads', 'ON'),
+        array('Magic Quotes Runtime', 'magic_quotes_runtime', 'OFF'),
+        array('Register Globals', 'register_globals', 'OFF'),
+        array('Output Buffering', 'output_buffering', 'OFF'),
+        array('Session auto start', 'session.auto_start', 'OFF'),
+        array('allow_url_fopen (Required for external torrents)', 'allow_url_fopen', 'ON'),
+    );
 
-foreach ($php_recommended_settings as $phprec) {
-	?>
+    foreach ($php_recommended_settings as $phprec) {
+        ?>
 	<tr>
 	<td><?php echo $phprec[0]; ?>:</td>
 	<td><?php echo $phprec[2]; ?>:</td>
 	<td><b>
 	<?php
-	if ( get_php_setting($phprec[1]) == $phprec[2] ) {
-	?>
+if (get_php_setting($phprec[1]) == $phprec[2]) {
+            ?>
 		<font color="green">
 	<?php
-	} else {
-	?>
+} else {
+            ?>
 		<font color="red">
 	<?php
-	}
-	echo get_php_setting($phprec[1]);
-?>
+}
+        echo get_php_setting($phprec[1]);
+        ?>
 </font></b>
 </td></tr>
 <?php
 }
-?>
+    ?>
 </table>
 
 <br /><b>Directory and File Permissions Check:</b><br />
@@ -186,32 +187,34 @@ If you see "Unwriteable" you need to change the permissions on the file or direc
 
 <table cellpadding="3" cellspacing="1" style='border-collapse: collapse' border="1" >
 <?php
-writableCell( 'backups' );
-writableCell( 'uploads' );
-writableCell( 'uploads/images' );
-writableCell( 'cache' );
-writableCell( 'cache/get_row_count' );
-writableCell( 'cache/queries' );
-writableCell( 'cache/diskcache' );
-writableCell( 'import' );
-writableCell( 'censor.txt', 1 );  
-?>
+writableCell('backups');
+    writableCell('uploads');
+    writableCell('uploads/images');
+    writableCell('cache');
+    writableCell('cache/get_row_count');
+    writableCell('cache/queries');
+    writableCell('cache/diskcache');
+    writableCell('import');
+    writableCell('censor.txt', 1);
+    ?>
 </table>
 <br />
 <?php
-require_once("config/config.php");
-echo "<b>Table Status Check:</b><br /><br />";
+require_once "config/config.php";
+    echo "<b>Table Status Check:</b><br /><br />";
     try {
-        $link = new PDO('mysql:host='.$config['mysql_host'].';dbname='.$config['mysql_db'], $config['mysql_user'], $config['mysql_pass']);       
+        $link = new PDO('mysql:host=' . $config['mysql_host'] . ';dbname=' . $config['mysql_db'], $config['mysql_user'], $config['mysql_pass']);
         $link->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $stmt = $link->prepare("SHOW TABLES");
         $stmt->execute();
-        if (!$stmt)
-            echo "<font color='#ff0000'><b>Failed to list tables:</b></font> (%d) %s<br />".$stmt->errorInfo();
-        else {
+        if (!$stmt) {
+            echo "<font color='#ff0000'><b>Failed to list tables:</b></font> (%d) %s<br />" . $stmt->errorInfo();
+        } else {
             $tables = array();
-            while($rr=$stmt->fetch())
-            $tables[] = $rr[0];
+            while ($rr = $stmt->fetch()) {
+                $tables[] = $rr[0];
+            }
+
             $arr[] = "announce";
             $arr[] = "bans";
             $arr[] = "blocks";
@@ -251,52 +254,61 @@ echo "<b>Table Status Check:</b><br /><br />";
 
             echo "<table cellpadding='3' cellspacing='1' style='border-collapse: collapse' border='1'>";
             echo "<tr><th>Table</th><th>Status</th></tr>";
-            foreach ($arr as $t)
-                if (!in_array($t, $tables))
+            foreach ($arr as $t) {
+                if (!in_array($t, $tables)) {
                     echo "<tr><td>$t</td><td align='right'><font color='#ff0000'><b>MISSING</b></font></td></tr>";
-                else
+                } else {
                     echo "<tr><td>$t</td><td align='right'><font color='green'><b>OK</b></font></td></tr>";
+                }
+            }
+
             echo "</table>";
 
-            require("config/config.php");
+            require "config/config.php";
             echo "<br /><br /><b>Default Theme:</b> ";
-            if (!is_numeric($config["default_theme"]))
+            if (!is_numeric($config["default_theme"])) {
                 echo "<font color='#ff0000'><b>Invalid.</b></font> (Not a number)";
-            else {
+            } else {
                 $res = $link->prepare("SELECT uri FROM stylesheets WHERE id=$config[default_theme]");
                 $res->execute();
                 if ($row = $res->fetch(PDO::FETCH_LAZY)) {
-                    if (file_exists("views/themes/$row[0]/header.php"))
+                    if (file_exists("views/themes/$row[0]/header.php")) {
                         echo "<font color='green'><b>Valid.</b></font> (ID: $config[default_theme], Path: views/themes/$row[0]/)";
-                    else
+                    } else {
                         echo "<font color='#ff0000'><b>Invalid.</b></font> (No header.php found)";
-                } else
+                    }
+
+                } else {
                     echo "<font color='#ff0000'><b>Invalid.</b></font> (No theme found with ID $config[default_theme])";
+                }
+
             }
 
             echo "<br /><b>Default Language:</b> ";
-            if (!is_numeric($config["default_language"]))
+            if (!is_numeric($config["default_language"])) {
                 echo "<font color='#ff0000'><b>Invalid.</b></font> (Not a number)";
-            else {
+            } else {
                 $res = $link->prepare("SELECT uri FROM languages WHERE id=$config[default_language]");
                 $res->execute();
                 if ($row = $res->fetch(PDO::FETCH_LAZY)) {
-                    if (file_exists("languages/$row[0]"))
+                    if (file_exists("languages/$row[0]")) {
                         echo "<font color='green'><b>Valid.</b></font> (ID: $config[default_language], Path: languages/$row[0])";
-                    else
+                    } else {
                         echo "<font color='#ff0000'><b>Invalid.</b></font> (File languages/$row[0] missing)";
-                } else
+                    }
+
+                } else {
                     echo "<font color='#ff0000'><b>Invalid.</b></font> (No language found with ID $config[default_language])";
+                }
+
             }
         }
-    }
-    catch(PDOException $e)
-    {
+    } catch (PDOException $e) {
         echo "<font color='#ff0000'><b>Failed to connect to database:</b></font> (%d) %s<br />" . $e->getMessage();
     }
-$link = null;
-?>
+    $link = null;
+    ?>
 </body>
 </html>
 <?php
-}//end func
+} //end func

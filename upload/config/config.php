@@ -1,42 +1,42 @@
 <?php
 
 //Access Security check
-if (preg_match('/config.php/i',$_SERVER['PHP_SELF'])) {
-	die;
+if (preg_match('/config.php/i', $_SERVER['PHP_SELF'])) {
+    die;
 }
 
 $config = array();
 
 //Change the settings below to match your MYSQL server connection settings
-$config['mysql_host'] = "localhost";  //leave this as localhost if you are unsure
-$config['mysql_user'] = "user";  //Username to connect
+$config['mysql_host'] = "localhost"; //leave this as localhost if you are unsure
+$config['mysql_user'] = "user"; //Username to connect
 $config['mysql_pass'] = "pass"; //Password to connect
-$config['mysql_db'] = "name";  //Database name
+$config['mysql_db'] = "name"; //Database name
 
-$config['ttversion'] = 'PDO/MVC';							//DONT CHANGE THIS!
+$config['ttversion'] = 'PDO/MVC'; //DONT CHANGE THIS!
 
 // Main Site Settings
-$config['SITENAME'] = 'TorrentTrader';					//Site Name
-$config['SITEEMAIL'] = 'something@email.com';		//Emails will be sent from this address
-$config['SITEURL'] = 'http://localhost/pdo';	//Main Site URL
-$config['default_language'] = "english";						//DEFAULT LANGUAGE ID
-$config['default_theme'] = "default";						//DEFAULT THEME ID
-$config['CHARSET'] = "utf-8";						//Site Charset
+$config['SITENAME'] = 'TorrentTrader'; //Site Name
+$config['SITEEMAIL'] = 'something@email.com'; //Emails will be sent from this address
+$config['SITEURL'] = 'http://localhost/pdo'; //Main Site URL
+$config['default_language'] = "english"; //DEFAULT LANGUAGE ID
+$config['default_theme'] = "default"; //DEFAULT THEME ID
+$config['CHARSET'] = "utf-8"; //Site Charset
 $config['announce_list'] = "$config[SITEURL]/announce.php"; //seperate via comma
-$config['MEMBERSONLY'] = true;							//MAKE MEMBERS SIGNUP
-$config['MEMBERSONLY_WAIT'] = true;					//ENABLE WAIT TIMES FOR BAD RATIO
-$config['ALLOWEXTERNAL'] = true;		//Enable Uploading of external tracked torrents
-$config['UPLOADERSONLY'] = false;		//Limit uploading to uploader group only
-$config['INVITEONLY'] = false;			//Only allow signups via invite
-$config['ENABLEINVITES'] = true;		// Enable invites regardless of INVITEONLY setting
-$config['CONFIRMEMAIL'] = false;		//Enable / Disable Signup confirmation email
-$config['ACONFIRM'] = false;			//Enable / Disable ADMIN CONFIRM ACCOUNT SIGNUP
-$config['ANONYMOUSUPLOAD'] = false;		//Enable / Disable anonymous uploads
-$config['PASSKEYURL'] =  "$config[SITEURL]/announce.php?passkey=%s"; // Announce URL to use for passkey
+$config['MEMBERSONLY'] = true; //MAKE MEMBERS SIGNUP
+$config['MEMBERSONLY_WAIT'] = true; //ENABLE WAIT TIMES FOR BAD RATIO
+$config['ALLOWEXTERNAL'] = true; //Enable Uploading of external tracked torrents
+$config['UPLOADERSONLY'] = false; //Limit uploading to uploader group only
+$config['INVITEONLY'] = false; //Only allow signups via invite
+$config['ENABLEINVITES'] = true; // Enable invites regardless of INVITEONLY setting
+$config['CONFIRMEMAIL'] = false; //Enable / Disable Signup confirmation email
+$config['ACONFIRM'] = false; //Enable / Disable ADMIN CONFIRM ACCOUNT SIGNUP
+$config['ANONYMOUSUPLOAD'] = false; //Enable / Disable anonymous uploads
+$config['PASSKEYURL'] = "$config[SITEURL]/announce.php?passkey=%s"; // Announce URL to use for passkey
 $config['UPLOADSCRAPE'] = true; // Scrape external torrents on upload? If using mega-scrape.php you should disable this
 $config['FORUMS'] = true; // Enable / Disable Forums
 $config['FORUMS_GUESTREAD'] = false; // Allow / Disallow Guests To Read Forums
-$config["OLD_CENSOR"] = false; // Use the old change to word censor set to true otherwise use the new one.   
+$config["OLD_CENSOR"] = false; // Use the old change to word censor set to true otherwise use the new one.
 
 $config['maxusers'] = 20000; // Max # of enabled accounts
 $config['maxusers_invites'] = $config['maxusers'] + 5000; // Max # of enabled accounts when inviting
@@ -51,32 +51,32 @@ $config['add_bonus'] = 3600; // time to add bonus (1 hour)
 $config["session_time"] = 1800; // default above 30 mins
 
 // likes
-$config["forcethanks"] = true;     // force members to thank to download
-$config['allowlikes'] = true;          // allow likes/unlikes
+$config["forcethanks"] = true; // force members to thank to download
+$config['allowlikes'] = true; // allow likes/unlikes
 
 //AGENT BANS (MUST BE AGENT ID, USE FULL ID FOR SPECIFIC VERSIONS)
 $config['BANNED_AGENTS'] = "-AZ21, -BC, LIME";
 
 //PATHS, ENSURE THESE ARE CORRECT AND CHMOD TO 777 (ALSO ENSURE TORRENT_DIR/images is CHMOD 777)
-$config['torrent_dir'] = getcwd().'/uploads';
-$config['nfo_dir'] = getcwd().'/uploads';
-$config['blocks_dir'] = getcwd().'/blocks';
+$config['torrent_dir'] = getcwd() . '/uploads';
+$config['nfo_dir'] = getcwd() . '/uploads';
+$config['blocks_dir'] = getcwd() . '/blocks';
 
 // Image upload settings
 $config['image_max_filesize'] = 524288; // Max uploaded image size in bytes (Default: 512 kB)
 $config['allowed_image_types'] = array(
-					// "mimetype" => ".ext",
-					"image/gif" => ".gif",
-					"image/pjpeg" => ".jpg",
-					"image/jpeg" => ".jpg",
-					"image/jpg" => ".jpg",
-					"image/png" => ".png"
-				);
+    // "mimetype" => ".ext",
+    "image/gif" => ".gif",
+    "image/pjpeg" => ".jpg",
+    "image/jpeg" => ".jpg",
+    "image/jpg" => ".jpg",
+    "image/png" => ".png",
+);
 
-$config['SITE_ONLINE'] = true;									//Turn Site on/off
-$config['OFFLINEMSG'] = 'Site is down for a little while';	
+$config['SITE_ONLINE'] = true; //Turn Site on/off
+$config['OFFLINEMSG'] = 'Site is down for a little while';
 
-$config['WELCOMEPMON'] = true;			//Auto PM New members
+$config['WELCOMEPMON'] = true; //Auto PM New members
 $config['WELCOMEPMMSG'] = 'Thank you for registering at our tracker! Please remember to keep your ratio at 1.00 or greater :)';
 
 $config['SITENOTICEON'] = true;
@@ -94,36 +94,36 @@ $config['DONATEON'] = true;
 $config['DISCLAIMERON'] = true;
 
 //WAIT TIME VARS
-$config['WAIT_CLASS'] = '1,2';		//Classes wait time applies to, comma seperated
-$config['GIGSA'] = '1';			//Minimum gigs
-$config['RATIOA'] = '0.50';		//Minimum ratio
-$config['WAITA'] = '24';			//If neither are met, wait time in hours
+$config['WAIT_CLASS'] = '1,2'; //Classes wait time applies to, comma seperated
+$config['GIGSA'] = '1'; //Minimum gigs
+$config['RATIOA'] = '0.50'; //Minimum ratio
+$config['WAITA'] = '24'; //If neither are met, wait time in hours
 
-$config['GIGSB'] = '3';			//Minimum gigs
-$config['RATIOB'] = '0.65';		//Minimum ratio
-$config['WAITB'] = '12';			//If neither are met, wait time in hours
+$config['GIGSB'] = '3'; //Minimum gigs
+$config['RATIOB'] = '0.65'; //Minimum ratio
+$config['WAITB'] = '12'; //If neither are met, wait time in hours
 
-$config['GIGSC'] = '5';			//Minimum gigs
-$config['RATIOC'] = '0.80';		//Minimum ratio
-$config['WAITC'] = '6';			//If neither are met, wait time in hours
+$config['GIGSC'] = '5'; //Minimum gigs
+$config['RATIOC'] = '0.80'; //Minimum ratio
+$config['WAITC'] = '6'; //If neither are met, wait time in hours
 
-$config['GIGSD'] = '7';			//Minimum gigs
-$config['RATIOD'] = '0.95';		//Minimum ratio
-$config['WAITD'] = '2';			//If neither are met, wait time in hours
+$config['GIGSD'] = '7'; //Minimum gigs
+$config['RATIOD'] = '0.95'; //Minimum ratio
+$config['WAITD'] = '2'; //If neither are met, wait time in hours
 
 //CLEANUP AND ANNOUNCE SETTINGS
-$config['PEERLIMIT'] = '10000';			//LIMIT NUMBER OF PEERS GIVEN IN EACH ANNOUNCE
-$config['autoclean_interval'] = '600';		//Time between each auto cleanup (Seconds)
-$config['LOGCLEAN'] = 28 * 86400;			// How often to delete old entries. (Default: 28 days)
-$config['announce_interval'] = '900';		//Announce Interval (Seconds)
-$config['signup_timeout'] = '259200';		//Time a user stays as pending before being deleted(Seconds)
-$config['maxsiteusers'] = '10000';			//Maximum site members
-$config['max_dead_torrent_time'] = '21600';//Time until torrents that are dead are set invisible (Seconds)
+$config['PEERLIMIT'] = '10000'; //LIMIT NUMBER OF PEERS GIVEN IN EACH ANNOUNCE
+$config['autoclean_interval'] = '600'; //Time between each auto cleanup (Seconds)
+$config['LOGCLEAN'] = 28 * 86400; // How often to delete old entries. (Default: 28 days)
+$config['announce_interval'] = '900'; //Announce Interval (Seconds)
+$config['signup_timeout'] = '259200'; //Time a user stays as pending before being deleted(Seconds)
+$config['maxsiteusers'] = '10000'; //Maximum site members
+$config['max_dead_torrent_time'] = '21600'; //Time until torrents that are dead are set invisible (Seconds)
 
 //AUTO RATIO WARNING
 $config["ratiowarn_enable"] = true; //Enable/Disable auto ratio warning
 $config["ratiowarn_minratio"] = 0.4; //Min Ratio
-$config["ratiowarn_mingigs"] = 4;  //Min GB Downloaded
+$config["ratiowarn_mingigs"] = 4; //Min GB Downloaded
 $config["ratiowarn_daystowarn"] = 14; //Days to ban
 
 // category = Category Image/Name, name = Torrent Name, dl = Download Link, uploader, comments = # of comments, completed = times completed, size, seeders, leechers, health = seeder/leecher ratio, external, wait = Wait Time (if enabled), rating = Torrent Rating, added = Date Added, nfo = link to nfo (if exists)
@@ -135,8 +135,7 @@ $config["torrenttable_expand"] = "";
 $config["cache_type"] = "disk"; // disk = Save cache to disk, memcache = Use memcache, apc = Use APC, xcache = Use XCache
 $config["cache_memcache_host"] = "localhost"; // Host memcache is running on
 $config["cache_memcache_port"] = 11211; // Port memcache is running on
-$config['cache_dir'] = getcwd().'/cache'; // Cache dir (only used if type is "disk"). Must be CHMOD 777
-
+$config['cache_dir'] = getcwd() . '/cache'; // Cache dir (only used if type is "disk"). Must be CHMOD 777
 
 // Mail settings
 // php to use PHP's built-in mail function. or pear to use http://pear.php.net/Mail
@@ -162,13 +161,13 @@ $config['Administrator'] = "7";
 $config['FORUMONINDEX'] = true;
 
 // Ip Check
-$config["ipcheck"]  = true;
+$config["ipcheck"] = true;
 $config["accountmax"] = "1";
 
 // IMDB (also remove from config[torrenttable])
-$config["imdb"]  = true; // Set key from  in classes/TTIMDB
+$config["imdb"] = true; // Set key from  in classes/TTIMDB
 // Youtube (hidden either way just remove from config[torrenttable])
-$config["youtube"]  = true;
+$config["youtube"] = true;
 // Freeleech above xgb
 $config['freeleechgbon'] = true;
 $config['freeleechgb'] = 8589934592; // 8gb
@@ -177,10 +176,9 @@ $config["REQUESTSON"] = true;
 // Hide links in forum
 $config['HideBBcode'] = true; // hide links
 // Hit & Run mod
-$config["hnr_on"] = false; // Not Finished only for testing 
-$config["hnr_deadline"] = 7*86400; // 7 days to hit the seed target
+$config["hnr_on"] = false; // Not Finished only for testing
+$config["hnr_deadline"] = 7 * 86400; // 7 days to hit the seed target
 $config["hnr_seedtime"] = 172800; // target is to seed for 48 hours
 $config["hnr_warn"] = 5; // 5 hit & runs then warned
-$config["hnr_stop_dl"] = 5;  // After 5 H & R stop downloading
-$config["hnr_ban"] = 50;  // After 50 H&R they are banned
-?>
+$config["hnr_stop_dl"] = 5; // After 5 H & R stop downloading
+$config["hnr_ban"] = 50; // After 50 H&R they are banned

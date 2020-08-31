@@ -1,42 +1,40 @@
 <?php
-#======================================================================#
-#  Strong Privacy Users - Added by djhowarth (01-12-2011) 
-#======================================================================#
-if ($action == "privacylevel")
-{
+if ($action == "privacylevel") {
     $where = array();
-    
-    switch ( $_GET['type'] )
-    {
-        case 'low': 
-              $where[] = "privacy = 'low'";    break;
+
+    switch ($_GET['type']) {
+        case 'low':
+            $where[] = "privacy = 'low'";
+            break;
         case 'normal':
-              $where[] = "privacy = 'normal'"; break;
-        case 'strong':                         
-              $where[] = "privacy = 'strong'"; break;
+            $where[] = "privacy = 'normal'";
+            break;
+        case 'strong':
+            $where[] = "privacy = 'strong'";
+            break;
         default:
-              break;
+            break;
     }
-    
+
     $where[] = "enabled = 'yes'";
     $where[] = "status = 'confirmed'";
-    
+
     $where = implode(' AND ', $where);
-    
+
     $count = get_row_count("users", "WHERE $where");
     // $count = DB::run("SELECT COUNT(*) FROM users WHERE $where")->fetchColumn();
 
-    list($pagertop, $pagerbottom, $limit) = pager(25, $count, htmlspecialchars($_SERVER['REQUEST_URI'] . '&'));  
-                                                                     
+    list($pagertop, $pagerbottom, $limit) = pager(25, $count, htmlspecialchars($_SERVER['REQUEST_URI'] . '&'));
+
     $res = DB::run("SELECT id, username, class, email, ip, added, last_access FROM users WHERE $where ORDER BY username DESC $limit");
-    
+
     $title = T_("PRIVACY_LEVEL");
     require 'views/admin/header.php';
     adminnavmenu();
-    
+
     begin_frame("Privacy Level");
     ?>
-    
+
     <center>
     This page displays all users which are enabled, confirmed grouped by their privacy level.
     </center>
@@ -52,21 +50,21 @@ if ($action == "privacylevel")
         <option value="normal" <?php echo ($_GET['type'] == "normal" ? " selected='selected'" : ""); ?>>Normal</option>
         <option value="strong" <?php echo ($_GET['type'] == "strong" ? " selected='selected'" : ""); ?>>Strong</option>
         </select>
-        </form>     
+        </form>
     </td>
     </tr>
     </table>
-    
+
     <?php if ($count > 0): ?>
     <br />
     <div class='table-responsive'><table class='table table-striped'>
     <thead><tr>
         <th>Username</th>
-        <th><?php echo T_("CLASS");?></th>
+        <th><?php echo T_("CLASS"); ?></th>
         <th>E-mail</th>
         <th>IP</th>
         <th>Added</th>
-        <th>Last Visited</th>  
+        <th>Last Visited</th>
     </tr></thead>
     <?php while ($row = $res->fetch(PDO::FETCH_ASSOC)): ?>
     <tbody><tr>
@@ -75,17 +73,19 @@ if ($action == "privacylevel")
         <td><?php echo $row["email"]; ?></td>
         <td><?php echo $row["ip"]; ?></td>
         <td><?php echo utc_to_tz($row["added"]); ?></td>
-        <td><?php echo utc_to_tz($row["last_access"]); ?></td> 
+        <td><?php echo utc_to_tz($row["last_access"]); ?></td>
     </tr>
-    <?php endwhile; ?>
-    <tbody></table></div>         
+    <?php endwhile;?>
+    <tbody></table></div>
     <?php else: ?>
     <center><b>Nothing Found...</b></center>
-    <?php  
-    endif;
-    
-    if ($count > 25) echo $pagerbottom;
-    
+    <?php
+endif;
+
+    if ($count > 25) {
+        echo $pagerbottom;
+    }
+
     end_frame();
-    require 'views/admin/footer.php'; 
+    require 'views/admin/footer.php';
 }

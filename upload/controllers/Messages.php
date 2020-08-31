@@ -29,14 +29,14 @@ class Messages extends Controller
         $template = $res->fetchColumn(); //Mysqli Result Need to change It
         usermenu($_SESSION["id"]);
         include 'views/message/messagenavbar.php';
-        echo("<center><div id='tablebox'><table class='table_mb' align='center' border='1' width='60%' cellspacing='5' cellpadding='5'></center>");
-        echo('<tr><td class="table_head" align="center" colspan="2"><b><i>'.T_("OVERVIEW_INFO").'</i></b></td></tr>');
-        echo('<tr><td align="right" width="25%"><!--<a href="<?php echo $config[SITEURL]; ?>/messages/inbox">-->'.T_("INBOX").' :</a></td><td align="center" "width="25%" >'. " [<font color=green> $inbox </font>] ".P_("", $inbox)." (<font color=red>$unread ".T_("UNREAD")."</font>)</td></tr>");
-        echo('<tr><td align="right" width="25%"><!--<a href="<?php echo $config[SITEURL]; ?>/messages/outbox">-->'.T_("OUTBOX").' :</a></td><td align="center" width="25%">'. " [ $outbox ] ".P_("", $outbox)."</td></tr>");
-        echo('<tr><td align="right" width="25%"><!--<a href="<?php echo $config[SITEURL]; ?>/messages/draft">-->'.T_("DRAFT").' :</a></td><td align="center" width="25%">'. " [ $draft ] ".P_("", $draft)."</td></tr>");
-        echo('<tr><td align="right" width="25%"><!--<a href="<?php echo $config[SITEURL]; ?>/messages/templates">-->'.T_("TEMPLATES").' :</a></td><td align="center" width="25%">'. " [ $template ] ".P_("", $template)."</td></tr>");
-        echo('</table><br /></div>');
-        echo"<br /><br />";
+        echo ("<center><div id='tablebox'><table class='table_mb' align='center' border='1' width='60%' cellspacing='5' cellpadding='5'></center>");
+        echo ('<tr><td class="table_head" align="center" colspan="2"><b><i>' . T_("OVERVIEW_INFO") . '</i></b></td></tr>');
+        echo ('<tr><td align="right" width="25%"><!--<a href="<?php echo $config[SITEURL]; ?>/messages/inbox">-->' . T_("INBOX") . ' :</a></td><td align="center" "width="25%" >' . " [<font color=green> $inbox </font>] " . P_("", $inbox) . " (<font color=red>$unread " . T_("UNREAD") . "</font>)</td></tr>");
+        echo ('<tr><td align="right" width="25%"><!--<a href="<?php echo $config[SITEURL]; ?>/messages/outbox">-->' . T_("OUTBOX") . ' :</a></td><td align="center" width="25%">' . " [ $outbox ] " . P_("", $outbox) . "</td></tr>");
+        echo ('<tr><td align="right" width="25%"><!--<a href="<?php echo $config[SITEURL]; ?>/messages/draft">-->' . T_("DRAFT") . ' :</a></td><td align="center" width="25%">' . " [ $draft ] " . P_("", $draft) . "</td></tr>");
+        echo ('<tr><td align="right" width="25%"><!--<a href="<?php echo $config[SITEURL]; ?>/messages/templates">-->' . T_("TEMPLATES") . ' :</a></td><td align="center" width="25%">' . " [ $template ] " . P_("", $template) . "</td></tr>");
+        echo ('</table><br /></div>');
+        echo "<br /><br />";
         end_frame();
         stdfoot();
     }
@@ -130,11 +130,11 @@ class Messages extends Controller
                 $msg = isset($_POST['msg']) ? $_POST['msg'] : '';
                 // Update the record
                 if (isset($draft)) {
-                $stmt = DB::run('UPDATE messages SET receiver = ?, subject = ?, msg = ? WHERE id = ?', [$receiver, $subject, $msg, $id]);
-                
+                    $stmt = DB::run('UPDATE messages SET receiver = ?, subject = ?, msg = ? WHERE id = ?', [$receiver, $subject, $msg, $id]);
+
                 } elseif (isset($templates)) {
                     $stmt = DB::run('UPDATE messages SET subject = ?, msg = ? WHERE id = ?', [$subject, $msg, $id]);
-                
+
                 } elseif (isset($outbox)) {
                     $stmt = DB::run('UPDATE messages SET msg = ? WHERE id = ?', [$msg, $id]);
                     autolink(TTURL . '/messages/outbox', "Edited Outbox!");
@@ -156,7 +156,6 @@ class Messages extends Controller
             $row7 = $stmt7->fetch(PDO::FETCH_ASSOC);
             $arr27 = DB::run("SELECT username FROM users WHERE id=?", [$row7['receiver']])->fetch(PDO::FETCH_LAZY);
             $username = $arr27["username"];
-
 
             $ress1 = DB::run("SELECT * FROM `messages` WHERE `sender` = $_SESSION[id] AND `location` = 'template' ORDER BY `subject`");
         }
@@ -194,16 +193,16 @@ class Messages extends Controller
             showerror(T_("ERROR"), T_("FORUMS_DENIED"));
         }
         // Update the record
-        
-            DB::run("DELETE FROM messages WHERE `location` = 'in' AND `receiver` = $_SESSION[id] AND `id` IN ($messageid)");
-            DB::run("UPDATE messages SET `location` = 'out' WHERE `location` = 'both' AND `receiver` = $_SESSION[id] AND `id` IN ($messageid)");
-        
-           if (isset($outbox)) {
+
+        DB::run("DELETE FROM messages WHERE `location` = 'in' AND `receiver` = $_SESSION[id] AND `id` IN ($messageid)");
+        DB::run("UPDATE messages SET `location` = 'out' WHERE `location` = 'both' AND `receiver` = $_SESSION[id] AND `id` IN ($messageid)");
+
+        if (isset($outbox)) {
             DB::run("UPDATE messages SET `location` = 'in' WHERE `location` = 'both' AND `sender` = $_SESSION[id] AND `id` IN ($messageid)");
         }
 
         DB::run("DELETE FROM messages WHERE `location` IN ('out', 'draft', 'template') AND `sender` = $_SESSION[id] AND `id` IN ($messageid)");
-        
+
         header("Location: " . TTURL . "/messages/inbox");
         die;
     }
@@ -347,17 +346,17 @@ class Messages extends Controller
         }
 
         // Reply URL
-       // if (isset($inbox)) {
-            $stmt = DB::run('SELECT * FROM messages WHERE id = ?', [$url_id]);
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            $arr2 = DB::run("SELECT username FROM users WHERE id=?", [$row['receiver']])->fetch(PDO::FETCH_LAZY);
-            if ($arr2 == $_SESSION["username"]) {
-                $username = $arr2["username"];
-            } else {
-                $username = "Yourself";
-            }
-            $msg = $row['msg'];
-       // }
+        // if (isset($inbox)) {
+        $stmt = DB::run('SELECT * FROM messages WHERE id = ?', [$url_id]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $arr2 = DB::run("SELECT username FROM users WHERE id=?", [$row['receiver']])->fetch(PDO::FETCH_LAZY);
+        if ($arr2 == $_SESSION["username"]) {
+            $username = $arr2["username"];
+        } else {
+            $username = "Yourself";
+        }
+        $msg = $row['msg'];
+        // }
 
         // User & Template Dropdown List
         $ress = DB::run("SELECT * FROM users")->fetchAll(PDO::FETCH_ASSOC);

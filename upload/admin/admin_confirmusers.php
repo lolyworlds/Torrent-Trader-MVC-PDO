@@ -1,37 +1,34 @@
 <?php
-#======================================================================#
-#    Manual Conf Reg - Updated by djhowarth (29-10-2011)
-#======================================================================#
-if ($action == "confirmreg")
-{
-    if ($do == "confirm") 
-    {
-        if ($_POST["confirmall"])
+if ($action == "confirmreg") {
+    if ($do == "confirm") {
+        if ($_POST["confirmall"]) {
             DB::run("UPDATE `users` SET `status` = 'confirmed' WHERE `status` = 'pending' AND `invited_by` = '0'");
-        else
-        {
-            if (!@count($_POST["users"])) show_error_msg(T_("ERROR"), T_("NOTHING_SELECTED"), 1); 
+        } else {
+            if (!@count($_POST["users"])) {
+                show_error_msg(T_("ERROR"), T_("NOTHING_SELECTED"), 1);
+            }
+
             $ids = array_map("intval", $_POST["users"]);
             $ids = implode(", ", $ids);
             DB::run("UPDATE `users` SET `status` = 'confirmed' WHERE `status` = 'pending' AND `invited_by` = '0' AND `id` IN ($ids)");
         }
-        
-        autolink(TTURL."/admincp?action=confirmreg", "Entries Confirmed");
+
+        autolink(TTURL . "/admincp?action=confirmreg", "Entries Confirmed");
     }
-    
+
     $count = get_row_count("users", "WHERE status = 'pending' AND invited_by = '0'");
-    
-    list($pagertop, $pagerbottom, $limit) = pager(25, $count, '/admincp?action=confirmreg&amp;'); 
-    
+
+    list($pagertop, $pagerbottom, $limit) = pager(25, $count, '/admincp?action=confirmreg&amp;');
+
     $res = DB::run("SELECT `id`, `username`, `email`, `added`, `ip` FROM `users` WHERE `status` = 'pending' AND `invited_by` = '0' ORDER BY `added` DESC $limit");
 
     $title = "Manual Registration Confirm";
-	require 'views/admin/header.php';
+    require 'views/admin/header.php';
     adminnavmenu();
-    
+
     begin_frame("Manual Registration Confirm");
     ?>
-    
+
     <center>
     This page displays all unconfirmed users excluding users which have been invited by current members. <?php echo number_format($count); ?> members are pending;
     </center>
@@ -55,20 +52,22 @@ if ($action == "confirmreg")
         <td class="table_col2" align="center"><?php echo $row["ip"]; ?></td>
         <td class="table_col1" align="center"><input type="checkbox" name="users[]" value="<?php echo $row["id"]; ?>" /></td>
     </tr>
-    <?php endwhile; ?>
+    <?php endwhile;?>
     <tr>
         <td colspan="5" align="right">
         <input type="submit" value="Confirm Checked" />
         <input type="submit" name="confirmall" value="Confirm All" />
         </td>
     </tr>
-    </table>         
+    </table>
     </form>
-    <?php 
-    endif;
-    
-    if ($count > 25) echo $pagerbottom;
-    
+    <?php
+endif;
+
+    if ($count > 25) {
+        echo $pagerbottom;
+    }
+
     end_frame();
-    require 'views/admin/footer.php'; 
+    require 'views/admin/footer.php';
 }

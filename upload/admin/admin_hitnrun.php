@@ -1,5 +1,4 @@
 <?php
-//Start List of Hit and Run
 if ($action == "hnr") {
     if ($_POST['do'] == 'delete') {
         if (!@count($_POST['ids'])) {
@@ -9,7 +8,7 @@ if ($action == "hnr") {
         $ids = array_map('intval', $_POST['ids']);
         $ids = implode(',', $ids);
         DB::run("UPDATE snatched SET ltime = '86400', hnr = 'no', done = 'yes' WHERE `sid` IN ($ids)");
-        autolink(TTURL."/admincp?action=hnr", "Entries deleted.");
+        autolink(TTURL . "/admincp?action=hnr", "Entries deleted.");
     }
 
     $title = "List of Hit and Run";
@@ -51,7 +50,7 @@ if ($action == "hnr") {
                     $row1 = $result1->fetch(PDO::FETCH_ASSOC);
                 }
                 if ($row1['username']) {
-                    print '<tr><td><a href="'.$config['SITEURL'].'/users/profile?id=' . $row['uid'] . '"><b>' . class_user_colour($row1['username']) . '</b></a></td>';
+                    print '<tr><td><a href="' . $config['SITEURL'] . '/users/profile?id=' . $row['uid'] . '"><b>' . class_user_colour($row1['username']) . '</b></a></td>';
                 } else {
                     print '<tr><td>' . $row['ip'] . '</td>';
                 }
@@ -66,7 +65,7 @@ if ($action == "hnr") {
                     $startdate = utc_to_tz(get_date_time($row['stime']));
                     $lastaction = utc_to_tz(get_date_time($row['utime']));
 
-                    print '<td><a href="'.$config['SITEURL'].'/torrents/read?id=' . $row['tid'] . '">' . $smallname . '</td>';
+                    print '<td><a href="' . $config['SITEURL'] . '/torrents/read?id=' . $row['tid'] . '">' . $smallname . '</td>';
                     print '<td><font color=limegreen>' . mksize($row['uload']) . '</font></td>';
                     print '<td><font color=red>' . mksize($row['dload']) . '</font></td>';
                     print '<td>' . (is_null($stime) ? '0' : $stime) . '</td>';

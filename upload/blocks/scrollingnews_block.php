@@ -1,10 +1,10 @@
 <?php
-if ($_SESSION['loggedin']  == true) {
+if ($_SESSION['loggedin'] == true) {
     if ($config['NEWSON']) { //check news is turned on first
         begin_block(T_("LATEST_NEWS"));
 
         $res = $pdo->run("SELECT * FROM news ORDER BY added DESC LIMIT 10");
-	?>
+        ?>
 	<style type="text/css">
 
 	#marqueecontainer{
@@ -65,7 +65,7 @@ if ($_SESSION['loggedin']  == true) {
 	window.attachEvent("onload", initializemarquee)
 	else if (document.getElementById)
 	window.onload=initializemarquee
-<?php } ?>
+<?php }?>
 
 	</script>
 
@@ -74,20 +74,20 @@ if ($_SESSION['loggedin']  == true) {
 
 	<!--YOUR SCROLL CONTENT HERE-->
 	<?php
-    if ($res->rowCount()) { ?>
+if ($res->rowCount()) {?>
 	<dl>
-	<?php while ($array = $res->fetch(PDO::FETCH_ASSOC)) { ?>
-			<dt><a href='<?php echo TTURL; ?>/comments?type=news&amp;id=<?php echo $array['id'];?>'><strong><?php echo $array['title'];?></strong></a></dt><dd><strong><?php echo T_("POSTED");?>:</strong> <?php echo gmdate("d-M-y", utc_to_tz_time($array["added"]));?><dd>
-		<?php } ?>
+	<?php while ($array = $res->fetch(PDO::FETCH_ASSOC)) {?>
+			<dt><a href='<?php echo TTURL; ?>/comments?type=news&amp;id=<?php echo $array['id']; ?>'><strong><?php echo $array['title']; ?></strong></a></dt><dd><strong><?php echo T_("POSTED"); ?>:</strong> <?php echo gmdate("d-M-y", utc_to_tz_time($array["added"])); ?><dd>
+		<?php }?>
 	</dl>
 
-	<?php } else { ?>
-	<p class="text-center"><?php echo T_("NO_NEWS");?></p>
-	<?php } ?>
+	<?php } else {?>
+	<p class="text-center"><?php echo T_("NO_NEWS"); ?></p>
+	<?php }?>
 </div>
 </div>
-<?php 
+<?php
 end_block();
-    }//end newson check
+    } //end newson check
 }
 ?>

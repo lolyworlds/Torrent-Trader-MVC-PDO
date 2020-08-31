@@ -3,12 +3,12 @@
 //setup the forum head
 function forumheader($location)
 {
-  global $config;
+    global $config;
     echo "<div>
     <img src='$config[SITEURL]/images/forum/help.png'  alt='' />&nbsp;<a href='$config[SITEURL]/faq'>" . T_("FORUM_FAQ") . "</a>&nbsp; &nbsp;&nbsp;
     <img src='$config[SITEURL]/images/forum/search.png' alt='' />&nbsp;<a href='$config[SITEURL]/forums/search'>" . T_("SEARCH") . "</a>&nbsp; &nbsp;
-    <b>" . T_("FORUM_CONTROL") . "</b> 
-    &middot; <a href='$config[SITEURL]/forums/viewunread'>" . T_("FORUM_NEW_POSTS") . "</a> 
+    <b>" . T_("FORUM_CONTROL") . "</b>
+    &middot; <a href='$config[SITEURL]/forums/viewunread'>" . T_("FORUM_NEW_POSTS") . "</a>
     &middot; <a href='$config[SITEURL]/forums?catchup'>" . T_("FORUM_MARK_READ") . "</a>
    </div>
     <br />";
@@ -20,7 +20,7 @@ function catch_up()
 {
     global $pdo;
 
-    if (!$_SESSION['loggedin']  == true) {
+    if (!$_SESSION['loggedin'] == true) {
         return;
     }
 
@@ -102,11 +102,11 @@ function forumpostertable($res)
       <font><?php echo T_("FORUM_POST"); ?></font>
       <br>
     <?php
-    global $config, $pdo;
+global $config, $pdo;
     $num = 0;
     while ($a = $res->fetch(PDO::FETCH_ASSOC)) {
         ++$num;
-        print("$num &nbsp; <a href='".$config['SITEURL']."/users/profile?id=$a[id]'><b>$a[username]</b></a> $a[num]");
+        print("$num &nbsp; <a href='" . $config['SITEURL'] . "/users/profile?id=$a[id]'><b>$a[username]</b></a> $a[num]");
     }
 
     if ($num == 0) {
@@ -121,7 +121,7 @@ function insert_quick_jump_menu($currentforum = 0)
 {
     global $config, $pdo;
     print("<div style='text-align:right'><form method='get' action='?' name='jump'>\n");
-    print("<input type='hidden' name='action' value='".$config['SITEURL']."/forums/viewforum' />\n");
+    print("<input type='hidden' name='action' value='" . $config['SITEURL'] . "/forums/viewforum' />\n");
     $res = $pdo->run("SELECT * FROM forum_forums ORDER BY name");
 
     if ($res->rowCount() > 0) {
@@ -153,12 +153,12 @@ function insert_compose_frame($id, $newtopic = true)
         $arr = $res->fetch(PDO::FETCH_ASSOC) or showerror(T_("FORUM_ERROR"), T_("FORUM_BAD_FORUM_ID"));
         $forumname = stripslashes($arr["name"]);
 
-        print("<p align='center'><b>" . T_("FORUM_NEW_TOPIC") . " <a href='".$config['SITEURL']."/forums/viewforum&amp;forumid=$id'>$forumname</a></b></p>\n");
+        print("<p align='center'><b>" . T_("FORUM_NEW_TOPIC") . " <a href='" . $config['SITEURL'] . "/forums/viewforum&amp;forumid=$id'>$forumname</a></b></p>\n");
     } else {
         $res = $pdo->run("SELECT * FROM forum_topics WHERE id=$id");
         $arr = $res->fetch(PDO::FETCH_ASSOC) or showerror(T_("FORUM_ERROR"), T_("FORUMS_NOT_FOUND_TOPIC"));
         $subject = stripslashes($arr["subject"]);
-        print("<p align='center'>" . T_("FORUM_REPLY_TOPIC") . ": <a href='".$config['SITEURL']."/forums/viewtopic&amp;topicid=$id'>$subject</a></p>");
+        print("<p align='center'>" . T_("FORUM_REPLY_TOPIC") . ": <a href='" . $config['SITEURL'] . "/forums/viewtopic&amp;topicid=$id'>$subject</a></p>");
     }
 
     # Language Marker #
@@ -192,7 +192,7 @@ function insert_compose_frame($id, $newtopic = true)
 function latestforumposts()
 {
     global $pdo, $config;
-    
+
     print("<div class='table'><table class='table table-striped'>
     <thead><tr style='border: 1px solid black'>
         <th style='border: 1px solid black'>Latest Topic Title</th>
@@ -202,7 +202,7 @@ function latestforumposts()
         <th style='border: 1px solid black'>Last Post</th>
     </tr></thead>");
 
-/// HERE GOES THE QUERY TO RETRIEVE DATA FROM THE DATABASE AND WE START LOOPING ///
+    // HERE GOES THE QUERY TO RETRIEVE DATA FROM THE DATABASE AND WE START LOOPING ///
     $for = $pdo->run("SELECT * FROM forum_topics ORDER BY lastpost DESC LIMIT 5");
 
     if ($for->rowCount() == 0) {
@@ -210,56 +210,55 @@ function latestforumposts()
     }
 
     while ($topicarr = $for->fetch(PDO::FETCH_ASSOC)) {
-// Set minclass
+        // Set minclass
         $res = $pdo->run("SELECT name,minclassread,guest_read FROM forum_forums WHERE id=$topicarr[forumid]");
         $forum = $res->fetch(PDO::FETCH_ASSOC);
 
         if ($forum && get_user_class() >= $forum["minclassread"] || $forum["guest_read"] == "yes") {
-            $forumname = "<a href='".$config['SITEURL']."/forums/viewforum&amp;forumid=$topicarr[forumid]'><b>" . htmlspecialchars($forum["name"]) . "</b></a>";
+            $forumname = "<a href='" . $config['SITEURL'] . "/forums/viewforum&amp;forumid=$topicarr[forumid]'><b>" . htmlspecialchars($forum["name"]) . "</b></a>";
 
             $topicid = $topicarr["id"];
             $topic_title = stripslashes($topicarr["subject"]);
             $topic_userid = $topicarr["userid"];
-// Topic Views
+            // Topic Views
             $views = $topicarr["views"];
-// End
 
-/// GETTING TOTAL NUMBER OF POSTS ///
+            // GETTING TOTAL NUMBER OF POSTS ///
             $res = $pdo->run("SELECT COUNT(*) FROM forum_posts WHERE topicid=?", [$topicid]);
             $arr = $res->fetch(PDO::FETCH_LAZY);
             $posts = $arr[0];
             $replies = max(0, $posts - 1);
 
-/// GETTING USERID AND DATE OF LAST POST ///
+            // GETTING USERID AND DATE OF LAST POST ///
             $res = $pdo->run("SELECT * FROM forum_posts WHERE topicid=? ORDER BY id DESC LIMIT 1", [$topicid]);
             $arr = $res->fetch(PDO::FETCH_ASSOC);
             $postid = 0 + $arr["id"];
             $userid = 0 + $arr["userid"];
             $added = utc_to_tz($arr["added"]);
 
-/// GET NAME OF LAST POSTER ///
+            // GET NAME OF LAST POSTER ///
             $res = $pdo->run("SELECT id, username FROM users WHERE id=$userid");
             if ($res->rowCount() == 1) {
                 $arr = $res->fetch(PDO::FETCH_ASSOC);
-                $username = "<a href='".$config['SITEURL']."/users/profile?id=$userid'>" . class_user_colour($arr['username']) . "</a>";
+                $username = "<a href='" . $config['SITEURL'] . "/users/profile?id=$userid'>" . class_user_colour($arr['username']) . "</a>";
             } else {
                 $username = "Unknown[$topic_userid]";
             }
 
-/// GET NAME OF THE AUTHOR ///
+            // GET NAME OF THE AUTHOR ///
             $res = $pdo->run("SELECT username FROM users WHERE id=?", [$topic_userid]);
             if ($res->rowCount() == 1) {
                 $arr = $res->fetch(PDO::FETCH_ASSOC);
-                $author = "<a href='".$config['SITEURL']."/users/profile?id=$topic_userid'>" . class_user_colour($arr['username']) . "</a>";
+                $author = "<a href='" . $config['SITEURL'] . "/users/profile?id=$topic_userid'>" . class_user_colour($arr['username']) . "</a>";
             } else {
                 $author = "Unknown[$topic_userid]";
             }
 
-/// GETTING THE LAST INFO AND MAKE THE TABLE ROWS ///
+            // GETTING THE LAST INFO AND MAKE THE TABLE ROWS ///
             $r = $pdo->run("SELECT lastpostread FROM forum_readposts WHERE userid=$userid AND topicid=$topicid");
             $a = $r->fetch(PDO::FETCH_LAZY);
             $new = !$a || $postid > $a[0];
-            $subject = "<a href='".$config['SITEURL']."/forums/viewtopic&amp;topicid=$topicid'><b>" . stripslashes(encodehtml($topicarr["subject"])) . "</b></a>";
+            $subject = "<a href='" . $config['SITEURL'] . "/forums/viewtopic&amp;topicid=$topicid'><b>" . stripslashes(encodehtml($topicarr["subject"])) . "</b></a>";
 
             print("<tr style='border: 1px solid black;'>
                  <td style='border: 1px solid black' width='40%'>$subject</td>" .
@@ -272,4 +271,4 @@ function latestforumposts()
         } // while
     }
     print("</table></div>");
-} // end function
+}
