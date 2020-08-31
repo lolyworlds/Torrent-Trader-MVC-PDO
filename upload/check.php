@@ -46,7 +46,7 @@ td { vertical-align: top; }
 </head>
 <body>
 <center>
-<br /><b>TorrentTrader v3.0 Config Check<br /> - TorrentialStorm/MicrosoulV3<br /><br /></b>
+<br /><b>Torrent Trader PDO/MVC Config Check<br /> Update By M-jay<br /><br /></b>
 
 <input type="button" class="button" value="Check Again" onclick="window.location=window.location" /><br /><br />
 
@@ -62,10 +62,10 @@ This system check is designed for unix based servers, windows based servers may 
 
 <table cellpadding="3" cellspacing="1" style="border-collapse: collapse" border="1">
 <tr>
-	<td>PHP version >= 7.2.0</td>
+	<td>PHP version >= 7.3.0</td>
 	<td>
 	<?php
-echo phpversion() < '7.2' ? '<b><font color="red">No</font> 7.2 or above required</b>' : '<b><font color="green">Yes</font></b>';
+echo phpversion() < '7.4' ? '<b><font color="red">No</font> 7.2 or above required</b>' : '<b><font color="green">Yes</font></b>';
     echo " - Your PHP version is " . phpversion();
     ?>
 	</td>
@@ -82,11 +82,6 @@ echo phpversion() < '7.2' ? '<b><font color="red">No</font> 7.2 or above require
 </tr>
 
 <tr>
-	<td>&nbsp; - MySQLi support</td>
-	<td><?php echo function_exists('mysqli_connect') ? '<b><font color="green">Available</font></b>' : '<b><font color="red">Unavailable</font></b>'; ?></td>
-</tr>
-
-<tr>
 	<td>&nbsp; - curl support (Not required but external torrents may scrape faster)</td>
 	<td><?php echo function_exists('curl_init') ? '<b><font color="green">Available</font></b>' : '<b><font color="red">Unavailable</font></b>'; ?></td>
 </tr>
@@ -94,24 +89,10 @@ echo phpversion() < '7.2' ? '<b><font color="red">No</font> 7.2 or above require
 	<td>&nbsp; - openSSL (for the torrent encryption mod)</td>
 	<td><?php echo extension_loaded('openssl') ? '<b><font color="green">Available</font></b>' : '<b><font color="red">Unavailable</font></b>'; ?></td>
 </tr>
-<tr>
-	<td>&nbsp; - gmp support (Required for IPv6)</td>
-	<td><?php echo extension_loaded('gmp') ? '<b><font color="green">Available</font></b>' : '<b><font color="red">Unavailable</font></b>'; ?></td>
-</tr>
 
 <tr>
 	<td>&nbsp; - bcmath support (Required for IPv6)</td>
 	<td><?php echo extension_loaded('bcmath') ? '<b><font color="green">Available</font></b>' : '<b><font color="red">Unavailable</font></b>'; ?></td>
-</tr>
-
-<tr>
-	<td>&nbsp; - hash_hmac support (Recommended - For better password encryption)</td>
-	<td><?php echo function_exists('hash_hmac') ? '<b><font color="green">Available</font></b>' : '<b><font color="red">Unavailable</font></b>'; ?></td>
-</tr>
-
-<tr>
-	<td>&nbsp; - suhosin extension (Optional)</td>
-	<td><?php echo extension_loaded('suhosin') ? '<b><font color="green">Available</font></b><br /><br />Add to your php.ini (otherwise you may have issues):<br />suhosin.get.disallow_nul = Off<br />suhosin.request.disallow_nul = Off' : '<b><font color="red">Unavailable</font></b>'; ?></td>
 </tr>
 
 <tr>
@@ -146,7 +127,6 @@ However, TorrentTrader! will still operate if your settings do not quite match t
 $php_recommended_settings = array(array('Safe Mode', 'safe_mode', 'OFF'),
         array('Display Errors (Can be off, but does make debugging difficult.)', 'display_errors', 'ON'),
         array('File Uploads', 'file_uploads', 'ON'),
-        array('Magic Quotes Runtime', 'magic_quotes_runtime', 'OFF'),
         array('Register Globals', 'register_globals', 'OFF'),
         array('Output Buffering', 'output_buffering', 'OFF'),
         array('Session auto start', 'session.auto_start', 'OFF'),
@@ -190,10 +170,9 @@ If you see "Unwriteable" you need to change the permissions on the file or direc
 writableCell('backups');
     writableCell('uploads');
     writableCell('uploads/images');
+    writableCell('uploads/imdb');
     writableCell('cache');
-    writableCell('cache/get_row_count');
-    writableCell('cache/queries');
-    writableCell('cache/diskcache');
+    writableCell('cache/imdb');
     writableCell('import');
     writableCell('censor.txt', 1);
     ?>
@@ -215,9 +194,12 @@ require_once "config/config.php";
                 $tables[] = $rr[0];
             }
 
+            $arr[] = "addedrequests";
+            $arr[] = "agents";
             $arr[] = "announce";
             $arr[] = "bans";
             $arr[] = "blocks";
+            $arr[] = "bonus";
             $arr[] = "categories";
             $arr[] = "censor";
             $arr[] = "comments";
@@ -225,9 +207,18 @@ require_once "config/config.php";
             $arr[] = "countries";
             $arr[] = "email_bans";
             $arr[] = "faq";
+            $arr[] = "files";
+            $arr[] = "forumcats";
+            $arr[] = "forum_posts";
+            $arr[] = "forum_forums";
+            $arr[] = "forum_readposts";
+            $arr[] = "forum_topics";
+            $arr[] = "friends";
             $arr[] = "groups";
             $arr[] = "guests";
+            $arr[] = "iplog";
             $arr[] = "languages";
+            $arr[] = "likes";
             $arr[] = "log";
             $arr[] = "messages";
             $arr[] = "news";
@@ -237,20 +228,17 @@ require_once "config/config.php";
             $arr[] = "ratings";
             $arr[] = "reports";
             $arr[] = "rules";
+            $arr[] = "snatched";
             $arr[] = "shoutbox";
+            $arr[] = "staffmessages";
             $arr[] = "stylesheets";
             $arr[] = "tasks";
             $arr[] = "teams";
+            $arr[] = "thanks";
             $arr[] = "torrentlang";
             $arr[] = "torrents";
             $arr[] = "users";
             $arr[] = "warnings";
-            $arr[] = "forumcats";
-            $arr[] = "forum_topics";
-            $arr[] = "forum_posts";
-            $arr[] = "forum_forums";
-            $arr[] = "forum_readposts";
-            $arr[] = "sqlerr";
 
             echo "<table cellpadding='3' cellspacing='1' style='border-collapse: collapse' border='1'>";
             echo "<tr><th>Table</th><th>Status</th></tr>";
@@ -264,44 +252,6 @@ require_once "config/config.php";
 
             echo "</table>";
 
-            require "config/config.php";
-            echo "<br /><br /><b>Default Theme:</b> ";
-            if (!is_numeric($config["default_theme"])) {
-                echo "<font color='#ff0000'><b>Invalid.</b></font> (Not a number)";
-            } else {
-                $res = $link->prepare("SELECT uri FROM stylesheets WHERE id=$config[default_theme]");
-                $res->execute();
-                if ($row = $res->fetch(PDO::FETCH_LAZY)) {
-                    if (file_exists("views/themes/$row[0]/header.php")) {
-                        echo "<font color='green'><b>Valid.</b></font> (ID: $config[default_theme], Path: views/themes/$row[0]/)";
-                    } else {
-                        echo "<font color='#ff0000'><b>Invalid.</b></font> (No header.php found)";
-                    }
-
-                } else {
-                    echo "<font color='#ff0000'><b>Invalid.</b></font> (No theme found with ID $config[default_theme])";
-                }
-
-            }
-
-            echo "<br /><b>Default Language:</b> ";
-            if (!is_numeric($config["default_language"])) {
-                echo "<font color='#ff0000'><b>Invalid.</b></font> (Not a number)";
-            } else {
-                $res = $link->prepare("SELECT uri FROM languages WHERE id=$config[default_language]");
-                $res->execute();
-                if ($row = $res->fetch(PDO::FETCH_LAZY)) {
-                    if (file_exists("languages/$row[0]")) {
-                        echo "<font color='green'><b>Valid.</b></font> (ID: $config[default_language], Path: languages/$row[0])";
-                    } else {
-                        echo "<font color='#ff0000'><b>Invalid.</b></font> (File languages/$row[0] missing)";
-                    }
-
-                } else {
-                    echo "<font color='#ff0000'><b>Invalid.</b></font> (No language found with ID $config[default_language])";
-                }
-
-            }
         }
     } catch (PDOException $e) {
         echo "<font color='#ff0000'><b>Failed to connect to database:</b></font> (%d) %s<br />" . $e->getMessage();
@@ -311,4 +261,4 @@ require_once "config/config.php";
 </body>
 </html>
 <?php
-} //end func
+}
