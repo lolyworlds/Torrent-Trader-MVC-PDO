@@ -405,11 +405,11 @@ class Account extends Controller
                 //make first member admin
                 if ($numsitemembers == '0') {
                     $signupclass = '7';
+					} else {
+                    $signupclass = '1';
                     // Shout new user
                     $msg_shout = "New User: " . $wantusername . " has joined.";
                     DB::run("INSERT INTO shoutbox (userid, date, user, message) VALUES(?,?,?,?)", [0, get_date_time(), 'System', $msg_shout]);
-                } else {
-                    $signupclass = '1';
                 }
 
                 $sql = "INSERT INTO users (username, password, secret, email, status, added, last_access, age, country, gender, client, stylesheet, language, class, ip) VALUES (" . implode(",", array_map("sqlesc", array($wantusername, $wantpassword, $secret, $email, $status, get_date_time(), get_date_time(), $age, $country, $gender, $client, $config["default_theme"], $config["default_language"], $signupclass, getip()))) . ")";
