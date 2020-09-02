@@ -1150,3 +1150,5 @@ $LANG["THEME_NAME"] = "Theme Uses";
 $LANG["CLEAR_SHOUTBOX_TEXT"] = "Are you sure you want to clear the shoutbox? You can't undo this";
 $LANG["SHOUTBOX_CLEARED_MESSAGE"] = "The shoutbox has been cleared";
 $LANG["CLEAR_SHOUTBOX"] = "Clear Shoutbox";
+// Thanks
+$LANG["PLEASE_THANK"] = "Please click thanks first, its polite to show your appreciation";

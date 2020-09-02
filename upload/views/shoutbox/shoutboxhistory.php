@@ -1,6 +1,6 @@
 <?php
 echo '<div class="shoutbox_history">';
-$result = DB::run('SELECT COUNT(*) FROM shoutbox WHERE staff= 1 ');
+$result = DB::run('SELECT COUNT(*) FROM shoutbox WHERE staff= 0 ');
 $row = $result->fetch(PDO::FETCH_LAZY);
 echo '<div align="center">Pages: ';
 $pages = round($row[0] / 100) + 1;
@@ -26,7 +26,7 @@ if (isset($history)) {
         $lowerlimit = 0;
         $upperlimit = 100;
     }
-    $query = 'SELECT * FROM shoutbox  WHERE staff= 1 ORDER BY msgid DESC LIMIT ' . $lowerlimit . ',' . $upperlimit;
+    $query = 'SELECT * FROM shoutbox  WHERE staff= 0 ORDER BY msgid DESC LIMIT ' . $lowerlimit . ',' . $upperlimit;
 }
 
 $result = DB::run($query);

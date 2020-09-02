@@ -437,7 +437,7 @@ class Account extends Controller
                 if ($config["WELCOMEPMON"]) {
                     $dt = get_date_time();
                     $msg = $config["WELCOMEPMMSG"];
-                    $qry = $this->pdo->run("INSERT INTO messages (sender, receiver, added, msg, poster) VALUES(?,?,?,?,?)", [0, $id, $dt, $msg, 0]);
+                    $qry = $this->pdo->run("INSERT INTO messages (sender, receiver, added, msg, poster, subject) VALUES(?,?,?,?,?,?)", [0, $id, $dt, $msg, 0, 'Welcome']);
                 }
 
                 die;

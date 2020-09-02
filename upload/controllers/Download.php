@@ -42,11 +42,13 @@ class Download extends Controller
         $row = $res->fetch(PDO::FETCH_ASSOC);
 
         // LIKE MOD
-        if ($_SESSION["id"] != $row["owner"] && $config["forcethanks"]) {
-            $data = DB::run("SELECT user FROM thanks WHERE thanked = ? & type = ? & user = ?", [$id, 'torrent', $_SESSION['id']]);
+        if ($config["forcethanks"]) {
+            if ($_SESSION["id"] != $row["owner"] && $config["forcethanks"]) {
+            $data = DB::run("SELECT user FROM thanks WHERE thanked = ? AND type = ? AND user = ?", [$id, 'torrent', $_SESSION['id']]);
             $like = $data->fetch(PDO::FETCH_ASSOC);
-            if (!$like) {
-                show_error_msg(T_("ERROR"), T_("PLEASE_THANK"), 1);
+                if (!$like) {
+                    show_error_msg(T_("ERROR"), T_("PLEASE_THANK"), 1);
+                }
             }
         }
 

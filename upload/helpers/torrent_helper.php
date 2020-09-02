@@ -317,21 +317,20 @@ function torrenttable($res)
                     print("<td class='ttable_col$x' align='center'><a href=\"$config[SITEURL]/download?id=$id&amp;name=" . rawurlencode($row["filename"]) . "\"><img src='" . $config['SITEURL'] . "/images/icon_download.gif' border='0' alt=\"Download .torrent\" /></a></td>");
                     break;
                 case 'magnet':
-                    $magnet = $pdo->run("SELECT info_hash FROM torrents WHERE id=?", [$id])->fetch();
+                    $magnet = DB::run("SELECT info_hash FROM torrents WHERE id=?", [$id])->fetch();
                     // Like Mod
                     if (!$config["forcethanks"]) {
                         print("<td class='ttable_col$x' align='center'><a href=\"magnet:?xt=urn:btih:" . $magnet["info_hash"] . "&dn=" . rawurlencode($row['name']) . "&tr=" . $row['announce'] . "?passkey=" . $_SESSION['passkey'] . "\"><img src='" . $config['SITEURL'] . "/images/magnetique.png' border='0' title='Download via Magnet' /></a></td>");
-                    }
-                    if ($_SESSION["id"] != $row["owner"] && $config["forcethanks"]) {
+                    } elseif ($config["forcethanks"]) {
                         $data = DB::run("SELECT user FROM thanks WHERE thanked = ? AND type = ? AND user = ?", [$id, 'torrent', $_SESSION['id']]);
                         $like = $data->fetch(PDO::FETCH_ASSOC);
                         if ($like) {
                             print("<td class='ttable_col$x' align='center'><a href=\"magnet:?xt=urn:btih:" . $magnet["info_hash"] . "&dn=" . rawurlencode($row['name']) . "&tr=" . $row['announce'] . "?passkey=" . $_SESSION['passkey'] . "\"><img src='" . $config['SITEURL'] . "/images/magnetique.png' border='0' title='Download via Magnet' /></a></td>");
+                        } elseif ($_SESSION["id"] == $row["owner"]) {
+                            print("<td class='ttable_col$x' align='center'><a href=\"magnet:?xt=urn:btih:" . $magnet["info_hash"] . "&dn=" . rawurlencode($row['name']) . "&tr=" . $row['announce'] . "?passkey=" . $_SESSION['passkey'] . "\"><img src='" . $config['SITEURL'] . "/images/magnetique.png' border='0' title='Download via Magnet' /></a></td>");
                         } else {
                             print("<td class='ttable_col$x' align='center'><a href='$config[SITEURL]/likes/index?id=$id' ><button  class='btn btn-sm btn-danger'>Thanks</button></td>");
                         }
-                    } else {
-                        print("<td class='ttable_col$x' align='center'><a href=\"magnet:?xt=urn:btih:" . $magnet->info_hash . "&dn=" . rawurlencode($row['name']) . "&tr=" . $row['announce'] . "?passkey=" . $_SESSION['passkey'] . "\"><img src='" . $config['SITEURL'] . "/images/magnetique.png' border='0' title='Download via Magnet' /></a></td>");
                     }
                     break;
                 case 'uploader':

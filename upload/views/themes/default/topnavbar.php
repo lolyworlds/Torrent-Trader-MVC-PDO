@@ -76,7 +76,10 @@ if (!$_SESSION['loggedin'] == true) {
     <!-- END HEADER -->
     <!-- START NAVIGATION -->
     <nav class="navbar navbar-expand-lg">
-  <a class="navbar-brand" href="<?php echo TTURL; ?>/index.php"><img src='<?php echo TTURL; ?>/views/themes/<?php echo $_SESSION['stylesheet'] ?: $config['default_theme']; ?>/images/logo.gif' height='50px'></a>
+        <a class="navbar-brand" href="<?php echo TTURL; ?>/index.php">
+            <img class="d-none d-sm-block" src="<?php echo TTURL; ?>/views/themes/<?php echo $_SESSION['stylesheet'] ?: $config['default_theme']; ?>/images/logo.gif"><!-- Image to show on screens from small to extra large -->
+            <img class="d-sm-none" src="<?php echo TTURL; ?>/views/themes/<?php echo $_SESSION['stylesheet'] ?: $config['default_theme']; ?>/images/logo.gif"><!-- Image to show on extra small screen (mobile portrait) -->
+        </a> 
       <?php if ($_SESSION['loggedin'] == true) {?>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>

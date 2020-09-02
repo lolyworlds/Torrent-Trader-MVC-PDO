@@ -49,6 +49,15 @@ if (isset($row["lang_image"]) && $row["lang_image"] != "") {
                 <b>Reaction:</b>&nbsp;<a href='<?php echo TTURL; ?>/likes/liketorrent?id=<?php echo $id; ?>'><img src='<?php echo TTURL; ?>/images/like.png' width='80' height='40' border='0'></a><br>
         <?php }
     }
+	
+	if ($config["allowlikes"]) {
+        $data = DB::run("SELECT * FROM `users` AS u LEFT JOIN `likes` AS l ON(u.id = l.user) WHERE liked=$id AND type='torrent'");
+        print ('<b>Liked by</b>&nbsp;');
+        foreach ($data as $stmt): 
+        print ("<a href='".$config['SITEURL']."/users/profile?id=$id'>".class_user_colour($stmt['username'])."</a>&nbsp;");
+        endforeach;
+    }
+	
     ?>
         </td><br><br>
         <td align="left">
