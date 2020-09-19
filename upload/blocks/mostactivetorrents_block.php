@@ -21,7 +21,7 @@ if (!$config["MEMBERSONLY"] || $_SESSION['loggedin'] == true) {
 
     if ($rows) {
         foreach ($rows as $row) {
-            $char1 = 20; //cut length
+            $char1 = 40; //cut length
             $smallname = htmlspecialchars(CutName($row["name"], $char1));?>
 
 				<div class="pull-left"><a href='<?php echo TTURL; ?>/torrents/read?id=<?php echo $row["id"]; ?>' title='<?php echo htmlspecialchars($row["name"]); ?>'><?php echo $smallname; ?></a></div>

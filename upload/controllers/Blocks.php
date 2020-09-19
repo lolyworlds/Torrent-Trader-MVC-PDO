@@ -54,7 +54,7 @@ class Blocks extends Controller
                 $name = sqlesc(str_replace("_block.php", "", cleanstr($addblock)));
                 $description = sqlesc($_POST["wanteddescription_" . $i]);
 
-                $bins = DB::run("INSERT INTO blocks (named, name, description, position, enabled, sort) VALUES ($wantedname, $name, $description, 'left', 0, 0)") or ((mysqli_errno($GLOBALS["DBconnector"]) == 1062) ? show_error_msg(T_("ERROR"), "Sorry, this block is in database already!", 1) : show_error_msg(T_("ERROR"), "Database Query failed: " . mysqli_error($GLOBALS["DBconnector"])));
+                $bins = DB::run("INSERT INTO blocks (named, name, description, position, enabled, sort) VALUES ($wantedname, $name, $description, 'left', 0, 0)");
                 if ($bins) {
                     $success = "<center><font size=\"3\"><b>" . T_("_SUCCESS_ADD_") . "</b></font></center><br />";
                 } else {
@@ -255,7 +255,7 @@ class Blocks extends Controller
         $res = DB::run("SELECT * FROM blocks ORDER BY enabled DESC, position, sort");
 
         print("<table align=\"center\"><tr><td>" .
-            "<form name=\"blocks\" method=\"post\" action=\"blocks/edit\">" .
+            "<form name=\"blocks\" method=\"post\" action=\"$config[SITEURL]/controllers/edit\">" .
             "<input type=\"hidden\" name=\"edit\" value=\"true\" />" .
             "<table align=\"center\" class=\"table_table\" cellspacing=\"0\" width=\"650\">" .
             "<tr>" .
@@ -308,11 +308,11 @@ class Blocks extends Controller
                 "<td rowspan=\"2\" class=\"$class\" align=\"center\"><input type=\"checkbox\" name=\"delete[]\" value=\"" . $blocks2["id"] . "\"/></td>" .
                 "</tr>" .
                 "<tr>" .
-                "<td class=\"$class\" height=\"1%\">" . ((($blocks2["position"] != "left") && ($blocks2["enabled"] == 1)) ? "<a href=\"blocks/edit?edit=true&amp;position=left&amp;left=" . $blocks2["id"] . "\"><img border=\"0\" src=\"$config[SITEURL]/images/blocks/leftenable.gif\" width=\"18\" height=\"15\"  /></a>" : "<img border=\"0\" src=\"$config[SITEURL]/images/blocks/leftdisable.gif\" width=\"18\" height=\"15\" " . ($blocks2["enabled"] ? "alt=\"" . T_("_AT_LEFT_") . "\"" : "") . " " . ($blocks2["enabled"] ? "onclick=\"javascript: alert('" . T_("_AT_LEFT_") . "');\"" : "onclick=\"javascript: alert('" . T_("_MUST_ENB_FIRST") . "');\"") . "  />") . "</td>" .
-                "<td class=\"$class\" height=\"1%\">" . ((($blocks2["position"] != "middle") && ($blocks2["enabled"] == 1)) ? "<a href=\"blocks/edit?edit=true&amp;position=middle&amp;middle=" . $blocks2["id"] . "\"><img border=\"0\" src=\"$config[SITEURL]/images/blocks/middleenable.gif\" width=\"18\" height=\"15\" /></a>" : "<img border=\"0\" src=\"$config[SITEURL]/images/blocks/middledisable.gif\" width=\"18\" height=\"15\" " . ($blocks2["enabled"] ? "alt=\"" . T_("_AT_CENTER_") . "\"" : "") . " " . ($blocks2["enabled"] ? "onclick=\"javascript: alert('" . T_("_AT_CENTER_") . "');\"" : "onclick=\"javascript: alert('" . T_("_MUST_ENB_FIRST") . "');\"") . "  />") . "</td>" .
-                "<td class=\"$class\" height=\"1%\">" . ((($blocks2["position"] != "right") && ($blocks2["enabled"] == 1)) ? "<a href=\"blocks/edit?edit=true&amp;position=right&amp;right=" . $blocks2["id"] . "\"><img border=\"0\" src=\"$config[SITEURL]/images/blocks/rightenable.gif\" width=\"18\" height=\"15\" /></a>" : "<img border=\"0\" src=\"$config[SITEURL]/images/blocks/rightdisable.gif\" width=\"18\" height=\"15\" " . ($blocks2["enabled"] ? "alt=\"" . T_("_AT_RIGHT_") . "\"" : "") . " " . ($blocks2["enabled"] ? "onclick=\"javascript: alert('" . T_("_AT_RIGHT_") . "');\"" : "onclick=\"javascript: alert('" . T_("_MUST_ENB_FIRST") . "');\"") . "  />") . "</td>" .
-                "<td class=\"$class\" height=\"1%\">" . ((($blocks2["sort"] != 1) && ($blocks2["enabled"] != 0)) ? "<a href=\"blocks/edit?edit=true&amp;position=" . $blocks2["position"] . "&amp;sort=" . $blocks2["sort"] . "&amp;up=" . $blocks2["id"] . "\"><img border=\"0\" src=\"images/blocks/upenable.gif\" width=\"18\" height=\"15\" /></a>" : "<img border='0' src=\"$config[SITEURL]/images/blocks/updisable.gif\" width=\"18\" height=\"15\" alt=\"" . ($blocks2["enabled"] ? "" . T_("_AT_TOP_") . "" : "") . "\" " . ($blocks2["enabled"] ? "onclick=\"javascript: alert('" . T_("_AT_TOP_") . "');\"" : "onclick=\"javascript: alert('" . T_("_MUST_ENB_FIRST") . "');\"") . " />") . "</td>" .
-                "<td class=\"$class\" height=\"1%\">" . (((($blocks2["sort"] != ($nextleft - 1)) && ($blocks2["position"] == "left") || ($blocks2["sort"] != ($nextright - 1)) && ($blocks2["position"] == "right") || ($blocks2["sort"] != ($nextmiddle - 1)) && ($blocks2["position"] == "middle")) && ($blocks2["enabled"] != 0)) ? "<a href=\"blocks/edit?edit=true&amp;position=" . $blocks2["position"] . "&amp;sort=" . $blocks2["sort"] . "&amp;down=" . $blocks2["id"] . "\"><img border=\"0\" src=\"$config[SITEURL]/images/blocks/downenable.gif\" width=\"18\" height=\"15\" /></a>" : "<img border=\"0\" src=\"$config[SITEURL]/images/blocks/downdisable.gif\" width=\"18\" height=\"15\" alt=\"" . ($blocks2["enabled"] ? "" . T_("_AT_BOTTOM_") . "" : "") . "\" " . ($blocks2["enabled"] ? "onclick=\"javascript: alert('" . T_("_AT_BOTTOM_") . "');\"" : "onclick=\"javascript: alert('" . T_("_MUST_ENB_FIRST") . "');\"") . " />") . "</td>" .
+                "<td class=\"$class\" height=\"1%\">" . ((($blocks2["position"] != "left") && ($blocks2["enabled"] == 1)) ? "<a href=\"$config[SITEURL]/blocks/edit?edit=true&amp;position=left&amp;left=" . $blocks2["id"] . "\"><img border=\"0\" src=\"$config[SITEURL]/images/blocks/leftenable.gif\" width=\"18\" height=\"15\"  /></a>" : "<img border=\"0\" src=\"$config[SITEURL]/images/blocks/leftdisable.gif\" width=\"18\" height=\"15\" " . ($blocks2["enabled"] ? "alt=\"" . T_("_AT_LEFT_") . "\"" : "") . " " . ($blocks2["enabled"] ? "onclick=\"javascript: alert('" . T_("_AT_LEFT_") . "');\"" : "onclick=\"javascript: alert('" . T_("_MUST_ENB_FIRST") . "');\"") . "  />") . "</td>" .
+                "<td class=\"$class\" height=\"1%\">" . ((($blocks2["position"] != "middle") && ($blocks2["enabled"] == 1)) ? "<a href=\"$config[SITEURL]/blocks/edit?edit=true&amp;position=middle&amp;middle=" . $blocks2["id"] . "\"><img border=\"0\" src=\"$config[SITEURL]/images/blocks/middleenable.gif\" width=\"18\" height=\"15\" /></a>" : "<img border=\"0\" src=\"$config[SITEURL]/images/blocks/middledisable.gif\" width=\"18\" height=\"15\" " . ($blocks2["enabled"] ? "alt=\"" . T_("_AT_CENTER_") . "\"" : "") . " " . ($blocks2["enabled"] ? "onclick=\"javascript: alert('" . T_("_AT_CENTER_") . "');\"" : "onclick=\"javascript: alert('" . T_("_MUST_ENB_FIRST") . "');\"") . "  />") . "</td>" .
+                "<td class=\"$class\" height=\"1%\">" . ((($blocks2["position"] != "right") && ($blocks2["enabled"] == 1)) ? "<a href=\"$config[SITEURL]/blocks/edit?edit=true&amp;position=right&amp;right=" . $blocks2["id"] . "\"><img border=\"0\" src=\"$config[SITEURL]/images/blocks/rightenable.gif\" width=\"18\" height=\"15\" /></a>" : "<img border=\"0\" src=\"$config[SITEURL]/images/blocks/rightdisable.gif\" width=\"18\" height=\"15\" " . ($blocks2["enabled"] ? "alt=\"" . T_("_AT_RIGHT_") . "\"" : "") . " " . ($blocks2["enabled"] ? "onclick=\"javascript: alert('" . T_("_AT_RIGHT_") . "');\"" : "onclick=\"javascript: alert('" . T_("_MUST_ENB_FIRST") . "');\"") . "  />") . "</td>" .
+                "<td class=\"$class\" height=\"1%\">" . ((($blocks2["sort"] != 1) && ($blocks2["enabled"] != 0)) ? "<a href=\"$config[SITEURL]/blocks/edit?edit=true&amp;position=" . $blocks2["position"] . "&amp;sort=" . $blocks2["sort"] . "&amp;up=" . $blocks2["id"] . "\"><img border=\"0\" src=\"$config[SITEURL]/images/blocks/updisable.gif\" width=\"18\" height=\"15\" /></a>" : "<img border='0' src=\"$config[SITEURL]/images/blocks/updisable.gif\" width=\"18\" height=\"15\" alt=\"" . ($blocks2["enabled"] ? "" . T_("_AT_TOP_") . "" : "") . "\" " . ($blocks2["enabled"] ? "onclick=\"javascript: alert('" . T_("_AT_TOP_") . "');\"" : "onclick=\"javascript: alert('" . T_("_MUST_ENB_FIRST") . "');\"") . " />") . "</td>" .
+                "<td class=\"$class\" height=\"1%\">" . (((($blocks2["sort"] != ($nextleft - 1)) && ($blocks2["position"] == "left") || ($blocks2["sort"] != ($nextright - 1)) && ($blocks2["position"] == "right") || ($blocks2["sort"] != ($nextmiddle - 1)) && ($blocks2["position"] == "middle")) && ($blocks2["enabled"] != 0)) ? "<a href=\"$config[SITEURL]/blocks/edit?edit=true&amp;position=" . $blocks2["position"] . "&amp;sort=" . $blocks2["sort"] . "&amp;down=" . $blocks2["id"] . "\"><img border=\"0\" src=\"$config[SITEURL]/images/blocks/downenable.gif\" width=\"18\" height=\"15\" /></a>" : "<img border=\"0\" src=\"$config[SITEURL]/images/blocks/downdisable.gif\" width=\"18\" height=\"15\" alt=\"" . ($blocks2["enabled"] ? "" . T_("_AT_BOTTOM_") . "" : "") . "\" " . ($blocks2["enabled"] ? "onclick=\"javascript: alert('" . T_("_AT_BOTTOM_") . "');\"" : "onclick=\"javascript: alert('" . T_("_MUST_ENB_FIRST") . "');\"") . " />") . "</td>" .
                 "</tr>");
         }
         print("<tr>" .
@@ -346,7 +346,7 @@ class Blocks extends Controller
             echo $success . $delmessage;
 
             print("<table align=\"center\"><tr><td>");
-            print("<form name=\"addnewblock\" method=\"post\" action=\"blocks/edit#anb\">" .
+            print("<form name=\"addnewblock\" method=\"post\" action=\"$config[SITEURL]/blocks/edit#anb\">" .
                 "<table class=\"table_table\" cellspacing=\"1\" align=\"center\" width=\"650\">" .
                 "<tr>" .
                 "<th class=\"table_head\" align=\"center\"><font size=\"2\"><b>" . T_("_BLC_AVAIL_") . "</b></font><br />(" . T_("_IN_FOLDER_") . ")</th>" .
@@ -410,7 +410,7 @@ class Blocks extends Controller
         }
 
         print("<table align=\"center\" width=\"350\"><tr><td>");
-        print("<form enctype=\"multipart/form-data\"  action=\"blocks/edit#upload\" method=\"post\" >" .
+        print("<form enctype=\"multipart/form-data\"  action=\"$config[SITEURL]/blocks/edit#upload\" method=\"post\" >" .
             "<input type=\"hidden\" name=\"upload\" value=\"true\" />" .
             "<table class='table table-striped'><thead>" .
             "<tr>" .

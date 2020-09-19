@@ -56,16 +56,16 @@ class Invite extends Controller
 
             $secret = mksecret();
             $username = "invite_" . mksecret(20);
-            $ret = DB::run("INSERT INTO users (username, secret, email, status, invited_by, added, stylesheet, language) VALUES (" .
-                implode(",", array_map("sqlesc", array($username, $secret, $email, 'pending', $_SESSION["id"]))) . ",'" . get_date_time() . "', $config[default_theme], $config[default_language])");
+            $ret = DB::run("INSERT INTO users (username, secret, email, status, invited_by, added, stylesheet, language) VALUES (?,?,?,?,?,?,?,?)",
+            [$username, $secret, $email, 'pending', $_SESSION["id"], get_date_time(), $config['default_theme'], $config['default_language']]);
 
             if (!$ret) {
                 // If username is somehow taken, keep trying
                 while ($ret->errorCode() == 1062) {
                     $username = "invite_" . mksecret(20);
-                    $ret = DB::run("INSERT INTO users (username, secret, email, status, invited_by, added, stylesheet, language) VALUES (" .
-                        implode(",", array_map("sqlesc", array($username, $secret, $email, 'pending', $_SESSION["id"]))) . ",'" . get_date_time() . "', $config[default_theme], $config[default_language])");
-                }
+            $ret = DB::run("INSERT INTO users (username, secret, email, status, invited_by, added, stylesheet, language) VALUES (?,?,?,?,?,?,?,?)",
+            [$username, $secret, $email, 'pending', $_SESSION["id"], get_date_time(), $config['default_theme'], $config['default_language']]);
+			}
                 show_error_msg(T_("ERROR"), T_("DATABASE_ERROR"), 1);
             }
 

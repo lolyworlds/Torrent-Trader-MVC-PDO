@@ -19,8 +19,8 @@ class Client extends Controller
             DB::run("INSERT INTO agents (agent_name, hits, ins_date) VALUES (?,?,?)", [$_POST['ban'], 1, get_date_time()]);
         }
         $res11 = DB::run("SELECT client, peer_id FROM peers GROUP BY client");
-        stdhead("Torrent clients");
-
+        $title = T_("Clients");
+        require 'views/admin/header.php';
         begin_frame("All Clients");?>
        <center><b>Current Clients Connected</b></center>
        <form id="ban" method="post" action="<?php echo TTURL; ?>/client">
@@ -59,7 +59,7 @@ class Client extends Controller
         </form>
         <?php
         end_frame();
-        stdfoot();
+        require 'views/admin/footer.php';
     }
 
     public function banned()
@@ -78,8 +78,8 @@ class Client extends Controller
         }
 
         $getallfromdb = DB::run("SELECT * FROM agents")->fetchAll(PDO::FETCH_ASSOC);
-        stdhead("Torrent clients");
-
+        $title = T_("Clients");
+        require 'views/admin/header.php';
         begin_frame("All Clients");?>
         <center><b>Current Banned Clients</b></center>
         <form id="unban" method="post" action="<?php echo TTURL; ?>/client/banned">
@@ -109,6 +109,6 @@ class Client extends Controller
         </form>
         <?php
         end_frame();
-        stdfoot();
+        require 'views/admin/footer.php';
     }
 }

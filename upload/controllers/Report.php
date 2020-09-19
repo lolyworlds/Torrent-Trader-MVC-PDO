@@ -114,7 +114,7 @@ class Report extends Controller
             $res = DB::run("SELECT id FROM reports WHERE addedby =? AND votedfor =? AND type =?", [$_SESSION['id'], $taketorrent, 'torrent']);
             if ($res->rowCount() == 0) {
                 DB::run("INSERT into reports (addedby,votedfor,type,reason) VALUES (?, ?, ?, ?)", [$_SESSION['id'], $taketorrent, 'torrent', $takereason]);
-                print("Torrent: $taketorrent, Reason: " . htmlspecialchars($takereason) . "<p>Successfully Reported</p>");
+                print("Torrent with id: $taketorrent, Reason for report: " . htmlspecialchars($takereason) . "<p>Successfully Reported</p>");
                 end_frame();
                 stdfoot();
                 die();
@@ -183,7 +183,7 @@ class Report extends Controller
             $res = DB::run("SELECT id FROM reports WHERE addedby =? AND votedfor =? AND type =?", [$_SESSION['id'], $takecomment, 'comment']);
             if ($res->rowCount() == 0) {
                 DB::run("INSERT into reports (addedby,votedfor,type,reason) VALUES (?, ?, ?, ?)", [$_SESSION['id'], $takecomment, 'comment', $takereason]);
-                print("Comment: $takecomment, Reason: " . htmlspecialchars($takereason) . "<p>Successfully Reported</p>");
+                print("Comment with id: $takecomment, Reason for report: " . htmlspecialchars($takereason) . "<p>Successfully Reported</p>");
                 end_frame();
                 stdfoot();
                 die();

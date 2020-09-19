@@ -24,6 +24,6 @@
      <li>You recieve <font color=red><?php echo $data['configbonuspertime']; ?></font> points per <?php echo $data['configautoclean_interval']; ?> minutes the system registers you as a seeder by torrent.</li>
   </ul>
   <ul>
-     <li><a href='<?php echo TTURL; ?>/user/profile?id=<?php echo $_SESSION["id"]; ?>'>Return to profile</a></li>
+     <li><a href='<?php echo TTURL; ?>/users/profile?id=<?php echo $_SESSION["id"]; ?>'>Return to profile</a></li>
   </ul>
   </div>

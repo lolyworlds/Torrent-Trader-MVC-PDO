@@ -227,7 +227,7 @@ class Users extends Controller
         ?>
         <div class="card">
         <div class="card-header">
-            <?php echo T_("Details"); ?>
+            <?php echo sprintf(T_("USER_DETAILS_FOR"), class_user_colour($user["username"])); ?>
         </div>
         <div class="card-body">
         <?php require_once "views/user/detaillist.php";?>
@@ -238,9 +238,9 @@ class Users extends Controller
         $ss_r = $pdo->run("SELECT * from stylesheets");
         $ss_sa = array();
         while ($ss_a = $ss_r->fetch(PDO::FETCH_LAZY)) {
-            $ss_id = $ss_a["id"];
-            $ss_name = $ss_a["name"];
-            $ss_sa[$ss_name] = $ss_id;
+        $ss_id = $ss_a["uri"];
+        $ss_name = $ss_a["name"];
+        $ss_sa[$ss_name] = $ss_id;
         }
         ksort($ss_sa);
         reset($ss_sa);

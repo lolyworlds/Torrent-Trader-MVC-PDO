@@ -199,10 +199,6 @@ print("\n<tr><td align=\"center\" ><input type=\"submit\" name=\"write\" value=\
 
 if ($action == "groups" && $do == "update") {
     $title = T_("GROUPS_MANAGEMENT");
-    require 'views/admin/header.php';
-    adminnavmenu();
-
-    begin_frame(T_("_BTN_UPDT_"));
 
     $update = array();
     $update[] = "level = " . sqlesc($_POST["gname"]);
@@ -232,7 +228,6 @@ if ($action == "groups" && $do == "update") {
     DB::run("UPDATE groups SET $strupdate WHERE group_id=?", [$group_id]);
 
     autolink(TTURL . "/admincp?action=groups&do=view", T_("SUCCESS"), "Groups Updated!");
-    end_frame();
     require 'views/admin/footer.php';
 }
 
@@ -274,14 +269,6 @@ $rlevel = DB::run("SELECT DISTINCT group_id, level FROM groups ORDER BY group_id
 }
 
 if ($action == "groups" && $do == "addnew") {
-
-    $title = T_("GROUPS_MANAGEMENT");
-    require 'views/admin/header.php';
-
-    adminnavmenu();
-
-    begin_frame(T_("GROUPS_ADD_NEW"));
-
     $gname = $_POST["gname"];
     $gcolor = $_POST["gcolor"];
     $group_id = $_POST["getlevel"];
@@ -303,6 +290,5 @@ VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             $level["staff_page"], $level["staff_public"], $level["staff_sort"], $level["maxslots"]]);
 
     autolink(TTURL . "/admincp?action=groups&do=view", T_("SUCCESS"), "Groups Updated!");
-    end_frame();
     require 'views/admin/footer.php';
 }

@@ -49,7 +49,13 @@ class Torrents extends Controller
         } else {
             $vip = "<b>No</b>";
         }
-
+        // freeleech
+        $freeleech = $row["freeleech"];
+        if ($freeleech == 1) {
+            $freeleech = "<font color=green><b>Yes</b></font>";
+        } else {
+            $freeleech = "<font color=red><b>No</b></font>";
+        }
         //torrent is availiable so do some stuff
         if ($_GET["hit"]) {
             $pdo->run("UPDATE torrents SET views = views + 1 WHERE id = $id");
@@ -116,7 +122,8 @@ class Torrents extends Controller
 
         stdhead(T_("DETAILS_FOR_TORRENT") . " \"" . $row["name"] . "\"");
         begin_frame(T_("TORRENT_DETAILS_FOR") . " \"" . $shortname . "\"");
-        echo '<table cellpadding="1" cellspacing="2" class="table_table"><tr>';
+		include "views/torrent/torrentnavbar.php";
+        echo '<br><br><table cellpadding="1" cellspacing="2" class="table_table"><tr>';
 
         echo "<b>" . T_("FILE_LIST") . ":</b>&nbsp;<img src='images/plus.gif' id='pic1' onclick='klappe_torrent(1)' alt='' /><div id='k1' style='display: none;'><table align='center' cellpadding='0' cellspacing='0' class='table_table' border='1' width='100%'><tr><th class='table_head' align='left'>&nbsp;" . T_("FILE") . "</th><th width='50' class='table_head'>&nbsp;" . T_("SIZE") . "</th></tr>";
         $fres = DB::run("SELECT * FROM `files` WHERE `torrent` = $id ORDER BY `path` ASC");
@@ -156,6 +163,7 @@ class Torrents extends Controller
 
         stdhead(T_("DETAILS_FOR_TORRENT") . " \"" . $row["name"] . "\"");
         begin_frame(T_("TORRENT_DETAILS_FOR") . " \"" . $shortname . "\"");
+		include "views/torrent/torrentnavbar.php";
         if ($row["external"] == 'yes') {
             print("<b>Tracker:</b><br /> " . htmlspecialchars($row['announce']) . "<br />");
         }
@@ -344,6 +352,7 @@ class Torrents extends Controller
         stdhead(T_("EDIT_TORRENT") . " \"$shortname\"");
 
         begin_frame(T_("EDIT_TORRENT") . " \"$shortname\"");
+		include "views/torrent/torrentnavbar.php";
         include "views/torrent/edit.php";
         end_frame();
         stdfoot();
@@ -484,6 +493,10 @@ class Torrents extends Controller
                 $descr = T_("UPLOAD_NO_DESC");
             }
             $vip = $_POST["vip"];
+            $free = $_POST["free"];
+            if (!$free) {
+                $free = 0;
+            }
             $langid = (int) $_POST["lang"];
 
             /*if (!is_valid_id($langid))
@@ -642,10 +655,10 @@ class Torrents extends Controller
             $filecounts = (int) $filecount;
 
             try {
-                $ret = DB::run("INSERT INTO torrents (filename, owner, name, vip, descr, image1, image2, category, tube, added, info_hash, size, numfiles, save_as, announce, external, nfo, torrentlang, anon, last_action, imdb)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                    [$fname, $_SESSION['id'], $name, $vip, $descr, $inames[0], $inames[1], $catid, $tube, get_date_time(), $infohash, $torrentsize, $filecounts, $fname, $announce, $external, $nfo, $langid, $anon, get_date_time(), $imdb]);
-            } catch (PDOException $e) {
+                $ret = DB::run("INSERT INTO torrents (filename, owner, name, vip, descr, image1, image2, category, tube, added, info_hash, size, numfiles, save_as, announce, external, nfo, torrentlang, anon, last_action, freeleech, imdb)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                    [$fname, $_SESSION['id'], $name, $vip, $descr, $inames[0], $inames[1], $catid, $tube, get_date_time(), $infohash, $torrentsize, $filecounts, $fname, $announce, $external, $nfo, $langid, $anon, get_date_time(), $free, $imdb]);
+                } catch (PDOException $e) {
                 rename("$torrent_dir/$fname", "$torrent_dir/duplicate.torrent"); // todo
                 autolink(TTURL . '/index.php', 'Torrent already added. Duplicate Hash');
             }

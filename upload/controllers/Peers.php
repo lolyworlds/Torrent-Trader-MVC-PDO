@@ -183,9 +183,9 @@ class Peers extends Controller
 
         stdhead(T_("DETAILS_FOR_TORRENT") . " \"" . $row["name"] . "\"");
         begin_frame(T_("TORRENT_DETAILS_FOR") . " \"" . $shortname . "\"");
-
+        include "views/torrent/torrentnavbar.php";
         if ($row["external"] != 'yes') {
-            echo "<b>" . T_("PEERS_LIST") . ":</b><br />";
+            echo "<br><br><b>" . T_("PEERS_LIST") . ":</b><br />";
             $query = DB::run("SELECT * FROM peers WHERE torrent = $id ORDER BY seeder DESC");
 
             $result = $query->rowCount();
@@ -193,7 +193,7 @@ class Peers extends Controller
                 echo T_("NO_ACTIVE_PEERS") . "\n";
             } else {
                 ?>
-                <table class='table table-striped table-bordered table-hover'><thead>
+                <br><table class='table table-striped table-bordered table-hover'><thead>
 				<tr>
 					<th class="table_head"><?php echo T_("PORT"); ?></th>
 					<th class="table_head"><?php echo T_("UPLOADED"); ?></th>

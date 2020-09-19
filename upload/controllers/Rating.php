@@ -49,10 +49,11 @@ class Rating extends Controller
 $xres = DB::run("SELECT rating, added FROM ratings WHERE torrent = $id AND user = " . $_SESSION["id"]);
 $xrow = $xres->fetch(PDO::FETCH_ASSOC);
         stdhead(T_("Torrents"));
-        begin_frame(T_("Torrents"));
+        begin_frame(T_("DETAILS_FOR_TORRENT") . " \"" . $row["name"] . "\"");
+        include "views/torrent/torrentnavbar.php";
       // $srating IS RATING VARIABLE
       $srating = "";
-      $srating .= "<table class='f-border' cellspacing=\"1\" cellpadding=\"4\" width='100%'>
+      $srating .= "<br><table class='f-border' cellspacing=\"1\" cellpadding=\"4\" width='100%'>
       <tr><th><b>" . T_("RATINGS") . ":</b></th></tr>
       <tr><td class='f-title' valign='middle'>";
       if (!isset($xrow["rating"])) {
@@ -67,7 +68,7 @@ $xrow = $xres->fetch(PDO::FETCH_ASSOC);
 
       }
       $srating .= "\n";
-      if (!isset($_SESSION['loggedin']  == true)) {
+      if (!$_SESSION['loggedin']  == true) {
           $srating .= "(<a href='$config[SITEURL]/account/login'>Log in</a> to rate it)";
       } else {
           $ratings = array(

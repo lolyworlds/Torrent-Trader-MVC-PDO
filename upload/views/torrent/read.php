@@ -34,7 +34,7 @@ if (isset($row["lang_image"]) && $row["lang_image"] != "") {
         <?php } else {?>
         <b><?php echo T_("ADDED_BY"); ?>:</b>&nbsp; Unknown<br>
         <?php }?>
-
+        <b><?php echo T_("FREELEECH"); ?>:</b>&nbsp;<?php echo $freeleech; ?><br>
         <b><?php echo T_("DATE_ADDED"); ?>:</b>&nbsp;<?php echo date("d-m-Y H:i:s", utc_to_tz_time($row["added"])); ?><br>
         <b><?php echo T_("VIEWS"); ?>:</b>&nbsp;<?php echo number_format($row["views"]); ?><br>
         <b><?php echo T_("HITS"); ?>:</b>&nbsp;<?php echo number_format($row["hits"]); ?><br>

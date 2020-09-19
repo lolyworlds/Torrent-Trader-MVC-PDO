@@ -201,6 +201,8 @@ class Comments extends Controller
 
         stdhead(T_("DETAILS_FOR_TORRENT") . " \"" . $row["name"] . "\"");
         begin_frame(T_("TORRENT_DETAILS_FOR") . " \"" . $shortname . "\"");
+        require_once "views/torrent/torrentnavbar.php";
+        require_once "helpers/bbcode_helper.php";
         //echo "<p align=center><a class=index href=$config[SITEURL]/torrents-comment.php?id=$id>" .T_("ADDCOMMENT"). "</a></p>\n";
 
         //  $subrow = $pdo->run("SELECT COUNT(*) FROM comments WHERE torrent = $id")->fetch();
@@ -221,8 +223,6 @@ class Comments extends Controller
         } else {
             print("<br /><b>" . T_("NOCOMMENTS") . "</b><br />\n");
         }
-        require_once "views/torrent/torrentnavbar.php";
-        require_once "helpers/bbcode_helper.php";
         ?>
 				<center>
 				<form name="comment" method="post" action="<?php echo TTURL; ?>/comments/torrent?id=<?php echo $id; ?>&amp;takecomment=yes">

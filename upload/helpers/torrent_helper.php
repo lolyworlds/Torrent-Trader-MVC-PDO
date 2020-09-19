@@ -287,7 +287,7 @@ function torrenttable($res)
                     print("</td>\n");
                     break;
                 case 'name':
-                    $char1 = 35; //cut name length
+                    $char1 = 50; //cut name length
                     $smallname = htmlspecialchars(CutName($row["name"], $char1));
                     $dispname = "<b>" . $smallname . "</b>";
 
