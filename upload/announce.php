@@ -1,45 +1,22 @@
 <?php
-// Please Note: Languages should not be implemented here...
+// Error Reporting
+ini_set('display_errors', 0);
+ini_set('display_startup_errors', 0);
+//error_reporting(E_ALL);
+require 'config/config.php';
+require 'core/Database.php';
 
-error_reporting(E_ALL ^ E_NOTICE);
-
-require_once "config/config.php";
-require_once "classes/DB.php"; // Lets Use Static For Now
+define("TTURL", $config['SITEURL']);
+// Register custom exception handler
+include "helpers/exception_helper.php";
+set_exception_handler("handleUncaughtException");
 
 $MEMBERSONLY = $config["MEMBERSONLY"];
 $MEMBERSONLY_WAIT = $config["MEMBERSONLY_WAIT"];
 
-$_GET = array_map_recursive("unesc", $_GET);
-
-//START FUNCTIONS
-function array_map_recursive($callback, $array)
-{
-    $ret = array();
-
-    if (!is_array($array)) {
-        return $callback($array);
-    }
-
-    foreach ($array as $key => $val) {
-        $ret[$key] = array_map_recursive($callback, $val);
-    }
-    return $ret;
-}
-
-function unesc($x)
-{
-    return stripslashes($x);
-    return $x;
-}
-
 function is_valid_id($id)
 {
     return is_numeric($id) && ($id > 0) && (floor($id) == $id);
-}
-
-function sqlesc($x)
-{
-    return "'" . $x . "'";
 }
 
 function err($msg)
@@ -190,8 +167,13 @@ if (!isset($event)) {
 
 $seeder = ($left == 0) ? "yes" : "no";
 
+$dbh = new Database();
+
 //Agent Ban Moved To DB
-$agentarray = DB::run("SELECT agent_name FROM agents")->fetchAll(PDO::FETCH_COLUMN);
+$agentarray = $dbh->run("
+              SELECT agent_name 
+              FROM agents
+              ")->fetchAll(PDO::FETCH_COLUMN);
 $useragent = substr($peer_id, 0, 8);
 foreach ($agentarray as $bannedclient) {
     if (@strpos($useragent, $bannedclient) !== false) {
@@ -214,7 +196,13 @@ $torrentfields = "id, info_hash, banned, freeleech, seeders + leechers AS numpee
 $userid = 0;
 if ($MEMBERSONLY) {
     //check passkey is valid, and get users details
-    $res = DB::run("SELECT $userfields FROM users u INNER JOIN groups g ON u.class = g.group_id WHERE u.passkey=" . sqlesc($passkey) . " AND u.enabled = 'yes' AND u.status = 'confirmed' LIMIT 1") or err("Cannot Get User Details");
+    $res = $dbh->run("
+           SELECT $userfields 
+           FROM users u 
+           INNER JOIN groups g 
+           ON u.class = g.group_id 
+           WHERE u.passkey=? AND u.enabled = ? AND u.status = ? LIMIT 1", [$passkey, 'yes', 'confirmed'])
+            or err("Cannot Get User Details");
     $user = $res->fetch(PDO::FETCH_ASSOC);
     if (!$user) {
         err("Cannot locate a user with that passkey!");
@@ -228,7 +216,11 @@ if ($MEMBERSONLY) {
 }
 
 //check torrent is valid and get torrent fields
-$res = DB::run("SELECT $torrentfields FROM torrents WHERE info_hash=" . sqlesc($info_hash)) or err("Cannot Get Torrent Details");
+$res = $dbh->run("
+       SELECT $torrentfields 
+       FROM torrents 
+       WHERE info_hash=?
+       ", [$info_hash]) or err("Cannot Get Torrent Details");
 $torrent = $res->fetch(PDO::FETCH_ASSOC);
 
 if (!$torrent) {
@@ -249,7 +241,11 @@ if ($numpeers > $peerlimit) {
 } else {
     $limit = "";
 }
-$res = DB::run("SELECT $peerfields FROM peers WHERE torrent = $torrentid $limit") or err("Error Selecting Peers");
+$res = $dbh->run("
+       SELECT $peerfields 
+       FROM peers 
+       WHERE torrent = $torrentid $limit") 
+       or err("Error Selecting Peers");
 
 //DO SOME BENC STUFF TO THE PEERS CONNECTION
 $resp = "d8:completei$torrent[seeders]e10:downloadedi$torrent[times_completed]e10:incompletei$torrent[leechers]e";
@@ -271,15 +267,20 @@ while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
 $resp .= "l{$peers}e";
 $resp .= "ee";
 
-$selfwhere = "torrent = $torrentid AND peer_id = " . sqlesc($peer_id);
+$selfwhere = "torrent = $torrentid AND peer_id = $peer_id";
 
 // FILL $SELF WITH DETAILS FROM PEERS TABLE (CONNECTING PEERS DETAILS)
 if (!isset($self)) {
 
     if ($MEMBERSONLY) { // todo slots mod
-        $countslot = DB::run("SELECT DISTINCT torrent FROM peers WHERE userid =?  AND seeder=?", [$_SESSION['id'], 'no']);
+        $countslot = $dbh->run("
+                     SELECT DISTINCT torrent 
+                     FROM peers WHERE userid =? AND seeder=?", [$userid, 'no']);
         $slot = $countslot->rowCount();
-        $maxslot = DB::run("SELECT `maxslots` FROM `groups` WHERE `group_id` = $user[class]")->fetchColumn();
+        $maxslot = $dbh->run("
+                   SELECT `maxslots` 
+                   FROM `groups` 
+                   WHERE `group_id` = $user[class]")->fetchColumn();
         if ($slot >= $maxslot) {
             err("Maximum Slot exceeded! You may only download $maxslot torrent at a time.");
         }
@@ -288,19 +289,23 @@ if (!isset($self)) {
 
     //check passkey isnt leaked
     if ($MEMBERSONLY) {
-        $valid = DB::run("SELECT COUNT(*) FROM peers WHERE torrent=$torrentid AND passkey=" . sqlesc($passkey))->fetch();
-
-        if ($valid[0] >= 1 && $seeder == 'no') {
+        $sql = $dbh->run("
+                 SELECT COUNT(*) 
+                 FROM peers 
+                 WHERE torrent=? AND passkey=?
+                 ", [$torrentid, $passkey]);
+        $valid = $sql->rowCount();
+        if ($valid >= 1 && $seeder == 'no') {
             err("Connection limit exceeded! You may only leech from one location at a time.");
         }
 
-        if ($valid[0] >= 3 && $seeder == 'yes') {
+        if ($valid >= 3 && $seeder == 'yes') {
             err("Connection limit exceeded!");
         }
 
     }
 
-    $res = DB::run("SELECT $peerfields FROM peers WHERE $selfwhere");
+    $res = $dbh->run("SELECT $peerfields FROM peers WHERE torrent = ? AND peer_id = ?", [$torrentid, $peer_id]);
     $row = $res->fetch(PDO::FETCH_ASSOC);
     if ($row) {
         $self = $row;
@@ -352,11 +357,11 @@ if (!isset($self)) { //IF PEER IS NOT IN PEERS TABLE DO THE WAIT TIME CHECK
 
     if (($upthis > 0 || $downthis > 0 || $elapsed > 0) && is_valid_id($userid)) { // LIVE STATS!)
         if ($torrent["freeleech"] == 1) {
-            DB::run("UPDATE users SET uploaded = uploaded + $upthis WHERE id=$userid") or err("Tracker error: Unable to update stats");
+            $dbh->run("UPDATE users SET uploaded = uploaded + $upthis WHERE id=$userid") or err("Tracker error: Unable to update stats");
         } else {
-            DB::run("UPDATE users SET uploaded = uploaded + $upthis, downloaded = downloaded + $downthis WHERE id=$userid") or err("Tracker error: Unable to update stats");
+            $dbh->run("UPDATE users SET uploaded = uploaded + $upthis, downloaded = downloaded + $downthis WHERE id=$userid") or err("Tracker error: Unable to update stats");
             // snatch
-            DB::run("UPDATE LOW_PRIORITY `snatched` SET `uload` = `uload` + '$upthis', `dload` = `dload` + '$downthis', `utime` = '" . gmtime() . "', `ltime` = `ltime` + '$elapsed' WHERE `tid` = '$torrentid' AND `uid` = '$userid'");
+            $dbh->run("UPDATE LOW_PRIORITY `snatched` SET `uload` = `uload` + '$upthis', `dload` = `dload` + '$downthis', `utime` = '" . gmtime() . "', `ltime` = `ltime` + '$elapsed' WHERE `tid` = '$torrentid' AND `uid` = '$userid'");
         }
     }
 } //END WAIT AND STATS UPDATE
@@ -366,21 +371,21 @@ $updateset = array();
 ////////////////// NOW WE DO THE TRACKER EVENT UPDATES ///////////////////
 
 if ($event == "stopped") { // UPDATE "STOPPED" EVENT
-    /* todo
     // SNATCHED
-    $res_se = DB::run("SELECT uid, utime, tid FROM snatched WHERE tid = $torrentid AND uid = $userid");
+    $res_se = $dbh->run("SELECT uid, utime, tid FROM snatched WHERE tid = ? AND uid = ?", [$torrentid, $userid]);
     while ($row_se = $res_se->fetch(PDO::FETCH_ASSOC)) {
-    DB::run("UPDATE snatched SET utime  =? WHERE completed =? AND tid =? AND uid =?", [$dt, 'yes', $row_se['tid'], $row_se['uid']]);
+    $dbh->run("UPDATE snatched SET utime  =? WHERE completed =? AND tid =? AND uid =?", [$dt, 'yes', $row_se['tid'], $row_se['uid']]);
     }
-     */
 
-    $sql = DB::run("DELETE FROM peers WHERE $selfwhere");
-    if ($sql) {
-        if ($self["seeder"] == "yes") {
+
+    $sql = $dbh->run("DELETE FROM peers WHERE torrent = ? AND peer_id = ?", [$torrentid, $peer_id]);
+    if($sql) {
+if ($self["seeder"] == "yes") {
             $updateset[] = "seeders = seeders - 1";
         } else {
             $updateset[] = "leechers = leechers - 1";
         }
+        
 
     }
 }
@@ -389,16 +394,19 @@ if ($event == "completed") { // UPDATE "COMPLETED" EVENT
     $updateset[] = "times_completed = times_completed + 1";
 
     if ($MEMBERSONLY) {
-        DB::run("INSERT INTO completed (userid, torrentid, date) VALUES ($userid, $torrentid, '" . get_date_time() . "')");
+        $dbh->run("INSERT INTO completed (userid, torrentid, date) VALUES ($userid, $torrentid, '" . get_date_time() . "')");
     }
 
     // snatch
-    DB::run("UPDATE LOW_PRIORITY `snatched` SET `completed` = '1' WHERE `tid` = '$torrentid' AND `uid` = '$userid' AND `utime` = '" . gmtime() . "'");
+    $dbh->run("UPDATE LOW_PRIORITY `snatched` SET `completed` = '1' WHERE `tid` = '$torrentid' AND `uid` = '$userid' AND `utime` = '" . gmtime() . "'");
 } //END COMPLETED
 
 if (isset($self)) { // NO EVENT? THEN WE MUST BE A NEW PEER OR ARE NOW SEEDING A COMPLETED TORRENT
 
-    $peerupd = DB::run("UPDATE peers SET ip = " . sqlesc($ip) . ", passkey = " . sqlesc($passkey) . ", port = $port, uploaded = $uploaded, downloaded = $downloaded, to_go = $left, last_action = '" . get_date_time() . "', client = " . sqlesc($agent) . ", seeder = '$seeder' WHERE $selfwhere");
+    $peerupd = $dbh->run("
+            UPDATE peers 
+            SET ip = ?, passkey = ?, port = ?, uploaded = ?, downloaded = ?, to_go = ?, last_action = ?, client = ?, seeder = ? WHERE torrent = ? AND peer_id = ?",
+            [$ip, $passkey, $port, $uploaded, $downloaded, $left, get_date_time(), $agent, $seeder, $torrentid, $peer_id]);
 
     if ($peerupd && $self["seeder"] != $seeder) {
         if ($seeder == "yes") {
@@ -412,11 +420,15 @@ if (isset($self)) { // NO EVENT? THEN WE MUST BE A NEW PEER OR ARE NOW SEEDING A
 
 } else {
 
-    $ret = DB::run("INSERT INTO peers (connectable, torrent, peer_id, ip, passkey, port, uploaded, downloaded, to_go, started, last_action, seeder, userid, client) VALUES ('$connectable', $torrentid, " . sqlesc($peer_id) . ", " . sqlesc($ip) . ", " . sqlesc($passkey) . ", $port, $uploaded, $downloaded, $left, '" . get_date_time() . "', '" . get_date_time() . "', '$seeder', '$userid', " . sqlesc($agent) . ")");
+    $ret = $dbh->run("
+           INSERT INTO peers 
+           (connectable, torrent, peer_id, ip, passkey, port, uploaded, downloaded, to_go, started, last_action, seeder, userid, client) 
+           VALUES 
+           (?,?,?,?,?,?,?,?,?,?,?,?,?,?)", [$connectable, $torrentid, $peer_id, $ip, $passkey, $port, $uploaded, $downloaded, $left, get_date_time(), get_date_time(), $seeder, $userid, $agent]);
 
     // snatch
     if (($MEMBERSONLY) && (($seeder == 'no' && $torrent['freeleech'] == 0))) {
-        DB::run("INSERT INTO `snatched` (`uid`, `tid`, `stime`, `utime`) VALUES ('$userid', '$torrentid', '" . gmtime() . "', '" . gmtime() . "') ON DUPLICATE KEY UPDATE `utime` = '" . gmtime() . "'");
+        $dbh->run("INSERT INTO `snatched` (`uid`, `tid`, `stime`, `utime`) VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE `utime` = ?", [$userid, $torrentid, gmtime(), gmtime(), gmtime()]);
     }
 
     if ($ret) {
@@ -443,9 +455,9 @@ if ($seeder == "yes") {
 
 // NOW WE UPDATE THE TORRENT AS PER ABOVE
 if (count($updateset)) {
-    DB::run("UPDATE torrents SET " . join(",", $updateset) . " WHERE id=$torrentid") or err("Tracker error: Unable to update torrent");
+    $dbh->run("UPDATE torrents SET " . join(",", $updateset) . " WHERE id=$torrentid") or err("Tracker error: Unable to update torrent");
 }
 
 // NOW BENC THE DATA AND SEND TO CLIENT???
 benc_resp_raw($resp);
-//mysqli_close($GLOBALS["DBconnector"]);
+exit();
