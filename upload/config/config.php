@@ -7,18 +7,18 @@ if (preg_match('/config.php/i', $_SERVER['PHP_SELF'])) {
 
 $config = array();
 
-//Change the settings below to match your MYSQL server connection settings
-$config['mysql_host'] = "localhost"; //leave this as localhost if you are unsure
-$config['mysql_user'] = "user"; //Username to connect
-$config['mysql_pass'] = "pass"; //Password to connect
-$config['mysql_db'] = "name"; //Database name
+$config['ttversion'] = 'PDO/MVC'; // DONT CHANGE THIS!
 
-$config['ttversion'] = 'PDO/MVC'; //DONT CHANGE THIS!
+// Change the settings below to match your MYSQL server connection settings
+$config['mysql_host'] = "localhost"; // leave this as localhost if you are unsure
+$config['mysql_user'] = "user"; // Username to connect
+$config['mysql_pass'] = "pass"; // Password to connect
+$config['mysql_db'] = "name"; // Database name
 
 // Main Site Settings
+$config['SITEURL'] = 'http://localhost/pdo'; //Main Site URL
 $config['SITENAME'] = 'TorrentTrader'; //Site Name
 $config['SITEEMAIL'] = 'something@email.com'; //Emails will be sent from this address
-$config['SITEURL'] = 'http://localhost/pdo'; //Main Site URL
 $config['default_language'] = "english"; //DEFAULT LANGUAGE ID
 $config['default_theme'] = "default"; //DEFAULT THEME ID
 $config['CHARSET'] = "utf-8"; //Site Charset
