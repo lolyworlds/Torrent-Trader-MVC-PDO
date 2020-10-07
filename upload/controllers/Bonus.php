@@ -94,6 +94,7 @@ class Bonus extends Controller
         stdhead("Seedbonus");
 
         begin_frame("Bonus Exchange");
+        usermenu($_SESSION['id']);
         $data = [
             'bonus' => $row1,
             'usersbonus' => $_SESSION['seedbonus'],

@@ -255,7 +255,7 @@ class Blocks extends Controller
         $res = DB::run("SELECT * FROM blocks ORDER BY enabled DESC, position, sort");
 
         print("<table align=\"center\"><tr><td>" .
-            "<form name=\"blocks\" method=\"post\" action=\"$config[SITEURL]/controllers/edit\">" .
+            "<form name=\"blocks\" method=\"post\" action=\"$config[SITEURL]/blocks/edit\">" .
             "<input type=\"hidden\" name=\"edit\" value=\"true\" />" .
             "<table align=\"center\" class=\"table_table\" cellspacing=\"0\" width=\"650\">" .
             "<tr>" .
