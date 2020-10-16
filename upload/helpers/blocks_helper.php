@@ -1,58 +1,5 @@
 <?php
-// Function For Left Blocks
-function leftblocks()
-{
-    global $config, $THEME, $LANGUAGE, $pdo, $blockfilename; //Define globals
-    $TTCache = new Cache();
-    if (($blocks = $TTCache->get("blocks_left", 900)) === false) {
-        $res = $pdo->run("SELECT * FROM blocks WHERE position='left' AND enabled=1 ORDER BY sort");
-        $blocks = array();
-        while ($result = $res->fetch(PDO::FETCH_LAZY)) {
-            $blocks[] = $result["name"];
-        }
-        $TTCache->Set("blocks_left", $blocks, 900);
-    }
 
-    foreach ($blocks as $blockfilename) {
-        include "blocks/" . $blockfilename . "_block.php";
-    }
-}
-// Function For Right Blocks
-function rightblocks()
-{
-    global $config, $THEME, $LANGUAGE, $pdo, $blockfilename; //Define globals
-    $TTCache = new Cache();
-    if (($blocks = $TTCache->get("blocks_right", 900)) === false) {
-        $res = $pdo->run("SELECT * FROM blocks WHERE position='right' AND enabled=1 ORDER BY sort");
-        $blocks = array();
-        while ($result = $res->fetch(PDO::FETCH_LAZY)) {
-            $blocks[] = $result["name"];
-        }
-        $TTCache->Set("blocks_right", $blocks, 900);
-    }
-
-    foreach ($blocks as $blockfilename) {
-        include "blocks/" . $blockfilename . "_block.php";
-    }
-}
-// Function For Middle Blocks
-function middleblocks()
-{
-    global $config, $THEME, $LANGUAGE, $pdo; //Define globals
-    $TTCache = new Cache();
-    if (($blocks = $TTCache->get("blocks_middle", 900)) === false) {
-        $res = $pdo->run("SELECT * FROM blocks WHERE position='middle' AND enabled=1 ORDER BY sort");
-        $blocks = array();
-        while ($result = $res->fetch(PDO::FETCH_LAZY)) {
-            $blocks[] = $result["name"];
-        }
-        $TTCache->Set("blocks_middle", $blocks, 900);
-    }
-
-    foreach ($blocks as $blockfilename) {
-        include "blocks/" . $blockfilename . "_block.php";
-    }
-}
 // BEGIN BLOCK
 function begin_block($caption = "-", $align = "justify")
 {

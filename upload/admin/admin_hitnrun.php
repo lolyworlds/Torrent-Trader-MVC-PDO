@@ -44,7 +44,7 @@ if ($action == "hnr") {
             print '<th class="table_head"><input type="checkbox" name="checkall" onclick="checkAll(this.form.id)" /></th>';
             print '</tr></thead><tbody>';
             while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
-                if ($site_config['MEMBERSONLY']) {
+                if ($config['MEMBERSONLY']) {
                     $sql1 = "SELECT id, username FROM users WHERE id = $row[uid]";
                     $result1 = DB::run($sql1);
                     $row1 = $result1->fetch(PDO::FETCH_ASSOC);

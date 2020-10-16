@@ -1,19 +1,19 @@
 </div>
 <!-- END MIDDLE COLUMN -->
 <!-- START RIGHT COLUMN -->
-    <?php if ($config["RIGHTNAV"]) {?>
-<div class="col-sm-2">
-    <?php rightblocks();?>
-</div>
+<?php if ($config["RIGHTNAV"]) {?>
+  <div class="col-sm-2">
+        <?php Blocks::right();?>
+    </div>
     <?php }?>
-<!-- END RIGHT COLUMN -->
+    <!-- END RIGHT COLUMN -->
 </div>
 </div>
 <!-- END MAIN -->
 
 <!-- Footer -->
 <footer>
-  <hr />
+<hr />
   <ul class="list-unstyled text-center">
         <li><?php printf(T_("POWERED_BY_TT"), $config["ttversion"]);?></li>
         <li><?php $totaltime = array_sum(explode(" ", microtime())) - $GLOBALS['tstart'];?></li>
@@ -23,9 +23,12 @@
 		<li>Update By: M-jay 2020</li>
       </ul>
 </footer>
-<!-- Footer -->
+    <!-- Dont Change -->
+    <script src="<?php TTURL;?>/themes/default/js/jquery-3.3.1.min.js"></script>
+    <script src="<?php TTURL;?>/themes/default/js/popper.js"></script>
+    <script src="<?php TTURL;?>/themes/default/js/bootstrap.min.js"></script>
+    <script src="<?php TTURL;?>/themes/default/js/java_klappe.js"></script>
 
-</body>
-
+  </body>
 </html>
 <?php ob_end_flush();?>

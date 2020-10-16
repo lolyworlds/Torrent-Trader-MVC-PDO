@@ -228,7 +228,7 @@ function do_cleanup()
     // set freeleech
     if ($config['freeleechgbon']);{
         $gigs = $config['freeleechgb'];
-        $query = $pdo->run("SELECT `id`, `name` FROM `torrents` WHERE `banned` = 'no' AND `freeleech` = '0' AND `size` >= $gigs");
+        $query = $pdo->run("SELECT `id`, `name` FROM `torrents` WHERE `banned` = ? AND `freeleech` = ? AND `size` >= ?", ['no', 0, $gigs]);
         if ($query->rowCount() > 0) {
             while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $pdo->run("UPDATE `torrents` SET `freeleech` = '1' WHERE `id` = '$row[id]'");

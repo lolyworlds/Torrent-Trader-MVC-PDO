@@ -20,7 +20,7 @@ function insert_tag($name, $description, $syntax, $example, $remarks)
 
 $test = $_POST["test"];
 ?>
-<script type="text/javascript" src="helpers/java_klappe.js"></script>
+<script type="text/javascript" src="themes/default/js/java_klappe.js"></script>
 <font face="arial">
 <p><?php echo T_("TAGS_MSG"); ?></p>
 

@@ -30,7 +30,7 @@ class Forums extends Controller
 
         //Here we decide if the forums is on or off
         if ($config["FORUMS"]) {
-            $themedir = $config['SITEURL'] . "/views/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/forums/";
+            $themedir = $config['SITEURL'] . "/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/forums/";
 
             // Action: DEFAULT ACTION (VIEW FORUMS)
             if (isset($_GET["catchup"])) {
@@ -168,7 +168,7 @@ class Forums extends Controller
 
         //Here we decide if the forums is on or off
         if ($config["FORUMS"]) {
-            $themedir = $config['SITEURL'] . "/views/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/forums/";
+            $themedir = $config['SITEURL'] . "/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/forums/";
             $forumid = $_GET["forumid"];
             if (!is_valid_id($forumid)) {
                 showerror(T_("FORUM_ERROR"), "No Forum ID $forumid");
@@ -204,7 +204,7 @@ class Forums extends Controller
 
         //Here we decide if the forums is on or off
         if ($config["FORUMS"]) {
-            $themedir = $config['SITEURL'] . "/views/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/forums/";
+            $themedir = $config['SITEURL'] . "/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/forums/";
         }
 
         stdhead("Forum Search");
@@ -295,7 +295,7 @@ class Forums extends Controller
 
         //Here we decide if the forums is on or off
         if ($config["FORUMS"]) {
-            $themedir = $config['SITEURL'] . "/views/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/forums/";
+            $themedir = $config['SITEURL'] . "/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/forums/";
         }
         $userid = $_SESSION['id'];
         $maxresults = 25;
@@ -374,7 +374,7 @@ class Forums extends Controller
 
         //Here we decide if the forums is on or off
         if ($config["FORUMS"]) {
-            $themedir = $config['SITEURL'] . "/views/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/forums/";
+            $themedir = $config['SITEURL'] . "/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/forums/";
         }
 
         $postsperpage = 20;
@@ -633,7 +633,7 @@ class Forums extends Controller
 
         //Here we decide if the forums is on or off
         if ($config["FORUMS"]) {
-            $themedir = $config['SITEURL'] . "/views/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/forums/";
+            $themedir = $config['SITEURL'] . "/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/forums/";
         }
         $forumid = $_GET["forumid"];
         $topicid = $_GET["topicid"];
@@ -665,7 +665,7 @@ class Forums extends Controller
 
         //Here we decide if the forums is on or off
         if ($config["FORUMS"]) {
-            $themedir = $config['SITEURL'] . "/views/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/forums/";
+            $themedir = $config['SITEURL'] . "/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/forums/";
         }
         $topicid = $_GET["topicid"];
         if (!is_valid_id($topicid)) {
@@ -697,7 +697,7 @@ class Forums extends Controller
 
         //Here we decide if the forums is on or off
         if ($config["FORUMS"]) {
-            $themedir = $config['SITEURL'] . "/views/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/forums/";
+            $themedir = $config['SITEURL'] . "/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/forums/";
         }
         $postid = $_GET["postid"];
         if (!is_valid_id($postid)) {
@@ -767,7 +767,7 @@ class Forums extends Controller
 
         //Here we decide if the forums is on or off
         if ($config["FORUMS"]) {
-            $themedir = $config['SITEURL'] . "/views/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/forums/";
+            $themedir = $config['SITEURL'] . "/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/forums/";
         }
         $forumid = $_POST["forumid"];
         $topicid = $_POST["topicid"];
@@ -858,7 +858,7 @@ class Forums extends Controller
 
         //Here we decide if the forums is on or off
         if ($config["FORUMS"]) {
-            $themedir = $config['SITEURL'] . "/views/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/forums/";
+            $themedir = $config['SITEURL'] . "/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/forums/";
         }
 
         $postsperpage = 20;
@@ -1225,7 +1225,7 @@ class Forums extends Controller
 
         //Here we decide if the forums is on or off
         if ($config["FORUMS"]) {
-            $themedir = $config['SITEURL'] . "/views/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/forums/";
+            $themedir = $config['SITEURL'] . "/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/forums/";
         }
         $topicid = $_GET["topicid"];
         if (!is_valid_id($topicid) || $_SESSION["delete_forum"] != "yes") {
@@ -1262,7 +1262,7 @@ class Forums extends Controller
 
         //Here we decide if the forums is on or off
         if ($config["FORUMS"]) {
-            $themedir = $config['SITEURL'] . "/views/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/forums/";
+            $themedir = $config['SITEURL'] . "/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/forums/";
         }
         if ($_SESSION["delete_forum"] != "yes" && $_SESSION["edit_forum"] != "yes") {
             showerror(T_("ERROR"), T_("FORUMS_DENIED"));
@@ -1306,7 +1306,7 @@ class Forums extends Controller
 
         //Here we decide if the forums is on or off
         if ($config["FORUMS"]) {
-            $themedir = $config['SITEURL'] . "/views/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/forums/";
+            $themedir = $config['SITEURL'] . "/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/forums/";
         }
         $forumid = $_POST["forumid"];
         $topicid = $_GET["topicid"];
@@ -1358,7 +1358,7 @@ class Forums extends Controller
 
         //Here we decide if the forums is on or off
         if ($config["FORUMS"]) {
-            $themedir = $config['SITEURL'] . "/views/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/forums/";
+            $themedir = $config['SITEURL'] . "/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/forums/";
         }
         $forumid = $_GET["forumid"];
         $topicid = $_GET["topicid"];
@@ -1390,7 +1390,7 @@ class Forums extends Controller
 
         //Here we decide if the forums is on or off
         if ($config["FORUMS"]) {
-            $themedir = $config['SITEURL'] . "/views/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/forums/";
+            $themedir = $config['SITEURL'] . "/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/forums/";
         }
 
         $postid = $_GET["postid"];
@@ -1443,7 +1443,7 @@ class Forums extends Controller
 
         //Here we decide if the forums is on or off
         if ($config["FORUMS"]) {
-            $themedir = $config['SITEURL'] . "/views/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/forums/";
+            $themedir = $config['SITEURL'] . "/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/forums/";
         }
 
         $forumid = $_GET["forumid"];
@@ -1476,7 +1476,7 @@ class Forums extends Controller
 
         //Here we decide if the forums is on or off
         if ($config["FORUMS"]) {
-            $themedir = $config['SITEURL'] . "/views/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/forums/";
+            $themedir = $config['SITEURL'] . "/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/forums/";
         }
         $forumid = $_GET["forumid"];
         $topicid = $_GET["topicid"];

@@ -70,3 +70,7 @@ function dbconn($autoclean = false)
         autoclean();
     }
 }
+
+function url($url) {
+    return TTURL . $url;
+}

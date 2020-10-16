@@ -70,4 +70,4 @@ foreach ($ct_r as $ct_a) {
 </form>
 </div>
     </div><br />
-<?php require_once "views/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/footer.php";?>
+<?php require_once "themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/footer.php";?>

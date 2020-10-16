@@ -109,7 +109,7 @@ if ($action == "style") {
         <thead>" .
         "<tr><th>ID</th><th>" . T_("NAME") . "</th><th>" . T_("THEME_FOLDER_NAME") . "</th><th><input type='checkbox' name='checkall' onclick='checkAll(this.form.id);' /></th></tr></thead<tbody>";
         while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
-            if (!is_dir("views/themes/$row[uri]")) {
+            if (!is_dir("themes/$row[uri]")) {
                 $row['uri'] .= " <b>- " . T_("THEME_DIR_DONT_EXIST") . "</b>";
             }
 
@@ -119,14 +119,14 @@ if ($action == "style") {
 
         echo "<p>" . T_("THEME_IN_THEMES_BUT_NOT_IN_DB") . "</p><form id='addtheme' action='admincp?action=style&amp;do=add2' method='post'><table class='table table-striped table-bordered table-hover'><thead>" .
         "<tr><th>" . T_("NAME") . "</th><t>" . T_("THEME_FOLDER_NAME") . "</th><th><input type='checkbox' name='checkall' onclick='checkAll(this.form.id);' /></th></tr></thead><tbody>";
-        $dh = opendir("views/themes/");
+        $dh = opendir("themes/");
         $i = 0;
         while (($file = readdir($dh)) !== false) {
-            if ($file == "." || $file == ".." || !is_dir("views/themes/$file")) {
+            if ($file == "." || $file == ".." || !is_dir("themes/$file")) {
                 continue;
             }
 
-            if (is_file("views/themes/$file/header.php")) {
+            if (is_file("themes/$file/header.php")) {
                 $res = DB::run("SELECT id FROM stylesheets WHERE uri = '$file' ");
                 if ($res->rowCount() == 0) {
                     echo "<tr><td class='table_col1' align='center'><input type='text' name='add[$i][name]' value='$file' /></td>

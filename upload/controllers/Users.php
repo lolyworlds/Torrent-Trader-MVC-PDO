@@ -28,7 +28,7 @@ class Users extends Controller
             <a href='<?php echo TTURL; ?>/users/profile?id=<?php echo $_SESSION['id']; ?>'>adding id</a>
         </div>
         </div><br />
-        <?php require_once "views/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/footer.php";
+        <?php require_once "themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/footer.php";
     }
 
     public function profile()
@@ -193,7 +193,7 @@ class Users extends Controller
         </div>
         </div>
         </div><br />
-        <?php require_once "views/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/footer.php";
+        <?php require_once "themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/footer.php";
     }
 
     public function details()
@@ -285,7 +285,7 @@ class Users extends Controller
         </div>
         </div>
         </div><br />
-        <?php require_once "views/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/footer.php";
+        <?php require_once "themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/footer.php";
     }
 
     public function other()
@@ -312,7 +312,7 @@ class Users extends Controller
         </div>
         </div>
         </div><br />
-        <?php require_once "views/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/footer.php";
+        <?php require_once "themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/footer.php";
     }
 
     public function changepw()
@@ -370,7 +370,7 @@ class Users extends Controller
             </div>
             </div>
             </div><br />
-              <?php require_once "views/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/footer.php";
+              <?php require_once "themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/footer.php";
             die();
         }
         ?>
@@ -407,7 +407,7 @@ class Users extends Controller
             </div>
             </div>
            </div><br />
-        <?php require_once "views/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/footer.php";
+        <?php require_once "themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/footer.php";
     }
 
     public function signature()
@@ -455,7 +455,7 @@ class Users extends Controller
         </div>
         </div>
         </div><br />
-        <?php require_once "views/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/footer.php";
+        <?php require_once "themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/footer.php";
     }
 
     public function avatar()
@@ -518,7 +518,7 @@ class Users extends Controller
         </div>
         </div>
         </div><br />
-        <?php require_once "views/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/footer.php";
+        <?php require_once "themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/footer.php";
     }
 
     public function email()
@@ -577,7 +577,7 @@ EOD;
         </div>
         </div>
         </div><br />
-        <?php require_once "views/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/footer.php";
+        <?php require_once "themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/footer.php";
     }
 
     public function admin()
@@ -750,7 +750,7 @@ EOD;
         echo "</table>";
         end_frame();
         ///end IP history///
-        require_once "views/themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/footer.php";
+        require_once "themes/" . ($_SESSION['stylesheet'] ?: $config['default_theme']) . "/footer.php";
     }
 
 }

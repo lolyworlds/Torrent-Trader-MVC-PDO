@@ -43,9 +43,9 @@ while ($arr = $res->fetch(PDO::FETCH_ASSOC)) {
     $added = utc_to_tz($arr["added"]);
 
     if ($arr["unread"] == "yes") {
-        $unread = "<img src='" . TTURL . "/views/themes/default/forums/folder_new.png' alt='read' width='25' height='25'>";
+        $unread = "<img src='" . TTURL . "/themes/default/forums/folder_new.png' alt='read' width='25' height='25'>";
     } else {
-        $unread = "<img src='" . TTURL . "/views/themes/default/forums/folder.png' alt='unread' width='25' height='25'>";
+        $unread = "<img src='" . TTURL . "/themes/default/forums/folder.png' alt='unread' width='25' height='25'>";
     }
 
     ?>
@@ -60,5 +60,5 @@ while ($arr = $res->fetch(PDO::FETCH_ASSOC)) {
 }?>
 
     <tbody></table></div>
-    <?php echo '<div style="float: left;">read&nbsp;<img src="' . $config["SITEURL"] . '/views/themes/' . ($_SESSION['stylesheet'] ?: $config['default_theme']) . '/forums/folder.png" alt="read" width="20" height="20">&nbsp;unread&nbsp;<img src="' . $config["SITEURL"] . '/views/themes/' . ($_SESSION['stylesheet'] ?: $config['default_theme']) . '/forums/folder_new.png" alt="unread" width="20" height="20"></div>'; ?>
+    <?php echo '<div style="float: left;">read&nbsp;<img src="' . $config["SITEURL"] . '/themes/' . ($_SESSION['stylesheet'] ?: $config['default_theme']) . '/forums/folder.png" alt="read" width="20" height="20">&nbsp;unread&nbsp;<img src="' . $config["SITEURL"] . '/themes/' . ($_SESSION['stylesheet'] ?: $config['default_theme']) . '/forums/folder_new.png" alt="unread" width="20" height="20"></div>'; ?>
     <center><input type='submit' value='Delete Checked' /> <input type='submit' value='Read Checked' name='read' /></center></form>
