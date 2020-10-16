@@ -28,9 +28,14 @@ require "core/Router.php"; // Set Paths
 require "core/Controller.php"; // Load Models/Views
 
 // Autoload Classes (Controllers & Models already loaded)
-spl_autoload_register(function ($className) {
-    include_once 'classes/' . $className . '.php';
-});
+spl_autoload_register ( function ($class) {
+    $sources = array("classes/$class.php");
+        foreach ($sources as $source) {
+            if (file_exists($source)) {
+                    require_once $source;
+                } 
+            } 
+        });
 
 session_start();
 
