@@ -1,7 +1,15 @@
 <?php
 if ($_SESSION['loggedin'] == true) {
-    begin_block(T_("NAVIGATION"));
+	$title = T_("NAVIGATION");
+    $blockId = "b-" . sha1($title);
     ?>
+    <div class="card">
+    <div class="card-header">
+        <?php echo $title ?>
+        <a data-toggle="collapse" href="#" class="showHide" id="<?php echo $blockId; ?>" style="float: right;"></a>
+    </div>
+    <div class="card-body slidingDiv<?php echo $blockId; ?>">
+    <!-- content -->
     <div class="list-group">
 	<a href='<?php echo TTURL; ?>/index' class="list-group-item"><i class="fa fa-chevron-right"></i> <?php echo T_("HOME"); ?></a>
 	<a href='<?php echo TTURL; ?>/topten' class="list-group-item"><i class="fa fa-chevron-right"></i> <?php echo T_("Top 10"); ?></a>
@@ -25,6 +33,9 @@ if ($_SESSION["view_torrents"] == "yes" || !$config["MEMBERSONLY"]) {?>
 	<a href='<?php echo TTURL; ?>/group/staff' class="list-group-item"><i class="fa fa-chevron-right"></i> <?php echo T_("STAFF"); ?></a>
 <?php }?>
     </div>
-    <?php
-    end_block();
+	<!-- end content -->
+	</div>
+</div>
+<br />
+<?php
 }

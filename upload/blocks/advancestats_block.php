@@ -24,9 +24,17 @@ while ($row = $result->fetch(PDO::FETCH_LAZY)) {
 }
 $localpeers = $leechers + $seeders;
 if ($_SESSION['loggedin'] === true && $_SESSION["edit_users"] == "yes") {
-    begin_block(T_("STATS"));
+	$title = T_("STATS");
+	$blockId = "b-" . sha1($title);
     ?>
-
+<div class="card">
+    <div class="card-header">
+        <?php echo $title ?>
+        <a data-toggle="collapse" href="#" class="showHide" id="<?php echo $blockId; ?>" style="float: right;"></a>
+    </div>
+    <div class="card-body slidingDiv<?php echo $blockId; ?>">
+		<!-- content -->
+		
 <ul class="list-unstyled">
 	<p><strong><?php echo T_("TORRENTS"); ?></strong></p>
 	<li><i class="fa fa-folder-open-o"></i> <?php echo T_("TRACKING"); ?>: <strong><?php echo $ntor; ?> <?php echo P_("TORRENT", $ntor); ?></strong></li>
@@ -49,13 +57,23 @@ if ($_SESSION['loggedin'] === true && $_SESSION["edit_users"] == "yes") {
 	<li><?php echo T_("COMMENTS_POSTED"); ?>: <strong><?php echo $ncomments; ?></strong></li>
 	<li><?php echo T_("MESSAGES_SENT"); ?>: <strong><?php echo $nmessages; ?></strong></li>
 </ul>
-
+       <!-- end content -->
+	   </div>
+</div>
+<br />
 <?php
-end_block();
 }
 if ($_SESSION["edit_users"] == "no") {
-    begin_block(T_("STATS"));
+    $title = T_("STATS");
+	$blockId = "b-" . sha1($title);
     ?>
+<div class="card">
+    <div class="card-header">
+        <?php echo $title ?>
+        <a data-toggle="collapse" href="#" class="showHide" id="<?php echo $blockId; ?>" style="float: right;"></a>
+    </div>
+    <div class="card-body slidingDiv<?php echo $blockId; ?>">
+		<!-- content -->
 
 <ul class="list-unstyled">
 	<p><strong><?php echo T_("TORRENTS"); ?></strong></p>
@@ -63,7 +81,10 @@ if ($_SESSION["edit_users"] == "no") {
 	<li><i class="fa fa-calendar-o"></i> <?php echo T_("NEW_TODAY"); ?>: <strong><?php echo $todaytor; ?></strong></li>
 </ul>
 
-<?php
-end_block();
+       <!-- end content -->
+	   </div>
+   </div>
+   <br />
+   <?php
 }
 ?>

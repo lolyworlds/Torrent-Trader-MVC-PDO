@@ -1,8 +1,16 @@
 <?php
-
 if ($_SESSION['loggedin'] === true && $_SESSION["control_panel"] == "yes") {
-    begin_block("AdminCP");
+    $title = T_("AdminCP");
+    $blockId = "b-" . sha1($title);
     ?>
+    <div class="card">
+        <div class="card-header">
+            <?php echo $title ?>
+            <a data-toggle="collapse" href="#" class="showHide" id="<?php echo $blockId; ?>" style="float: right;"></a>
+        </div>
+        <div class="card-body slidingDiv<?php echo $blockId; ?>">
+        <!-- content -->
+
        <select name="admin" style="width: 95%" onchange="if(this.options[this.selectedIndex].value != -1){ window.location = this.options[this.selectedIndex].value; }">
        <option value="-1">Navigation</option>
        <option value="<?php echo TTURL; ?>/admincp?action=usersearch">Advanced User Search</option>
@@ -35,9 +43,10 @@ if ($_SESSION['loggedin'] === true && $_SESSION["control_panel"] == "yes") {
        <option value="<?php echo TTURL; ?>/admincp?action=censor">Word Censor</option>
        <option value="<?php echo TTURL; ?>/admincp?action=forum">Forum Management</option>
        </select>
-
-    <?php
-    end_block();
+       
+    <!-- end content -->
+    </div>
+</div>
+<br />
+<?php
 }
-
-?>

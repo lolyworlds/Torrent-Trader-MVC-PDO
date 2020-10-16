@@ -1,6 +1,17 @@
 <?php
 if ($_SESSION['loggedin'] == true) {
-    begin_block(T_("NEWEST_MEMBERS"));
+    $title = T_("NEWEST_MEMBERS");
+    $blockId = "b-" . sha1($title);
+    ?>
+    <div class="card">
+    <div class="card-header">
+        <?php echo $title ?>
+        <a data-toggle="collapse" href="#" class="showHide" id="<?php echo $blockId; ?>" style="float: right;"></a>
+    </div>
+    <div class="card-body slidingDiv<?php echo $blockId; ?>">
+    <!-- content -->
+    
+        <?php
     $TTCache = new Cache();
     $expire = 600; // time in seconds
     if (($rows = $TTCache->Get("newestmember_block", $expire)) === false) {
@@ -22,8 +33,12 @@ if ($_SESSION['loggedin'] == true) {
 			<a href='<?php echo TTURL; ?>/users/profile?id=<?php echo $row["id"]; ?>' class="list-group-item"><?php echo class_user_colour($row["username"]); ?></a>
 	<?php }?>
 		</div>
-    <?php }
+    <?php } ?>
 
-    end_block();
+<!-- end content -->
+</div>
+</div>
+<br />
+<?php
 }
 ?>

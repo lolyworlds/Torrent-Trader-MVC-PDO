@@ -1,9 +1,19 @@
 <?php
 if ($_SESSION['loggedin'] == true) {
-    begin_block(T_("ONLINE_USERS"));
+    $title = T_("ONLINE_USERS");
+    $blockId = "b-" . sha1($title);
+    $db = Database::instance();
     $TTCache = new Cache();
     $expires = 120; // Cache time in seconds 2 mins
-
+    ?>
+    <div class="card">
+    <div class="card-header">
+        <?php echo $title ?>
+        <a data-toggle="collapse" href="#" class="showHide" id="<?php echo $blockId; ?>" style="float: right;"></a>
+    </div>
+    <div class="card-body slidingDiv<?php echo $blockId; ?>">
+    <!-- content -->
+    <?php
     if (($rows = $TTCache->Get("usersonline_block", $expires)) === false) {
         $res = $pdo->run("SELECT id, username FROM users WHERE enabled = 'yes' AND status = 'confirmed' AND privacy !='strong' AND UNIX_TIMESTAMP('" . get_date_time() . "') - UNIX_TIMESTAMP(users.last_access) <= 900");
 
@@ -24,5 +34,10 @@ if ($_SESSION['loggedin'] == true) {
 	<?php
     }
     }
-    end_block();
+    ?>
+    <!-- end content -->
+    </div>
+</div>
+<br />
+<?php
 }

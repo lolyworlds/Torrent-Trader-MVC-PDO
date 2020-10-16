@@ -1,8 +1,17 @@
 <?php
 if (($config["INVITEONLY"] || $config["ENABLEINVITES"]) && $_SESSION['loggedin'] == true) {
     $invites = $_SESSION["invites"];
-    begin_block(T_("INVITES"));
+    $title = T_("INVITES");
+    $blockId = "b-" . sha1($title);
     ?>
+    <div class="card">
+        <div class="card-header">
+            <?php echo $title ?>
+            <a data-toggle="collapse" href="#" class="showHide" id="<?php echo $blockId; ?>" style="float: right;"></a>
+        </div>
+        <div class="card-body slidingDiv<?php echo $blockId; ?>">
+        <!-- content -->
+
 	<table border="0" width="100%">
 	<tr>
         <td align="center">
@@ -23,7 +32,11 @@ if (($config["INVITEONLY"] || $config["ENABLEINVITES"]) && $_SESSION['loggedin']
         </td>
     </tr>
     <?php }?>
-	</table>
+    </table>
+
+       <!-- end content -->
+       </div>
+</div>
+<br />
 	<?php
-    end_block();
 }

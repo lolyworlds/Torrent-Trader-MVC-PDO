@@ -1,7 +1,18 @@
 <?php
 if (!$config["MEMBERSONLY"] || $_SESSION['loggedin'] == true) {
-    begin_block(T_("SEEDERS_WANTED"));
-
+    $title = T_("SEEDERS_WANTED");
+    $blockId = "b-" . sha1($title);
+    $pdo = Database::instance();
+    ?>
+    
+    <div class="card">
+        <div class="card-header">
+            <?php echo $title ?>
+            <a data-toggle="collapse" href="#" class="showHide" id="<?php echo $blockId; ?>" style="float: right;"></a>
+        </div>
+        <div class="card-body slidingDiv<?php echo $blockId; ?>">
+        <!-- content -->
+        <?php
     $external = "external = 'no'";
     // Uncomment below to include external torrents
     $external = 1;
@@ -29,6 +40,10 @@ if (!$config["MEMBERSONLY"] || $_SESSION['loggedin'] == true) {
 			<div class="pull-right"><span class="label label-waring"><?php echo T_("LEECHERS"); ?>: <?php echo number_format($row["leechers"]); ?></span></div>
 		<?php }
     }
-    end_block();
+    ?>
+    <!-- end content -->
+    </div>
+</div>
+<br />
+<?php
 }
-?>

@@ -4,8 +4,18 @@ if (!$config["MEMBERSONLY"] || $_SESSION['loggedin'] == true) {
 
     $res = $pdo->run("SELECT torrents.id, torrents.name, torrents.image1, torrents.image2, categories.name as cat_name, categories.parent_cat as cat_parent FROM torrents LEFT JOIN categories ON torrents.category=categories.id WHERE banned = 'no' AND (image1 != '' OR image2 != '') AND visible = 'yes' ORDER BY id DESC LIMIT $limit");
     if ($res->rowCount() > 0) {
-        begin_block(T_("LATEST_POSTERS"));
-
+        $title = T_("LATEST_POSTERS");
+        $blockId = "b-" . sha1($title);
+        ?>
+        
+        <div class="card">
+            <div class="card-header">
+                <?php echo $title ?>
+                <a data-toggle="collapse" href="#" class="showHide" id="<?php echo $blockId; ?>" style="float: right;"></a>
+            </div>
+            <div class="card-body slidingDiv<?php echo $blockId; ?>">
+            <!-- content -->
+            <?php
         while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
             $cat = htmlspecialchars("$row[cat_parent] - $row[cat_name]");
             $name = htmlspecialchars($row["name"]);
@@ -16,7 +26,10 @@ if (!$config["MEMBERSONLY"] || $_SESSION['loggedin'] == true) {
 					<center><div class="col-lg-6"><a href="<?php echo TTURL; ?>/torrents/read?id=<?php echo $row["id"]; ?>" title="<?php echo $name . " / " . $cat; ?>"><img src="<?php echo TTURL; ?>/uploads/images/<?php echo $row["image2"]; ?>" alt="<?php echo $name . " / " . $cat; ?>" class="img-thumbnail" /></a></div></center>
 				<?php }
         }
-
-        end_block();
-    }
+?>
+        <!-- end content -->
+        </div>
+ </div>
+ <br />
+ <?php }
 }

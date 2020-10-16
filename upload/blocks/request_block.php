@@ -1,6 +1,17 @@
 <?php
 if (!$config["MEMBERSONLY"] || $_SESSION['loggedin'] == true) {
-    begin_block("Latest Requests");
+    $title = "Latest Requests";
+    $blockId = "b-" . sha1($title);
+    ?>
+
+<div class="card">
+    <div class="card-header">
+        <?php echo $title ?>
+        <a data-toggle="collapse" href="#" class="showHide" id="<?php echo $blockId; ?>" style="float: right;"></a>
+    </div>
+    <div class="card-body slidingDiv<?php echo $blockId; ?>">
+    <!-- content -->
+    <?php
     $TTCache = new Cache();
     $expires = 600; // Cache time in seconds 10 mins
     if (($rows = $TTCache->Get("request_block", $expires)) === false) {
@@ -24,5 +35,10 @@ if (!$config["MEMBERSONLY"] || $_SESSION['loggedin'] == true) {
     } else {
         print("<center>No requests</center> \n");
     }
-    end_block();
+    ?>
+    <!-- end content -->
+    </div>
+</div>
+<br />
+<?php
 }

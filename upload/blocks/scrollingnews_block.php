@@ -1,10 +1,19 @@
 <?php
 if ($_SESSION['loggedin'] == true) {
     if ($config['NEWSON']) { //check news is turned on first
-        begin_block(T_("LATEST_NEWS"));
-
-        $res = $pdo->run("SELECT * FROM news ORDER BY added DESC LIMIT 10");
-        ?>
+        $title = T_("LATEST_NEWS");
+        $blockId = "b-" . sha1($title);
+        $pdo = Database::instance(); ?>
+		
+		<div class="card">
+			<div class="card-header">
+				<?php echo $title ?>
+				<a data-toggle="collapse" href="#" class="showHide" id="<?php echo $blockId; ?>" style="float: right;"></a>
+			</div>
+			<div class="card-body slidingDiv<?php echo $blockId; ?>">
+			<!-- content -->
+			<?php
+        $res = $pdo->run("SELECT * FROM news ORDER BY added DESC LIMIT 10"); ?>
 	<style type="text/css">
 
 	#marqueecontainer{
@@ -65,7 +74,7 @@ if ($_SESSION['loggedin'] == true) {
 	window.attachEvent("onload", initializemarquee)
 	else if (document.getElementById)
 	window.onload=initializemarquee
-<?php }?>
+<?php } ?>
 
 	</script>
 
@@ -83,11 +92,13 @@ if ($res->rowCount()) {?>
 
 	<?php } else {?>
 	<p class="text-center"><?php echo T_("NO_NEWS"); ?></p>
-	<?php }?>
+	<?php } ?>
 </div>
 </div>
+    <!-- end content -->
+    </div>
+</div>
+<br />
 <?php
-end_block();
-    } //end newson check
+    }
 }
-?>

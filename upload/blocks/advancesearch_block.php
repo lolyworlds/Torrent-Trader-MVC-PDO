@@ -1,7 +1,15 @@
 <?php
 if ($_SESSION['loggedin']) {
-    begin_block(T_("SEARCH"));
+    $title = T_("SEARCH");
+    $blockId = "b-" . sha1($title);
     ?>
+    <div class="card">
+        <div class="card-header">
+            <?php echo $title ?>
+            <a data-toggle="collapse" href="#" class="showHide" id="<?php echo $blockId; ?>" style="float: right;"></a>
+        </div>
+        <div class="card-body slidingDiv<?php echo $blockId; ?>">
+        <!-- content -->
 	<form method="get" action="<?php echo TTURL; ?>/torrents/search">
 		<input type="text" name="search" style="width: 95%" value="<?php echo htmlspecialchars($_GET["search"]); ?>" /><br />
 		<select name="cat"  style="width: 95%" >
@@ -34,7 +42,10 @@ if ($_SESSION['loggedin']) {
 		<?php }?>
 		<button type="submit" class="btn btn-primary center-block" /><?php echo T_("SEARCH"); ?></button>
 	</form>
-	<?php
-    end_block();
+    <!-- end content -->
+    </div>
+</div>
+<br />
+<?php
 }
 ?>

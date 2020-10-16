@@ -1,6 +1,5 @@
 <?php
 if ($_SESSION['loggedin'] == true) {
-    begin_block(class_user_colour($_SESSION["username"]));
 
     $avatar = htmlspecialchars($_SESSION["avatar"]);
     if (!$avatar) {
@@ -21,8 +20,20 @@ if ($_SESSION['loggedin'] == true) {
     } else {
         $userratio = '<span class="label label-info pull-right">---</span>';
     }
+
+    $title = class_user_colour($_SESSION["username"]);
+    $blockId = "b-" . sha1($title);
     ?>
-	<center><img src="<?php echo $avatar; ?>" alt=""></center>
+
+<div class="card">
+    <div class="card-header">
+        <?php echo $title ?>
+        <a data-toggle="collapse" href="#" class="showHide" id="<?php echo $blockId; ?>" style="float: right;"></a>
+    </div>
+    <div class="card-body slidingDiv<?php echo $blockId; ?>">
+    <!-- content -->
+
+        <img class="embed-responsive" src="<?php echo $avatar; ?>" alt="Avatar"  />
 	<ul class="list-group">
 		<li class="list-group-item"><?php echo T_("DOWNLOADED"); ?> : <span class="label label-danger pull-right"><?php echo $userdownloaded; ?></span></li>
 		<li class="list-group-item"><?php echo T_("UPLOADED"); ?>: <span class="label label-success pull-right"><?php echo $useruploaded; ?></span></li>
@@ -31,13 +42,18 @@ if ($_SESSION['loggedin'] == true) {
 		<li class="list-group-item"><?php echo T_("SEEDBONUS"); ?>: <a href="<?php echo TTURL; ?>/bonus"><?php echo $_SESSION['seedbonus']; ?></a></span></li>
 		<li class="list-group-item"><?php echo T_("RATIO"); ?>: <?php echo $userratio; ?></span></li>
 		<li class="list-group-item"><?php echo T_("SLOTS_USED"); ?>: <?php echo $slots; ?></span></li>
-	</ul>
+    </ul>
+    <br />
 	<div class="text-center">
 	<a href='<?php echo TTURL; ?>/users/profile?id=<?php echo $_SESSION["id"]; ?>'><button class="btn btn-primary"><?php echo T_("ACCOUNT"); ?></button></a>
 		<?php if ($_SESSION["control_panel"] == "yes") {?>
 		<a href="<?php echo TTURL; ?>/admincp" class="btn btn-warning"><?php echo T_("STAFFCP"); ?></a>
 		<?php }?>
 	</div>
-	<?php
-    end_block();
+	<br />
+        <!-- end content -->
+        </div>
+    </div>
+    <br />
+    <?php
 }

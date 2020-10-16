@@ -60,7 +60,10 @@ if ($_SESSION['loggedin'] == true) {
   	</div>
 	<button type="submit" class="btn btn-primary center-block" value="" /><?php echo T_("APPLY"); ?></button>
   </form>
+
+    <!-- end content -->
+    </div>
+</div>
+<br />
 <?php
-end_block();
 }
-?>
