@@ -4,7 +4,7 @@ mb_internal_encoding('UTF-8');
 // Error Reporting
 ini_set('display_errors', 0);
 ini_set('display_startup_errors', 0);
-// error_reporting(E_ALL);
+error_reporting(E_ALL ^ E_NOTICE);
 
 // Register custom exception handler
 include "helpers/exception_helper.php";
