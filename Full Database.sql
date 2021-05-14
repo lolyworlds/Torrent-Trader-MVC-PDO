@@ -127,6 +127,14 @@ CREATE TABLE IF NOT EXISTS `bonus` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM;
 
+
+INSERT INTO `bonus` (`id`, `title`, `cost`, `value`, `descr`, `type`) VALUES
+(1, '1GB Uploaded', '70.0', 1073741824, 'Exchange 70 points for 1 GB upload.', 'traffic'),
+(2, '2 GB Uploaded', '100.0', 2147483648, 'Exchange 100 points for  GB upload.', 'traffic'),
+(3, '5 GB Uploaded', '250.0', 5368709120, 'Exchange 250 points for 5 GB upload.', 'traffic'),
+(4, '10 GB Uploaded', '500.0', 10737418240, 'Exchange 500 points for 10 GB upload.', 'traffic'),
+(5, 'Invitations', '1000.0', 2, 'Receive 2 Invites for 1000.00 seedbonus points.', 'invite');
+
 -- --------------------------------------------------------
 
 --
