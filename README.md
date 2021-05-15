@@ -1,14 +1,14 @@
 <p align="center">
 <b>TorrentTrader MVC PDO OOP</b><br>
 <b>10.3.22 MariaDB</b><b><br>
-<b>PHP 7.4.3</b><b>
+<b>PHP 8</b><b>
 </p>
 
 ## <a name="introduction"></a> :page_facing_up: Introduction
 
-This my my copy of torrent trader updated to PDO with a MVC core<br>
-I still have a lot to do but its fully functional for use, ill keep github up to date this is a long term project<br>
-Playing with the code is a bit of a hobby and if anyone wants to help or suggest feel welcome to do so there is support at http://www.torrenttrader.xyz
+This is my copy of torrent trader updated in MVC using PDO with bootstrap. <br>
+Its fully functional for use, ill keep github up to date. This is a long term project <br>
+Playing with the code is a bit of a hobby and if anyone wants to help or suggest feel welcome to do so there is support at https://torrenttrader.uk
 Credit to original authors of any code or mods this is just a version i use to learn more about coding 
 
 ## <a name="features"></a> 💎 Some Features
@@ -20,45 +20,57 @@ Credit to original authors of any code or mods this is just a version i use to l
   - BCRYPT Passwords
   - Snatchlist
   - Magnets
+  - Scraper
   - and MUCH MORE!
 
 ## <a name="requirements"></a> :white_check_mark: Requirements
 
 - A Web server
-- PHP 7.4
+- PHP 8
 - MySQL 5.9
 
 ## <a name="installation"></a> :computer: Installation
 
 THERE IS NO INSTALLER REQUIRED!
 
-1) Copy ALL files to your webserver
+1) Copy ALL files to your webserver, NOTE the name of the public folder "public_html" where index.phph is
+   On server this maybe called public, home etc rename the file to match.
+   Only the contents of public_html go in the public folder.
+   
+   if you rename public_html you must also adjust the htaccess
+   .htaccess
+   RewriteRule ^$ public_html/ [L]
+   RewriteRule (.*) public_html/$1 [L]
 
-2) Import via phpmyadmin "Full Database.sql"
+   For xampp only the public_html/htaccess might need ajusting
+   example
+   RewriteBase /TorrentTraderMVC/public_html
 
-3) Edit the file config/config.php to suit your needs
-   special note should be taken for sql connections, siteurl, email
+2) Import via phpmyadmin "SQL/Full Database.sql"
+
+3) Edit the file app/config/config.php to suit your needs
+   // Database Details
+   define("DB_HOST", "localhost");
+   define("DB_USER", "username");
+   define("DB_PASS", "password");
+   define("DB_NAME", "dbname");
+   define('DB_CHAR', 'utf8');
+   // Your Site Address
+   define('URLROOT', 'http://localhost/TorrentTraderMVC'); 
 
 4) Apply the following CHMOD's
-777 - cache
-777 - cache/imdb
-777 - backups
-777 - uploads
-777 - uploads/images
-777 - uploads/imdb
-777 - import
-600 - censor.txt
+   777 - data/backups
+   777 - data/cache
+   777 - data/cache/imdb
+   777 - data/import
+   777 - data/logs
+   777 - data/uploads
+   777 - data/uploads/images
+   777 - data/uploads/imdb
+   777 - data/uploads/attachment
+   777 - public_html/thumbnail
+   600 - dta/logs/censor.txt
 
-5) Run check.php from your browser to check you have configured everything ok
-   check.php is designed for UNIX systems, if you are using WINDOWS it may not report the paths correctly.
+5) Now register as a new user on the site.  The first user registered will become administrator
 
-6) Now register as a new user on the site.  The first user registered will become administrator
-
-7) If check.php still exists, please remove it or rename.
-   A warning will display on the site index until its removed
-
-8) You should properly secure backupdatabase.php and the backups dir. (htaccess/htpasswd)
-
-Any problems please visit http://www.torrenttrader.xyz
-
-For xampp please use folder provided at http://www.torrenttrader.xyz
+Any problems please visit https://torrenttrader.uk
