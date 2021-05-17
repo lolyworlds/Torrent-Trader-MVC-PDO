@@ -2,7 +2,7 @@
 error_reporting(E_ALL ^ E_NOTICE);
 
 if ($_GET["phpinfo"] == 1) {
-    echo "<br /><center><a href='$config[SITEURL]/check'>Back To Check</a></center><br /><br />";
+    echo "<br /><center><a href='$config[URLROOT]/check'>Back To Check</a></center><br /><br />";
     phpinfo();
     die();
 }
@@ -50,7 +50,7 @@ td { vertical-align: top; }
 
 <input type="button" class="button" value="Check Again" onclick="window.location=window.location" /><br /><br />
 
-<a href="check?phpinfo=1">PHPInfo</a><br /><br />
+<a href="check.php?phpinfo=1">PHPInfo</a><br /><br />
 <a href='index.php'>Return to your homepage</a></center><br />
 <b>Required Settings Check:</b><br />
 <p>If any of these items are highlighted in red then please take actions to correct them. <br />
@@ -184,7 +184,7 @@ If you see "Unwriteable" you need to change the permissions on the file or direc
 <?php
 writableCell('../data/backups');
 writableCell('../data/uploads');
-writableCell('../data/uploads/assets/images');
+writableCell('../data/uploads/images');
 writableCell('../data/uploads/imdb');
 writableCell('../data/cache');
 writableCell('../data/cache/imdb');
@@ -194,7 +194,7 @@ writableCell('../data/logs/censor.txt', 1);
 </table>
 <br />
 <?php
-require_once "..app/config/config.php";
+require_once "../app/config/config.php";
 echo "<b>Table Status Check:</b><br /><br />";
 try {
     $link = new PDO('mysql:host=' . DB_HOST . ';dbname=' . DB_NAME, DB_USER, DB_PASS);
@@ -202,7 +202,7 @@ try {
     $stmt = $link->prepare("SHOW TABLES");
     $stmt->execute();
         if (!$stmt) {
-            echo "<font color='#ff0000'><b>Failed to list tables:</b></font> (%d) %s<br />" . $stmt->errorInfo();
+            //echo "<font color='#ff0000'><b>Failed to list tables:</b></font> (%d) %s<br />" . $stmt->errorInfo();
         } else {
             $tables = array();
             while ($rr = $stmt->fetch()) {

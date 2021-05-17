@@ -41,6 +41,14 @@
         setInterval( "updateShouts()", 15000 );
         updateShouts();
     </script>
+	        <script>
+        function updatestaffShouts(){
+            // Assuming we have #shoutbox
+            $('#shoutboxstaff').load('<?php echo URLROOT; ?>/shoutbox/staffchat');
+        }
+        setInterval( "updatestaffShouts()", 15000 );
+		updatestaffShouts();
+    </script>
 	    <script>
 function myFunction() {
   var x = document.getElementById("myDIVsmileytog");

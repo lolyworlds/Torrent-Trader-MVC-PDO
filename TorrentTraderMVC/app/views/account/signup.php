@@ -31,7 +31,7 @@ Style::begin(Lang::T("SIGNUP"));
 
 <div class="form-group">
 	<label for="age"><?php echo Lang::T("AGE"); ?>:</label>
-	<input id="age" type="text" class="form-control" name="age" minlength="3" maxlength="25" required autofocus>
+	<input id="age" type="text" class="form-control" name="age" minlength="2" required autofocus>
 </div>
 <div class="form-group">
 	<label for="country"><?php echo Lang::T("COUNTRY"); ?>:</label>

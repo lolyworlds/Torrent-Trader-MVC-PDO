@@ -30,7 +30,7 @@ Style::begin("Add User");
 	</div>
     <div class="form-group">
 	    <label for="name">E-mail</label>
-	    <input id="name" type="text" class="form-control" name="email" minlength="3" maxlength="25" required autofocus>
+	    <input id="name" type="text" class="form-control" name="email" minlength="3" required autofocus>
 	</div>
     <div class="form-group">
     <div class="form-group no-margin">
