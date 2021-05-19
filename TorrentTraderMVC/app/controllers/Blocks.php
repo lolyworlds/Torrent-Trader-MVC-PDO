@@ -66,7 +66,7 @@ class Blocks extends Controller
                 $cur = DB::run("SELECT position, sort, id FROM blocks WHERE id = " . $_GET["up"]);
                 $curent = $cur->fetch(PDO::FETCH_ASSOC);
                 $sort = (int) $_GET["sort"];
-                DB::run("UPDATE blocks SET sort = " . $sort . " WHERE sort = " . ($sort - 1) . " AND id != " . $_GET["up"] . " AND position = " . $_GET["position"] . "");
+                DB::run("UPDATE blocks SET sort = ? WHERE sort = ? AND id != ? AND position = ?", [$sort, $sort - 1, $_GET["up"], $_GET["position"]]);
                 DB::run("UPDATE blocks SET sort = " . ($sort - 1) . " WHERE id = " . $_GET["up"]);
             }
             // Move lower
@@ -74,8 +74,8 @@ class Blocks extends Controller
                 $cur = DB::run("SELECT position, sort, id FROM blocks WHERE id = " . $_GET["down"]);
                 $curent = $cur->fetch(PDO::FETCH_ASSOC);
                 $sort = (int) $_GET["sort"];
-                DB::run("UPDATE blocks SET sort = " . ($sort + 1) . " WHERE id = " . $_GET["down"]);
-                DB::run("UPDATE blocks SET sort = " . $sort . " WHERE sort = " . ($sort + 1) . " AND id != " . $_GET["down"] . " AND position = " . $_GET["position"] . "");
+                DB::run("UPDATE blocks SET sort = ? WHERE id = ?",[$sort + 1, $_GET["down"]]);
+                DB::run("UPDATE blocks SET sort = " . $sort . " WHERE sort = ? AND id != ? AND position = ?",[$sort + 1, $_GET["down"], $_GET["position"]]);
             }
             // Update
             $res = DB::run("SELECT * FROM blocks ORDER BY id");

@@ -36,5 +36,5 @@ $GLOBALS['tstart'] = array_sum(explode(" ", microtime()));
   <!-- START MIDDLE COLUMN -->
   <?php if (MIDDLENAV) {?>
   <div class="col-sm-8">
-  <?php   Block::middle();?>
+  <?php   //Block::middle();?>
   <?php }?>

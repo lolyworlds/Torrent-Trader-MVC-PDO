@@ -7,7 +7,7 @@ Style::begin("Contact us");
 
 <div class="form-group">
 	<label for="name">Subject: </label>
-	<input id="name" type="text" class="form-control" name="sub" minlength="3" maxlength="25" required autofocus>
+	<input id="name" type="text" class="form-control" name="sub" minlength="3" maxlength="75" required autofocus>
 </div>
 <div class="form-group">
     <label for="msg">Message: </label>
