@@ -96,7 +96,7 @@ EOD;
             'id' => $id,
             'email' => $user['email']
         ];
-        $this->view('account/changepass', $data);
+        $this->view('account/changeemail', $data);
     }
 
     public function avatar()

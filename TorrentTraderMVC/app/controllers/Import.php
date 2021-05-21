@@ -10,7 +10,7 @@ class Import extends Controller {
 
     public function index()
     {
-        $dir = IMPORT."/import";
+        $dir = IMPORT;
 
         //ini_set("upload_max_filesize",$max_torrent_size);
 

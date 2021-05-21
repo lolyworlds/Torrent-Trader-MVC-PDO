@@ -81,9 +81,16 @@ if ($selectedid["privacy"] != "strong" || ($_SESSION["control_panel"] == "yes") 
 		<?php echo Lang::T("Hit & Run"); ?>: <?php echo $data['numhnr']; ?><br />
 		<?php echo Lang::T("AVG_DAILY_DL"); ?>: <?php echo mksize($selectedid["downloaded"] / (TimeDate::DateDiff($selectedid["added"], time()) / 86400)); ?><br />
 		<?php echo Lang::T("AVG_DAILY_UL"); ?>: <?php echo mksize($selectedid["uploaded"] / (TimeDate::DateDiff($selectedid["added"], time()) / 86400)); ?><br />
-		<?php echo Lang::T("TORRENTS_POSTED"); ?>: <?php echo number_format($data['numtorrents']); ?><br />
-	    <?php echo Lang::T("COMMENTS_POSTED"); ?>: <?php echo number_format($data['numcomments']); ?><br />
-        Forum Posts: <?php echo number_format($data['numforumposts']); ?><br /><br>
+
+	    <?php echo Lang::T("TORRENTS_POSTED"); ?>: <a href="<?php echo URLROOT; ?>/peers/uploaded?id=<?php echo $selectedid["id"] ?>">
+        <?php echo number_format($data['numforumposts']); ?></a><br>
+
+        <?php echo Lang::T("COMMENTS_POSTED"); ?>:  <a href="<?php echo URLROOT; ?>/comments/user?id=<?php echo $selectedid["id"] ?>">
+        <?php echo number_format($data['numcomments']); ?></a><br>
+
+	    <?php echo Lang::T("Forum Posts"); ?>: <a href="<?php echo URLROOT; ?>/forums/user?id=<?php echo $selectedid["id"] ?>">
+        <?php echo number_format($data['numforumposts']); ?></a><br>
+
         <?php
         if ($_SESSION["id"] != $selectedid["id"]) {
             if ($data['friend'] > 0) {

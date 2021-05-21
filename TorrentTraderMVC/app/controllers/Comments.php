@@ -137,4 +137,54 @@ class Comments extends Controller
         }
     }
 
+    public function user()
+    {
+
+        require_once APPROOT . "/helpers/bbcode_helper.php";
+        $id = (int) ($_GET["id"] ?? 0);
+        if (!isset($id) || !$id) {
+            Session::flash('warning', Lang::T("ERROR"), URLROOT."/home");
+        }
+
+        //TORRENT
+        $title = Lang::T("COMMENTS");
+            
+        $res = DB::run("SELECT 
+            comments.id, text, user, comments.added, avatar, 
+            signature, username, title, class, uploaded, downloaded, privacy, donated 
+            FROM comments
+            LEFT JOIN users 
+            ON comments.user = users.id 
+            WHERE user = $id ORDER BY comments.id "); //$limit
+        //$res = DB::run("SELECT * FROM comments WHERE user =?", [$id]);
+            $row = $res->fetch(PDO::FETCH_LAZY);
+            if (!$row) {
+                Session::flash('warning', "User id invalid", URLROOT."/home");
+            }
+            $title = Lang::T("COMMENTSFOR") . "<a href='profile?id=" . $row['user'] . "'>&nbsp;$row[username]</a>";
+
+
+        Style::header(Lang::T("COMMENTS"));
+        Style::begin($title);
+
+        $commcount = DB::run("SELECT COUNT(*) FROM comments WHERE user =? AND torrent = ?", [$id, 0])->fetchColumn();
+        if ($commcount) {
+            list($pagertop, $pagerbottom, $limit) = pager(10, $commcount, "comments?id=$id");
+            $commres = DB::run("SELECT comments.id, text, user, comments.added, avatar, signature, username, title, class, uploaded, downloaded, privacy, donated FROM comments LEFT JOIN users ON comments.user = users.id WHERE user = $id ORDER BY comments.id"); // $limit
+        } else {
+            unset($commres);
+        }
+        if ($commcount) {
+            print($pagertop);
+            commenttable($commres, 'torrent');
+            print($pagerbottom);
+        } else {
+            print("<br><b>" . Lang::T("NOCOMMENTS") . "</b><br>\n");
+        }
+
+        Style::end();
+        Style::footer();
+
+    }
+
 }
