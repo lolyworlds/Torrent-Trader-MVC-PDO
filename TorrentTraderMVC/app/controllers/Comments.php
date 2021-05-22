@@ -43,7 +43,8 @@ class Comments extends Controller
         $commcount = DB::run("SELECT COUNT(*) FROM comments WHERE $type =?", [$id])->fetchColumn();
         if ($commcount) {
             list($pagertop, $pagerbottom, $limit) = pager(10, $commcount, "comments?id=$id&amp;type=$type");
-            $commres = DB::run("SELECT comments.id, text, user, comments.added, avatar, signature, username, title, class, uploaded, downloaded, privacy, donated FROM comments LEFT JOIN users ON comments.user = users.id WHERE $type = $id ORDER BY comments.id $limit");
+$commres = DB::run("SELECT comments.id, users.text, users.user, comments.added, users.avatar, users.signature, users.username, users.title, users.class, users.uploaded, 
+users.downloaded, users.privacy, users.donated FROM comments LEFT JOIN users ON comments.user = users.id WHERE $type = $id ORDER BY comments.id $limit");
         } else {
             unset($commres);
         }
@@ -149,13 +150,9 @@ class Comments extends Controller
         //TORRENT
         $title = Lang::T("COMMENTS");
             
-        $res = DB::run("SELECT 
-            comments.id, text, user, comments.added, avatar, 
-            signature, username, title, class, uploaded, downloaded, privacy, donated 
-            FROM comments
-            LEFT JOIN users 
-            ON comments.user = users.id 
-            WHERE user = $id ORDER BY comments.id "); //$limit
+        $res = DB::run("SELECT comments.id, users.text, users.user, comments.added, users.avatar, users.signature, users.username, users.title, 
+        users.class, users.uploaded, users.downloaded, users.privacy, users.donated FROM comments LEFT JOIN users ON comments.user = users.id 
+        WHERE users.user = $id ORDER BY comments.id"); //$limit
         //$res = DB::run("SELECT * FROM comments WHERE user =?", [$id]);
             $row = $res->fetch(PDO::FETCH_LAZY);
             if (!$row) {
@@ -170,7 +167,8 @@ class Comments extends Controller
         $commcount = DB::run("SELECT COUNT(*) FROM comments WHERE user =? AND torrent = ?", [$id, 0])->fetchColumn();
         if ($commcount) {
             list($pagertop, $pagerbottom, $limit) = pager(10, $commcount, "comments?id=$id");
-            $commres = DB::run("SELECT comments.id, text, user, comments.added, avatar, signature, username, title, class, uploaded, downloaded, privacy, donated FROM comments LEFT JOIN users ON comments.user = users.id WHERE user = $id ORDER BY comments.id"); // $limit
+$commres = DB::run("SELECT comments.id, users.text, users.user, comments.added, users.avatar, users.signature, users.username, users.title, users.class, users.uploaded, 
+users.downloaded, users.privacy, users.donated FROM comments LEFT JOIN users ON comments.user = users.id WHERE users.user = $id ORDER BY comments.id"); // $limit
         } else {
             unset($commres);
         }
